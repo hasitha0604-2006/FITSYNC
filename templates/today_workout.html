@@ -55,18 +55,71 @@
     {% set progress = (completed / total * 100)|round|int if total > 0 else 0 %}
 
     <div class="space-y-6">
-      <!-- Progress Bar -->
-      <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 shadow-lg space-y-3 select-none">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-          <span class="font-bold text-white">
-            Workout Focus: <span class="text-primary-400 font-black uppercase">{{ workout_day.focus }}</span>
-          </span>
-          <span class="font-semibold text-slate-400">
-            Overall Progress: <strong class="text-white">{{ completed }}</strong> of {{ total }} exercises ({{ progress }}%)
-          </span>
+      <!-- Progress Bar & Actions Bar -->
+      <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 shadow-lg space-y-4 select-none">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div>
+            <span class="font-bold text-white text-sm">
+              Workout Focus: <span class="text-primary-400 font-black uppercase">{{ workout_day.focus }}</span>
+            </span>
+            {% if workout_day.duration_minutes %}
+            <span class="text-slate-400 text-xs ml-2"> (~{{ workout_day.duration_minutes }} min)</span>
+            {% endif %}
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              onclick="startWorkoutRunner()"
+              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow"
+            >
+              <i data-lucide="play" class="h-4 w-4 fill-white"></i>
+              Start Workout Mode
+            </button>
+            <button
+              onclick="toggleAIQueryDrawer()"
+              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-primary-300 font-bold text-xs px-3.5 py-2 rounded-xl transition-all border border-slate-600"
+            >
+              <i data-lucide="sparkles" class="h-4 w-4 text-primary-400"></i>
+              Ask FitSync AI
+            </button>
+          </div>
         </div>
-        <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-700">
-          <div class="h-full bg-primary-500 rounded-full transition-all duration-500" style="width: {{ progress }}%"></div>
+
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-semibold">
+            <span>Overall Progress: <strong class="text-white">{{ completed }}</strong> of {{ total }} exercises ({{ progress }}%)</span>
+            {% if completed == total and total > 0 %}
+            <span class="text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle" class="h-3.5 w-3.5"></i> Complete!</span>
+            {% endif %}
+          </div>
+          <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-700">
+            <div class="h-full bg-primary-500 rounded-full transition-all duration-500" style="width: {{ progress }}%"></div>
+          </div>
+        </div>
+
+        <!-- Inline FitSync AI Query Drawer -->
+        <div id="ai-query-drawer" class="hidden bg-slate-950/90 border border-primary-500/30 rounded-xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-black uppercase tracking-wider text-primary-400 flex items-center gap-1.5">
+              <i data-lucide="bot" class="h-4 w-4"></i> Ask FitSync AI Workout Assistant
+            </h4>
+            <button onclick="toggleAIQueryDrawer()" class="text-slate-400 hover:text-white text-xs font-bold">×</button>
+          </div>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              id="ai-workout-input"
+              placeholder="Ask anything (e.g. How to substitute chest exercises?, How to warm up?)..."
+              class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary-500"
+              onkeydown="if(event.key==='Enter') sendAIWorkoutQuery()"
+            />
+            <button
+              onclick="sendAIWorkoutQuery()"
+              class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shrink-0"
+            >
+              Ask
+            </button>
+          </div>
+          <div id="ai-workout-response" class="hidden text-xs text-slate-200 bg-slate-900/90 border border-slate-800 rounded-xl p-3 leading-relaxed"></div>
         </div>
       </div>
 
@@ -123,7 +176,7 @@
             <!-- Card Actions -->
             <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-700/60">
               <button
-                onclick="openGuideModal({{ ex|tojson|safe }})"
+                onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})"
                 class="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-colors"
               >
                 <i data-lucide="play-circle" class="h-4 w-4 text-emerald-400"></i> Demo
@@ -138,7 +191,7 @@
               </button>
               {% else %}
               <button
-                onclick="openGuideModal({{ ex|tojson|safe }})"
+                onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})"
                 class="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition-colors"
               >
                 <i data-lucide="info" class="h-4 w-4"></i> Details
@@ -173,9 +226,25 @@
       </div>
 
       <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-300">
-        <!-- SVG Demonstration -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[16/9] flex items-center justify-center">
-          <img id="modal-ex-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
+        <!-- Side-by-Side Animation and Anatomical Model -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Animation Showcase -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner">
+            <img id="modal-ex-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
+            <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
+              Motion Avatar
+            </div>
+          </div>
+
+          <!-- Anatomical Highlight Showcase -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex items-center justify-center relative">
+            <div class="w-full max-w-[180px] scale-[0.95]" id="today-modal-anatomy-container">
+              {% include 'anatomy_model.html' %}
+            </div>
+            <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
+              Anatomy
+            </div>
+          </div>
         </div>
 
         <!-- Target Muscle Involvement & Exact Location Overlay -->
@@ -339,6 +408,118 @@
         Finish Analysis & Exit
       </button>
     </div>
+  <!-- MODAL 4: Start Workout Execution Runner Modal -->
+  <div id="runner-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[92vh] shadow-2xl">
+      <!-- Top Bar -->
+      <div class="bg-slate-950 p-4 border-b border-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-primary-400">Workout Execution Mode</span>
+          <h3 id="runner-ex-title" class="font-bold text-base text-white">Exercise Title</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="runner-step-counter" class="text-xs font-bold text-slate-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">1 of 5</span>
+          <button onclick="closeWorkoutRunner()" class="h-8 w-8 bg-slate-800 rounded-full text-slate-400 hover:text-white flex items-center justify-center text-lg font-bold">×</button>
+        </div>
+      </div>
+
+      <!-- Main Exercise Card -->
+      <div class="p-6 overflow-y-auto space-y-5 text-slate-300">
+        <!-- Visual & Muscle -->
+        <div class="grid grid-cols-2 gap-3 bg-slate-950 p-3 border border-slate-800 rounded-2xl">
+          <div class="h-32 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden">
+            <img id="runner-ex-img" src="" alt="Exercise" class="h-full w-full object-contain" />
+          </div>
+          <div class="flex flex-col justify-center space-y-1.5">
+            <span id="runner-ex-category" class="text-[9px] font-extrabold uppercase tracking-wider text-primary-400 bg-primary-500/10 px-2 py-0.5 rounded w-fit border border-primary-500/20">Category</span>
+            <h4 id="runner-ex-name-big" class="font-extrabold text-white text-base leading-tight">Exercise Name</h4>
+            <p id="runner-ex-equipment" class="text-[11px] text-slate-400">Equipment</p>
+          </div>
+        </div>
+
+        <!-- Target Metrics Grid -->
+        <div class="grid grid-cols-3 gap-2 text-center text-xs py-3 border-y border-slate-800 bg-slate-950/60 rounded-xl">
+          <div>
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Sets</p>
+            <p id="runner-ex-sets" class="font-black text-white text-base mt-0.5">3</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Reps</p>
+            <p id="runner-ex-reps" class="font-black text-white text-base mt-0.5">10-12</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Rest</p>
+            <p id="runner-ex-rest" class="font-black text-primary-400 text-base mt-0.5">60s</p>
+          </div>
+        </div>
+
+        <!-- Instructions preview -->
+        <div class="bg-slate-950 p-4 border border-slate-800 rounded-xl space-y-1">
+          <h5 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Quick Technique</h5>
+          <p id="runner-ex-instructions" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+
+        <!-- Rest Timer Widget -->
+        <div class="bg-slate-950 border border-primary-500/30 p-4 rounded-xl flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase">Rest Timer</p>
+            <p id="runner-timer-display" class="text-xl font-black text-primary-400 font-mono">00:60</p>
+          </div>
+          <button id="runner-timer-btn" onclick="toggleRunnerTimer()" class="bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-colors">
+            Start Rest Timer
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation & Action Footer -->
+      <div class="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between gap-3">
+        <button onclick="prevRunnerExercise()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-colors">
+          ← Previous
+        </button>
+        <button id="runner-complete-btn" onclick="toggleRunnerComplete()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-colors shadow-lg flex items-center gap-1.5">
+          <i data-lucide="check" class="h-4 w-4 stroke-[3]"></i> Mark Complete
+        </button>
+        <button onclick="nextRunnerExercise()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-colors">
+          Next →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: Completion Celebration Overlay -->
+  <div id="celebration-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
+    <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-emerald-500/40 rounded-3xl w-full max-w-md p-8 text-center space-y-6 shadow-2xl animate-fade-in">
+      <div class="w-20 h-20 bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
+        <i data-lucide="trophy" class="h-10 w-10"></i>
+      </div>
+      <div>
+        <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400">Workout Crushed! 🎉</span>
+        <h2 class="text-2xl font-black text-white mt-1">Great Job!</h2>
+        <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+          You completed all scheduled exercises for <strong class="text-white capitalize">{{ workout_day.focus if workout_day else 'Today' }}</strong>. Progressive overload logged to history.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 bg-slate-900/80 p-4 border border-slate-800 rounded-2xl">
+        <div>
+          <p class="text-[9px] text-slate-500 font-bold uppercase">Exercises Done</p>
+          <p class="text-lg font-black text-white mt-0.5">{{ workout_day.exercises|length if workout_day else 0 }}</p>
+        </div>
+        <div>
+          <p class="text-[9px] text-slate-500 font-bold uppercase">Estimated Duration</p>
+          <p class="text-lg font-black text-primary-400 mt-0.5">~{{ workout_day.duration_minutes if workout_day and workout_day.duration_minutes else 45 }} min</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2 pt-2">
+        <a href="{{ url_for('progress') }}" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20">
+          View Progress Dashboard
+        </a>
+        <button onclick="closeCelebrationModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-800 transition-colors">
+          Close Celebration
+        </button>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -392,6 +573,7 @@
       mDiv.classList.add('hidden');
     }
 
+    highlightAnatomyMuscles([ex.primary_muscle || ex.category], ex.secondary_muscles || [], '#today-modal-anatomy-container');
     document.getElementById('guide-modal').classList.remove('hidden');
   }
 
@@ -622,5 +804,171 @@
   }
 
   window.addEventListener('beforeunload', stopAIFormCheck);
+
+  // ── Ask FitSync AI Drawer ──
+  function toggleAIQueryDrawer() {
+    const drawer = document.getElementById('ai-query-drawer');
+    drawer.classList.toggle('hidden');
+    if (!drawer.classList.contains('hidden')) {
+      document.getElementById('ai-workout-input').focus();
+    }
+  }
+
+  async function sendAIWorkoutQuery() {
+    const input = document.getElementById('ai-workout-input');
+    const query = input.value.trim();
+    if (!query) return;
+
+    const respBox = document.getElementById('ai-workout-response');
+    respBox.classList.remove('hidden');
+    respBox.innerHTML = '<span class="animate-pulse">Asking FitSync AI...</span>';
+
+    try {
+      const res = await fetch('/api/workout/ai-query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query })
+      });
+      const data = await res.json();
+      respBox.innerHTML = `<strong>FitSync AI:</strong> ${data.explanation || data.answer || 'Here is your guidance.'}`;
+    } catch(e) {
+      respBox.innerHTML = '<strong>FitSync AI:</strong> Connect to internet to search AI library. Tip: Ensure proper form and 60-90s rest between heavy sets.';
+    }
+  }
+
+  // ── Workout Runner Execution Mode ──
+  let runnerExercises = [];
+  let runnerCurrentIdx = 0;
+  let runnerTimerInterval = null;
+  let runnerTimerSeconds = 60;
+
+  function startWorkoutRunner() {
+    {% if workout_day and workout_day.exercises %}
+      runnerExercises = [
+        {% for ex in workout_day.exercises %}
+          {{ ex.to_dict() | tojson | safe }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ];
+    {% else %}
+      runnerExercises = [];
+    {% endif %}
+
+    if (!runnerExercises || runnerExercises.length === 0) {
+      alert("No exercises scheduled for today.");
+      return;
+    }
+
+    runnerCurrentIdx = 0;
+    renderRunnerCurrentExercise();
+    document.getElementById('runner-modal').classList.remove('hidden');
+    lucide.createIcons();
+  }
+
+  function closeWorkoutRunner() {
+    if (runnerTimerInterval) clearInterval(runnerTimerInterval);
+    document.getElementById('runner-modal').classList.add('hidden');
+  }
+
+  function renderRunnerCurrentExercise() {
+    if (!runnerExercises || runnerExercises.length === 0) return;
+
+    const ex = runnerExercises[runnerCurrentIdx];
+    document.getElementById('runner-step-counter').innerText = `${runnerCurrentIdx + 1} of ${runnerExercises.length}`;
+    document.getElementById('runner-ex-title').innerText = ex.name;
+    document.getElementById('runner-ex-name-big').innerText = ex.name;
+    document.getElementById('runner-ex-category').innerText = ex.category;
+    document.getElementById('runner-ex-equipment').innerText = ex.equipment || 'No Equipment';
+    document.getElementById('runner-ex-sets').innerText = ex.sets || 3;
+    document.getElementById('runner-ex-reps').innerText = ex.reps || '10-12';
+
+    const restSec = ex.rest_seconds || 60;
+    document.getElementById('runner-ex-rest').innerText = `${restSec}s`;
+    document.getElementById('runner-timer-display').innerText = `00:${restSec < 10 ? '0'+restSec : restSec}`;
+    runnerTimerSeconds = restSec;
+
+    const slug = ex.slug || ex.name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_');
+    document.getElementById('runner-ex-img').src = ex.media_path || `/static/exercises/${slug}/demo.svg`;
+
+    const inst = Array.isArray(ex.instructions) ? ex.instructions.join(' ') : (ex.instructions || 'Perform with controlled tempo and full range of motion.');
+    document.getElementById('runner-ex-instructions').innerText = inst.substring(0, 180) + (inst.length > 180 ? '...' : '');
+
+    const btn = document.getElementById('runner-complete-btn');
+    if (ex.is_completed) {
+      btn.className = "bg-emerald-600 text-white font-black text-xs px-5 py-2.5 rounded-xl transition-colors shadow-lg flex items-center gap-1.5";
+      btn.innerHTML = '<i data-lucide="check-circle" class="h-4 w-4 stroke-[3]"></i> Completed';
+    } else {
+      btn.className = "bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-colors shadow-lg flex items-center gap-1.5";
+      btn.innerHTML = '<i data-lucide="check" class="h-4 w-4 stroke-[3]"></i> Mark Complete';
+    }
+    lucide.createIcons();
+  }
+
+  function nextRunnerExercise() {
+    if (runnerCurrentIdx < runnerExercises.length - 1) {
+      runnerCurrentIdx++;
+      renderRunnerCurrentExercise();
+    } else {
+      alert("You reached the end of the routine!");
+    }
+  }
+
+  function prevRunnerExercise() {
+    if (runnerCurrentIdx > 0) {
+      runnerCurrentIdx--;
+      renderRunnerCurrentExercise();
+    }
+  }
+
+  async function toggleRunnerComplete() {
+    const ex = runnerExercises[runnerCurrentIdx];
+    await toggleExercise(ex.id);
+    ex.is_completed = !ex.is_completed;
+    renderRunnerCurrentExercise();
+  }
+
+  function toggleRunnerTimer() {
+    const btn = document.getElementById('runner-timer-btn');
+    if (runnerTimerInterval) {
+      clearInterval(runnerTimerInterval);
+      runnerTimerInterval = null;
+      btn.innerText = "Start Rest Timer";
+      return;
+    }
+
+    btn.innerText = "Pause Rest Timer";
+    runnerTimerInterval = setInterval(() => {
+      if (runnerTimerSeconds > 0) {
+        runnerTimerSeconds--;
+        const mins = Math.floor(runnerTimerSeconds / 60);
+        const secs = runnerTimerSeconds % 60;
+        document.getElementById('runner-timer-display').innerText = `${mins < 10 ? '0'+mins : mins}:${secs < 10 ? '0'+secs : secs}`;
+      } else {
+        clearInterval(runnerTimerInterval);
+        runnerTimerInterval = null;
+        btn.innerText = "Timer Done! Next Set";
+        document.getElementById('runner-timer-display').innerText = "00:00";
+      }
+    }, 1000);
+  }
+
+  // ── Celebration Modal ──
+  function closeCelebrationModal() {
+    document.getElementById('celebration-modal').classList.add('hidden');
+  }
+
+  {% if workout_day and workout_day.exercises %}
+    {% set c_cnt = workout_day.exercises|selectattr('is_completed')|list|length %}
+    {% set t_cnt = workout_day.exercises|length %}
+    {% if t_cnt > 0 and c_cnt == t_cnt %}
+      // Auto show celebration modal on load if completed
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!sessionStorage.getItem('celebrated_{{ workout_day.id }}')) {
+          document.getElementById('celebration-modal').classList.remove('hidden');
+          sessionStorage.setItem('celebrated_{{ workout_day.id }}', 'true');
+          lucide.createIcons();
+        }
+      });
+    {% endif %}
+  {% endif %}
 </script>
 {% endblock %}

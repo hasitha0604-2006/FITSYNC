@@ -1,88 +1,448 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-50 w-full font-sans select-none">
-  
-  <!-- Header controls -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex-1 p-4 md:p-8 overflow-y-auto pb-24 md:pb-10 bg-slate-50 w-full font-sans">
+
+  {# ── Header ── #}
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
     <div>
       <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Weekly Workout Plan</h1>
-      <p class="text-xs text-slate-500 mt-1">Review your weekly training split, muscle focus categories, and scheduled exercises.</p>
+      <p class="text-xs text-slate-500 mt-1">Your personalised training schedule for the week.</p>
     </div>
-    
-    <a 
-      href="{{ url_for('today_workout') }}"
-      class="flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2.5 rounded-lg border shadow transition-colors"
-    >
-      <i data-lucide="play" class="h-4 w-4"></i>
-      View Today's Routine
-    </a>
+    <div class="flex items-center gap-2 flex-wrap">
+      <a href="{{ url_for('today_workout') }}"
+         class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors">
+        <i data-lucide="play" class="h-4 w-4"></i> Today's Workout
+      </a>
+      <button onclick="confirmRegenerate()"
+         class="flex items-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl border shadow-sm transition-colors">
+        <i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate Plan
+      </button>
+    </div>
   </div>
 
-  <!-- Weekly Grid -->
   {% if not plan %}
-    <div class="bg-white border rounded-2xl p-10 text-center text-slate-450 shadow-sm">
-      <i data-lucide="dumbbell" class="h-10 w-10 mx-auto text-slate-300 mb-3"></i>
-      <h3 class="font-bold text-slate-800 text-sm">No workout plan found</h3>
-      <p class="text-xs mt-1">Please complete onboarding to generate your weekly custom routines.</p>
+    {# ── Empty State ── #}
+    <div class="bg-white border border-dashed rounded-2xl p-12 text-center shadow-sm">
+      <i data-lucide="dumbbell" class="h-12 w-12 mx-auto text-slate-300 mb-4"></i>
+      <h3 class="font-bold text-slate-800 text-base">No Workout Plan Found</h3>
+      <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Complete onboarding to generate your personalised weekly training schedule.</p>
+      <a href="{{ url_for('onboarding') }}" class="inline-flex items-center gap-1.5 mt-4 bg-primary-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-primary-600 transition-colors">
+        <i data-lucide="arrow-right" class="h-4 w-4"></i> Start Onboarding
+      </a>
     </div>
   {% else %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {% for day in plan.days %}
-        <div class="bg-white border rounded-xl p-5 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div>
-            <div class="flex items-center justify-between border-b pb-3 mb-3">
-              <h3 class="font-bold text-slate-850 text-sm">{{ day.day_name }}</h3>
-              {% if day.is_rest_day %}
-                <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">Rest</span>
-              {% else %}
-                {% set completed_count = day.exercises|selectattr('is_completed')|list|length %}
-                {% set total_count = day.exercises|length %}
-                {% if total_count > 0 and completed_count == total_count %}
-                  <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 flex items-center gap-0.5 font-bold">
-                    ✓ Completed
-                  </span>
-                {% else %}
-                  <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-primary-50 text-primary-650">Active</span>
-                {% endif %}
+
+  {# ── Plan Summary Card ── #}
+  <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-5 mb-6 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="space-y-1.5">
+      <p class="text-[10px] font-bold uppercase tracking-widest text-primary-400">Your Training Profile</p>
+      <h2 class="text-lg font-black">{{ profile.name }}'s Plan</h2>
+      <div class="flex flex-wrap items-center gap-2 mt-1">
+        <span class="bg-primary-500/20 text-primary-300 border border-primary-500/30 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+          🎯 {{ profile.fitness_goal }}
+        </span>
+        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+          {{ profile.fitness_level }}
+        </span>
+        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+          {{ profile.workout_days_per_week }}d / week
+        </span>
+        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+          {{ profile.workout_duration_mins }} min
+        </span>
+        {% if equipment_list %}
+        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+          🏋️ {{ equipment_list | join(', ') | truncate(30) }}
+        </span>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Weekly Progress Stats #}
+    <div class="grid grid-cols-3 gap-3 md:gap-4 shrink-0">
+      <div class="bg-slate-800 rounded-xl p-3 text-center">
+        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Done</p>
+        <p class="text-xl font-black text-primary-400">{{ completed_days }}</p>
+        <p class="text-[9px] text-slate-500">of {{ total_workout_days }}</p>
+      </div>
+      <div class="bg-slate-800 rounded-xl p-3 text-center">
+        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Streak</p>
+        <p class="text-xl font-black text-amber-400">🔥{{ streak }}</p>
+        <p class="text-[9px] text-slate-500">days</p>
+      </div>
+      <div class="bg-slate-800 rounded-xl p-3 text-center">
+        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Progress</p>
+        {% set pct = ((completed_days / total_workout_days * 100)|round|int) if total_workout_days > 0 else 0 %}
+        <p class="text-xl font-black text-emerald-400">{{ pct }}%</p>
+        <p class="text-[9px] text-slate-500">this week</p>
+      </div>
+    </div>
+  </div>
+
+  {# ── Weekly Progress Bar ── #}
+  {% if total_workout_days > 0 %}
+  <div class="bg-white border rounded-xl px-5 py-4 mb-6 shadow-sm">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold text-slate-700">Weekly Progress</span>
+      <span class="text-xs font-semibold text-slate-500">{{ completed_days }}/{{ total_workout_days }} workouts</span>
+    </div>
+    <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+      {% set pct = ((completed_days / total_workout_days * 100)|round|int) if total_workout_days > 0 else 0 %}
+      <div class="h-full bg-primary-500 rounded-full transition-all duration-700" style="width: {{ pct }}%"></div>
+    </div>
+    <div class="flex justify-between mt-1.5">
+      {% for d in plan.days | sort(attribute='day_number') %}
+        {% if not d.is_rest_day %}
+          {% if d.is_completed %}
+            <div class="w-4 h-4 rounded-full bg-primary-500 flex items-center justify-center" title="{{ d.day_name }}: {{ d.focus }}">
+              <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+            </div>
+          {% else %}
+            <div class="w-4 h-4 rounded-full bg-slate-200 border-2 border-slate-300" title="{{ d.day_name }}: Upcoming"></div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── 7-Day Schedule Grid ── #}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+    {% for day in plan.days | sort(attribute='day_number') %}
+      {% set is_today = (day.day_name == today_name) %}
+      {% set is_past = (day.day_number is not none and today_day_number is not none and day.day_number < today_day_number) %}
+
+      {# ── Determine day state ── #}
+      {% if day.is_rest_day %}
+        {% set state = "rest" %}
+      {% elif day.is_completed %}
+        {% if "Skipped" in day.focus %}
+          {% set state = "skipped" %}
+        {% else %}
+          {% set state = "completed" %}
+        {% endif %}
+      {% elif is_today %}
+        {% set state = "today" %}
+      {% elif is_past %}
+        {% set state = "missed" %}
+      {% else %}
+        {% set state = "upcoming" %}
+      {% endif %}
+
+      {# ── Card border & bg by state ── #}
+      {% if state == "today" %}
+        {% set card_cls = "border-primary-400 ring-2 ring-primary-400/30 bg-white shadow-md" %}
+      {% elif state == "completed" %}
+        {% set card_cls = "border-emerald-400/60 bg-emerald-50/40 shadow-sm" %}
+      {% elif state == "missed" %}
+        {% set card_cls = "border-amber-400/50 bg-amber-50/30 shadow-sm" %}
+      {% elif state == "skipped" %}
+        {% set card_cls = "border-slate-300 bg-slate-50 shadow-sm opacity-70" %}
+      {% elif state == "rest" %}
+        {% set card_cls = "border-slate-200 bg-slate-50/60 shadow-sm" %}
+      {% else %}
+        {% set card_cls = "border-slate-200 bg-white shadow-sm" %}
+      {% endif %}
+
+      <div class="border rounded-2xl p-4 flex flex-col justify-between {{ card_cls }} hover:shadow-md transition-all relative">
+
+        {# TODAY glow accent #}
+        {% if state == "today" %}
+        <div class="absolute top-0 left-0 right-0 h-1 bg-primary-500 rounded-t-2xl"></div>
+        {% endif %}
+
+        <div>
+          {# Day header #}
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <span class="text-sm font-black text-slate-800">{{ day.day_name }}</span>
+              {% if is_today %}
+                <span class="ml-1.5 inline-block text-[9px] font-black uppercase tracking-wider bg-primary-500 text-white px-1.5 py-0.5 rounded">TODAY</span>
               {% endif %}
             </div>
 
-            <div class="space-y-1 mt-2">
-              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Muscle focus</span>
-              <p class="text-xs font-bold text-slate-800 capitalize">{{ day.focus }}</p>
-            </div>
-
-            {% if not day.is_rest_day %}
-              <div class="mt-4 space-y-2">
-                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Exercises ({{ day.exercises|length }})</span>
-                <div class="space-y-1">
-                  {% for ex in day.exercises %}
-                    <a 
-                      href="{{ url_for('exercise_detail', ex_id=ex.exercise_id) }}"
-                      class="block text-[11px] font-semibold text-slate-600 hover:text-primary-600 truncate hover:underline"
-                    >
-                      • {{ ex.name }}
-                    </a>
-                  {% endfor %}
-                </div>
-              </div>
+            {# State badge #}
+            {% if state == "completed" %}
+              <span class="flex items-center gap-0.5 text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                Done
+              </span>
+            {% elif state == "missed" %}
+              <span class="text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">Missed</span>
+            {% elif state == "skipped" %}
+              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">Skipped</span>
+            {% elif state == "rest" %}
+              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full">Rest</span>
+            {% elif state == "today" %}
+              <span class="text-[9px] font-black uppercase tracking-wider bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">Active</span>
+            {% else %}
+              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Upcoming</span>
             {% endif %}
           </div>
 
-          <div class="pt-4 border-t mt-4 flex justify-end">
-            <a 
-              href="{{ url_for('today_workout', day=day.day_name) }}"
-              class="text-xs text-primary-600 hover:text-primary-750 font-bold flex items-center gap-1"
-            >
-              Open Day
-              <i data-lucide="chevron-right" class="h-4 w-4"></i>
-            </a>
+          {# Focus #}
+          <div class="mb-3">
+            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Focus</p>
+            <p class="text-xs font-bold text-slate-800 mt-0.5">{{ day.focus }}</p>
           </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
 
+          {# Rest day content #}
+          {% if state == "rest" %}
+            <div class="py-4 text-center">
+              <i data-lucide="moon" class="h-8 w-8 text-slate-300 mx-auto mb-1.5"></i>
+              <p class="text-[10px] text-slate-400 font-semibold">Recovery & Rest</p>
+              <p class="text-[9px] text-slate-400 mt-0.5">Muscles grow during rest. Stay hydrated and sleep well.</p>
+            </div>
+
+          {# Workout day content #}
+          {% else %}
+            {# Duration + exercise count #}
+            <div class="flex items-center gap-3 text-[10px] text-slate-500 mb-2.5">
+              <span class="flex items-center gap-0.5">
+                <i data-lucide="dumbbell" class="h-3 w-3 text-slate-400"></i>
+                {{ day.exercises | length }} exercises
+              </span>
+              {% if day.duration_minutes and day.duration_minutes > 0 %}
+              <span class="flex items-center gap-0.5">
+                <i data-lucide="clock" class="h-3 w-3 text-slate-400"></i>
+                ~{{ day.duration_minutes }} min
+              </span>
+              {% endif %}
+            </div>
+
+            {# Progress for this day #}
+            {% set done_cnt = day.exercises | selectattr('is_completed') | list | length %}
+            {% set total_cnt = day.exercises | length %}
+            {% if total_cnt > 0 and (state == "today" or state == "completed" or state == "missed") %}
+              <div class="w-full h-1.5 bg-slate-100 rounded-full mb-2.5 overflow-hidden">
+                {% set dpct = ((done_cnt / total_cnt * 100)|round|int) %}
+                <div class="h-full bg-primary-400 rounded-full" style="width: {{ dpct }}%"></div>
+              </div>
+              <p class="text-[9px] text-slate-400 mb-2.5">{{ done_cnt }}/{{ total_cnt }} exercises done</p>
+            {% endif %}
+
+            {# Exercise mini-list #}
+            <ul class="space-y-1">
+              {% for ex in day.exercises[:4] %}
+                <li class="flex items-center gap-1.5 text-[10px] {% if ex.is_completed %}text-slate-400 line-through{% else %}text-slate-600{% endif %}">
+                  <div class="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center
+                               {% if ex.is_completed %}bg-primary-500 border-primary-500{% else %}border-slate-300{% endif %}">
+                    {% if ex.is_completed %}
+                      <svg class="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    {% endif %}
+                  </div>
+                  <span class="truncate font-medium">{{ ex.name }}</span>
+                </li>
+              {% endfor %}
+              {% if day.exercises | length > 4 %}
+                <li class="text-[9px] text-slate-400 pl-5">+{{ day.exercises | length - 4 }} more exercises</li>
+              {% endif %}
+            </ul>
+          {% endif %}
+        </div>
+
+        {# Card footer action #}
+        <div class="pt-3 mt-3 border-t border-slate-100 flex gap-2">
+          {% if state == "rest" %}
+            <span class="text-[10px] text-slate-400 italic">Enjoy your rest day 🙌</span>
+          {% elif state == "completed" and "Skipped" not in day.focus %}
+            <a href="{{ url_for('today_workout', day=day.day_name) }}"
+               class="flex-1 text-center text-xs text-emerald-600 font-bold hover:text-emerald-700 flex items-center justify-center gap-1">
+              <i data-lucide="check-circle" class="h-3.5 w-3.5"></i> View Workout
+            </a>
+          {% elif state == "today" %}
+            <a href="{{ url_for('today_workout', day=day.day_name) }}"
+               class="flex-1 text-center text-xs bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-1">
+              <i data-lucide="play" class="h-3.5 w-3.5"></i> Start Workout
+            </a>
+          {% elif state == "missed" %}
+            <a href="{{ url_for('today_workout', day=day.day_name) }}"
+               class="flex-1 text-center text-xs text-amber-600 font-bold hover:text-amber-700 flex items-center justify-center gap-1">
+              <i data-lucide="alert-circle" class="h-3.5 w-3.5"></i> View Missed
+            </a>
+            <button onclick="skipDay({{ day.id }})"
+               class="text-[10px] text-slate-400 hover:text-red-500 font-semibold transition-colors">Skip</button>
+          {% else %}
+            <a href="{{ url_for('today_workout', day=day.day_name) }}"
+               class="flex-1 text-center text-xs text-slate-600 font-bold hover:text-primary-600 flex items-center justify-center gap-1 transition-colors">
+              Open Day <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {# ── Workout History ── #}
+  <div class="bg-white border rounded-2xl shadow-sm mb-6">
+    <button onclick="toggleHistory()" class="w-full flex items-center justify-between p-5 text-left">
+      <div class="flex items-center gap-2.5">
+        <i data-lucide="history" class="h-5 w-5 text-primary-500"></i>
+        <h3 class="font-bold text-slate-800">Workout History</h3>
+      </div>
+      <i data-lucide="chevron-down" class="h-5 w-5 text-slate-400 transition-transform" id="history-chevron"></i>
+    </button>
+
+    <div id="history-panel" class="hidden border-t px-5 py-4">
+      {% set completed_week_days = plan.days | selectattr('is_completed') | rejectattr('is_rest_day') | list %}
+      {% if history or completed_week_days %}
+        <div class="space-y-2">
+          {% for day in completed_week_days %}
+            {% if "Skipped" not in day.focus %}
+            <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
+                  <i data-lucide="check" class="h-4 w-4 text-emerald-600"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-800">{{ day.focus }}</p>
+                  <p class="text-[10px] text-slate-500">{{ day.day_name }} · {{ day.exercises | length }} exercises
+                    {% if day.duration_minutes and day.duration_minutes > 0 %} · ~{{ day.duration_minutes }} min{% endif %}
+                  </p>
+                </div>
+              </div>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Completed</span>
+            </div>
+            {% endif %}
+          {% endfor %}
+          {% for cw in history %}
+          <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center">
+                <i data-lucide="calendar" class="h-4 w-4 text-slate-500"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-800">{{ cw.workout_name }}</p>
+                <p class="text-[10px] text-slate-500">{{ cw.date }}</p>
+              </div>
+            </div>
+            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Past</span>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="py-8 text-center text-slate-400">
+          <i data-lucide="calendar-x" class="h-8 w-8 mx-auto mb-2 text-slate-300"></i>
+          <p class="text-xs font-semibold">No workout history yet</p>
+          <p class="text-[10px] mt-0.5">Complete your first workout to see history here.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% endif %} {# end plan check #}
 </div>
+
+{# ── Regenerate Confirm Modal ── #}
+<div id="regenerate-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+    <div class="flex items-center gap-3">
+      <div class="p-2.5 bg-amber-100 rounded-xl">
+        <i data-lucide="alert-triangle" class="h-5 w-5 text-amber-600"></i>
+      </div>
+      <h3 class="font-black text-slate-900 text-base">Regenerate Workout Plan?</h3>
+    </div>
+    <p class="text-sm text-slate-600 leading-relaxed">
+      This will create a brand-new workout plan based on your current profile settings.
+      Your previous plan will be archived and this week's progress will be preserved in history.
+    </p>
+    <div class="flex gap-3 pt-2">
+      <button onclick="closeRegenModal()"
+              class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+        Cancel
+      </button>
+      <button onclick="doRegenerate()"
+              class="flex-1 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-white text-sm font-bold transition-colors flex items-center justify-center gap-1.5" id="regen-btn">
+        <i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate
+      </button>
+    </div>
+  </div>
+</div>
+
+{# ── Toast Notification ── #}
+<div id="toast" class="fixed bottom-6 right-4 z-50 hidden">
+  <div class="bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2.5 max-w-xs">
+    <i data-lucide="check-circle" class="h-4 w-4 text-primary-400" id="toast-icon"></i>
+    <span id="toast-msg">Done!</span>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ── History Toggle ──
+function toggleHistory() {
+  const panel = document.getElementById('history-panel');
+  const chevron = document.getElementById('history-chevron');
+  panel.classList.toggle('hidden');
+  chevron.style.transform = panel.classList.contains('hidden') ? '' : 'rotate(180deg)';
+}
+
+// ── Regenerate Modal ──
+function confirmRegenerate() {
+  document.getElementById('regenerate-modal').classList.remove('hidden');
+  lucide.createIcons();
+}
+function closeRegenModal() {
+  document.getElementById('regenerate-modal').classList.add('hidden');
+}
+async function doRegenerate() {
+  const btn = document.getElementById('regen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating...';
+  try {
+    const res = await fetch('/api/workout/regenerate', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'});
+    const data = await res.json();
+    closeRegenModal();
+    if (data.status === 'success') {
+      showToast('✅ Plan regenerated successfully!', true);
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      showToast('❌ ' + (data.message || 'Failed to regenerate.'), false);
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate';
+      lucide.createIcons();
+    }
+  } catch(e) {
+    showToast('❌ Network error. Please try again.', false);
+    btn.disabled = false;
+  }
+}
+
+// ── Skip Day ──
+async function skipDay(dayId) {
+  if (!confirm('Skip this workout? It will be marked as skipped.')) return;
+  try {
+    const res = await fetch('/api/workout/skip', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({day_id: dayId})
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      showToast('Workout skipped.', true);
+      setTimeout(() => location.reload(), 1200);
+    } else {
+      showToast('❌ ' + (data.message || 'Could not skip.'), false);
+    }
+  } catch(e) {
+    showToast('❌ Network error.', false);
+  }
+}
+
+// ── Toast ──
+function showToast(msg, success=true) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3500);
+}
+
+// Close modal on overlay click
+document.getElementById('regenerate-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeRegenModal();
+});
+</script>
 {% endblock %}

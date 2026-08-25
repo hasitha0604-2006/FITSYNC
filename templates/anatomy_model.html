@@ -1,0 +1,201 @@
+<!-- Reusable SVG Human Anatomy Model Component -->
+<div class="anatomy-container flex flex-col items-center justify-center p-4 bg-slate-950 border border-slate-800 rounded-2xl shadow-xl w-full">
+  <style>
+    .anatomy-svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .anatomy-body-outline {
+      fill: #0b0f19;
+      stroke: #1e293b;
+      stroke-width: 2;
+    }
+    .muscle-group-path {
+      fill: #1e293b;
+      stroke: #334155;
+      stroke-width: 1;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .muscle-group-path:hover {
+      fill: #475569;
+      stroke: #64748b;
+    }
+    /* Highlight states */
+    .muscle-group-path.primary-highlight {
+      fill: #10b981 !important; /* Emerald 500 */
+      stroke: #34d399;
+      filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.8));
+    }
+    .muscle-group-path.secondary-highlight {
+      fill: #06b6d4 !important; /* Cyan 500 */
+      stroke: #22d3ee;
+      filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.8));
+    }
+    .body-gender-label {
+      fill: #94a3b8;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+    }
+  </style>
+
+  <!-- Front View & Back View side by side -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 320" class="anatomy-svg w-full max-w-[400px]">
+    <!-- ==================== FRONT VIEW ==================== -->
+    <g id="anatomy-front-view" transform="translate(10, 10)">
+      <!-- Head and neck (Neutral outline) -->
+      <circle cx="100" cy="30" r="14" class="anatomy-body-outline" />
+      <rect x="96" y="44" width="8" height="10" class="anatomy-body-outline" />
+      
+      <!-- Body outline skeleton base -->
+      <path d="M 100,54 L 64,68 L 74,136 L 82,136 L 76,210 L 64,286 L 76,292 L 92,210 L 100,210 L 108,210 L 124,292 L 136,286 L 124,210 L 118,136 L 126,136 L 136,68 Z" class="anatomy-body-outline" />
+      
+      <!-- FRONT MUSCLE PATHS -->
+      <!-- Chest / Pectorals -->
+      <path id="muscle-front-chest-l" d="M 100,58 L 76,68 L 78,98 L 100,102 Z" class="muscle-group-path" data-muscle="Chest" />
+      <path id="muscle-front-chest-r" d="M 100,58 L 124,68 L 122,98 L 100,102 Z" class="muscle-group-path" data-muscle="Chest" />
+      
+      <!-- Shoulders / Deltoids Front -->
+      <path id="muscle-front-shoulders-l" d="M 76,68 C 70,68 62,76 64,88 L 74,96 Z" class="muscle-group-path" data-muscle="Shoulders" />
+      <path id="muscle-front-shoulders-r" d="M 124,68 C 130,68 138,76 136,88 L 126,96 Z" class="muscle-group-path" data-muscle="Shoulders" />
+      
+      <!-- Biceps Front -->
+      <path id="muscle-front-biceps-l" d="M 64,88 L 56,128 L 68,128 L 74,96 Z" class="muscle-group-path" data-muscle="Biceps" />
+      <path id="muscle-front-biceps-r" d="M 136,88 L 144,128 L 132,128 L 126,96 Z" class="muscle-group-path" data-muscle="Biceps" />
+
+      <!-- Forearms Front -->
+      <path id="muscle-front-forearms-l" d="M 56,128 L 48,172 L 58,172 L 68,128 Z" class="muscle-group-path" data-muscle="Forearms" />
+      <path id="muscle-front-forearms-r" d="M 132,128 L 142,172 L 152,172 L 144,128 Z" class="muscle-group-path" data-muscle="Forearms" />
+      
+      <!-- Abs / Core -->
+      <path id="muscle-front-abs" d="M 82,102 L 118,102 L 114,152 L 86,152 Z" class="muscle-group-path" data-muscle="Core" />
+      
+      <!-- Obliques / Lower Core -->
+      <path id="muscle-front-obliques-l" d="M 78,102 L 82,102 L 86,152 L 76,152 Z" class="muscle-group-path" data-muscle="Core" />
+      <path id="muscle-front-obliques-r" d="M 118,102 L 122,102 L 124,152 L 114,152 Z" class="muscle-group-path" data-muscle="Core" />
+
+      <!-- Quadriceps (Upper Legs Front) -->
+      <path id="muscle-front-quads-l" d="M 76,156 L 98,156 L 92,220 L 72,220 Z" class="muscle-group-path" data-muscle="Legs" />
+      <path id="muscle-front-quads-r" d="M 102,156 L 124,156 L 128,220 L 108,220 Z" class="muscle-group-path" data-muscle="Legs" />
+
+      <!-- Shin / Calves Front -->
+      <path id="muscle-front-calves-l" d="M 72,224 L 88,224 L 78,284 L 68,284 Z" class="muscle-group-path" data-muscle="Legs" />
+      <path id="muscle-front-calves-r" d="M 112,224 L 128,224 L 132,284 L 122,284 Z" class="muscle-group-path" data-muscle="Legs" />
+      
+      <!-- Feet -->
+      <path d="M 68,284 L 78,284 L 82,298 L 60,298 Z" class="anatomy-body-outline" />
+      <path d="M 122,284 L 132,284 L 140,298 L 118,298 Z" class="anatomy-body-outline" />
+
+      <text x="100" y="312" text-anchor="middle" class="body-gender-label">ANTERIOR (FRONT)</text>
+    </g>
+
+    <!-- ==================== BACK VIEW ==================== -->
+    <g id="anatomy-back-view" transform="translate(230, 10)">
+      <!-- Head and neck (Neutral outline) -->
+      <circle cx="100" cy="30" r="14" class="anatomy-body-outline" />
+      <rect x="96" y="44" width="8" height="10" class="anatomy-body-outline" />
+      
+      <!-- Body outline skeleton base -->
+      <path d="M 100,54 L 64,68 L 74,136 L 82,136 L 76,210 L 64,286 L 76,292 L 92,210 L 100,210 L 108,210 L 124,292 L 136,286 L 124,210 L 118,136 L 126,136 L 136,68 Z" class="anatomy-body-outline" />
+      
+      <!-- BACK MUSCLE PATHS -->
+      <!-- Traps / Upper Back -->
+      <path id="muscle-back-traps" d="M 100,54 L 78,68 L 82,88 L 100,94 L 118,88 L 122,68 Z" class="muscle-group-path" data-muscle="Back" />
+      
+      <!-- Lats / Lower Back -->
+      <path id="muscle-back-lats-l" d="M 100,94 L 82,88 L 78,136 L 100,136 Z" class="muscle-group-path" data-muscle="Back" />
+      <path id="muscle-back-lats-r" d="M 100,94 L 118,88 L 122,136 L 100,136 Z" class="muscle-group-path" data-muscle="Back" />
+
+      <!-- Shoulders Rear -->
+      <path id="muscle-back-shoulders-l" d="M 78,68 C 72,68 64,74 66,86 L 78,88 Z" class="muscle-group-path" data-muscle="Shoulders" />
+      <path id="muscle-back-shoulders-r" d="M 122,68 C 128,68 136,74 134,86 L 122,88 Z" class="muscle-group-path" data-muscle="Shoulders" />
+
+      <!-- Triceps Back -->
+      <path id="muscle-back-triceps-l" d="M 66,86 L 56,128 L 68,128 L 78,88 Z" class="muscle-group-path" data-muscle="Triceps" />
+      <path id="muscle-back-triceps-r" d="M 134,86 L 144,128 L 132,128 L 122,88 Z" class="muscle-group-path" data-muscle="Triceps" />
+
+      <!-- Forearms Back -->
+      <path id="muscle-back-forearms-l" d="M 56,128 L 48,172 L 58,172 L 68,128 Z" class="muscle-group-path" data-muscle="Forearms" />
+      <path id="muscle-back-forearms-r" d="M 132,128 L 142,172 L 152,172 L 144,128 Z" class="muscle-group-path" data-muscle="Forearms" />
+
+      <!-- Glutes -->
+      <path id="muscle-back-glutes-l" d="M 76,140 L 100,140 L 98,172 L 74,172 Z" class="muscle-group-path" data-muscle="Glutes" />
+      <path id="muscle-back-glutes-r" d="M 100,140 L 124,140 L 126,172 L 102,172 Z" class="muscle-group-path" data-muscle="Glutes" />
+
+      <!-- Hamstrings (Upper Legs Back) -->
+      <path id="muscle-back-hamstrings-l" d="M 74,174 L 98,174 L 92,228 L 72,228 Z" class="muscle-group-path" data-muscle="Legs" />
+      <path id="muscle-back-hamstrings-r" d="M 102,174 L 126,174 L 128,228 L 108,228 Z" class="muscle-group-path" data-muscle="Legs" />
+
+      <!-- Calves Back -->
+      <path id="muscle-back-calves-l" d="M 72,232 L 88,232 L 78,284 L 68,284 Z" class="muscle-group-path" data-muscle="Legs" />
+      <path id="muscle-back-calves-r" d="M 112,232 L 128,232 L 132,284 L 122,284 Z" class="muscle-group-path" data-muscle="Legs" />
+      
+      <!-- Feet -->
+      <path d="M 68,284 L 78,284 L 82,298 L 60,298 Z" class="anatomy-body-outline" />
+      <path d="M 122,284 L 132,284 L 140,298 L 118,298 Z" class="anatomy-body-outline" />
+
+      <text x="100" y="312" text-anchor="middle" class="body-gender-label">POSTERIOR (BACK)</text>
+    </g>
+  </svg>
+</div>
+
+<!-- JavaScript Engine to Control the Anatomy Highlight -->
+<script>
+  function clearAnatomyHighlight(containerSelector) {
+    const parent = containerSelector ? document.querySelector(containerSelector) : document;
+    if (!parent) return;
+    parent.querySelectorAll('.muscle-group-path').forEach(el => {
+      el.classList.remove('primary-highlight', 'secondary-highlight');
+    });
+  }
+
+  function highlightAnatomyMuscles(primaryList, secondaryList, containerSelector) {
+    clearAnatomyHighlight(containerSelector);
+    const parent = containerSelector ? document.querySelector(containerSelector) : document;
+    if (!parent) return;
+    
+    // Normalize and map muscle names to SVG groups
+    const mapMuscleGroup = (name) => {
+      if (!name) return [];
+      const n = name.trim().toLowerCase();
+      
+      // Map common naming variants to data-muscle attributes
+      if (n.includes('chest') || n.includes('pectoral')) return ['Chest'];
+      if (n.includes('back') || n.includes('lat') || n.includes('trap') || n.includes('rhomboid')) return ['Back'];
+      if (n.includes('shoulder') || n.includes('deltoid')) return ['Shoulders'];
+      if (n.includes('bicep')) return ['Biceps'];
+      if (n.includes('tricep')) return ['Triceps'];
+      if (n.includes('forearm')) return ['Forearms'];
+      if (n.includes('core') || n.includes('ab') || n.includes('oblique')) return ['Core'];
+      if (n.includes('glute')) return ['Glutes'];
+      if (n.includes('quad') || n.includes('hamstring') || n.includes('thigh') || n.includes('leg') || n.includes('calves') || n.includes('calf')) return ['Legs'];
+      return [];
+    };
+
+    const highlightGroup = (muscleName, className) => {
+      const targets = mapMuscleGroup(muscleName);
+      targets.forEach(t => {
+        parent.querySelectorAll(`.muscle-group-path[data-muscle="${t}"]`).forEach(path => {
+          path.classList.add(className);
+        });
+      });
+    };
+
+    if (primaryList) {
+      if (typeof primaryList === 'string') {
+        highlightGroup(primaryList, 'primary-highlight');
+      } else if (Array.isArray(primaryList)) {
+        primaryList.forEach(m => highlightGroup(m, 'primary-highlight'));
+      }
+    }
+
+    if (secondaryList) {
+      if (typeof secondaryList === 'string') {
+        highlightGroup(secondaryList, 'secondary-highlight');
+      } else if (Array.isArray(secondaryList)) {
+        secondaryList.forEach(m => highlightGroup(m, 'secondary-highlight'));
+      }
+    }
+  }
+</script>

@@ -175,63 +175,71 @@
         </div>
       </div>
 
-      <!-- Human Body Anatomy Selector -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 pt-2">
-        <button type="button" onclick="selectMapRegion('Chest')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
-          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
-            <i data-lucide="shield" class="h-5 w-5"></i>
-          </div>
-          <span class="block text-xs font-bold text-white">Chest</span>
-          <span class="block text-[10px] text-slate-400">Pectorals</span>
-        </button>
+      <!-- Visual Anatomy Map Layout -->
+      <div class="flex flex-col lg:flex-row gap-6 items-center justify-center">
+        <!-- Visual Human Model Column -->
+        <div class="w-full lg:w-2/5 max-w-[320px]">
+          {% include 'anatomy_model.html' %}
+        </div>
 
-        <button type="button" onclick="selectMapRegion('Back')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
-          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
-            <i data-lucide="layers" class="h-5 w-5"></i>
-          </div>
-          <span class="block text-xs font-bold text-white">Back</span>
-          <span class="block text-[10px] text-slate-400">Lats & Upper</span>
-        </button>
+        <!-- Human Body Anatomy Selector Buttons Column -->
+        <div class="w-full lg:w-3/5 grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+          <button type="button" onclick="selectMapRegion('Chest')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+            <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+              <i data-lucide="shield" class="h-5 w-5"></i>
+            </div>
+            <span class="block text-xs font-bold text-white">Chest</span>
+            <span class="block text-[10px] text-slate-400">Pectorals</span>
+          </button>
 
-        <button type="button" onclick="selectMapRegion('Shoulders')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
-          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
-            <i data-lucide="aperture" class="h-5 w-5"></i>
-          </div>
-          <span class="block text-xs font-bold text-white">Shoulders</span>
-          <span class="block text-[10px] text-slate-400">Deltoids</span>
-        </button>
+          <button type="button" onclick="selectMapRegion('Back')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+            <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+              <i data-lucide="layers" class="h-5 w-5"></i>
+            </div>
+            <span class="block text-xs font-bold text-white">Back</span>
+            <span class="block text-[10px] text-slate-400">Lats & Upper</span>
+          </button>
 
-        <button type="button" onclick="selectMapRegion('Biceps')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
-          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
-            <i data-lucide="zap" class="h-5 w-5"></i>
-          </div>
-          <span class="block text-xs font-bold text-white">Arms (Biceps)</span>
-          <span class="block text-[10px] text-slate-400">Biceps Brachii</span>
-        </button>
+          <button type="button" onclick="selectMapRegion('Shoulders')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+            <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+              <i data-lucide="aperture" class="h-5 w-5"></i>
+            </div>
+            <span class="block text-xs font-bold text-white">Shoulders</span>
+            <span class="block text-[10px] text-slate-400">Deltoids</span>
+          </button>
 
-        <button type="button" onclick="selectMapRegion('Triceps')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
-          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
-            <i data-lucide="activity" class="h-5 w-5"></i>
-          </div>
-          <span class="block text-xs font-bold text-white">Triceps</span>
-          <span class="block text-[10px] text-slate-400">Arm Extension</span>
-        </button>
+          <button type="button" onclick="selectMapRegion('Biceps')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+            <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+              <i data-lucide="zap" class="h-5 w-5"></i>
+            </div>
+            <span class="block text-xs font-bold text-white">Arms (Biceps)</span>
+            <span class="block text-[10px] text-slate-400">Biceps Brachii</span>
+          </button>
 
-        <button type="button" onclick="selectMapRegion('Core')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
-          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
-            <i data-lucide="square" class="h-5 w-5"></i>
-          </div>
-          <span class="block text-xs font-bold text-white">Core & Abs</span>
-          <span class="block text-[10px] text-slate-400">Abs & Obliques</span>
-        </button>
+          <button type="button" onclick="selectMapRegion('Triceps')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+            <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+              <i data-lucide="activity" class="h-5 w-5"></i>
+            </div>
+            <span class="block text-xs font-bold text-white">Triceps</span>
+            <span class="block text-[10px] text-slate-400">Arm Extension</span>
+          </button>
 
-        <button type="button" onclick="selectMapRegion('Legs')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
-          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
-            <i data-lucide="grid" class="h-5 w-5"></i>
-          </div>
-          <span class="block text-xs font-bold text-white">Legs & Glutes</span>
-          <span class="block text-[10px] text-slate-400">Quads & Hams</span>
-        </button>
+          <button type="button" onclick="selectMapRegion('Core')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+            <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+              <i data-lucide="square" class="h-5 w-5"></i>
+            </div>
+            <span class="block text-xs font-bold text-white">Core & Abs</span>
+            <span class="block text-[10px] text-slate-400">Abs & Obliques</span>
+          </button>
+
+          <button type="button" onclick="selectMapRegion('Legs')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+            <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+              <i data-lucide="grid" class="h-5 w-5"></i>
+            </div>
+            <span class="block text-xs font-bold text-white">Legs & Glutes</span>
+            <span class="block text-[10px] text-slate-400">Quads & Hams</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -389,13 +397,26 @@
 
       <!-- Modal Content -->
       <div class="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
-        <!-- SVG Video Graphic Demonstration Container -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[16/9] flex items-center justify-center relative shadow-inner group">
-          <img id="demo-modal-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
-          
-          <div class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur border border-slate-700 px-3 py-1.5 rounded-xl shadow-lg">
-            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-[10px] font-bold text-slate-200">Animated Motion Video</span>
+        <!-- Side-by-Side Animation and Anatomical Model -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Animation Column -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner group">
+            <img id="demo-modal-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
+            <div class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-lg shadow-lg">
+              <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-[9px] font-bold text-slate-200">Motion Avatar</span>
+            </div>
+          </div>
+
+          <!-- Anatomy Highlight Column -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex items-center justify-center relative">
+            <div class="w-full max-w-[210px] scale-[0.95]" id="modal-anatomy-container">
+              {% include 'anatomy_model.html' %}
+            </div>
+            <div class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-lg shadow-lg">
+              <span class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              <span class="text-[9px] font-bold text-slate-200">Anatomical Target</span>
+            </div>
           </div>
         </div>
 
@@ -632,6 +653,7 @@
     document.getElementById('active-map-muscle-name').innerText = `${regionName} Focus`;
     document.getElementById('active-category-tag').innerText = `${regionName} Focus`;
     filterCards();
+    highlightAnatomyMuscles([regionName], []);
   }
 
   function selectEquipmentFilter(eq) {
@@ -776,6 +798,7 @@
       mBox.classList.add('hidden');
     }
 
+    highlightAnatomyMuscles([ex.primary_muscle || ex.category], ex.secondary_muscles || [], '#modal-anatomy-container');
     document.getElementById('demo-modal').classList.remove('hidden');
   }
 
@@ -826,5 +849,17 @@
   function closeLibraryDetailModal() {
     document.getElementById('lib-detail-modal').classList.add('hidden');
   }
+
+  // Bind click events on interactive anatomy paths
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.muscle-group-path').forEach(path => {
+      path.addEventListener('click', function() {
+        const muscleName = this.getAttribute('data-muscle');
+        if (muscleName) {
+          selectMapRegion(muscleName);
+        }
+      });
+    });
+  });
 </script>
 {% endblock %}

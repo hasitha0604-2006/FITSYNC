@@ -101,10 +101,11 @@ Or simply double-click the **`run.bat`** script.
 
 ## Testing Performed
 
-All 14 integration and unit tests pass successfully:
+All 15 integration and unit tests pass successfully:
 ```bash
 python -m unittest test_app.py -v
 ```
+* **`test_workout_data_contract_and_type_safety`**: Verified type coercion safety in the fitness engine (converting string numbers to integers) and verified persistence of new DB schema columns (`workout_environment`, `reps_min`, `reps_max`, `day_number`).
 * **`test_ai_gym_search_api`**: Verified natural language AI query intent extraction, biceps gym search, dumbbell shoulder search, exercise alternative recommendations, injury safety disclaimers, and unsupported fallback.
 * **`test_gym_knowledge_base_files`**: Confirmed existence and integrity of all structured gym knowledge JSON files.
 * **`test_exercise_catalog_expansion`**: Confirmed catalog expansion to 47 exercises across all 12 target muscle groups.

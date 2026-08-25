@@ -28,9 +28,11 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     profile = db.relationship("UserProfile", backref="user", uselist=False, cascade="all, delete-orphan")
     equipments = db.relationship("UserEquipment", backref="user", cascade="all, delete-orphan")
@@ -71,6 +73,7 @@ class UserProfile(db.Model):
     fitness_level = db.Column(db.String(50), nullable=False)
     workout_days_per_week = db.Column(db.Integer, nullable=False, default=4)
     workout_duration_mins = db.Column(db.Integer, nullable=False, default=45)
+    workout_environment = db.Column(db.String(50), nullable=True, default="Gym")
     dietary_preference = db.Column(db.String(50), nullable=False)
     budget_preference = db.Column(db.String(50), nullable=True)
     daily_food_budget = db.Column(db.Integer, nullable=True, default=150)
@@ -115,10 +118,13 @@ class WorkoutDay(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     workout_plan_id = db.Column(db.Integer, db.ForeignKey("workout_plans.id", ondelete="CASCADE"))
     day_name = db.Column(db.String(20), nullable=False)
+    day_number = db.Column(db.Integer, nullable=True)
     focus = db.Column(db.String(100), nullable=False)
     is_completed = db.Column(db.Boolean, default=False)
     is_rest_day = db.Column(db.Boolean, default=False)
-    exercises = db.relationship("WorkoutExercise", backref="workout_day", cascade="all, delete-orphan")
+    status = db.Column(db.String(20), nullable=True, default="upcoming")  # upcoming/completed/missed/skipped/rest
+    duration_minutes = db.Column(db.Integer, nullable=True, default=0)
+    exercises = db.relationship("WorkoutExercise", backref="workout_day", cascade="all, delete-orphan", order_by="WorkoutExercise.order_idx")
 
 class WorkoutExercise(db.Model):
     __tablename__ = "workout_exercises"
@@ -129,6 +135,8 @@ class WorkoutExercise(db.Model):
     category = db.Column(db.String(50), nullable=False)
     sets = db.Column(db.Integer, nullable=False)
     reps = db.Column(db.String(20), nullable=False)
+    reps_min = db.Column(db.Integer, nullable=True, default=8)
+    reps_max = db.Column(db.Integer, nullable=True, default=12)
     rest_seconds = db.Column(db.Integer, nullable=False)
     instructions = db.Column(db.Text, nullable=True)
     start_pos = db.Column(db.String(200), nullable=True)
@@ -137,6 +145,28 @@ class WorkoutExercise(db.Model):
     common_mistakes = db.Column(db.Text, nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
     order_idx = db.Column(db.Integer, default=0)
+
+    def to_dict(self):
+        slug = self.name.lower().replace(' ', '_').replace('-', '_')
+        return {
+            "id": self.id,
+            "exercise_id": self.exercise_id,
+            "name": self.name,
+            "category": self.category,
+            "sets": self.sets,
+            "reps": self.reps,
+            "reps_min": self.reps_min or 8,
+            "reps_max": self.reps_max or 12,
+            "rest_seconds": self.rest_seconds,
+            "instructions": self.instructions or "",
+            "start_pos": self.start_pos or "",
+            "movement": self.movement or "",
+            "end_pos": self.end_pos or "",
+            "common_mistakes": self.common_mistakes or "",
+            "is_completed": self.is_completed,
+            "slug": slug,
+            "media_path": f"/static/exercises/{slug}/demo.svg"
+        }
 
 class MealPlan(db.Model):
     __tablename__ = "meal_plans"
@@ -189,7 +219,7 @@ class CompletedWorkout(db.Model):
 # -----------------------------------------------------------------------------
 from services.fitness_engine import generate_weekly_workout, find_alternative_exercise
 from services.nutrition_engine import calculate_ai_targets, generate_daily_meals, get_food_alternative
-from services.adaptation_engine import rebuild_remaining_week_logic
+from services.adaptation_engine import rebuild_remaining_week_logic, move_workout_logic, skip_workout_logic
 from services.form_analysis import check_exercise_form
 from services.ai_diet_engine import generate_ai_diet_plan
 from services.ai_search_engine import process_ai_gym_query
@@ -277,6 +307,78 @@ def run_migrations():
         db.session.commit()
         db.create_all()
 
+    # 5. Add workout_environment to user_profiles
+    try:
+        db.session.execute(db.text("SELECT workout_environment FROM user_profiles LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding workout_environment to user_profiles...")
+        db.session.execute(db.text("ALTER TABLE user_profiles ADD COLUMN workout_environment VARCHAR(50) DEFAULT 'Gym'"))
+        db.session.commit()
+
+    # 6. Add day_number to workout_days
+    try:
+        db.session.execute(db.text("SELECT day_number FROM workout_days LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding day_number to workout_days...")
+        db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN day_number INTEGER DEFAULT 1"))
+        db.session.commit()
+
+    # 7. Add reps_min to workout_exercises
+    try:
+        db.session.execute(db.text("SELECT reps_min FROM workout_exercises LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding reps_min to workout_exercises...")
+        db.session.execute(db.text("ALTER TABLE workout_exercises ADD COLUMN reps_min INTEGER DEFAULT 8"))
+        db.session.commit()
+
+    # 8. Add reps_max to workout_exercises
+    try:
+        db.session.execute(db.text("SELECT reps_max FROM workout_exercises LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding reps_max to workout_exercises...")
+        db.session.execute(db.text("ALTER TABLE workout_exercises ADD COLUMN reps_max INTEGER DEFAULT 12"))
+        db.session.commit()
+
+    # 9. Add name to users
+    try:
+        db.session.execute(db.text("SELECT name FROM users LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding name to users...")
+        db.session.execute(db.text("ALTER TABLE users ADD COLUMN name VARCHAR(100)"))
+        db.session.commit()
+
+    # 10. Add updated_at to users
+    try:
+        db.session.execute(db.text("SELECT updated_at FROM users LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding updated_at to users...")
+        db.session.execute(db.text("ALTER TABLE users ADD COLUMN updated_at DATETIME"))
+        db.session.commit()
+
+    # 11. Add status to workout_days
+    try:
+        db.session.execute(db.text("SELECT status FROM workout_days LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding status to workout_days...")
+        db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN status VARCHAR(20) DEFAULT 'upcoming'"))
+        db.session.commit()
+
+    # 12. Add duration_minutes to workout_days
+    try:
+        db.session.execute(db.text("SELECT duration_minutes FROM workout_days LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding duration_minutes to workout_days...")
+        db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN duration_minutes INTEGER DEFAULT 0"))
+        db.session.commit()
+
 # -----------------------------------------------------------------------------
 # DATABASE SEEDER
 # -----------------------------------------------------------------------------
@@ -308,6 +410,7 @@ def seed_database():
             fitness_level="Beginner",
             workout_days_per_week=4,
             workout_duration_mins=45,
+            workout_environment="Gym",
             dietary_preference="Eggetarian",
             budget_preference="₹150",
             daily_food_budget=150,
@@ -364,9 +467,12 @@ def seed_database():
             w_day = WorkoutDay(
                 workout_plan_id=w_plan.id,
                 day_name=day["day_name"],
+                day_number=day.get("day_number", 1),
                 focus=day["focus"],
                 is_completed=False,
-                is_rest_day=day["is_rest_day"]
+                is_rest_day=day["is_rest_day"],
+                status="rest" if day["is_rest_day"] else "upcoming",
+                duration_minutes=day.get("duration_minutes", 0)
             )
             db.session.add(w_day)
             db.session.commit()
@@ -379,6 +485,8 @@ def seed_database():
                     category=ex["category"],
                     sets=ex["sets"],
                     reps=ex["reps"],
+                    reps_min=ex.get("reps_min", 8),
+                    reps_max=ex.get("reps_max", 12),
                     rest_seconds=ex["rest_seconds"],
                     instructions=ex["instructions"],
                     start_pos=ex.get("start_pos"),
@@ -536,6 +644,7 @@ def onboarding():
                 profile = UserProfile(user_id=user.id)
                 db.session.add(profile)
 
+            user.name = data["name"]
             profile.name = data["name"]
             profile.age = int(data["age"])
             profile.gender = data["gender"]
@@ -545,6 +654,7 @@ def onboarding():
             profile.fitness_level = data["fitness_level"]
             profile.workout_days_per_week = int(data["workout_days_per_week"])
             profile.workout_duration_mins = int(data["workout_duration_mins"])
+            profile.workout_environment = data.get("workout_environment", "Gym")
             profile.dietary_preference = data["dietary_preference"]
             
             # Budget preference and daily food budget parsing
@@ -601,42 +711,55 @@ def onboarding():
             db.session.commit()
 
             # Generate workout and nutrition
-            WorkoutPlan.query.filter_by(user_id=user.id).delete()
-            all_exercises = get_exercises_data()
-            weekly_workout = generate_weekly_workout(profile, data["equipments"], all_exercises)
-            w_plan = WorkoutPlan(user_id=user.id, is_active=True)
-            db.session.add(w_plan)
-            db.session.commit()
-
-            for day in weekly_workout:
-                w_day = WorkoutDay(
-                    workout_plan_id=w_plan.id,
-                    day_name=day["day_name"],
-                    focus=day["focus"],
-                    is_completed=False,
-                    is_rest_day=day["is_rest_day"]
-                )
-                db.session.add(w_day)
+            try:
+                WorkoutPlan.query.filter_by(user_id=user.id).delete()
+                all_exercises = get_exercises_data()
+                weekly_workout = generate_weekly_workout(profile, data.get("equipments", []), all_exercises)
+                if not weekly_workout:
+                    raise ValueError("Failed to generate weekly workout plan.")
+                w_plan = WorkoutPlan(user_id=user.id, is_active=True)
+                db.session.add(w_plan)
                 db.session.commit()
 
-                for idx, ex in enumerate(day["exercises"]):
-                    w_ex = WorkoutExercise(
-                        workout_day_id=w_day.id,
-                        exercise_id=ex["exercise_id"],
-                        name=ex["name"],
-                        category=ex["category"],
-                        sets=ex["sets"],
-                        reps=ex["reps"],
-                        rest_seconds=ex["rest_seconds"],
-                        instructions=ex["instructions"],
-                        start_pos=ex.get("start_pos"),
-                        movement=ex.get("movement"),
-                        end_pos=ex.get("end_pos"),
-                        common_mistakes=ex.get("common_mistakes"),
+                for day in weekly_workout:
+                    w_day = WorkoutDay(
+                        workout_plan_id=w_plan.id,
+                        day_name=day["day_name"],
+                        day_number=day.get("day_number", 1),
+                        focus=day["focus"],
                         is_completed=False,
-                        order_idx=idx
+                        is_rest_day=day["is_rest_day"],
+                        status="rest" if day["is_rest_day"] else "upcoming",
+                        duration_minutes=day.get("duration_minutes", 0)
                     )
-                    db.session.add(w_ex)
+                    db.session.add(w_day)
+                    db.session.commit()
+
+                    for idx, ex in enumerate(day["exercises"]):
+                        w_ex = WorkoutExercise(
+                            workout_day_id=w_day.id,
+                            exercise_id=ex["exercise_id"],
+                            name=ex["name"],
+                            category=ex["category"],
+                            sets=ex["sets"],
+                            reps=ex["reps"],
+                            reps_min=ex.get("reps_min", 8),
+                            reps_max=ex.get("reps_max", 12),
+                            rest_seconds=ex["rest_seconds"],
+                            instructions=ex["instructions"],
+                            start_pos=ex.get("start_pos"),
+                            movement=ex.get("movement"),
+                            end_pos=ex.get("end_pos"),
+                            common_mistakes=ex.get("common_mistakes"),
+                            is_completed=False,
+                            order_idx=idx
+                        )
+                        db.session.add(w_ex)
+                db.session.commit()
+            except Exception as w_err:
+                app.logger.error(f"Workout generation error: {w_err}", exc_info=True)
+                db.session.rollback()
+                return jsonify({"status": "error", "message": "We couldn't generate your workout plan. Please try again."}), 400
 
             # Generate food
             MealPlan.query.filter_by(user_id=user.id).delete()
@@ -733,22 +856,76 @@ def workout_plan():
     if not user or not user.profile:
         return redirect(url_for("login"))
     plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
-    return render_template("workout_plan.html", plan=plan)
+
+    today_name = datetime.now().strftime("%A")
+    today_day_number = {"Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4,
+                        "Friday": 5, "Saturday": 6, "Sunday": 7}.get(today_name, 1)
+
+    # Weekly stats
+    total_workout_days = 0
+    completed_days = 0
+    if plan:
+        for d in plan.days:
+            if not d.is_rest_day:
+                total_workout_days += 1
+                if d.is_completed:
+                    completed_days += 1
+
+    # Streak: count consecutive completed days (from completed_workouts or workout_days)
+    streak = 0
+    if plan:
+        days_sorted = sorted([d for d in plan.days if d.is_completed and not d.is_rest_day],
+                             key=lambda d: d.day_number or 0, reverse=True)
+        prev_num = None
+        for d in days_sorted:
+            dn = d.day_number or 0
+            if prev_num is None or prev_num - dn == 1:
+                streak += 1
+                prev_num = dn
+            else:
+                break
+
+    # Equipment list
+    equipment_list = [eq.equipment_name for eq in user.equipments]
+
+    # Completed workout history (last 10)
+    history = CompletedWorkout.query.filter_by(user_id=user.id).order_by(CompletedWorkout.id.desc()).limit(10).all()
+
+    return render_template("workout_plan.html",
+                           plan=plan,
+                           profile=user.profile,
+                           today_name=today_name,
+                           today_day_number=today_day_number,
+                           streak=streak,
+                           completed_days=completed_days,
+                           total_workout_days=total_workout_days,
+                           equipment_list=equipment_list,
+                           history=history)
 
 @app.route("/today-workout")
 def today_workout():
     user = get_current_user()
     if not user or not user.profile:
         return redirect(url_for("login"))
-        
+
     day_name = request.args.get("day", datetime.now().strftime("%A"))
     plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
-    
+
     workout_day = None
+    all_plan_days = []
     if plan:
         workout_day = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=day_name).first()
-        
-    return render_template("today_workout.html", workout_day=workout_day, day_name=day_name)
+        all_plan_days = sorted(plan.days, key=lambda d: d.day_number or 0)
+
+    equipment_list = [eq.equipment_name for eq in user.equipments]
+
+    return render_template("today_workout.html",
+                           workout_day=workout_day,
+                           day_name=day_name,
+                           profile=user.profile,
+                           plan=plan,
+                           all_plan_days=all_plan_days,
+                           equipment_list=equipment_list)
 
 @app.route("/exercises")
 def exercises():
@@ -1169,48 +1346,57 @@ def api_toggle_exercise():
 def api_substitute_exercise():
     user = get_current_user()
     if not user: return jsonify({"status": "error", "message": "Unauthorized"}), 401
-    
+
     data = request.json
     ex_id = data.get("id")
-    reason = data.get("reason")
-    
+    reason = data.get("reason", "")
+
     orig_ex = WorkoutExercise.query.get(ex_id)
     if not orig_ex or orig_ex.workout_day.plan.user_id != user.id:
         return jsonify({"status": "error", "message": "Exercise not found"}), 404
 
     equipments = [eq.equipment_name for eq in user.equipments]
     all_ex = get_exercises_data()
-    
-    alt = find_alternative_exercise(orig_ex.category, orig_ex.exercise_id, equipments, all_ex)
+
+    goal = user.profile.fitness_goal if user.profile else None
+    level = user.profile.fitness_level if user.profile else None
+    env = user.profile.workout_environment if user.profile else None
+
+    alt = find_alternative_exercise(orig_ex.category, orig_ex.exercise_id, equipments, all_ex,
+                                     goal=goal, fitness_level=level, workout_environment=env)
     if not alt:
         return jsonify({"status": "error", "message": "No suitable alternative found."}), 404
 
-    orig_ex.exercise_id = alt["id"]
+    inst_str = alt["instructions"] if isinstance(alt["instructions"], str) else "\n".join(alt.get("instructions", []))
+    mistakes_str = alt.get("common_mistakes", "")
+    if isinstance(mistakes_str, list):
+        mistakes_str = "\n".join(mistakes_str)
+
+    orig_ex.exercise_id = int(alt["id"])
     orig_ex.name = alt["name"]
     orig_ex.category = alt["category"]
-    orig_ex.instructions = "\n".join(alt["instructions"])
+    orig_ex.instructions = inst_str
     orig_ex.start_pos = alt.get("start_pos")
     orig_ex.movement = alt.get("movement")
     orig_ex.end_pos = alt.get("end_pos")
-    orig_ex.common_mistakes = "\n".join(alt.get("common_mistakes", []))
+    orig_ex.common_mistakes = mistakes_str
     orig_ex.is_completed = False
     db.session.commit()
 
-    return jsonify({"status": "success", "replacement": alt["name"]})
+    return jsonify({"status": "success", "replacement": alt["name"], "replacement_id": alt["id"]})
 
 
 @app.route("/api/workout/rebuild", methods=["POST"])
 def api_rebuild_week():
     user = get_current_user()
     if not user: return jsonify({"status": "error", "message": "Unauthorized"}), 401
-    
+
     plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
     if not plan:
         return jsonify({"status": "error", "message": "No active plan."}), 404
 
-    # Identify first incomplete day
     missed_day = None
-    for day in plan.days:
+    for day in sorted(plan.days, key=lambda d: d.day_number or 0):
         if not day.is_completed and not day.is_rest_day:
             missed_day = day
             break
@@ -1222,8 +1408,169 @@ def api_rebuild_week():
     if success:
         db.session.commit()
         return jsonify({"status": "success", "detail": f"Shifted missed workout from {missed_day.day_name} to a later rest day."})
-    
+
     return jsonify({"status": "error", "message": "Could not reschedule week. Ensure you have available rest days."}), 400
+
+
+@app.route("/api/workout/skip", methods=["POST"])
+def api_skip_workout():
+    user = get_current_user()
+    if not user: return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.json or {}
+    day_id = data.get("day_id")
+    if not day_id:
+        return jsonify({"status": "error", "message": "day_id required"}), 400
+
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    if not plan:
+        return jsonify({"status": "error", "message": "No active plan."}), 404
+
+    success, message = skip_workout_logic(plan, day_id)
+    if success:
+        db.session.commit()
+        return jsonify({"status": "success", "message": message})
+    return jsonify({"status": "error", "message": message}), 400
+
+
+@app.route("/api/workout/move", methods=["POST"])
+def api_move_workout():
+    user = get_current_user()
+    if not user: return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.json or {}
+    from_day_id = data.get("from_day_id")
+    to_day_id = data.get("to_day_id")
+    if not from_day_id or not to_day_id:
+        return jsonify({"status": "error", "message": "from_day_id and to_day_id required"}), 400
+
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    if not plan:
+        return jsonify({"status": "error", "message": "No active plan."}), 404
+
+    success, message = move_workout_logic(plan, from_day_id, to_day_id, WorkoutExercise)
+    if success:
+        db.session.commit()
+        return jsonify({"status": "success", "message": message})
+    return jsonify({"status": "error", "message": message}), 400
+
+
+@app.route("/api/workout/regenerate", methods=["POST"])
+def api_regenerate_plan():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    try:
+        # Soft-delete old plan
+        old_plans = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).all()
+        for old in old_plans:
+            old.is_active = False
+        db.session.commit()
+
+        # Generate new plan
+        all_exercises = get_exercises_data()
+        equipment_list = [eq.equipment_name for eq in user.equipments]
+        weekly_workout = generate_weekly_workout(user.profile, equipment_list, all_exercises)
+        if not weekly_workout:
+            raise ValueError("Failed to generate weekly workout plan.")
+
+        w_plan = WorkoutPlan(user_id=user.id, is_active=True)
+        db.session.add(w_plan)
+        db.session.commit()
+
+        for day in weekly_workout:
+            w_day = WorkoutDay(
+                workout_plan_id=w_plan.id,
+                day_name=day["day_name"],
+                day_number=day.get("day_number", 1),
+                focus=day["focus"],
+                is_completed=False,
+                is_rest_day=day["is_rest_day"],
+                status="rest" if day["is_rest_day"] else "upcoming",
+                duration_minutes=day.get("duration_minutes", 0)
+            )
+            db.session.add(w_day)
+            db.session.commit()
+
+            for idx, ex in enumerate(day["exercises"]):
+                w_ex = WorkoutExercise(
+                    workout_day_id=w_day.id,
+                    exercise_id=ex["exercise_id"],
+                    name=ex["name"],
+                    category=ex["category"],
+                    sets=ex["sets"],
+                    reps=ex["reps"],
+                    reps_min=ex.get("reps_min", 8),
+                    reps_max=ex.get("reps_max", 12),
+                    rest_seconds=ex["rest_seconds"],
+                    instructions=ex["instructions"],
+                    start_pos=ex.get("start_pos"),
+                    movement=ex.get("movement"),
+                    end_pos=ex.get("end_pos"),
+                    common_mistakes=ex.get("common_mistakes"),
+                    is_completed=False,
+                    order_idx=idx
+                )
+                db.session.add(w_ex)
+        db.session.commit()
+        return jsonify({"status": "success", "message": "Your workout plan has been regenerated!"})
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Regenerate plan error: {e}", exc_info=True)
+        return jsonify({"status": "error", "message": f"Could not regenerate plan: {str(e)}"}), 500
+
+
+@app.route("/api/workout/history", methods=["GET"])
+def api_workout_history():
+    user = get_current_user()
+    if not user: return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    # Gather completed workouts from CompletedWorkout model
+    cw_list = CompletedWorkout.query.filter_by(user_id=user.id).order_by(CompletedWorkout.id.desc()).limit(20).all()
+    history = []
+    for cw in cw_list:
+        history.append({"date": cw.date, "workout_name": cw.workout_name})
+
+    # Also gather from completed WorkoutDay in active plan
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    plan_history = []
+    if plan:
+        for day in plan.days:
+            if day.is_completed and not day.is_rest_day and "Skipped" not in (day.focus or ""):
+                plan_history.append({
+                    "day_name": day.day_name,
+                    "focus": day.focus,
+                    "exercise_count": len(day.exercises),
+                    "duration_minutes": day.duration_minutes or 0,
+                    "status": day.status or "completed"
+                })
+
+    return jsonify({
+        "status": "success",
+        "history": history,
+        "plan_summary": plan_history
+    })
+
+
+@app.route("/api/workout/ai-query", methods=["POST"])
+def api_workout_ai_query():
+    user = get_current_user()
+    data = request.get_json() or {}
+    query = data.get("query", "").strip()
+    if not query:
+        return jsonify({"status": "error", "message": "Query is required"}), 400
+
+    profile = user.profile if user else None
+
+    # Inject workout context into query
+    context_prefix = ""
+    if profile:
+        context_prefix = f"User goal: {profile.fitness_goal}, Level: {profile.fitness_level}. "
+    enriched_query = context_prefix + query
+
+    result = process_ai_gym_query(enriched_query, user_profile=profile)
+    return jsonify(result)
 
 
 @app.route("/api/profile/save", methods=["POST"])

@@ -35,25 +35,39 @@
       </div>
     </div>
 
-    <!-- Demonstration Media Showcase -->
-    <div class="bg-slate-950 border border-slate-700/80 rounded-2xl overflow-hidden aspect-[16/9] flex items-center justify-center relative shadow-inner">
-      {% if ex.media_path %}
-        <img 
-          src="{{ ex.media_path }}" 
-          alt="{{ ex.name }} Graphical Demonstration" 
-          class="w-full h-full object-contain"
-          onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';"
-        />
-      {% else %}
-        <div class="text-center p-6 text-slate-400 text-xs space-y-1">
-          <i data-lucide="video-off" class="h-10 w-10 mx-auto text-slate-500"></i>
-          <p class="font-bold text-white">Demonstration coming soon</p>
-        </div>
-      {% endif %}
+    <!-- Side-by-Side Animation and Anatomical Model -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Animation Showcase -->
+      <div class="bg-slate-950 border border-slate-700/80 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner">
+        {% if ex.media_path %}
+          <img 
+            src="{{ ex.media_path }}" 
+            alt="{{ ex.name }} Graphical Demonstration" 
+            class="w-full h-full object-contain"
+            onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';"
+          />
+        {% else %}
+          <div class="text-center p-6 text-slate-400 text-xs space-y-1">
+            <i data-lucide="video-off" class="h-10 w-10 mx-auto text-slate-500"></i>
+            <p class="font-bold text-white">Demonstration coming soon</p>
+          </div>
+        {% endif %}
 
-      <div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur border border-slate-700 px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1.5">
-        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="text-[10px] font-bold text-slate-200">Animated Motion Video</span>
+        <div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-lg shadow-lg flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-[9px] font-bold text-slate-200">Motion Avatar</span>
+        </div>
+      </div>
+
+      <!-- Anatomical Highlight Showcase -->
+      <div class="bg-slate-950 border border-slate-700/80 rounded-2xl p-4 flex items-center justify-center relative">
+        <div class="w-full max-w-[210px]" id="detail-anatomy-container">
+          {% include 'anatomy_model.html' %}
+        </div>
+        <div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-lg shadow-lg flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span class="text-[9px] font-bold text-slate-200">Anatomical Target</span>
+        </div>
       </div>
     </div>
 
@@ -175,4 +189,15 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const prim = "{{ ex.primary_muscle or ex.category }}";
+    const secs = [];
+    {% for sec in ex.secondary_muscles %}
+      secs.push("{{ sec }}");
+    {% endfor %}
+    highlightAnatomyMuscles([prim], secs, '#detail-anatomy-container');
+  });
+</script>
 {% endblock %}
