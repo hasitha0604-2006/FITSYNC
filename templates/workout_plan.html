@@ -36,7 +36,15 @@
               {% if day.is_rest_day %}
                 <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">Rest</span>
               {% else %}
-                <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-primary-50 text-primary-600">Active</span>
+                {% set completed_count = day.exercises|selectattr('is_completed')|list|length %}
+                {% set total_count = day.exercises|length %}
+                {% if total_count > 0 and completed_count == total_count %}
+                  <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 flex items-center gap-0.5 font-bold">
+                    ✓ Completed
+                  </span>
+                {% else %}
+                  <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-primary-50 text-primary-650">Active</span>
+                {% endif %}
               {% endif %}
             </div>
 

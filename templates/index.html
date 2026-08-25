@@ -6,99 +6,143 @@
   <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <i data-lucide="activity" class="h-7 w-7 text-primary-400"></i>
-        <span class="font-bold text-lg tracking-tight">FitSync <span class="text-primary-400">AI</span></span>
+        <div class="p-1.5 bg-emerald-500/10 text-emerald-450 rounded-lg">
+          <i data-lucide="activity" class="h-6 w-6"></i>
+        </div>
+        <span class="font-bold text-lg tracking-tight">FitSync <span class="text-emerald-450 font-black">AI</span></span>
       </div>
       <div class="flex items-center gap-4">
-        <a href="{{ url_for('login') }}" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Sign In</a>
-        <a href="{{ url_for('register') }}" class="text-sm font-semibold bg-primary-500 hover:bg-primary-600 px-4 py-2 rounded-lg transition-all text-white shadow-lg shadow-primary-500/20">Get Started</a>
+        <a href="{{ url_for('login') }}" class="text-xs font-semibold text-slate-350 hover:text-white transition-colors">Sign In</a>
+        <a href="{{ url_for('register') }}" class="text-xs font-bold bg-emerald-500 hover:bg-emerald-600 px-4 py-2.5 rounded-xl transition-all text-white shadow-md shadow-emerald-500/15">Get Started</a>
       </div>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <main class="flex-1 flex flex-col items-center justify-center text-center max-w-5xl mx-auto px-6 py-12 md:py-24">
-    <!-- Hackathon Badge -->
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-xs font-semibold uppercase tracking-wider mb-6">
-      <i data-lucide="zap" class="h-3.5 w-3.5 fill-primary-400"></i>
-      Smart India Hackathon Prototype
-    </div>
+  <main class="flex-1 flex flex-col items-center justify-center text-center max-w-5xl mx-auto px-6 py-16 md:py-24 space-y-16">
+    
+    <!-- Hero Block -->
+    <div class="flex flex-col items-center max-w-3xl">
+      <!-- Hackathon Badge -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider mb-6">
+        <i data-lucide="award" class="h-3.5 w-3.5"></i>
+        Smart India Hackathon Prototype
+      </div>
 
-    <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight max-w-3xl">
-      Your lifestyle. <br />
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-emerald-300">Your fitness plan.</span>
-    </h1>
+      <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight">
+        Your lifestyle. <br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Your fitness plan.</span>
+      </h1>
 
-    <p class="mt-6 text-base md:text-xl text-slate-400 max-w-2xl leading-relaxed">
-      FitSync AI adapts fitness and nutrition recommendations around the real-world constraints of college students—budget limits, hostel food, timing, and equipment availability.
-    </p>
+      <p class="mt-6 text-sm md:text-base text-slate-400 max-w-xl leading-relaxed">
+        FitSync AI generates personalized workouts and nutrition plans designed around your goals, schedule, food habits, and real-life student constraints.
+      </p>
 
-    <!-- Action Button -->
-    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-      <a
-        href="{{ url_for('register') }}"
-        class="group flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-base px-8 py-4 rounded-xl shadow-xl shadow-primary-500/10 hover:shadow-primary-500/25 transition-all"
-      >
-        Create Your Plan
-        <i data-lucide="arrow-right" class="h-5 w-5 group-hover:translate-x-1 transition-transform"></i>
-      </a>
+      <!-- Action Button -->
+      <div class="mt-8">
+        <a
+          href="{{ url_for('register') }}"
+          class="group inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm px-8 py-3.5 rounded-xl shadow-lg shadow-emerald-500/10 transition-all"
+        >
+          Get Started
+          <i data-lucide="arrow-right" class="h-4.5 w-4.5 group-hover:translate-x-1 transition-transform"></i>
+        </a>
+      </div>
     </div>
 
     <!-- Core Innovation Statement Card -->
-    <section class="mt-20 border border-slate-900 bg-slate-900/40 p-8 rounded-2xl text-left max-w-4xl">
-      <h3 class="font-bold text-lg text-primary-400 uppercase tracking-wider">The FitSync Innovation</h3>
-      <p class="text-slate-300 text-sm md:text-base leading-relaxed mt-2">
-        "Unlike generic fitness applications that provide fixed workout and diet plans, FitSync AI generates and continuously adapts a student's fitness and nutrition plan according to personal goals, lifestyle, food availability, nutritional targets, budget, workout constraints, and progress."
+    <section class="border border-slate-900 bg-slate-900/40 p-8 rounded-2xl text-left max-w-4xl w-full">
+      <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">The FitSync Innovation</h3>
+      <p class="text-slate-350 text-xs md:text-sm leading-relaxed mt-2.5">
+        Unlike generic fitness tools, FitSync AI adapts plans dynamically based on physical stats, dietary bounds, equipment availability, daily food budgets (e.g. ₹80 to ₹300), and workout attendance (missed days automatically reschedule without guilt).
       </p>
     </section>
 
+    <!-- How It Works Flow Chart -->
+    <section class="w-full max-w-4xl text-left space-y-6 select-none">
+      <h3 class="font-bold text-xs text-slate-500 uppercase tracking-wider text-center">How FitSync Works</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-center">
+        <!-- Step 1 -->
+        <div class="p-4 bg-slate-900/20 border border-slate-900 rounded-xl relative">
+          <div class="text-xs font-bold text-emerald-450 block mb-1">01</div>
+          <span class="font-bold text-xs text-white block">Tell us about you</span>
+          <p class="text-[10px] text-slate-500 mt-1">Hostel food preference, budget limit, and physical stats.</p>
+        </div>
+        <!-- Step 2 -->
+        <div class="p-4 bg-slate-900/20 border border-slate-900 rounded-xl">
+          <div class="text-xs font-bold text-emerald-450 block mb-1">02</div>
+          <span class="font-bold text-xs text-white block">Set your goals</span>
+          <p class="text-[10px] text-slate-500 mt-1">Target calories, muscle gain, or fat loss.</p>
+        </div>
+        <!-- Step 3 -->
+        <div class="p-4 bg-slate-900/20 border border-slate-900 rounded-xl">
+          <div class="text-xs font-bold text-emerald-450 block mb-1">03</div>
+          <span class="font-bold text-xs text-white block">Get your plan</span>
+          <p class="text-[10px] text-slate-500 mt-1">Personalized PPL workouts and calculated macro scales.</p>
+        </div>
+        <!-- Step 4 -->
+        <div class="p-4 bg-slate-900/20 border border-slate-900 rounded-xl">
+          <div class="text-xs font-bold text-emerald-450 block mb-1">04</div>
+          <span class="font-bold text-xs text-white block">Adapt as life changes</span>
+          <p class="text-[10px] text-slate-500 mt-1">Missed schedules shift, unavailable foods swap.</p>
+        </div>
+        <!-- Step 5 -->
+        <div class="p-4 bg-slate-900/20 border border-slate-900 rounded-xl">
+          <div class="text-xs font-bold text-emerald-450 block mb-1">05</div>
+          <span class="font-bold text-xs text-white block">Track your progress</span>
+          <p class="text-[10px] text-slate-500 mt-1">Trends, completed checklist, and weights.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Features Grid -->
-    <section class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 text-left w-full">
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left w-full">
       <div class="border border-slate-900 bg-slate-900/20 p-6 rounded-xl hover:border-slate-800 transition-colors">
         <div class="p-3 bg-blue-500/10 rounded-lg w-fit text-blue-400 mb-4">
-          <i data-lucide="target" class="h-6 w-6"></i>
+          <i data-lucide="dumbbell" class="h-6 w-6"></i>
         </div>
-        <h4 class="font-bold text-lg mb-2">Equipment Aware</h4>
-        <p class="text-sm text-slate-450 leading-relaxed">
-          No bench? Only bands? No problem. FitSync dynamically filters your exercises, providing effective bodyweight or alternative movements that keep you on track.
+        <h4 class="font-bold text-base mb-2">Equipment Aware</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          No bench? Only bands? No problem. FitSync dynamically filters your exercises, providing bodyweight or alternative movements that fit your home or gym gear.
         </p>
       </div>
 
       <div class="border border-slate-900 bg-slate-900/20 p-6 rounded-xl hover:border-slate-800 transition-colors">
-        <div class="p-3 bg-primary-50/5 rounded-lg w-fit text-primary-400 mb-4">
+        <div class="p-3 bg-emerald-500/10 rounded-lg w-fit text-emerald-400 mb-4">
           <i data-lucide="indian-rupee" class="h-6 w-6"></i>
         </div>
-        <h4 class="font-bold text-lg mb-2">Hostel & Budget Friendly</h4>
-        <p class="text-sm text-slate-450 leading-relaxed">
-          Specify your daily food budget (₹80 - ₹300) and food preferences. Replace eggs or paneer with cheap, high-protein alternatives like roasted chana or lentils.
+        <h4 class="font-bold text-base mb-2">Hostel & Budget Friendly</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Specify your daily food budget (₹80–₹300) and preferences. Swap expensive or unavailable canteen meals for high-protein, low-cost alternatives.
         </p>
       </div>
 
       <div class="border border-slate-900 bg-slate-900/20 p-6 rounded-xl hover:border-slate-800 transition-colors">
-        <div class="p-3 bg-red-500/10 rounded-lg w-fit text-red-400 mb-4">
-          <i data-lucide="flame" class="h-6 w-6"></i>
+        <div class="p-3 bg-rose-500/10 rounded-lg w-fit text-rose-400 mb-4">
+          <i data-lucide="calendar" class="h-6 w-6"></i>
         </div>
-        <h4 class="font-bold text-lg mb-2">Missed Workout Shift</h4>
-        <p class="text-sm text-slate-450 leading-relaxed">
-          Missed Monday due to an exam? Rebuild your week safely. The scheduler relocates missed workouts to upcoming rest days without overloading you.
+        <h4 class="font-bold text-base mb-2">Missed Workout Shift</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Missed Monday due to an exam? Rebuild your week instantly. The adaptation engine shifts workouts to upcoming rest days without overloading you.
         </p>
       </div>
     </section>
   </main>
 
   <!-- Safety Disclaimer Footer -->
-  <footer class="border-t border-slate-900 py-8 bg-slate-950 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-xs text-slate-500">
+  <footer class="border-t border-slate-900 py-8 bg-slate-950 mt-auto select-none">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left text-[10px] text-slate-500">
       <div class="max-w-xl">
-        <h5 class="font-semibold text-slate-400 flex items-center gap-1.5 justify-center md:justify-start">
-          <i data-lucide="shield" class="h-3.5 w-3.5"></i>
-          Safety Disclaimer
+        <h5 class="font-bold text-slate-400 flex items-center gap-1.5 justify-center md:justify-start uppercase tracking-wider">
+          <i data-lucide="shield" class="h-3.5 w-3.5 text-slate-455"></i>
+          Health & Safety Disclaimer
         </h5>
-        <p class="mt-1 leading-relaxed text-slate-500">
-          FitSync AI provides general fitness and nutrition guidance for educational and wellness purposes. It is not medical advice. Users with medical conditions, injuries, or special dietary requirements should consult a qualified healthcare professional.
+        <p class="mt-1 leading-relaxed text-slate-550">
+          FitSync AI provides general fitness and nutrition guidance for educational and wellness purposes. It is not medical advice. Users with joint injuries or special clinical constraints should consult a healthcare professional.
         </p>
       </div>
-      <div class="shrink-0 text-slate-600">
+      <div class="shrink-0 text-slate-600 font-medium">
         &copy; 2026 FitSync AI. Built for Smart India Hackathon.
       </div>
     </div>

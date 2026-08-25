@@ -80,8 +80,17 @@
 
   </div>
 
+  <!-- Empty State Container -->
+  <div id="progress-empty-state" class="hidden bg-white border rounded-2xl p-10 text-center text-slate-450 shadow-sm select-none">
+    <div class="p-3 bg-slate-50 text-slate-400 rounded-2xl w-fit mx-auto mb-3">
+      <i data-lucide="line-chart" class="h-7 w-7"></i>
+    </div>
+    <h3 class="font-bold text-slate-800 text-sm">Start logging your progress</h3>
+    <p class="text-xs mt-1 text-slate-500">Log your first weight entry above to unlock history and analytics charts here.</p>
+  </div>
+
   <!-- Chart.js Graphical Visualizer Grid -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div id="progress-charts-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     
     <!-- Weight Trend -->
     <div class="bg-white border rounded-2xl p-5 shadow-sm space-y-4">
@@ -116,7 +125,17 @@
       const res = await fetch("{{ url_for('api_progress_history') }}");
       const data = await res.ok ? await res.json() : [];
       
-      if (data.length === 0) return;
+      const emptyState = document.getElementById('progress-empty-state');
+      const chartsGrid = document.getElementById('progress-charts-grid');
+      
+      if (data.length === 0) {
+        emptyState.classList.remove('hidden');
+        chartsGrid.classList.add('hidden');
+        return;
+      }
+      
+      emptyState.classList.add('hidden');
+      chartsGrid.classList.remove('hidden');
 
       // Update metrics
       document.getElementById('start-weight-span').innerText = `${data[0].weight} kg`;

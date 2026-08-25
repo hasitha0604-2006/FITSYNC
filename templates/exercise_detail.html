@@ -69,6 +69,24 @@
       </ul>
     </div>
     {% endif %}
+    <!-- Actions -->
+    <div class="pt-4 border-t flex flex-col sm:flex-row items-center gap-3">
+      <a 
+        href="{{ url_for('exercises') }}"
+        class="w-full sm:w-auto text-center py-2.5 px-5 bg-slate-105 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all border"
+      >
+        Back to Library
+      </a>
+      {% if ex.name in ['Squats', 'Squat', 'Push-ups', 'Push-up', 'Bicep Curls', 'Bicep Curl'] %}
+      <a 
+        href="{{ url_for('form_check') }}"
+        class="w-full sm:w-auto text-center py-2.5 px-5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-emerald-500/10 flex items-center justify-center gap-1.5 sm:ml-auto"
+      >
+        <i data-lucide="camera" class="h-4 w-4"></i>
+        Optional AI Form Check
+      </a>
+      {% endif %}
+    </div>
   </div>
 
 </div>

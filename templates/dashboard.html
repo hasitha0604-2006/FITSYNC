@@ -17,6 +17,53 @@
     </div>
   </div>
 
+  <!-- Personalization & Quick Stats Row -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 select-none">
+    <!-- Stat 1: Fitness Goal -->
+    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
+      <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+        <i data-lucide="target" class="h-5 w-5"></i>
+      </div>
+      <div>
+        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Goal</span>
+        <span class="text-xs font-bold text-slate-805 block capitalize">{{ profile.fitness_goal }}</span>
+      </div>
+    </div>
+
+    <!-- Stat 2: Fitness Level -->
+    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
+      <div class="p-2 bg-blue-50 text-blue-600 rounded-xl">
+        <i data-lucide="dumbbell" class="h-5 w-5"></i>
+      </div>
+      <div>
+        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Experience</span>
+        <span class="text-xs font-bold text-slate-805 block capitalize">{{ profile.fitness_level }}</span>
+      </div>
+    </div>
+
+    <!-- Stat 3: Diet Preference -->
+    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
+      <div class="p-2 bg-amber-50 text-amber-600 rounded-xl">
+        <i data-lucide="cookie" class="h-5 w-5"></i>
+      </div>
+      <div>
+        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Diet Preference</span>
+        <span class="text-xs font-bold text-slate-805 block capitalize">{{ profile.dietary_preference }}</span>
+      </div>
+    </div>
+
+    <!-- Stat 4: Food Budget -->
+    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
+      <div class="p-2 bg-rose-50 text-rose-600 rounded-xl">
+        <i data-lucide="indian-rupee" class="h-5 w-5"></i>
+      </div>
+      <div>
+        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Daily Budget</span>
+        <span class="text-xs font-bold text-slate-805 block">₹{{ profile.daily_food_budget or 150 }} / day</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Grid of Panels -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     
@@ -194,6 +241,22 @@
               </div>
               <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div class="h-full bg-red-400 rounded-full" style="width: {{ [fat_pct, 100]|min }}%"></div>
+              </div>
+            </div>
+            
+            <!-- Today's Meals Snippet -->
+            <div class="space-y-2 pt-4 border-t border-slate-105 select-none">
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Today's Meals Preview</span>
+              <div class="grid grid-cols-2 gap-2">
+                {% for meal in meal_plan.meals[:4] %}
+                  <div class="p-2 rounded-lg bg-slate-50 border flex flex-col justify-between">
+                    <div>
+                      <span class="text-[8px] uppercase font-bold text-slate-400 block">{{ meal.meal_type }}</span>
+                      <span class="font-bold text-xs text-slate-805 block truncate mt-0.5">{{ meal.food_name }}</span>
+                    </div>
+                    <span class="text-[9px] text-slate-500 font-semibold mt-1">₹{{ meal.cost or 0 }} &bull; {{ meal.calories }} kcal</span>
+                  </div>
+                {% endfor %}
               </div>
             </div>
           </div>
