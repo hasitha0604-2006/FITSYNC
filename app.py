@@ -67,6 +67,92 @@ class CustomFood(db.Model):
     notes = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class Exercise(db.Model):
+    __tablename__ = "exercises"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    aliases = db.Column(db.Text, nullable=True)
+    category = db.Column(db.String(50), nullable=False)
+    primary_muscles = db.Column(db.Text, nullable=True)
+    secondary_muscles = db.Column(db.Text, nullable=True)
+    equipment = db.Column(db.String(100), nullable=True)
+    difficulty = db.Column(db.String(50), nullable=True, default="Beginner")
+    environment = db.Column(db.String(50), nullable=True, default="Gym")
+    goal = db.Column(db.String(50), nullable=True, default="General Fitness")
+    instructions = db.Column(db.Text, nullable=True)
+    common_mistakes = db.Column(db.Text, nullable=True)
+    safety_notes = db.Column(db.Text, nullable=True)
+    default_sets = db.Column(db.Integer, default=3)
+    default_reps_min = db.Column(db.Integer, default=8)
+    default_reps_max = db.Column(db.Integer, default=12)
+    default_rest_seconds = db.Column(db.Integer, default=60)
+    demonstration_available = db.Column(db.Boolean, default=True)
+    demonstration_asset = db.Column(db.String(255), nullable=True)
+    thumbnail = db.Column(db.String(255), nullable=True)
+
+    def to_dict(self):
+        slug = self.name.lower().replace(' ', '_').replace('-', '_')
+        return {
+            "id": self.id,
+            "exercise_id": self.id,
+            "name": self.name,
+            "aliases": json.loads(self.aliases) if self.aliases and self.aliases.startswith("[") else ([a.strip() for a in self.aliases.split(",")] if self.aliases else []),
+            "category": self.category,
+            "primary_muscles": json.loads(self.primary_muscles) if self.primary_muscles and self.primary_muscles.startswith("[") else ([m.strip() for m in self.primary_muscles.split(",")] if self.primary_muscles else []),
+            "secondary_muscles": json.loads(self.secondary_muscles) if self.secondary_muscles and self.secondary_muscles.startswith("[") else ([m.strip() for m in self.secondary_muscles.split(",")] if self.secondary_muscles else []),
+            "equipment": self.equipment or "No Equipment",
+            "difficulty": self.difficulty or "Beginner",
+            "environment": self.environment or "Gym",
+            "goal": self.goal or "General Fitness",
+            "instructions": self.instructions or "",
+            "common_mistakes": self.common_mistakes or "",
+            "safety_notes": self.safety_notes or "",
+            "sets": self.default_sets or 3,
+            "reps": f"{self.default_reps_min or 8}-{self.default_reps_max or 12}",
+            "reps_min": self.default_reps_min or 8,
+            "reps_max": self.default_reps_max or 12,
+            "rest_seconds": self.default_rest_seconds or 60,
+            "demonstration_available": self.demonstration_available,
+            "demonstration_asset": self.demonstration_asset or f"/static/exercises/{slug}/demo.svg",
+            "media_path": self.demonstration_asset or f"/static/exercises/{slug}/demo.svg",
+            "supported_demo": True,
+            "thumbnail": self.thumbnail or f"/static/exercises/{slug}/thumbnail.png",
+            "slug": slug
+        }
+
+class Food(db.Model):
+    __tablename__ = "foods"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    category = db.Column(db.String(50), nullable=False, default="General")
+    serving_size_g = db.Column(db.Integer, nullable=False, default=100)
+    calories = db.Column(db.Integer, nullable=False)
+    protein = db.Column(db.Float, nullable=False)
+    carbs = db.Column(db.Float, nullable=False)
+    fat = db.Column(db.Float, nullable=False)
+    fiber = db.Column(db.Float, default=0.0)
+    cost_approx = db.Column(db.Integer, default=0)
+    common_unit = db.Column(db.String(100), nullable=True)
+    is_vegetarian = db.Column(db.Boolean, default=True)
+    is_vegan = db.Column(db.Boolean, default=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "category": self.category,
+            "serving_size_g": self.serving_size_g,
+            "calories": self.calories,
+            "protein": self.protein,
+            "carbs": self.carbs,
+            "fat": self.fat,
+            "fiber": self.fiber or 0.0,
+            "cost_approx": self.cost_approx or 0,
+            "common_unit": self.common_unit or f"1 serving ({self.serving_size_g}g)",
+            "is_vegetarian": self.is_vegetarian,
+            "is_vegan": self.is_vegan
+        }
+
 class UserProfile(db.Model):
     __tablename__ = "user_profiles"
     id = db.Model.metadata.tables.get("user_profiles") is not None and db.Column(db.Integer, primary_key=True) or db.Column(db.Integer, primary_key=True)
@@ -234,12 +320,24 @@ from services.ai_coach_engine import process_coach_command
 
 # Data loaders helper
 def get_exercises_data():
+    try:
+        db_exercises = Exercise.query.order_by(Exercise.id).all()
+        if db_exercises:
+            return [ex.to_dict() for ex in db_exercises]
+    except Exception:
+        pass
     p = BASE_DIR / "data" / "exercises.json"
     if not p.exists(): return []
     with open(p, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def get_foods_data():
+    try:
+        db_foods = Food.query.order_by(Food.id).all()
+        if db_foods:
+            return [fd.to_dict() for fd in db_foods]
+    except Exception:
+        pass
     p = BASE_DIR / "data" / "foods.json"
     if not p.exists(): return []
     with open(p, 'r', encoding='utf-8') as f:
@@ -394,12 +492,98 @@ with app.app_context():
     except Exception as _db_init_err:
         print(f"[MIGRATION WARNING] Auto-migration error: {_db_init_err}")
 
+def seed_exercises_table():
+    try:
+        if Exercise.query.first():
+            return
+        p = BASE_DIR / "data" / "exercises.json"
+        if not p.exists():
+            return
+        with open(p, 'r', encoding='utf-8') as f:
+            ex_list = json.load(f)
+        print(f"[SEED] Seeding {len(ex_list)} exercises into SQLite database...")
+        for item in ex_list:
+            inst_val = item.get("instructions", "")
+            if isinstance(inst_val, list):
+                inst_val = "\n".join(inst_val)
+
+            cm_val = item.get("common_mistakes", "")
+            if isinstance(cm_val, list):
+                cm_val = "\n".join(cm_val)
+
+            sn_val = item.get("safety_notes", "")
+            if isinstance(sn_val, list):
+                sn_val = "\n".join(sn_val)
+
+            e = Exercise(
+                id=item.get("id"),
+                name=item.get("name"),
+                aliases=json.dumps(item.get("aliases", [])),
+                category=item.get("category", "General"),
+                primary_muscles=json.dumps(item.get("primary_muscles", [])),
+                secondary_muscles=json.dumps(item.get("secondary_muscles", [])),
+                equipment=item.get("equipment", "No Equipment"),
+                difficulty=item.get("difficulty", "Beginner"),
+                environment=item.get("environment", "Gym"),
+                goal=item.get("goal", "General Fitness"),
+                instructions=inst_val,
+                common_mistakes=cm_val,
+                safety_notes=sn_val,
+                default_sets=item.get("sets", 3),
+                default_reps_min=item.get("reps_min", 8),
+                default_reps_max=item.get("reps_max", 12),
+                default_rest_seconds=item.get("rest_seconds", 60),
+                demonstration_available=item.get("demonstration_available", True),
+                demonstration_asset=item.get("demonstration_asset", f"/static/exercises/{item.get('name', '').lower().replace(' ', '_')}/demo.svg"),
+                thumbnail=item.get("thumbnail", f"/static/exercises/{item.get('name', '').lower().replace(' ', '_')}/thumbnail.png")
+            )
+            db.session.add(e)
+        db.session.commit()
+    except Exception as err:
+        db.session.rollback()
+        print(f"[SEED WARNING] Exercise table seed error: {err}")
+
+def seed_foods_table():
+    try:
+        if Food.query.first():
+            return
+        p = BASE_DIR / "data" / "foods.json"
+        if not p.exists():
+            return
+        with open(p, 'r', encoding='utf-8') as f:
+            food_list = json.load(f)
+        print(f"[SEED] Seeding {len(food_list)} foods into SQLite database...")
+        for item in food_list:
+            fd = Food(
+                id=item.get("id"),
+                name=item.get("name"),
+                category=item.get("category", "General"),
+                serving_size_g=item.get("serving_size_g", 100),
+                calories=item.get("calories", 0),
+                protein=item.get("protein", 0.0),
+                carbs=item.get("carbs", 0.0),
+                fat=item.get("fat", 0.0),
+                fiber=item.get("fiber", 0.0),
+                cost_approx=item.get("cost_approx", 0),
+                common_unit=item.get("common_unit", ""),
+                is_vegetarian=item.get("is_vegetarian", True),
+                is_vegan=item.get("is_vegan", False)
+            )
+            db.session.add(fd)
+        db.session.commit()
+    except Exception as err:
+        db.session.rollback()
+        print(f"[SEED WARNING] Food table seed error: {err}")
+
 # -----------------------------------------------------------------------------
 # DATABASE SEEDER
 # -----------------------------------------------------------------------------
 def seed_database():
     # Verify if tables exist and are empty
     run_migrations()
+    seed_exercises_table()
+    seed_foods_table()
+
     demo_email = "demo@fitsync.ai"
     user = User.query.filter_by(email=demo_email).first()
     if user:

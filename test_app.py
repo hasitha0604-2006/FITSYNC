@@ -1,7 +1,7 @@
 import json
 import unittest
 from datetime import datetime, timedelta
-from app import app, db, User, UserProfile, UserEquipment, UserFoodPreference, NutritionTarget, WorkoutPlan, WorkoutDay, WorkoutExercise, MealPlan, Meal, ProgressRecord
+from app import app, db, User, UserProfile, UserEquipment, UserFoodPreference, NutritionTarget, WorkoutPlan, WorkoutDay, WorkoutExercise, MealPlan, Meal, ProgressRecord, seed_database
 from services.fitness_engine import generate_weekly_workout, find_alternative_exercise
 from services.nutrition_engine import calculate_ai_targets, generate_daily_meals, get_food_alternative
 from services.adaptation_engine import rebuild_remaining_week_logic
@@ -18,6 +18,7 @@ class FitSyncTestCase(unittest.TestCase):
         self.ctx.push()
         
         db.create_all()
+        seed_database()
 
     def tearDown(self):
         db.session.remove()
@@ -812,6 +813,108 @@ class FitSyncTestCase(unittest.TestCase):
             r_dup = c.post('/register', data={'email': 'DUP@FITSYNC.AI', 'password': 'Password123!'}, follow_redirects=False)
             self.assertEqual(r_dup.status_code, 302)
             self.assertTrue(r_dup.location.endswith('/login'))
+
+    def test_exercise_and_food_db_tables(self):
+        """Verify Exercise and Food database tables are seeded and queried from SQLite DB."""
+        with app.app_context():
+            from app import Exercise, Food, get_exercises_data, get_foods_data
+            ex_db_count = Exercise.query.count()
+            food_db_count = Food.query.count()
+            self.assertGreaterEqual(ex_db_count, 40)
+            self.assertGreaterEqual(food_db_count, 20)
+
+            ex_data = get_exercises_data()
+            self.assertEqual(len(ex_data), ex_db_count)
+
+            food_data = get_foods_data()
+            self.assertEqual(len(food_data), food_db_count)
+
+    def test_two_user_data_isolation(self):
+        """Mandatory Test: User A and User B cannot see each other's profiles, custom foods, workouts, or meals."""
+        with self.app as c:
+            # 1. Register User A
+            c.post('/register', data={'email': 'usera@fitsync.ai', 'password': 'Password123!'}, follow_redirects=True)
+            c.post('/onboarding', json={
+                "name": "User Alpha",
+                "age": 22,
+                "gender": "Female",
+                "height": 165,
+                "weight": 60,
+                "fitness_goal": "Fat Loss",
+                "fitness_level": "Beginner",
+                "workout_days_per_week": 4,
+                "workout_duration_mins": 45,
+                "dietary_preference": "Vegetarian",
+                "daily_food_budget": 200,
+                "equipments": ["Dumbbells"],
+                "food_preferences": []
+            })
+            c.post('/api/custom-foods', json={
+                "name": "User Alpha Special Shake",
+                "category": "Shake",
+                "serving_size_g": 250,
+                "calories": 300,
+                "protein": 25.0,
+                "carbs": 30.0,
+                "fat": 5.0,
+                "cost": 60
+            })
+            c.get('/logout')
+
+            # 2. Register User B
+            c.post('/register', data={'email': 'userb@fitsync.ai', 'password': 'Password123!'}, follow_redirects=True)
+            c.post('/onboarding', json={
+                "name": "User Beta",
+                "age": 25,
+                "gender": "Male",
+                "height": 180,
+                "weight": 80,
+                "fitness_goal": "Muscle Gain",
+                "fitness_level": "Advanced",
+                "workout_days_per_week": 5,
+                "workout_duration_mins": 60,
+                "dietary_preference": "Non-Vegetarian",
+                "daily_food_budget": 100,
+                "equipments": ["Full Gym"],
+                "food_preferences": []
+            })
+            c.post('/api/custom-foods', json={
+                "name": "User Beta Power Oats",
+                "category": "Breakfast",
+                "serving_size_g": 200,
+                "calories": 450,
+                "protein": 30.0,
+                "carbs": 50.0,
+                "fat": 10.0,
+                "cost": 40
+            })
+
+            # Verify User B's dashboard & custom foods DO NOT contain User Alpha data
+            r_dash_b = c.get('/dashboard')
+            self.assertIn(b"User Beta", r_dash_b.data)
+            self.assertNotIn(b"User Alpha", r_dash_b.data)
+
+            r_cf_b = c.get('/api/custom-foods')
+            cf_b_data = r_cf_b.get_json()
+            cf_b_list = cf_b_data.get("custom_foods", []) if isinstance(cf_b_data, dict) else cf_b_data
+            cf_b_names = [f["name"] for f in cf_b_list]
+            self.assertIn("User Beta Power Oats", cf_b_names)
+            self.assertNotIn("User Alpha Special Shake", cf_b_names)
+
+            c.get('/logout')
+
+            # 3. Log back in as User A
+            c.post('/login', data={'email': 'usera@fitsync.ai', 'password': 'Password123!'}, follow_redirects=True)
+            r_dash_a = c.get('/dashboard')
+            self.assertIn(b"User Alpha", r_dash_a.data)
+            self.assertNotIn(b"User Beta", r_dash_a.data)
+
+            r_cf_a = c.get('/api/custom-foods')
+            cf_a_data = r_cf_a.get_json()
+            cf_a_list = cf_a_data.get("custom_foods", []) if isinstance(cf_a_data, dict) else cf_a_data
+            cf_a_names = [f["name"] for f in cf_a_list]
+            self.assertIn("User Alpha Special Shake", cf_a_names)
+            self.assertNotIn("User Beta Power Oats", cf_a_names)
 
 if __name__ == '__main__':
     unittest.main()
