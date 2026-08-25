@@ -40,6 +40,23 @@ class User(db.Model):
     meal_plans = db.relationship("MealPlan", backref="user", cascade="all, delete-orphan")
     progress_records = db.relationship("ProgressRecord", backref="user", cascade="all, delete-orphan")
     completed_workouts = db.relationship("CompletedWorkout", backref="user", cascade="all, delete-orphan")
+    custom_foods = db.relationship("CustomFood", backref="user", cascade="all, delete-orphan")
+
+class CustomFood(db.Model):
+    __tablename__ = "custom_foods"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50), nullable=False, default="Homemade")
+    serving_size_g = db.Column(db.Integer, nullable=False)
+    calories = db.Column(db.Integer, nullable=False)
+    protein = db.Column(db.Float, nullable=False)
+    carbs = db.Column(db.Float, nullable=False)
+    fat = db.Column(db.Float, nullable=False)
+    fiber = db.Column(db.Float, default=0.0)
+    cost = db.Column(db.Integer, nullable=False, default=0)
+    notes = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class UserProfile(db.Model):
     __tablename__ = "user_profiles"
@@ -174,6 +191,7 @@ from services.fitness_engine import generate_weekly_workout, find_alternative_ex
 from services.nutrition_engine import calculate_ai_targets, generate_daily_meals, get_food_alternative
 from services.adaptation_engine import rebuild_remaining_week_logic
 from services.form_analysis import check_exercise_form
+from services.ai_diet_engine import generate_ai_diet_plan
 
 # Data loaders helper
 def get_exercises_data():
@@ -187,6 +205,37 @@ def get_foods_data():
     if not p.exists(): return []
     with open(p, 'r', encoding='utf-8') as f:
         return json.load(f)
+
+def get_all_user_foods(user=None):
+    base_foods = get_foods_data()
+    if not user:
+        return base_foods
+
+    c_foods = CustomFood.query.filter_by(user_id=user.id).all()
+    if not c_foods:
+        return base_foods
+
+    merged = list(base_foods)
+    for cf in c_foods:
+        merged.append({
+            "id": 10000 + cf.id,
+            "custom_food_id": cf.id,
+            "name": cf.name,
+            "category": cf.category or "Homemade",
+            "serving_size_g": cf.serving_size_g,
+            "calories": cf.calories,
+            "protein": cf.protein,
+            "carbs": cf.carbs,
+            "fat": cf.fat,
+            "fiber": cf.fiber or 0.0,
+            "is_vegetarian": True,
+            "is_vegan": False,
+            "cost_approx": cf.cost,
+            "common_unit": f"1 serving ({cf.serving_size_g}g)",
+            "is_custom": True,
+            "notes": cf.notes
+        })
+    return merged
 
 def run_migrations():
     db.create_all()
@@ -476,7 +525,7 @@ def onboarding():
     if not user:
         return redirect(url_for("login"))
 
-    all_foods = get_foods_data()
+    all_foods = get_all_user_foods(user)
 
     if request.method == "POST":
         try:
@@ -633,7 +682,7 @@ def onboarding():
             m_plan.total_cost = cost
 
             # Initial progress log
-            db.query(ProgressRecord).filter_by(user_id=user.id, date=today_str).delete()
+            ProgressRecord.query.filter_by(user_id=user.id, date=today_str).delete()
             rec = ProgressRecord(
                 user_id=user.id,
                 date=today_str,
@@ -750,6 +799,8 @@ def nutrition():
     targets = NutritionTarget.query.filter_by(user_id=user.id).first()
     
     avail_count = len([p for p in user.food_preferences if p.is_available])
+    all_foods = get_all_user_foods(user)
+    custom_foods = CustomFood.query.filter_by(user_id=user.id).order_by(CustomFood.created_at.desc()).all()
     
     return render_template(
         "nutrition.html", 
@@ -757,7 +808,9 @@ def nutrition():
         targets=targets,
         daily_budget=user.profile.daily_food_budget or 150,
         total_estimated_cost=meal_plan.total_cost if meal_plan else 0,
-        available_foods_count=avail_count
+        available_foods_count=avail_count,
+        foods=all_foods,
+        custom_foods=custom_foods
     )
 
 @app.route("/progress")
@@ -790,7 +843,7 @@ def settings():
     user = get_current_user()
     if not user or not user.profile:
         return redirect(url_for("login"))
-    all_foods = get_foods_data()
+    all_foods = get_all_user_foods(user)
     user_prefs = {}
     for p in user.food_preferences:
         user_prefs[p.food_name.lower()] = {
@@ -799,6 +852,257 @@ def settings():
             "is_avoided": p.is_avoided
         }
     return render_template("settings.html", profile=user.profile, foods=all_foods, user_prefs=user_prefs)
+
+# -----------------------------------------------------------------------------
+# CUSTOM FOODS & EXERCISE SEARCH & AI DIET API ROUTES
+# -----------------------------------------------------------------------------
+
+@app.route("/api/custom-foods", methods=["GET", "POST"])
+def api_custom_foods():
+    user = get_current_user()
+    if not user:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    if request.method == "GET":
+        foods = CustomFood.query.filter_by(user_id=user.id).order_by(CustomFood.created_at.desc()).all()
+        result = []
+        for f in foods:
+            result.append({
+                "id": f.id,
+                "name": f.name,
+                "category": f.category,
+                "serving_size_g": f.serving_size_g,
+                "calories": f.calories,
+                "protein": f.protein,
+                "carbs": f.carbs,
+                "fat": f.fat,
+                "fiber": f.fiber or 0.0,
+                "cost": f.cost,
+                "notes": f.notes or ""
+            })
+        return jsonify({"status": "success", "custom_foods": result})
+
+    # POST - Create custom food
+    data = request.json or {}
+    name = (data.get("name") or "").strip()
+    if not name:
+        return jsonify({"status": "error", "message": "Food name is required."}), 400
+
+    try:
+        serving_size_g = int(data.get("serving_size_g", 0))
+        calories = int(data.get("calories", 0))
+        protein = float(data.get("protein", 0.0))
+        carbs = float(data.get("carbs", 0.0))
+        fat = float(data.get("fat", 0.0))
+        fiber = float(data.get("fiber", 0.0))
+        cost = int(data.get("cost", 0))
+    except (ValueError, TypeError):
+        return jsonify({"status": "error", "message": "Nutrition and cost values must be valid non-negative numbers."}), 400
+
+    if serving_size_g < 0 or calories < 0 or protein < 0 or carbs < 0 or fat < 0 or fiber < 0 or cost < 0:
+        return jsonify({"status": "error", "message": "Nutrition values cannot be negative."}), 400
+
+    c_food = CustomFood(
+        user_id=user.id,
+        name=name,
+        category=data.get("category", "Homemade") or "Homemade",
+        serving_size_g=serving_size_g,
+        calories=calories,
+        protein=protein,
+        carbs=carbs,
+        fat=fat,
+        fiber=fiber,
+        cost=cost,
+        notes=data.get("notes", "")
+    )
+    db.session.add(c_food)
+    db.session.commit()
+
+    pref = UserFoodPreference.query.filter_by(user_id=user.id, food_name=name).first()
+    if not pref:
+        pref = UserFoodPreference(
+            user_id=user.id,
+            food_name=name,
+            is_preferred=True,
+            is_available=True,
+            is_avoided=False
+        )
+        db.session.add(pref)
+        db.session.commit()
+
+    return jsonify({"status": "success", "message": f"Added '{name}' to your custom foods.", "id": c_food.id})
+
+
+@app.route("/api/custom-foods/<int:food_id>", methods=["PUT", "DELETE"])
+def api_manage_custom_food(food_id):
+    user = get_current_user()
+    if not user:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    c_food = CustomFood.query.get(food_id)
+    if not c_food or c_food.user_id != user.id:
+        return jsonify({"status": "error", "message": "Custom food item not found."}), 404
+
+    if request.method == "DELETE":
+        db.session.delete(c_food)
+        db.session.commit()
+        return jsonify({"status": "success", "message": "Custom food deleted."})
+
+    # PUT - Edit custom food
+    data = request.json or {}
+    name = (data.get("name") or "").strip()
+    if not name:
+        return jsonify({"status": "error", "message": "Food name cannot be empty."}), 400
+
+    try:
+        c_food.name = name
+        c_food.category = data.get("category", c_food.category)
+        c_food.serving_size_g = int(data.get("serving_size_g", c_food.serving_size_g))
+        c_food.calories = int(data.get("calories", c_food.calories))
+        c_food.protein = float(data.get("protein", c_food.protein))
+        c_food.carbs = float(data.get("carbs", c_food.carbs))
+        c_food.fat = float(data.get("fat", c_food.fat))
+        c_food.fiber = float(data.get("fiber", c_food.fiber))
+        c_food.cost = int(data.get("cost", c_food.cost))
+        c_food.notes = data.get("notes", c_food.notes)
+    except (ValueError, TypeError):
+        return jsonify({"status": "error", "message": "Invalid numeric input."}), 400
+
+    db.session.commit()
+    return jsonify({"status": "success", "message": "Custom food updated."})
+
+
+@app.route("/api/exercises/search")
+def api_search_exercises():
+    query = request.args.get("q", "").strip().lower()
+    category = request.args.get("category", "").strip().lower()
+    equipment = request.args.get("equipment", "").strip().lower()
+    difficulty = request.args.get("difficulty", "").strip().lower()
+    only_demo = request.args.get("demo", "").strip().lower() == "true"
+
+    all_ex = get_exercises_data()
+    filtered = []
+
+    for ex in all_ex:
+        if query:
+            name_match = query in ex["name"].lower()
+            cat_match = query in ex["category"].lower()
+            sec_match = any(query in sec.lower() for sec in ex.get("secondary_muscles", []))
+            equip_match = query in ex.get("equipment", "").lower()
+            if not (name_match or cat_match or sec_match or equip_match):
+                continue
+
+        if category and category != "all":
+            if ex["category"].lower() != category:
+                continue
+
+        if equipment and equipment != "all":
+            if equipment == "home":
+                if ex["equipment"] not in ["No Equipment", "Dumbbells", "Resistance Bands"]:
+                    continue
+            elif equipment == "gym":
+                if ex["equipment"] != "Full Gym":
+                    continue
+            elif ex["equipment"].lower() != equipment:
+                continue
+
+        if difficulty and difficulty != "all":
+            if ex["difficulty"].lower() != difficulty:
+                continue
+
+        if only_demo and not ex.get("supported_demo", True):
+            continue
+
+        filtered.append(ex)
+
+    return jsonify({
+        "status": "success",
+        "query": query,
+        "total_supported": len(all_ex),
+        "count": len(filtered),
+        "results": filtered
+    })
+
+
+@app.route("/api/diet/generate", methods=["POST"])
+@app.route("/api/diet/regenerate", methods=["POST"])
+def api_generate_ai_diet():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    targets = NutritionTarget.query.filter_by(user_id=user.id).first()
+    if not targets:
+        macros = calculate_ai_targets(user.profile)
+        targets = NutritionTarget(
+            user_id=user.id,
+            calories=macros["calories"],
+            protein=macros["protein"],
+            carbs=macros["carbs"],
+            fat=macros["fat"]
+        )
+        db.session.add(targets)
+        db.session.commit()
+
+    all_foods = get_all_user_foods(user)
+    today_str = datetime.now().strftime("%Y-%m-%d")
+
+    ai_result = generate_ai_diet_plan(user.profile, user.food_preferences, targets, all_foods, today_str)
+
+    MealPlan.query.filter_by(user_id=user.id, date=today_str).delete()
+    m_plan = MealPlan(
+        user_id=user.id,
+        date=today_str,
+        total_calories=0,
+        total_protein=0.0,
+        total_carbs=0.0,
+        total_fat=0.0,
+        total_cost=0
+    )
+    db.session.add(m_plan)
+    db.session.commit()
+
+    cals, prot, carbs, fat, cost = 0, 0.0, 0.0, 0.0, 0
+    for m in ai_result["meals"]:
+        meal = Meal(
+            meal_plan_id=m_plan.id,
+            meal_type=m["meal_type"],
+            food_id=m["food_id"],
+            food_name=m["food_name"],
+            serving_size_g=m["serving_size_g"],
+            calories=m["calories"],
+            protein=m["protein"],
+            carbs=m["carbs"],
+            fat=m["fat"],
+            cost=m.get("cost", 0),
+            common_unit=m["common_unit"]
+        )
+        db.session.add(meal)
+        cals += m["calories"]
+        prot += m["protein"]
+        carbs += m["carbs"]
+        fat += m["fat"]
+        cost += m.get("cost", 0)
+
+    m_plan.total_calories = cals
+    m_plan.total_protein = round(prot, 1)
+    m_plan.total_carbs = round(carbs, 1)
+    m_plan.total_fat = round(fat, 1)
+    m_plan.total_cost = cost
+    db.session.commit()
+
+    progress = ProgressRecord.query.filter_by(user_id=user.id, date=today_str).first()
+    if progress:
+        progress.calories_consumed = cals
+        progress.protein_consumed = round(prot, 1)
+        progress.carbs_consumed = round(carbs, 1)
+        progress.fat_consumed = round(fat, 1)
+        db.session.commit()
+
+    ai_result["total_calories"] = cals
+    ai_result["total_protein"] = round(prot, 1)
+    ai_result["total_cost"] = cost
+    return jsonify(ai_result)
 
 # -----------------------------------------------------------------------------
 # POST / ACTION ROUTES (AJAX CONTROLLERS)
@@ -946,7 +1250,7 @@ def api_save_profile():
         MealPlan.query.filter_by(user_id=user.id, date=today_str).delete()
         
         targets = NutritionTarget.query.filter_by(user_id=user.id).first()
-        all_foods = get_foods_data()
+        all_foods = get_all_user_foods(user)
         
         daily_meals = generate_daily_meals(profile, user.food_preferences, targets, all_foods, today_str)
         m_plan = MealPlan(
@@ -1009,7 +1313,7 @@ def api_substitute_meal():
     if not meal or meal.meal_plan.user_id != user.id:
         return jsonify({"status": "error", "message": "Meal item not found"}), 404
 
-    all_foods = get_foods_data()
+    all_foods = get_all_user_foods(user)
     alt = get_food_alternative(
         meal.food_id,
         meal.calories,
