@@ -64,6 +64,38 @@
     </div>
   </div>
 
+  <!-- Conversational AI Personal Coach Greeting & Command Bar -->
+  <div class="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 border border-slate-800 text-white rounded-2xl p-6 shadow-xl select-none relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+      <div class="flex items-start gap-4">
+        <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl shadow-inner shrink-0">
+          <i data-lucide="bot" class="h-7 w-7"></i>
+        </div>
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">FitSync AI Coach</span>
+            <span class="text-[10px] text-slate-400 font-medium">• Live Adaptive Engine</span>
+          </div>
+          <h2 class="text-lg md:text-xl font-bold tracking-tight text-white">
+            "What are we planning to train today, {{ profile.name }}?"
+          </h2>
+          <p class="text-xs text-slate-400 max-w-xl leading-relaxed">
+            I'm continuously listening and adapting your workouts, equipment constraints, and canteen meal budget. Talk to me naturally below!
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Command Buttons -->
+      <div class="flex flex-wrap lg:flex-nowrap items-center gap-2">
+        <button onclick="sendQuickCoachCommand('I want to train chest today')" class="text-xs bg-slate-800 hover:bg-emerald-500 text-slate-200 hover:text-white font-bold px-3.5 py-2.5 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all shadow-sm">🏋️ Chest Today</button>
+        <button onclick="sendQuickCoachCommand('I only have dumbbells today')" class="text-xs bg-slate-800 hover:bg-emerald-500 text-slate-200 hover:text-white font-bold px-3.5 py-2.5 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all shadow-sm">💪 Dumbbells Only</button>
+        <button onclick="sendQuickCoachCommand('I have 30 minutes today')" class="text-xs bg-slate-800 hover:bg-emerald-500 text-slate-200 hover:text-white font-bold px-3.5 py-2.5 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all shadow-sm">⚡ 30 Min Express</button>
+        <button onclick="sendQuickCoachCommand('Swap my lunch')" class="text-xs bg-slate-800 hover:bg-emerald-500 text-slate-200 hover:text-white font-bold px-3.5 py-2.5 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all shadow-sm">🥗 Swap Lunch</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Grid of Panels -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     

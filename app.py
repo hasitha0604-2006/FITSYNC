@@ -217,12 +217,13 @@ class CompletedWorkout(db.Model):
 # -----------------------------------------------------------------------------
 # ENGINE IMPORTS (services)
 # -----------------------------------------------------------------------------
-from services.fitness_engine import generate_weekly_workout, find_alternative_exercise
+from services.fitness_engine import generate_weekly_workout, find_alternative_exercise, switch_today_focus, scale_workout_duration, scale_workout_difficulty
 from services.nutrition_engine import calculate_ai_targets, generate_daily_meals, get_food_alternative
 from services.adaptation_engine import rebuild_remaining_week_logic, move_workout_logic, skip_workout_logic
 from services.form_analysis import check_exercise_form
 from services.ai_diet_engine import generate_ai_diet_plan
 from services.ai_search_engine import process_ai_gym_query
+from services.ai_coach_engine import process_coach_command
 
 # Data loaders helper
 def get_exercises_data():
@@ -378,6 +379,13 @@ def run_migrations():
         print("[MIGRATION] Adding duration_minutes to workout_days...")
         db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN duration_minutes INTEGER DEFAULT 0"))
         db.session.commit()
+
+# Run database setup & migrations automatically on application boot
+with app.app_context():
+    try:
+        run_migrations()
+    except Exception as _db_init_err:
+        print(f"[MIGRATION WARNING] Auto-migration error: {_db_init_err}")
 
 # -----------------------------------------------------------------------------
 # DATABASE SEEDER
@@ -573,14 +581,43 @@ def get_current_user():
         return None
     return User.query.get(session['user_id'])
 
+def is_user_onboarded(user):
+    if not user or not user.profile:
+        return False
+    if user.profile.onboarding_completed:
+        return True
+    # Robust fallback check: if profile already has valid filled details, auto-complete flag and return True!
+    if user.profile.name and user.profile.fitness_goal and user.profile.height and user.profile.weight:
+        user.profile.onboarding_completed = True
+        db.session.commit()
+        return True
+    return False
+
+def require_onboarded_user():
+    user = get_current_user()
+    if not user:
+        return None, redirect(url_for("login"))
+    if not is_user_onboarded(user):
+        return None, redirect(url_for("onboarding"))
+    return user, None
+
 @app.route("/")
 def index():
-    if get_current_user():
-        return redirect(url_for("dashboard"))
+    user = get_current_user()
+    if user:
+        if is_user_onboarded(user):
+            return redirect(url_for("dashboard"))
+        return redirect(url_for("onboarding"))
     return render_template("index.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    user = get_current_user()
+    if user and request.method == "GET":
+        if is_user_onboarded(user):
+            return redirect(url_for("dashboard"))
+        return redirect(url_for("onboarding"))
+
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -606,6 +643,12 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    user = get_current_user()
+    if user and request.method == "GET":
+        if is_user_onboarded(user):
+            return redirect(url_for("dashboard"))
+        return redirect(url_for("onboarding"))
+
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
@@ -616,7 +659,7 @@ def login():
             return redirect(url_for("login"))
 
         session['user_id'] = user.id
-        if user.profile and user.profile.onboarding_completed:
+        if is_user_onboarded(user):
             return redirect(url_for("dashboard"))
         return redirect(url_for("onboarding"))
 
@@ -633,6 +676,10 @@ def onboarding():
     user = get_current_user()
     if not user:
         return redirect(url_for("login"))
+
+    # If already completed onboarding and viewing page, go directly to dashboard
+    if request.method == "GET" and is_user_onboarded(user):
+        return redirect(url_for("dashboard"))
 
     all_foods = get_all_user_foods(user)
 
@@ -829,9 +876,9 @@ def onboarding():
 
 @app.route("/dashboard")
 def dashboard():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
 
     # Determine weekday focus
     today_name = datetime.now().strftime("%A")
@@ -852,9 +899,9 @@ def dashboard():
 
 @app.route("/workout-plan")
 def workout_plan():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
     plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
 
     today_name = datetime.now().strftime("%A")
@@ -904,9 +951,9 @@ def workout_plan():
 
 @app.route("/today-workout")
 def today_workout():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
 
     day_name = request.args.get("day", datetime.now().strftime("%A"))
     plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
@@ -929,9 +976,9 @@ def today_workout():
 
 @app.route("/exercises")
 def exercises():
-    user = get_current_user()
-    if not user:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
     all_ex = get_exercises_data()
     m_path = BASE_DIR / "data" / "gym_knowledge" / "muscles.json"
     muscles = []
@@ -942,9 +989,9 @@ def exercises():
 
 @app.route("/exercise/<int:ex_id>")
 def exercise_detail(ex_id):
-    user = get_current_user()
-    if not user:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
     all_ex = get_exercises_data()
     ex = next((item for item in all_ex if item["id"] == ex_id), None)
     if not ex:
@@ -954,9 +1001,9 @@ def exercise_detail(ex_id):
 
 @app.route("/meal/<int:meal_id>")
 def meal_detail(meal_id):
-    user = get_current_user()
-    if not user:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
     meal = Meal.query.get(meal_id)
     if not meal or meal.meal_plan.user_id != user.id:
         flash("Meal not found.", "error")
@@ -965,17 +1012,17 @@ def meal_detail(meal_id):
 
 @app.route("/form-check")
 def form_check():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
     # Render full page form check
     return render_template("form_check.html")
 
 @app.route("/nutrition", methods=["GET"])
 def nutrition():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
         
     today_str = datetime.now().strftime("%Y-%m-%d")
     meal_plan = MealPlan.query.filter_by(user_id=user.id, date=today_str).first()
@@ -998,16 +1045,16 @@ def nutrition():
 
 @app.route("/progress")
 def progress():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
     return render_template("progress.html", profile=user.profile)
 
 @app.route("/profile")
 def profile():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
         
     preferred_foods = [p.food_name for p in user.food_preferences if p.is_preferred]
     available_foods = [p.food_name for p in user.food_preferences if p.is_available]
@@ -1023,9 +1070,9 @@ def profile():
 
 @app.route("/settings", methods=["GET", "POST"])
 def settings():
-    user = get_current_user()
-    if not user or not user.profile:
-        return redirect(url_for("login"))
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
     all_foods = get_all_user_foods(user)
     user_prefs = {}
     for p in user.food_preferences:
@@ -1219,6 +1266,91 @@ def api_ai_search():
     profile = user.profile if user else None
     result = process_ai_gym_query(query, user_profile=profile)
     return jsonify(result)
+
+
+@app.route("/api/ai/coach", methods=["POST"])
+def api_ai_coach():
+    user = get_current_user()
+    if not user:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    prompt = data.get("prompt", "").strip()
+    result = process_coach_command(user, prompt, app_context=app)
+    return jsonify(result)
+
+
+@app.route("/api/workout/change-focus", methods=["POST"])
+def api_change_focus():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    new_focus = data.get("focus", "").strip()
+    if not new_focus:
+        return jsonify({"status": "error", "message": "New focus is required"}), 400
+
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    if not plan:
+        return jsonify({"status": "error", "message": "No active workout plan found"}), 404
+
+    today_name = datetime.now().strftime("%A")
+    all_ex = get_exercises_data()
+    success, msg, orig_focus = switch_today_focus(plan, today_name, new_focus, user.profile, user.equipments, all_ex, db.session, WorkoutDay, WorkoutExercise)
+
+    if not success:
+        return jsonify({"status": "error", "message": msg}), 400
+
+    explanation = f"Switched today's focus to {new_focus} and rebalanced remaining week split."
+    return jsonify({"status": "success", "message": msg, "focus": new_focus, "explanation": explanation})
+
+
+@app.route("/api/workout/adjust-duration", methods=["POST"])
+def api_adjust_duration():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    duration_mins = int(data.get("duration_minutes", 30))
+
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    if not plan:
+        return jsonify({"status": "error", "message": "No active plan found"}), 404
+
+    today_name = datetime.now().strftime("%A")
+    today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+    if not today_w or today_w.is_rest_day:
+        return jsonify({"status": "error", "message": "Today is a rest day."}), 400
+
+    scale_workout_duration(today_w, duration_mins, db.session, WorkoutExercise)
+    user.profile.workout_duration_mins = duration_mins
+    db.session.commit()
+
+    return jsonify({"status": "success", "message": f"Adjusted today's workout to {duration_mins} minutes.", "duration_minutes": duration_mins})
+
+
+@app.route("/api/workout/adjust-difficulty", methods=["POST"])
+def api_adjust_difficulty():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    direction = data.get("direction", "easier")
+
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    if not plan:
+        return jsonify({"status": "error", "message": "No active plan found"}), 404
+
+    today_name = datetime.now().strftime("%A")
+    today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+    if not today_w or today_w.is_rest_day:
+        return jsonify({"status": "error", "message": "Today is a rest day."}), 400
+
+    scale_workout_difficulty(today_w, direction, db.session)
+    return jsonify({"status": "success", "message": f"Scaled today's workout intensity ({direction}).", "direction": direction})
 
 
 @app.route("/api/diet/generate", methods=["POST"])

@@ -57,7 +57,7 @@
     <div class="space-y-6">
       <!-- Progress Bar & Actions Bar -->
       <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 shadow-lg space-y-4 select-none">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs border-b border-slate-700 pb-3">
           <div>
             <span class="font-bold text-white text-sm">
               Workout Focus: <span class="text-primary-400 font-black uppercase">{{ workout_day.focus }}</span>
@@ -66,20 +66,41 @@
             <span class="text-slate-400 text-xs ml-2"> (~{{ workout_day.duration_minutes }} min)</span>
             {% endif %}
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <button
-              onclick="startWorkoutRunner()"
-              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow"
+              onclick="openChangeFocusModal()"
+              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
             >
-              <i data-lucide="play" class="h-4 w-4 fill-white"></i>
-              Start Workout Mode
+              <i data-lucide="repeat" class="h-3.5 w-3.5 text-emerald-400"></i>
+              Change Focus
             </button>
             <button
-              onclick="toggleAIQueryDrawer()"
-              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-primary-300 font-bold text-xs px-3.5 py-2 rounded-xl transition-all border border-slate-600"
+              onclick="adjustDurationModal()"
+              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
             >
-              <i data-lucide="sparkles" class="h-4 w-4 text-primary-400"></i>
-              Ask FitSync AI
+              <i data-lucide="clock" class="h-3.5 w-3.5 text-amber-400"></i>
+              30/45/60m
+            </button>
+            <button
+              onclick="adjustDifficultyModal('easier')"
+              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
+            >
+              <i data-lucide="shield-check" class="h-3.5 w-3.5 text-cyan-400"></i>
+              Easier
+            </button>
+            <button
+              onclick="adjustDifficultyModal('harder')"
+              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
+            >
+              <i data-lucide="zap" class="h-3.5 w-3.5 text-rose-400"></i>
+              Harder
+            </button>
+            <button
+              onclick="startWorkoutRunner()"
+              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow"
+            >
+              <i data-lucide="play" class="h-3.5 w-3.5 fill-white"></i>
+              Start Workout
             </button>
           </div>
         </div>

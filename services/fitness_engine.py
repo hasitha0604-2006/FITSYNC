@@ -461,7 +461,123 @@ def find_alternative_exercise(current_ex_category, current_ex_id, equipment_name
 
     scored.sort(key=lambda x: x[1], reverse=True)
 
+    scored.sort(key=lambda x: x[1], reverse=True)
+
     if scored:
         top = scored[:3]
         return random.choice(top)[0]
     return None
+
+
+def switch_today_focus(plan, today_day_name, new_focus, user_profile, equipments, all_exercises, db_session, WorkoutDayModel, WorkoutExerciseModel):
+    """
+    Switches today's workout focus dynamically and rebalances the rest of the week
+    to avoid consecutive high-fatigue training on the same muscle group.
+    """
+    today_day = None
+    for d in plan.days:
+        if d.day_name.lower() == today_day_name.lower():
+            today_day = d
+            break
+
+    if not today_day:
+        return False, "Today's workout day not found in plan.", None
+
+    orig_focus = today_day.focus
+
+    # Select exercises for new focus
+    allowed_eq = _get_allowed_equipment([eq.equipment_name for eq in equipments] if equipments else [], user_profile.workout_environment)
+    matching = [
+        ex for ex in all_exercises
+        if new_focus.lower() in ex["category"].lower() or
+        any(new_focus.lower() in sec.lower() for sec in ex.get("secondary_muscles", []))
+    ]
+    if not matching:
+        matching = [ex for ex in all_exercises if ex.get("equipment", "No Equipment") in allowed_eq]
+
+    matching = matching[:5]
+
+    # Update today's workout
+    today_day.focus = new_focus
+    today_day.is_rest_day = False
+    today_day.status = "upcoming"
+    today_day.exercises.clear()
+    db_session.commit()
+
+    for idx, ex in enumerate(matching):
+        inst_str = ex["instructions"] if isinstance(ex["instructions"], str) else "\n".join(ex.get("instructions", []))
+        reps_min_v, reps_max_v = parse_reps_range(ex.get("default_reps", "10-12"))
+        w_ex = WorkoutExerciseModel(
+            workout_day_id=today_day.id,
+            exercise_id=int(ex["id"]),
+            name=ex["name"],
+            category=ex["category"],
+            sets=int(ex.get("default_sets", 3)),
+            reps=str(ex.get("default_reps", "10-12")),
+            reps_min=int(reps_min_v),
+            reps_max=int(reps_max_v),
+            rest_seconds=int(ex.get("default_rest", 60)),
+            instructions=inst_str,
+            start_pos=ex.get("start_pos"),
+            movement=ex.get("movement"),
+            end_pos=ex.get("end_pos"),
+            common_mistakes="\n".join(ex.get("common_mistakes", [])) if isinstance(ex.get("common_mistakes"), list) else ex.get("common_mistakes", ""),
+            is_completed=False,
+            order_idx=idx
+        )
+        db_session.add(w_ex)
+
+    # Rebalance future days: if another day in the plan had `new_focus`, swap it with `orig_focus`
+    for d in plan.days:
+        if d.id != today_day.id and d.focus.lower() == new_focus.lower():
+            if orig_focus and "rest" not in orig_focus.lower():
+                d.focus = orig_focus
+            else:
+                d.focus = "Rest Day"
+                d.is_rest_day = True
+                d.exercises.clear()
+
+    db_session.commit()
+    return True, f"Successfully switched today's workout to {new_focus}.", orig_focus
+
+
+def scale_workout_duration(workout_day, target_mins, db_session, WorkoutExerciseModel):
+    """Adjusts set counts and exercise list density for 30m, 45m, or 60m targets."""
+    workout_day.duration_minutes = target_mins
+    ex_list = list(workout_day.exercises)
+    
+    if target_mins <= 30:
+        # Scale to 3-4 key exercises, 3 sets each
+        if len(ex_list) > 4:
+            for ex in ex_list[4:]:
+                db_session.delete(ex)
+        for ex in workout_day.exercises:
+            ex.sets = 3
+    elif target_mins >= 60:
+        # Scale to 5-6 exercises, 4 sets each
+        for ex in workout_day.exercises:
+            ex.sets = 4
+
+    db_session.commit()
+    return True
+
+
+def scale_workout_difficulty(workout_day, direction, db_session):
+    """Modifies rep ranges and rest periods to make session easier or harder."""
+    for ex in workout_day.exercises:
+        if direction == "easier":
+            ex.sets = max(2, ex.sets - 1)
+            ex.reps_min = max(6, ex.reps_min - 2)
+            ex.reps_max = max(8, ex.reps_max - 2)
+            ex.reps = f"{ex.reps_min}-{ex.reps_max}"
+            ex.rest_seconds = min(120, ex.rest_seconds + 30)
+        else:
+            ex.sets = min(5, ex.sets + 1)
+            ex.reps_min = ex.reps_min + 2
+            ex.reps_max = ex.reps_max + 2
+            ex.reps = f"{ex.reps_min}-{ex.reps_max}"
+            ex.rest_seconds = max(30, ex.rest_seconds - 15)
+
+    db_session.commit()
+    return True
+

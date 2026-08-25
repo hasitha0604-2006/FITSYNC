@@ -49,7 +49,16 @@
         "Triceps",
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Chest"
+    ],
+    "coaching_cues": [
+      "Keep your shoulder blades retracted and depressed.",
+      "Lower the weight slowly under full control.",
+      "Exhale as you press upward.",
+      "Squeeze your inner chest at the top of the movement."
+    ]
   },
   {
     "id": 2,
@@ -102,7 +111,16 @@
         "Upper Chest",
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Chest"
+    ],
+    "coaching_cues": [
+      "Keep your shoulder blades retracted and depressed.",
+      "Lower the weight slowly under full control.",
+      "Exhale as you press upward.",
+      "Squeeze your inner chest at the top of the movement."
+    ]
   },
   {
     "id": 3,
@@ -155,7 +173,16 @@
         "Shoulders",
         "Core"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Chest"
+    ],
+    "coaching_cues": [
+      "Keep your shoulder blades retracted and depressed.",
+      "Lower the weight slowly under full control.",
+      "Exhale as you press upward.",
+      "Squeeze your inner chest at the top of the movement."
+    ]
   },
   {
     "id": 4,
@@ -204,7 +231,16 @@
       "secondary_muscles": [
         "Front Deltoids"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Chest"
+    ],
+    "coaching_cues": [
+      "Keep your shoulder blades retracted and depressed.",
+      "Lower the weight slowly under full control.",
+      "Exhale as you press upward.",
+      "Squeeze your inner chest at the top of the movement."
+    ]
   },
   {
     "id": 5,
@@ -255,7 +291,16 @@
         "Biceps",
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Back"
+    ],
+    "coaching_cues": [
+      "Lead the movement with your elbows.",
+      "Keep your chest up and core tight.",
+      "Pull through your lats, not your biceps.",
+      "Pause briefly at peak contraction."
+    ]
   },
   {
     "id": 6,
@@ -307,7 +352,16 @@
         "Biceps",
         "Rear Deltoids"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Back"
+    ],
+    "coaching_cues": [
+      "Lead the movement with your elbows.",
+      "Keep your chest up and core tight.",
+      "Pull through your lats, not your biceps.",
+      "Pause briefly at peak contraction."
+    ]
   },
   {
     "id": 7,
@@ -358,7 +412,16 @@
         "Biceps",
         "Erector Spinae"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Back"
+    ],
+    "coaching_cues": [
+      "Lead the movement with your elbows.",
+      "Keep your chest up and core tight.",
+      "Pull through your lats, not your biceps.",
+      "Pause briefly at peak contraction."
+    ]
   },
   {
     "id": 8,
@@ -409,7 +472,16 @@
         "Triceps",
         "Upper Chest"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Shoulders"
+    ],
+    "coaching_cues": [
+      "Avoid shrugging your shoulders during the movement.",
+      "Keep your core braced and glutes engaged.",
+      "Control the lowering phase completely.",
+      "Press overhead in a natural arc."
+    ]
   },
   {
     "id": 9,
@@ -458,7 +530,16 @@
       "secondary_muscles": [
         "Traps"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Shoulders"
+    ],
+    "coaching_cues": [
+      "Avoid shrugging your shoulders during the movement.",
+      "Keep your core braced and glutes engaged.",
+      "Control the lowering phase completely.",
+      "Press overhead in a natural arc."
+    ]
   },
   {
     "id": 10,
@@ -512,7 +593,15 @@
         "Hamstrings",
         "Core"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 11,
@@ -563,7 +652,15 @@
         "Glutes",
         "Quads"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 12,
@@ -612,7 +709,15 @@
       "secondary_muscles": [
         "Quads"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 13,
@@ -661,7 +766,15 @@
       "secondary_muscles": [
         "Hamstrings"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 14,
@@ -710,7 +823,15 @@
       "secondary_muscles": [
         "Calves"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 15,
@@ -759,7 +880,16 @@
       "secondary_muscles": [
         "Forearms"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows pinned to your sides.",
+      "Do not swing your torso for momentum.",
+      "Squeeze your biceps hard at peak contraction.",
+      "Lower the weight with a 3-second negative."
+    ]
   },
   {
     "id": 16,
@@ -810,7 +940,16 @@
         "Brachialis",
         "Forearms"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows pinned to your sides.",
+      "Do not swing your torso for momentum.",
+      "Squeeze your biceps hard at peak contraction.",
+      "Lower the weight with a 3-second negative."
+    ]
   },
   {
     "id": 17,
@@ -859,7 +998,16 @@
       "secondary_muscles": [
         "Forearms"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows fixed in place.",
+      "Focus on extending fully at the elbow joint.",
+      "Keep your core tight to prevent arching.",
+      "Control the return phase."
+    ]
   },
   {
     "id": 18,
@@ -908,7 +1056,16 @@
       "secondary_muscles": [
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows fixed in place.",
+      "Focus on extending fully at the elbow joint.",
+      "Keep your core tight to prevent arching.",
+      "Control the return phase."
+    ]
   },
   {
     "id": 19,
@@ -959,7 +1116,15 @@
         "Shoulders",
         "Glutes"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Core"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 20,
@@ -1009,7 +1174,15 @@
       "secondary_muscles": [
         "Obliques"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Core"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 21,
@@ -1060,7 +1233,15 @@
         "Hip Flexors",
         "Lower Abs"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Core"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 22,
@@ -1109,7 +1290,16 @@
       "secondary_muscles": [
         "Forearms"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows pinned to your sides.",
+      "Do not swing your torso for momentum.",
+      "Squeeze your biceps hard at peak contraction.",
+      "Lower the weight with a 3-second negative."
+    ]
   },
   {
     "id": 23,
@@ -1161,7 +1351,15 @@
         "Glutes",
         "Hamstrings"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 24,
@@ -1213,7 +1411,16 @@
         "Triceps",
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Chest"
+    ],
+    "coaching_cues": [
+      "Keep your shoulder blades retracted and depressed.",
+      "Lower the weight slowly under full control.",
+      "Exhale as you press upward.",
+      "Squeeze your inner chest at the top of the movement."
+    ]
   },
   {
     "id": 25,
@@ -1267,7 +1474,15 @@
         "Hamstrings",
         "Core"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 26,
@@ -1321,7 +1536,15 @@
         "Glutes",
         "Lower Back"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 27,
@@ -1370,7 +1593,16 @@
       "secondary_muscles": [
         "Brachialis"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows pinned to your sides.",
+      "Do not swing your torso for momentum.",
+      "Squeeze your biceps hard at peak contraction.",
+      "Lower the weight with a 3-second negative."
+    ]
   },
   {
     "id": 28,
@@ -1421,7 +1653,15 @@
         "Obliques",
         "Abs"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Core"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 29,
@@ -1472,7 +1712,16 @@
         "Triceps",
         "Traps"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Shoulders"
+    ],
+    "coaching_cues": [
+      "Avoid shrugging your shoulders during the movement.",
+      "Keep your core braced and glutes engaged.",
+      "Control the lowering phase completely.",
+      "Press overhead in a natural arc."
+    ]
   },
   {
     "id": 30,
@@ -1523,7 +1772,16 @@
         "Lower Chest",
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows fixed in place.",
+      "Focus on extending fully at the elbow joint.",
+      "Keep your core tight to prevent arching.",
+      "Control the return phase."
+    ]
   },
   {
     "id": 31,
@@ -1574,7 +1832,16 @@
         "Biceps",
         "Core"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Back"
+    ],
+    "coaching_cues": [
+      "Lead the movement with your elbows.",
+      "Keep your chest up and core tight.",
+      "Pull through your lats, not your biceps.",
+      "Pause briefly at peak contraction."
+    ]
   },
   {
     "id": 32,
@@ -1627,7 +1894,15 @@
         "Core",
         "Glutes"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Legs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 33,
@@ -1682,7 +1957,16 @@
       "secondary_muscles": [
         "Forearms"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows pinned to your sides.",
+      "Do not swing your torso for momentum.",
+      "Squeeze your biceps hard at peak contraction.",
+      "Lower the weight with a 3-second negative."
+    ]
   },
   {
     "id": 34,
@@ -1737,7 +2021,16 @@
       "secondary_muscles": [
         "Forearms"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows pinned to your sides.",
+      "Do not swing your torso for momentum.",
+      "Squeeze your biceps hard at peak contraction.",
+      "Lower the weight with a 3-second negative."
+    ]
   },
   {
     "id": 35,
@@ -1791,7 +2084,16 @@
       "secondary_muscles": [
         "Forearms"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows pinned to your sides.",
+      "Do not swing your torso for momentum.",
+      "Squeeze your biceps hard at peak contraction.",
+      "Lower the weight with a 3-second negative."
+    ]
   },
   {
     "id": 36,
@@ -1844,7 +2146,16 @@
       "secondary_muscles": [
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows fixed in place.",
+      "Focus on extending fully at the elbow joint.",
+      "Keep your core tight to prevent arching.",
+      "Control the return phase."
+    ]
   },
   {
     "id": 37,
@@ -1899,7 +2210,16 @@
         "Chest",
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "coaching_cues": [
+      "Keep your elbows fixed in place.",
+      "Focus on extending fully at the elbow joint.",
+      "Keep your core tight to prevent arching.",
+      "Control the return phase."
+    ]
   },
   {
     "id": 38,
@@ -1956,7 +2276,16 @@
         "Biceps",
         "Rear Delts"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Back"
+    ],
+    "coaching_cues": [
+      "Lead the movement with your elbows.",
+      "Keep your chest up and core tight.",
+      "Pull through your lats, not your biceps.",
+      "Pause briefly at peak contraction."
+    ]
   },
   {
     "id": 39,
@@ -2009,7 +2338,16 @@
       "secondary_muscles": [
         "Triceps"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Shoulders"
+    ],
+    "coaching_cues": [
+      "Avoid shrugging your shoulders during the movement.",
+      "Keep your core braced and glutes engaged.",
+      "Control the lowering phase completely.",
+      "Press overhead in a natural arc."
+    ]
   },
   {
     "id": 40,
@@ -2062,7 +2400,16 @@
       "secondary_muscles": [
         "Upper Back"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Rear Delts"
+    ],
+    "coaching_cues": [
+      "Avoid shrugging your shoulders during the movement.",
+      "Keep your core braced and glutes engaged.",
+      "Control the lowering phase completely.",
+      "Press overhead in a natural arc."
+    ]
   },
   {
     "id": 41,
@@ -2116,7 +2463,15 @@
       "secondary_muscles": [
         "Hamstrings"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Glutes"
+    ],
+    "coaching_cues": [
+      "Drive through your heels and squeeze your glutes at the top.",
+      "Avoid hyper-extending your lower back at peak extension.",
+      "Keep your knees tracking over your toes."
+    ]
   },
   {
     "id": 42,
@@ -2172,7 +2527,15 @@
         "Glutes",
         "Hamstrings"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Quadriceps"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 43,
@@ -2225,7 +2588,15 @@
       "secondary_muscles": [
         "Grip"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Forearms"
+    ],
+    "coaching_cues": [
+      "Use a full range of motion at your wrist.",
+      "Keep your forearm resting securely.",
+      "Perform smooth, controlled repetitions."
+    ]
   },
   {
     "id": 44,
@@ -2280,7 +2651,15 @@
         "Core",
         "Traps"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Forearms"
+    ],
+    "coaching_cues": [
+      "Use a full range of motion at your wrist.",
+      "Keep your forearm resting securely.",
+      "Perform smooth, controlled repetitions."
+    ]
   },
   {
     "id": 45,
@@ -2335,7 +2714,15 @@
         "Lats",
         "Shoulders"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Abs"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 46,
@@ -2390,7 +2777,15 @@
         "Glutes",
         "Hamstrings"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Quadriceps"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   },
   {
     "id": 47,
@@ -2444,6 +2839,14 @@
         "Abs",
         "Glutes"
       ]
-    }
+    },
+    "primary_muscles": [
+      "Obliques"
+    ],
+    "coaching_cues": [
+      "Maintain controlled form throughout.",
+      "Focus on the target muscle.",
+      "Breathe regularly."
+    ]
   }
 ]

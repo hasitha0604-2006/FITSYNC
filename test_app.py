@@ -42,6 +42,67 @@ class FitSyncTestCase(unittest.TestCase):
         }, follow_redirects=True)
         self.assertEqual(resp.status_code, 200)
 
+    def test_onboarding_persistence_and_login_redirection(self):
+        # 1. Register a new user
+        self.app.post('/register', data={
+            'email': 'persistent_user@fitsync.ai',
+            'password': 'password123'
+        }, follow_redirects=True)
+
+        user = User.query.filter_by(email='persistent_user@fitsync.ai').first()
+        self.assertIsNotNone(user)
+
+        # 2. Complete Onboarding via POST
+        payload = {
+            "name": "Alex Smith",
+            "age": 22,
+            "gender": "Male",
+            "height": 178.0,
+            "weight": 74.0,
+            "fitness_goal": "Muscle Gain",
+            "fitness_level": "Intermediate",
+            "workout_days_per_week": 4,
+            "workout_duration_mins": 45,
+            "workout_environment": "Gym",
+            "dietary_preference": "Non-Vegetarian",
+            "budget_preference": "₹200",
+            "daily_food_budget": 200,
+            "equipments": ["Dumbbells", "Barbell"],
+            "food_preferences": []
+        }
+
+        res = self.app.post('/onboarding', json=payload)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.get_json()["status"], "success")
+
+        # 3. Verify profile details were saved to database
+        db_profile = UserProfile.query.filter_by(user_id=user.id).first()
+        self.assertIsNotNone(db_profile)
+        self.assertEqual(db_profile.name, "Alex Smith")
+        self.assertEqual(db_profile.age, 22)
+        self.assertEqual(db_profile.height, 178.0)
+        self.assertEqual(db_profile.weight, 74.0)
+        self.assertTrue(db_profile.onboarding_completed)
+
+        # 4. Logout
+        self.app.get('/logout', follow_redirects=True)
+
+        # 5. Login again -> should go directly to dashboard (location ending with /dashboard)
+        resp_login = self.app.post('/login', data={
+            'email': 'persistent_user@fitsync.ai',
+            'password': 'password123'
+        }, follow_redirects=False)
+        self.assertEqual(resp_login.status_code, 302)
+        self.assertTrue(resp_login.location.endswith('/dashboard'))
+
+        # 6. Trying to access GET /onboarding when already onboarded -> redirects to /dashboard
+        with self.app.session_transaction() as sess:
+            sess['user_id'] = user.id
+
+        resp_onboarding = self.app.get('/onboarding', follow_redirects=False)
+        self.assertEqual(resp_onboarding.status_code, 302)
+        self.assertTrue(resp_onboarding.location.endswith('/dashboard'))
+
     def test_onboarding_equations(self):
         profile = UserProfile(
             name="Test Student",
@@ -602,6 +663,58 @@ class FitSyncTestCase(unittest.TestCase):
             self.assertEqual(resp_regen.status_code, 200)
             data_regen = resp_regen.get_json()
             self.assertEqual(data_regen["status"], "success")
+
+    def test_ai_coach_conversational_features(self):
+        with self.app as c:
+            # Register and onboard test user
+            c.post('/register', data={'email': 'coach_user@fitsync.ai', 'password': 'Password123'}, follow_redirects=True)
+            c.post('/onboarding', json={
+                "name": "Coach Tester",
+                "age": 22,
+                "gender": "Male",
+                "height": 175,
+                "weight": 70,
+                "fitness_goal": "Muscle Gain",
+                "fitness_level": "Intermediate",
+                "workout_days_per_week": 4,
+                "workout_duration_mins": 45,
+                "workout_environment": "Gym",
+                "dietary_preference": "Eggetarian",
+                "daily_food_budget": 150,
+                "equipments": ["Dumbbells", "Full Gym"],
+                "food_preferences": []
+            })
+
+            # 1. AI Coach Chat Command ("I want to train chest today")
+            resp_coach1 = c.post('/api/ai/coach', json={'prompt': 'I want to train chest today'})
+            self.assertEqual(resp_coach1.status_code, 200)
+            data1 = resp_coach1.get_json()
+            self.assertEqual(data1["status"], "success")
+            self.assertIn("chest", data1["coach_reply"].lower())
+
+            # 2. AI Coach Equipment Command ("I only have dumbbells today")
+            resp_coach2 = c.post('/api/ai/coach', json={'prompt': 'I only have dumbbells today'})
+            self.assertEqual(resp_coach2.status_code, 200)
+            data2 = resp_coach2.get_json()
+            self.assertEqual(data2["status"], "success")
+
+            # 3. API Change Focus directly
+            resp_focus = c.post('/api/workout/change-focus', json={'focus': 'Legs'})
+            self.assertEqual(resp_focus.status_code, 200)
+            data_f = resp_focus.get_json()
+            self.assertEqual(data_f["status"], "success")
+
+            # 4. API Adjust Duration (30 mins)
+            resp_dur = c.post('/api/workout/adjust-duration', json={'duration_minutes': 30})
+            self.assertEqual(resp_dur.status_code, 200)
+            data_d = resp_dur.get_json()
+            self.assertEqual(data_d["status"], "success")
+
+            # 5. API Adjust Difficulty (easier)
+            resp_diff = c.post('/api/workout/adjust-difficulty', json={'direction': 'easier'})
+            self.assertEqual(resp_diff.status_code, 200)
+            data_diff = resp_diff.get_json()
+            self.assertEqual(data_diff["status"], "success")
 
 if __name__ == '__main__':
     unittest.main()
