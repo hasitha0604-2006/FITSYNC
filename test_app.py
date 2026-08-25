@@ -324,5 +324,121 @@ class FitSyncTestCase(unittest.TestCase):
             meals_love = generate_daily_meals(profile, prefs_love, targets, mock_foods_pref, "2026-08-25")
             self.assertEqual(meals_love[0]["food_id"], 1)
 
+    def test_custom_food_features(self):
+        user = User(email="customfood@fitsync.ai", password_hash="hash")
+        db.session.add(user)
+        db.session.commit()
+
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = user.id
+
+            # 1. Create valid custom food
+            resp = c.post('/api/custom-foods', json={
+                "name": "Homemade Paneer Wrap",
+                "category": "Homemade",
+                "serving_size_g": 180,
+                "calories": 320,
+                "protein": 18.0,
+                "carbs": 25.0,
+                "fat": 14.0,
+                "cost": 40
+            })
+            self.assertEqual(resp.status_code, 200)
+            data = resp.get_json()
+            self.assertEqual(data["status"], "success")
+
+            # 2. Verify persistence in DB
+            c_foods = c.get('/api/custom-foods').get_json()["custom_foods"]
+            self.assertEqual(len(c_foods), 1)
+            self.assertEqual(c_foods[0]["name"], "Homemade Paneer Wrap")
+
+            # 3. Test validation - Empty Name
+            resp_err = c.post('/api/custom-foods', json={
+                "name": "  ",
+                "serving_size_g": 100,
+                "calories": 200
+            })
+            self.assertEqual(resp_err.status_code, 400)
+
+            # 4. Test validation - Negative Calories
+            resp_neg = c.post('/api/custom-foods', json={
+                "name": "Negative Food",
+                "serving_size_g": 100,
+                "calories": -50
+            })
+            self.assertEqual(resp_neg.status_code, 400)
+
+            # 5. Delete custom food
+            cf_id = c_foods[0]["id"]
+            del_resp = c.delete(f'/api/custom-foods/{cf_id}')
+            self.assertEqual(del_resp.status_code, 200)
+            self.assertEqual(len(c.get('/api/custom-foods').get_json()["custom_foods"]), 0)
+
+    def test_exercise_search_api(self):
+        with self.app as c:
+            # 1. Search exact
+            resp = c.get('/api/exercises/search?q=squat')
+            self.assertEqual(resp.status_code, 200)
+            data = resp.get_json()
+            self.assertGreater(data["count"], 0)
+            self.assertTrue(any("squat" in ex["name"].lower() for ex in data["results"]))
+
+            # 2. Search by muscle category
+            resp_cat = c.get('/api/exercises/search?category=chest')
+            self.assertEqual(resp_cat.status_code, 200)
+            data_cat = resp_cat.get_json()
+            self.assertGreater(data_cat["count"], 0)
+            self.assertTrue(all(ex["category"].lower() == "chest" for ex in data_cat["results"]))
+
+            # 3. Search unsupported query
+            resp_none = c.get('/api/exercises/search?q=unsupported_exercise_xyz')
+            self.assertEqual(resp_none.status_code, 200)
+            self.assertEqual(resp_none.get_json()["count"], 0)
+
+    def test_ai_diet_generation_and_fallback(self):
+        user = User(email="aidiet@fitsync.ai", password_hash="hash")
+        db.session.add(user)
+        db.session.commit()
+
+        profile = UserProfile(
+            user_id=user.id,
+            name="AI Diet User",
+            age=22,
+            gender="Male",
+            height=178.0,
+            weight=74.0,
+            fitness_goal="Muscle Gain",
+            fitness_level="Intermediate",
+            workout_days_per_week=4,
+            workout_duration_mins=45,
+            dietary_preference="Eggetarian",
+            daily_food_budget=150,
+            onboarding_completed=True
+        )
+        db.session.add(profile)
+        db.session.commit()
+
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = user.id
+
+            resp = c.post('/api/diet/generate')
+            self.assertEqual(resp.status_code, 200)
+            data = resp.get_json()
+            self.assertEqual(data["status"], "success")
+            self.assertTrue("meals" in data)
+            self.assertEqual(len(data["meals"]), 5)
+            self.assertTrue("explanation" in data)
+
+    def test_workout_graphics_assets(self):
+        with self.app as c:
+            resp = c.get('/api/exercises/search')
+            all_ex = resp.get_json()["results"]
+            self.assertGreaterEqual(len(all_ex), 30)
+            for ex in all_ex:
+                self.assertIn("media_path", ex)
+                self.assertIn("supported_demo", ex)
+
 if __name__ == '__main__':
     unittest.main()

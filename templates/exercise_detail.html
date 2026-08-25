@@ -1,51 +1,82 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-50 w-full font-sans select-none">
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-900 text-slate-100 w-full font-sans select-none">
   
-  <!-- Header controls -->
+  <!-- Breadcrumb -->
   <div class="flex items-center gap-2 text-xs text-slate-400">
-    <a href="{{ url_for('exercises') }}" class="hover:text-slate-800">Library</a>
+    <a href="{{ url_for('exercises') }}" class="hover:text-white transition-colors">Library</a>
     <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
-    <span class="text-slate-650 font-semibold">{{ ex.name }}</span>
+    <span class="text-primary-400 font-semibold">{{ ex.name }}</span>
   </div>
 
-  <div class="max-w-2xl bg-white border rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
+  <div class="max-w-3xl bg-slate-800 border border-slate-700/80 rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
     <!-- Header -->
-    <div class="flex items-start justify-between border-b pb-4">
+    <div class="flex flex-col md:flex-row md:items-start justify-between border-b border-slate-700 pb-6 gap-4">
       <div>
-        <h1 class="text-2xl font-black text-slate-900 leading-tight">{{ ex.name }}</h1>
-        <p class="text-xs text-primary-600 font-bold uppercase tracking-wider mt-1">{{ ex.category }} Category</p>
+        <span class="text-[10px] font-black uppercase tracking-wider text-primary-400 bg-primary-500/10 border border-primary-500/20 px-3 py-1 rounded-full">
+          {{ ex.category }}
+        </span>
+        <h1 class="text-3xl font-black text-white leading-tight mt-2">{{ ex.name }}</h1>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          {% for sec in ex.secondary_muscles %}
+            <span class="text-[10px] font-medium bg-slate-900 text-slate-400 border border-slate-700 px-2 py-0.5 rounded">
+              {{ sec }}
+            </span>
+          {% endfor %}
+        </div>
       </div>
-      <div class="text-right text-xs text-slate-500 space-y-1">
-        <p><span class="font-semibold text-slate-400">Equipment:</span> {{ ex.equipment }}</p>
-        <p><span class="font-semibold text-slate-400">Difficulty:</span> {{ ex.difficulty }}</p>
+      
+      <div class="bg-slate-900/80 border border-slate-700/60 rounded-2xl p-4 text-xs space-y-2 shrink-0 md:w-56">
+        <div class="flex justify-between"><span class="text-slate-400 font-medium">Equipment:</span> <span class="font-bold text-white">{{ ex.equipment }}</span></div>
+        <div class="flex justify-between"><span class="text-slate-400 font-medium">Difficulty:</span> <span class="font-bold text-emerald-400">{{ ex.difficulty }}</span></div>
+        <div class="flex justify-between"><span class="text-slate-400 font-medium">Prescribed:</span> <span class="font-bold text-primary-400">{{ ex.default_sets }} × {{ ex.default_reps }}</span></div>
+        <div class="flex justify-between"><span class="text-slate-400 font-medium">Rest Period:</span> <span class="font-bold text-slate-300">{{ ex.default_rest }}s</span></div>
       </div>
     </div>
 
+    <!-- Demonstration Media Showcase -->
+    <div class="bg-slate-950 border border-slate-700/80 rounded-2xl overflow-hidden aspect-[16/9] flex items-center justify-center relative shadow-inner">
+      {% if ex.media_path %}
+        <img 
+          src="{{ ex.media_path }}" 
+          alt="{{ ex.name }} Graphical Demonstration" 
+          class="w-full h-full object-contain"
+          onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-center p-6 text-slate-400 text-xs\'><i data-lucide=\'video-off\' class=\'h-10 w-10 mx-auto mb-2 text-slate-500\'></i>Demonstration coming soon</div>';"
+        />
+      {% else %}
+        <div class="text-center p-6 text-slate-400 text-xs space-y-1">
+          <i data-lucide="video-off" class="h-10 w-10 mx-auto text-slate-500"></i>
+          <p class="font-bold text-white">Demonstration coming soon</p>
+        </div>
+      {% endif %}
+    </div>
+
     <!-- Biomechanics checkpoints -->
-    <div class="p-4 bg-slate-950 border rounded-xl text-white space-y-3">
-      <h5 class="font-bold uppercase tracking-wider text-[10px] text-primary-400">Movement Biomechanics</h5>
-      <div class="grid grid-cols-3 gap-2.5 text-center text-[9px] leading-snug">
-        <div class="bg-slate-900 p-2 rounded border border-slate-850">
-          <p class="text-slate-500 font-bold uppercase tracking-wide">Start Position</p>
-          <p class="text-slate-205 mt-1">{{ ex.start_pos or 'Establish solid base support.' }}</p>
+    <div class="p-5 bg-slate-950 border border-slate-700/80 rounded-2xl space-y-3">
+      <h5 class="font-extrabold uppercase tracking-wider text-[10px] text-primary-400">Movement Biomechanics & Positioning</h5>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs leading-snug">
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+          <p class="text-slate-400 font-bold uppercase text-[10px] tracking-wider mb-1">Start Position</p>
+          <p class="text-slate-200">{{ ex.start_pos or 'Establish solid base support.' }}</p>
         </div>
-        <div class="bg-slate-900 p-2 rounded border border-slate-850">
-          <p class="text-slate-500 font-bold uppercase tracking-wide">Movement Path</p>
-          <p class="text-slate-205 mt-1">{{ ex.movement or 'Engage targeted muscles.' }}</p>
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+          <p class="text-slate-400 font-bold uppercase text-[10px] tracking-wider mb-1">Movement Path</p>
+          <p class="text-slate-200">{{ ex.movement or 'Engage targeted muscles.' }}</p>
         </div>
-        <div class="bg-slate-900 p-2 rounded border border-slate-850">
-          <p class="text-slate-500 font-bold uppercase tracking-wide">End Position</p>
-          <p class="text-slate-205 mt-1">{{ ex.end_pos or 'Hold and release under control.' }}</p>
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+          <p class="text-slate-400 font-bold uppercase text-[10px] tracking-wider mb-1">End Position</p>
+          <p class="text-slate-200">{{ ex.end_pos or 'Hold and release under control.' }}</p>
         </div>
       </div>
     </div>
 
     <!-- Instruction list -->
-    <div class="space-y-2">
-      <h4 class="font-bold text-sm text-slate-900">How to Perform:</h4>
-      <ol class="list-decimal list-inside space-y-1.5 pl-1 text-xs text-slate-650 leading-relaxed">
+    <div class="space-y-3 bg-slate-900/60 p-5 rounded-2xl border border-slate-700/60">
+      <h4 class="font-bold text-sm text-white flex items-center gap-2">
+        <i data-lucide="list-checks" class="h-4 w-4 text-emerald-400"></i> Step-by-Step Instructions:
+      </h4>
+      <ol class="list-decimal list-inside space-y-2 text-xs text-slate-300 leading-relaxed">
         {% for step in ex.instructions %}
           {% if step.strip() %}
             <li>{{ step }}</li>
@@ -56,8 +87,8 @@
 
     <!-- Mistakes callout -->
     {% if ex.common_mistakes and ex.common_mistakes|length > 0 %}
-    <div class="p-4 bg-amber-50 rounded-xl border border-amber-100 text-amber-955 text-xs">
-      <h4 class="font-bold text-xs uppercase tracking-wide text-amber-800 mb-2 flex items-center gap-1.5">
+    <div class="p-5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-200 text-xs space-y-2">
+      <h4 class="font-bold text-xs uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
         ⚠️ Common Execution Mistakes
       </h4>
       <ul class="list-disc list-inside space-y-1">
@@ -69,6 +100,12 @@
       </ul>
     </div>
     {% endif %}
+
+    <!-- Safety Information -->
+    <div class="p-4 bg-slate-950 rounded-2xl border border-slate-800 text-xs text-slate-400 space-y-1">
+      <p class="font-bold text-slate-300">🛡️ Safety Information:</p>
+      <p>Maintain controlled breathing. Exhale during exertion and inhale while lowering the weight. Stop immediately if experiencing joint sharp pain.</p>
+    </div>
   </div>
 
 </div>

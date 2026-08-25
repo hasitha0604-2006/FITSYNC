@@ -2,34 +2,54 @@
 
 ## Project Status Overview
 
-* **PROJECT**: FitSync AI
+* **PROJECT**: FitSync AI (SIH Prototype)
 * **ARCHITECTURE**: Unified Python Flask Application (Flask, Flask-SQLAlchemy, Jinja2, Chart.js, SQLite)
 * **STATUS**: **Fully Working & Complete** (Demo-Ready)
-* **DATE**: August 23, 2026
+* **DATE**: August 25, 2026
 
 ---
 
 ## Completed Features
 
-### 🔐 1. Authentication & Onboarding (Modules A, J)
+### 🔐 1. Authentication & Onboarding
 * Secure session-based registration, login, and logout.
 * Integrated **SIH Demo Credentials** box to log in with a single click.
 * 9-step onboarding wizard collecting name, age, physical stats (height/weight), fitness goal, experience level, workout frequency/duration, equipment list, dietary type, food preferences, and daily budget.
 
-### 🤖 2. Adaptive Engines (Modules B, C, H)
+### 🤖 2. Adaptive Engines
 * **Fitness split generator**: Adapts PPL plans (3-6 days, 20-90 min) according to equipment availability.
 * **Nutrition planner**: Harris-Benedict BMR/TDEE calculations, serving-size portion scaling, and 5 daily meal breakdowns.
 * **Diet ingredient substitutions**: Instant canteen protein food swaps (e.g. Eggs unavailable -> Roasted Chana) mapped to targets.
 * **Workout substitutions**: Instantly swap exercises on the fly (e.g. Bench Press -> Push-ups) when a gym station is busy.
 * **Rescheduling split recovery**: Shift missed workouts to later rest days via the adaptation engine.
 
-### 📊 3. Dashboards & Analytics (Modules D, I, G)
-* Macro progress indicators (Calories, Protein, Carbs, Fat) mapped in real-time.
+### 🖼️ 3. Workout Graphics & Demonstrations
+* **Visual Asset System**: 32 supported exercises featuring vector animated demonstrations located in `static/exercises/<slug>/demo.svg`.
+* **Interactive Player Modal**: Exercise details and Today's Workout feature `[▶ Demonstration]` modals with visual animations, start/movement/end biomechanics, and safety notes.
+* **Fallback Safety**: Graceful fallback displaying `"Demonstration coming soon"` card if no media asset is present.
+
+### 🔍 4. Controlled Exercise Search & Catalog (30+ Exercises)
+* **Search & Filter Bar**: Instant search supporting exact name, partial name, muscle group, equipment, and difficulty filters.
+* **Catalog Counter**: Badge displaying `Supported Exercises: 30+`.
+* **Controlled Empty State**: Friendly fallback message (`"We don't currently have a guided demonstration for this exercise"`) with quick-search recommendations (`Squat`, `Push-up`, `Bench Press`, `Bicep Curl`) and a button to browse supported exercises.
+
+### 🥗 5. Custom Food Items (`CustomFood` Model)
+* **Full CRUD Management**: Dedicated API (`/api/custom-foods`) and UI modal (`+ Add Custom Food`) for users to create, edit, delete, and persist custom foods.
+* **Input Validation**: Strict validation preventing blank names, negative nutrition metrics (serving size, calories, protein, carbs, fat, fiber, cost), and NaN inputs.
+* **Seamless Integration**: Custom foods participate in daily meal planning, food preferences (Preferred, Available, Avoided), budget calculations, macro targets, and food swaps.
+
+### ✨ 6. AI-Assisted Diet Plan Generation (`services/ai_diet_engine.py`)
+* **AI Recommendation Layer**: Uses structured food database + custom foods to generate a 5-meal daily plan (`/api/diet/generate`).
+* **Constraint Validation**: Post-proposal check verifying diet type (Vegetarian/Vegan/Eggetarian), avoided items, available items, macro targets, and daily budget.
+* **"WHY THIS PLAN?" Explanation**: Displays a 2-sentence rationale highlighting protein alignment and budget efficiency.
+* **Automatic Fallback**: Gracefully falls back to local nutrition engine with a banner notice if AI API key (`AI_API_KEY` / `GEMINI_API_KEY`) is unconfigured or unreachable.
+
+### 📊 7. Dashboards & Analytics
+* Real-time macro progress indicators (Calories, Protein, Carbs, Fat) vs targets.
 * Completed training checklists.
 * Snappy interactive progress trend line and bar graphs powered by Chart.js.
-* Searchable and filterable reference library of 24 exercises (Module E).
 
-### 📹 4. Optional AI Form Checker (Module F)
+### 📹 8. Optional AI Form Checker
 * Standalone and card-embedded camera overlay checkers.
 * Pure Python joint angle algorithms checking coordinates for Squats, Push-ups, and Bicep Curls.
 * Seamless **Virtual AI Simulator** fallback loop when camera permissions are denied or OpenCV/MediaPipe libraries are absent.
@@ -46,7 +66,7 @@ Use this account to run the demonstration immediately:
 
 ## Installation & Running Instructions
 
-Open VS Code terminal in the root folder and run:
+Open terminal in the root folder and run:
 ```bash
 # 1. Setup environment
 python -m venv venv
@@ -62,30 +82,17 @@ Or simply double-click the **`run.bat`** script.
 
 ## Testing Performed
 
-All 7 custom Flask client tests pass successfully:
+All 11 integration and unit tests pass successfully:
 ```bash
-python test_app.py
+py test_app.py -v
 ```
-* **Auth**: Validated secure hashing registration and session logins.
-* **Onboarding**: Confirmed Harris-Benedict formulas output correct calories.
-* **Fitness**: Verified PPL splits adapt to dumbbell constraints.
-* **Swaps**: Verified Bench Press shifts to Push-ups and Eggs swap to Paneer.
-* **Budget**: Confirmed that plans for tight saver budgets (₹80) select cheaper, high-protein food options compared to premium budgets.
-* **Adaptation**: Confirmed missing Monday workout shifts exercises to Wednesday's rest slot.
-
----
-
-## Food Preferences & Budget Fix
-
-### 🛠️ Key Improvements Summary
-* **Food Preference Customization**: **WORKING** (Tri-state independent checkboxes/buttons for ❤️ Prefer, 📦 Available, and 🚫 Avoid states are fully active).
-* **Food Availability (Canteen Tracker)**: **WORKING** (Allows marking foods as available to prioritize them over unavailable ones).
-* **Avoided Foods Exclusion**: **WORKING** (Strictly filters out and excludes avoided foods from recommendations and substitutions).
-* **Daily Budget Selection**: **WORKING** (Enables selecting standard thresholds of ₹80, ₹100, ₹120, ₹150, ₹200, or ₹300 per day).
-* **Custom Budget Validation**: **WORKING** (Input for custom amounts like ₹135/day with numeric boundaries, negative, empty, and NaN checks).
-* **Budget Persistence**: **WORKING** (Saved values write directly to SQLite db, retaining state on refresh, logout/login, and app restart).
-* **Budget-Aware Meal Generation**: **WORKING** (Nutrition engine evaluates food scaled costs and penalizes targets exceeding target slot budgets, choosing cheaper ingredients for saver tiers).
-* **Budget-Aware Substitutions**: **WORKING** (Substitution solver respects remaining daily allowances, recommending low-cost swaps if remaining budget is tight).
-* **Database Auto-Migration**: **WORKING** (Detects table status on launch, dynamically running `ALTER TABLE` to inject new columns safely without deleting user records).
-* **Warnings and Alerts**: **WORKING** (Displays a warning banner if nutritional targets are unachievable on a low budget, and highlights limited choice alerts if less than 5 foods are marked as available).
-* **Tests Added/Updated**: **WORKING** (Integration test suite `test_app.py` has been updated and all tests pass with code 0).
+* **`test_auth_flow`**: Validated secure hashing registration and session logins.
+* **`test_onboarding_equations`**: Confirmed Harris-Benedict formulas output correct calories.
+* **`test_fitness_generation`**: Verified PPL splits adapt to dumbbell constraints.
+* **`test_exercise_substitutions`**: Verified Bench Press shifts to Push-ups and Eggs swap to Paneer.
+* **`test_budget_constraints_and_preferences`**: Confirmed saver budgets prioritize affordable high-protein items.
+* **`test_missed_workout_rescheduling`**: Confirmed missing workout shifts to rest days.
+* **`test_custom_food_features`**: Verified custom food CRUD, validation, persistence, and preference mapping.
+* **`test_exercise_search_api`**: Verified controlled search, muscle category filtering, and unsupported query fallback.
+* **`test_ai_diet_generation_and_fallback`**: Verified AI diet endpoint, constraint compliance, and fallback banner.
+* **`test_workout_graphics_assets`**: Verified 30+ exercises have media paths and supported_demo flags.

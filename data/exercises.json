@@ -2,8 +2,12 @@
   {
     "id": 1,
     "name": "Bench Press",
+    "slug": "bench_press",
     "category": "Chest",
-    "secondary_muscles": ["Triceps", "Shoulders"],
+    "secondary_muscles": [
+      "Triceps",
+      "Shoulders"
+    ],
     "equipment": "Full Gym",
     "difficulty": "Intermediate",
     "instructions": [
@@ -20,13 +24,25 @@
     "start_pos": "Lie on bench, arms fully extended holding barbell over chest.",
     "movement": "Lower the barbell vertically to touch the sternum.",
     "end_pos": "Push the barbell back to the starting point.",
-    "common_mistakes": ["Bouncing the bar off chest", "Flaring elbows at 90 degrees", "Lifting feet off the floor"]
+    "common_mistakes": [
+      "Bouncing the bar off chest",
+      "Flaring elbows at 90 degrees",
+      "Lifting feet off the floor"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/bench_press/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 2,
     "name": "Incline Dumbbell Press",
+    "slug": "incline_dumbbell_press",
     "category": "Chest",
-    "secondary_muscles": ["Triceps", "Upper Chest", "Shoulders"],
+    "secondary_muscles": [
+      "Triceps",
+      "Upper Chest",
+      "Shoulders"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Intermediate",
     "instructions": [
@@ -42,13 +58,25 @@
     "start_pos": "Seated on incline bench, dumbbells held at shoulder level.",
     "movement": "Press dumbbells upwards vertically.",
     "end_pos": "Dumbbells are at peak position, arms extended, then lower them.",
-    "common_mistakes": ["Clashing dumbbells at top", "Bench angle too steep", "Incomplete range of motion"]
+    "common_mistakes": [
+      "Clashing dumbbells at top",
+      "Bench angle too steep",
+      "Incomplete range of motion"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/incline_dumbbell_press/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 3,
     "name": "Push-ups",
+    "slug": "push_ups",
     "category": "Chest",
-    "secondary_muscles": ["Triceps", "Shoulders", "Core"],
+    "secondary_muscles": [
+      "Triceps",
+      "Shoulders",
+      "Core"
+    ],
     "equipment": "No Equipment",
     "difficulty": "Beginner",
     "instructions": [
@@ -64,13 +92,23 @@
     "start_pos": "Plank position, hands under shoulders, toes on the floor.",
     "movement": "Bend elbows to lower chest toward the floor.",
     "end_pos": "Push back up until arms are straight.",
-    "common_mistakes": ["Sagging hips", "Flaring elbows", "Not going deep enough"]
+    "common_mistakes": [
+      "Sagging hips",
+      "Flaring elbows",
+      "Not going deep enough"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/push_ups/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 4,
     "name": "Chest Fly",
+    "slug": "chest_fly",
     "category": "Chest",
-    "secondary_muscles": ["Front Deltoids"],
+    "secondary_muscles": [
+      "Front Deltoids"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Intermediate",
     "instructions": [
@@ -86,13 +124,24 @@
     "start_pos": "Flat on bench, dumbbells held above chest, palms facing.",
     "movement": "Open arms wide in arc until chest stretches.",
     "end_pos": "Bring dumbbells back together over chest.",
-    "common_mistakes": ["Bending elbows too much (making it a press)", "Overstretching shoulders", "Moving too fast"]
+    "common_mistakes": [
+      "Bending elbows too much (making it a press)",
+      "Overstretching shoulders",
+      "Moving too fast"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/chest_fly/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 5,
     "name": "Lat Pulldown",
+    "slug": "lat_pulldown",
     "category": "Back",
-    "secondary_muscles": ["Biceps", "Shoulders"],
+    "secondary_muscles": [
+      "Biceps",
+      "Shoulders"
+    ],
     "equipment": "Full Gym",
     "difficulty": "Beginner",
     "instructions": [
@@ -108,13 +157,24 @@
     "start_pos": "Seated at lat pulldown machine, arms extended, gripping bar.",
     "movement": "Pull bar down toward collarbone, squeezing shoulder blades.",
     "end_pos": "Return bar slowly to top.",
-    "common_mistakes": ["Pulling behind neck", "Using body momentum to swing", "Shrugging shoulders up"]
+    "common_mistakes": [
+      "Pulling behind neck",
+      "Using body momentum to swing",
+      "Shrugging shoulders up"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/lat_pulldown/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 6,
     "name": "One Arm Dumbbell Row",
+    "slug": "one_arm_dumbbell_row",
     "category": "Back",
-    "secondary_muscles": ["Biceps", "Rear Deltoids"],
+    "secondary_muscles": [
+      "Biceps",
+      "Rear Deltoids"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Beginner",
     "instructions": [
@@ -131,13 +191,24 @@
     "start_pos": "One knee/hand on bench, other arm holding dumbbell down.",
     "movement": "Pull dumbbell up to ribcage/hip.",
     "end_pos": "Lower dumbbell back to full arm extension.",
-    "common_mistakes": ["Rounding the lower back", "Pulling with biceps instead of lat", "Jerking weight up"]
+    "common_mistakes": [
+      "Rounding the lower back",
+      "Pulling with biceps instead of lat",
+      "Jerking weight up"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/one_arm_dumbbell_row/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 7,
     "name": "Bent Over Row",
+    "slug": "bent_over_row",
     "category": "Back",
-    "secondary_muscles": ["Biceps", "Erector Spinae"],
+    "secondary_muscles": [
+      "Biceps",
+      "Erector Spinae"
+    ],
     "equipment": "Full Gym",
     "difficulty": "Intermediate",
     "instructions": [
@@ -153,13 +224,24 @@
     "start_pos": "Hip-hinged stance, holding barbell hanging straight down.",
     "movement": "Pull barbell to belly button, elbows high.",
     "end_pos": "Return bar down to starting hang.",
-    "common_mistakes": ["Rounding spine", "Standing too upright", "Using legs to lift the weight"]
+    "common_mistakes": [
+      "Rounding spine",
+      "Standing too upright",
+      "Using legs to lift the weight"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/bent_over_row/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 8,
     "name": "Shoulder Press",
+    "slug": "shoulder_press",
     "category": "Shoulders",
-    "secondary_muscles": ["Triceps", "Upper Chest"],
+    "secondary_muscles": [
+      "Triceps",
+      "Upper Chest"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Beginner",
     "instructions": [
@@ -175,13 +257,23 @@
     "start_pos": "Standing or sitting, dumbbells held at ear level.",
     "movement": "Press dumbbells vertically over head.",
     "end_pos": "Dumbbells overhead close together, then lower to ears.",
-    "common_mistakes": ["Arching lower back excessively", "Not locking out elbows", "Dropping weights too fast"]
+    "common_mistakes": [
+      "Arching lower back excessively",
+      "Not locking out elbows",
+      "Dropping weights too fast"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/shoulder_press/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 9,
     "name": "Lateral Raise",
+    "slug": "lateral_raise",
     "category": "Shoulders",
-    "secondary_muscles": ["Traps"],
+    "secondary_muscles": [
+      "Traps"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Beginner",
     "instructions": [
@@ -197,13 +289,25 @@
     "start_pos": "Stand straight, dumbbells at sides.",
     "movement": "Raise arms sideways to shoulder level.",
     "end_pos": "Hold briefly at parallel, then lower.",
-    "common_mistakes": ["Swinging torso", "Using too much weight", "Leading with hands instead of elbows"]
+    "common_mistakes": [
+      "Swinging torso",
+      "Using too much weight",
+      "Leading with hands instead of elbows"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/lateral_raise/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 10,
     "name": "Squat",
+    "slug": "squat",
     "category": "Legs",
-    "secondary_muscles": ["Glutes", "Hamstrings", "Core"],
+    "secondary_muscles": [
+      "Glutes",
+      "Hamstrings",
+      "Core"
+    ],
     "equipment": "No Equipment",
     "difficulty": "Beginner",
     "instructions": [
@@ -220,13 +324,24 @@
     "start_pos": "Stand erect, feet shoulder-width, arms forward or at chest.",
     "movement": "Lower hips down, bending knees while keeping back straight.",
     "end_pos": "Thighs parallel or below, drive upward to start pos.",
-    "common_mistakes": ["Knees collapsing inward", "Heels lifting off floor", "Rounding upper/lower back"]
+    "common_mistakes": [
+      "Knees collapsing inward",
+      "Heels lifting off floor",
+      "Rounding upper/lower back"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/squat/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 11,
     "name": "Lunges",
+    "slug": "lunges",
     "category": "Legs",
-    "secondary_muscles": ["Glutes", "Quads"],
+    "secondary_muscles": [
+      "Glutes",
+      "Quads"
+    ],
     "equipment": "No Equipment",
     "difficulty": "Beginner",
     "instructions": [
@@ -242,13 +357,23 @@
     "start_pos": "Standing feet together, hands on hips.",
     "movement": "Step forward and sink hips down vertically.",
     "end_pos": "Both knees at 90 degrees, drive back up.",
-    "common_mistakes": ["Front knee sliding past toes", "Losing balance/narrow step", "Slouching forward"]
+    "common_mistakes": [
+      "Front knee sliding past toes",
+      "Losing balance/narrow step",
+      "Slouching forward"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/lunges/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 12,
     "name": "Leg Extension",
+    "slug": "leg_extension",
     "category": "Legs",
-    "secondary_muscles": ["Quads"],
+    "secondary_muscles": [
+      "Quads"
+    ],
     "equipment": "Full Gym",
     "difficulty": "Beginner",
     "instructions": [
@@ -264,13 +389,23 @@
     "start_pos": "Seated on machine, knees bent at 90 degrees.",
     "movement": "Straighten legs upward.",
     "end_pos": "Legs straight, pause, then return.",
-    "common_mistakes": ["Lifting hips off seat", "Using momentum", "Locking knees too hard"]
+    "common_mistakes": [
+      "Lifting hips off seat",
+      "Using momentum",
+      "Locking knees too hard"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/leg_extension/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 13,
     "name": "Leg Curl",
+    "slug": "leg_curl",
     "category": "Legs",
-    "secondary_muscles": ["Hamstrings"],
+    "secondary_muscles": [
+      "Hamstrings"
+    ],
     "equipment": "Full Gym",
     "difficulty": "Beginner",
     "instructions": [
@@ -286,13 +421,23 @@
     "start_pos": "Positioned on curl machine, legs fully extended.",
     "movement": "Pull heels toward butt.",
     "end_pos": "Contract fully, then slowly extend.",
-    "common_mistakes": ["Arching lower back", "Lifting hips off pad", "Rushing eccentric phase"]
+    "common_mistakes": [
+      "Arching lower back",
+      "Lifting hips off pad",
+      "Rushing eccentric phase"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/leg_curl/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 14,
     "name": "Calf Raises",
+    "slug": "calf_raises",
     "category": "Legs",
-    "secondary_muscles": ["Calves"],
+    "secondary_muscles": [
+      "Calves"
+    ],
     "equipment": "No Equipment",
     "difficulty": "Beginner",
     "instructions": [
@@ -308,13 +453,23 @@
     "start_pos": "Balls of feet on step edge, heels hanging.",
     "movement": "Rise high onto balls of feet.",
     "end_pos": "Lower heels slowly to deep stretch.",
-    "common_mistakes": ["Bending knees (calf raise should be straight leg)", "Bouncing at the bottom", "Incomplete range"]
+    "common_mistakes": [
+      "Bending knees",
+      "Bouncing at bottom",
+      "Incomplete range"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/calf_raises/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 15,
     "name": "Barbell Curl",
+    "slug": "barbell_curl",
     "category": "Biceps",
-    "secondary_muscles": ["Forearms"],
+    "secondary_muscles": [
+      "Forearms"
+    ],
     "equipment": "Full Gym",
     "difficulty": "Beginner",
     "instructions": [
@@ -330,13 +485,24 @@
     "start_pos": "Standing straight, barbell held at thighs.",
     "movement": "Curl barbell upward using biceps.",
     "end_pos": "Bar at chest level, squeeze, then lower.",
-    "common_mistakes": ["Swinging torso", "Moving elbows forward", "Not extending arm fully at bottom"]
+    "common_mistakes": [
+      "Swinging torso",
+      "Moving elbows forward",
+      "Not extending arm fully at bottom"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/barbell_curl/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 16,
     "name": "Hammer Curl",
+    "slug": "hammer_curl",
     "category": "Biceps",
-    "secondary_muscles": ["Brachialis", "Forearms"],
+    "secondary_muscles": [
+      "Brachialis",
+      "Forearms"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Beginner",
     "instructions": [
@@ -352,13 +518,23 @@
     "start_pos": "Stand straight, dumbbells at sides, palms inward.",
     "movement": "Curl dumbbells up, maintaining neutral palms.",
     "end_pos": "Dumbbells near shoulders, then lower.",
-    "common_mistakes": ["Flaring elbows", "Using shoulders to lift", "Partial range of motion"]
+    "common_mistakes": [
+      "Flaring elbows",
+      "Using shoulders to lift",
+      "Partial range of motion"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/hammer_curl/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 17,
     "name": "Cable Pushdown",
+    "slug": "cable_pushdown",
     "category": "Triceps",
-    "secondary_muscles": ["Forearms"],
+    "secondary_muscles": [
+      "Forearms"
+    ],
     "equipment": "Full Gym",
     "difficulty": "Beginner",
     "instructions": [
@@ -374,13 +550,23 @@
     "start_pos": "Grip attachment at chest, elbows bent at 90, tucked in.",
     "movement": "Push attachment down to thighs.",
     "end_pos": "Arms fully straight, lock triceps, then return.",
-    "common_mistakes": ["Elbows moving away from ribs", "Leaning too far forward", "Letting bar fly up too fast"]
+    "common_mistakes": [
+      "Elbows moving away from ribs",
+      "Leaning too far forward",
+      "Letting bar fly up too fast"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_pushdown/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 18,
     "name": "Dumbbell Overhead Extension",
+    "slug": "dumbbell_overhead_extension",
     "category": "Triceps",
-    "secondary_muscles": ["Shoulders"],
+    "secondary_muscles": [
+      "Shoulders"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Beginner",
     "instructions": [
@@ -396,13 +582,24 @@
     "start_pos": "Sit, holding dumbbell vertical overhead in both hands.",
     "movement": "Lower dumbbell behind neck, bending elbows.",
     "end_pos": "Press dumbbell back to high starting position.",
-    "common_mistakes": ["Elbows flaring wide", "Lowering weight too low (risk of hitting neck)", "Arching lower back"]
+    "common_mistakes": [
+      "Elbows flaring wide",
+      "Lowering weight too low",
+      "Arching lower back"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_overhead_extension/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 19,
     "name": "Plank",
+    "slug": "plank",
     "category": "Core",
-    "secondary_muscles": ["Shoulders", "Glutes"],
+    "secondary_muscles": [
+      "Shoulders",
+      "Glutes"
+    ],
     "equipment": "No Equipment",
     "difficulty": "Beginner",
     "instructions": [
@@ -418,13 +615,23 @@
     "start_pos": "Resting on forearms and toes, body elevated.",
     "movement": "Static hold, contracting full body.",
     "end_pos": "Lower knees to relax.",
-    "common_mistakes": ["Sagging lower back/hips", "Looking up/neck strain", "Holding breath"]
+    "common_mistakes": [
+      "Sagging lower back/hips",
+      "Looking up/neck strain",
+      "Holding breath"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/plank/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 20,
     "name": "Crunches",
+    "slug": "crunches",
     "category": "Core",
-    "secondary_muscles": ["Obliques"],
+    "secondary_muscles": [
+      "Obliques"
+    ],
     "equipment": "No Equipment",
     "difficulty": "Beginner",
     "instructions": [
@@ -441,13 +648,24 @@
     "start_pos": "Lie flat, knees bent at 90, feet flat.",
     "movement": "Lift shoulder blades 2-3 inches off floor.",
     "end_pos": "Squeeze abs at top, then lower.",
-    "common_mistakes": ["Pulling on neck with hands", "Lifting lower back off floor", "Using momentum"]
+    "common_mistakes": [
+      "Pulling on neck with hands",
+      "Lifting lower back off floor",
+      "Using momentum"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/crunches/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 21,
     "name": "Leg Raises",
+    "slug": "leg_raises",
     "category": "Core",
-    "secondary_muscles": ["Hip Flexors", "Lower Abs"],
+    "secondary_muscles": [
+      "Hip Flexors",
+      "Lower Abs"
+    ],
     "equipment": "No Equipment",
     "difficulty": "Beginner",
     "instructions": [
@@ -463,13 +681,23 @@
     "start_pos": "Lie flat on back, legs extended straight.",
     "movement": "Raise legs vertically without bending knees.",
     "end_pos": "Legs vertical, lower them slowly without touching floor.",
-    "common_mistakes": ["Arching the lower back off the floor", "Swinging legs up quickly", "Bending knees"]
+    "common_mistakes": [
+      "Arching lower back",
+      "Swinging legs",
+      "Bending knees"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/leg_raises/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 22,
     "name": "Bicep Curl",
+    "slug": "bicep_curl",
     "category": "Biceps",
-    "secondary_muscles": ["Forearms"],
+    "secondary_muscles": [
+      "Forearms"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Beginner",
     "instructions": [
@@ -483,15 +711,26 @@
     "beginner_suitability": true,
     "home_suitability": true,
     "start_pos": "Stand upright with dumbbells held at sides, palms facing front.",
-    "movement": "Flex elbows to bring dumbbells to shoulders, rotating wrist as needed.",
+    "movement": "Flex elbows to bring dumbbells to shoulders.",
     "end_pos": "Bring dumbbells to peak elevation, squeeze bicep, then slowly descend.",
-    "common_mistakes": ["Swinging the elbows back", "Leaning backward during curl", "Dropping dumbbells fast"]
+    "common_mistakes": [
+      "Swinging elbows back",
+      "Leaning backward",
+      "Dropping dumbbells fast"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/bicep_curl/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 23,
     "name": "Dumbbell Squats",
+    "slug": "dumbbell_squats",
     "category": "Legs",
-    "secondary_muscles": ["Glutes", "Hamstrings"],
+    "secondary_muscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
     "equipment": "Dumbbells",
     "difficulty": "Beginner",
     "instructions": [
@@ -508,13 +747,24 @@
     "start_pos": "Stand erect holding dumbbells at sides or shoulders.",
     "movement": "Lower hips down into squat depth.",
     "end_pos": "Stand back up fully.",
-    "common_mistakes": ["Knees caving inwards", "Heels lifting", "Rounding spine"]
+    "common_mistakes": [
+      "Knees caving inwards",
+      "Heels lifting",
+      "Rounding spine"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_squats/demo.svg",
+    "supported_demo": true
   },
   {
     "id": 24,
     "name": "Resistance Band Chest Press",
+    "slug": "resistance_band_chest_press",
     "category": "Chest",
-    "secondary_muscles": ["Triceps", "Shoulders"],
+    "secondary_muscles": [
+      "Triceps",
+      "Shoulders"
+    ],
     "equipment": "Resistance Bands",
     "difficulty": "Beginner",
     "instructions": [
@@ -531,6 +781,281 @@
     "start_pos": "Hold band handles at chest height, anchor behind you.",
     "movement": "Press bands straight forward.",
     "end_pos": "Fully extend arms, squeeze chest, return to chest height.",
-    "common_mistakes": ["Shrugging shoulders", "Standing too far forward (losing balance)", "Jerking movement"]
+    "common_mistakes": [
+      "Shrugging shoulders",
+      "Standing too far forward",
+      "Jerking movement"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/resistance_band_chest_press/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 25,
+    "name": "Barbell Squat",
+    "slug": "barbell_squat",
+    "category": "Legs",
+    "secondary_muscles": [
+      "Glutes",
+      "Hamstrings",
+      "Core"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Rest barbell across upper back muscles (traps).",
+      "Unrack bar, step back, set feet shoulder-width apart.",
+      "Lower hips until thighs are parallel to ground.",
+      "Drive upward through heels to return to start."
+    ],
+    "default_sets": 4,
+    "default_reps": "8-10",
+    "default_rest": 120,
+    "beginner_suitability": false,
+    "home_suitability": false,
+    "start_pos": "Barbell supported on upper back, tall chest, feet shoulder width.",
+    "movement": "Descend by flexing hips and knees.",
+    "end_pos": "Parallel squat depth, explode back to standing.",
+    "common_mistakes": [
+      "Butt wink/rounding lower back",
+      "Knees inward collapse",
+      "Rising hips faster than chest"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/barbell_squat/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 26,
+    "name": "Romanian Deadlift",
+    "slug": "romanian_deadlift",
+    "category": "Legs",
+    "secondary_muscles": [
+      "Hamstrings",
+      "Glutes",
+      "Lower Back"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Stand holding dumbbells in front of thighs with slight knee bend.",
+      "Hinge forward at hips, pushing glutes back while keeping spine flat.",
+      "Lower weights along shins until hamstrings stretch deeply.",
+      "Contract hamstrings and glutes to return to upright posture."
+    ],
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 90,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "start_pos": "Standing straight holding weights in front of thighs.",
+    "movement": "Hinge at hips pushing hips backward.",
+    "end_pos": "Deep hamstring stretch at shin level, pull hips forward to stand.",
+    "common_mistakes": [
+      "Rounding lower back",
+      "Bending knees into squat",
+      "Dumbbells straying away from body"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/romanian_deadlift/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 27,
+    "name": "Concentration Curl",
+    "slug": "concentration_curl",
+    "category": "Biceps",
+    "secondary_muscles": [
+      "Brachialis"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Sit on bench edge, brace tricep against inner thigh.",
+      "Curl dumbbell upward toward shoulder without moving upper arm.",
+      "Squeeze bicep at peak and lower under control."
+    ],
+    "default_sets": 3,
+    "default_reps": "12",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "start_pos": "Seated, arm extended down with elbow braced against thigh.",
+    "movement": "Flex elbow to curl weight upward.",
+    "end_pos": "Peak bicep contraction, lower back down.",
+    "common_mistakes": [
+      "Swinging shoulder",
+      "Lifting elbow off inner leg",
+      "Rushing eccentric descent"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/concentration_curl/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 28,
+    "name": "Russian Twists",
+    "slug": "russian_twists",
+    "category": "Core",
+    "secondary_muscles": [
+      "Obliques",
+      "Abs"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Sit on floor, lean back slightly at 45 degrees with knees bent.",
+      "Interlock hands or hold weight, rotate torso to right side.",
+      "Pause briefly, then rotate smoothly to left side."
+    ],
+    "default_sets": 3,
+    "default_reps": "20 twists",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "start_pos": "V-sit torso angle, feet hovering or heels lightly touching.",
+    "movement": "Twist shoulders side to side.",
+    "end_pos": "Alternating side tap with controlled core tension.",
+    "common_mistakes": [
+      "Twisting arms only instead of shoulders",
+      "Slouching spine",
+      "Holding breath"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/russian_twists/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 29,
+    "name": "Dumbbell Shoulder Press",
+    "slug": "dumbbell_shoulder_press",
+    "category": "Shoulders",
+    "secondary_muscles": [
+      "Triceps",
+      "Traps"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Sit on upright bench holding dumbbells at ear level.",
+      "Press dumbbells directly overhead until arms lock out.",
+      "Lower under control back to ear level."
+    ],
+    "default_sets": 4,
+    "default_reps": "10-12",
+    "default_rest": 75,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "start_pos": "Seated upright, dumbbells at ear height.",
+    "movement": "Press dumbbells vertically overhead.",
+    "end_pos": "Arms extended overhead, then lower slowly.",
+    "common_mistakes": [
+      "Arching back off bench",
+      "Bouncing dumbbells at top",
+      "Short rep range"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_shoulder_press/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 30,
+    "name": "Tricep Dips",
+    "slug": "tricep_dips",
+    "category": "Triceps",
+    "secondary_muscles": [
+      "Lower Chest",
+      "Shoulders"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Place hands on bench or chair behind you, feet extended forward.",
+      "Lower hips by bending elbows until upper arms are parallel to floor.",
+      "Press through palms to push back up."
+    ],
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "start_pos": "Hands on bench edge, body suspended, knees/legs extended.",
+    "movement": "Bend elbows straight back to lower body.",
+    "end_pos": "Elbows at 90 degrees, press up to straight arms.",
+    "common_mistakes": [
+      "Flaring elbows out",
+      "Shrugging shoulders to ears",
+      "Not dipping deep enough"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/tricep_dips/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 31,
+    "name": "Pull-ups",
+    "slug": "pull_ups",
+    "category": "Back",
+    "secondary_muscles": [
+      "Biceps",
+      "Core"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Grip pull-up bar overhand slightly wider than shoulder-width.",
+      "Pull chest up to bar by driving elbows down toward hips.",
+      "Lower body with full control until arms are extended."
+    ],
+    "default_sets": 3,
+    "default_reps": "6-10",
+    "default_rest": 90,
+    "beginner_suitability": false,
+    "home_suitability": false,
+    "start_pos": "Dead hang on bar, arms fully extended.",
+    "movement": "Pull body up until chin clears bar.",
+    "end_pos": "Chin above bar, lower back down slowly.",
+    "common_mistakes": [
+      "Kipping/swinging legs",
+      "Partial reps",
+      "Shrugging shoulders"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/pull_ups/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 32,
+    "name": "Goblet Squat",
+    "slug": "goblet_squat",
+    "category": "Legs",
+    "secondary_muscles": [
+      "Quads",
+      "Core",
+      "Glutes"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Hold one dumbbell vertically against chest with both palms supporting head.",
+      "Stand with feet shoulder-width, squat down until elbows touch inside of knees.",
+      "Drive back up standing tall."
+    ],
+    "default_sets": 3,
+    "default_reps": "12",
+    "default_rest": 75,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "start_pos": "Standing straight holding dumbbell at chest.",
+    "movement": "Lower hips deep, knees tracking toes.",
+    "end_pos": "Deep squat position, explode to standing.",
+    "common_mistakes": [
+      "Holding weight away from chest",
+      "Rounding thoracic spine",
+      "Caving knees"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/goblet_squat/demo.svg",
+    "supported_demo": true
   }
 ]
