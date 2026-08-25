@@ -1,0 +1,22 @@
+[
+  {
+    "query": "What can replace bench press?",
+    "category": "alternative",
+    "exercise": "Bench Press",
+    "answer": "Push-ups, Incline Dumbbell Press, or Dumbbell Chest Press make excellent alternatives targeting the chest and triceps."
+  },
+  {
+    "query": "biceps workout at gym",
+    "category": "discovery",
+    "target": "Biceps",
+    "environment": "Gym",
+    "answer": "For a gym-based biceps session, combine heavy Barbell Curls, Dumbbell Hammer Curls, Cable Curls, and Preacher Curls."
+  },
+  {
+    "query": "shoulder exercises with dumbbells",
+    "category": "constraint",
+    "target": "Shoulders",
+    "equipment": "Dumbbells",
+    "answer": "Top dumbbell shoulder exercises include Dumbbell Shoulder Press, Lateral Raises, Front Raises, and Arnold Press."
+  }
+]

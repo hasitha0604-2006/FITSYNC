@@ -31,7 +31,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/bench_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Chest",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "bench press"
+    ]
   },
   {
     "id": 2,
@@ -65,7 +72,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/incline_dumbbell_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Chest",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "incline dumbbell press"
+    ]
   },
   {
     "id": 3,
@@ -99,7 +113,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/push_ups/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Chest",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "push-ups"
+    ]
   },
   {
     "id": 4,
@@ -131,7 +152,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/chest_fly/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Chest",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "chest fly"
+    ]
   },
   {
     "id": 5,
@@ -164,7 +192,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/lat_pulldown/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Back",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "lat pulldown"
+    ]
   },
   {
     "id": 6,
@@ -198,7 +233,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/one_arm_dumbbell_row/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Back",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "one arm dumbbell row"
+    ]
   },
   {
     "id": 7,
@@ -231,7 +273,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/bent_over_row/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Back",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "bent over row"
+    ]
   },
   {
     "id": 8,
@@ -264,7 +313,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/shoulder_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Shoulders",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "shoulder press"
+    ]
   },
   {
     "id": 9,
@@ -296,7 +352,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/lateral_raise/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Shoulders",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "lateral raise"
+    ]
   },
   {
     "id": 10,
@@ -331,7 +394,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/squat/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "squat"
+    ]
   },
   {
     "id": 11,
@@ -364,7 +434,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/lunges/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "lunges"
+    ]
   },
   {
     "id": 12,
@@ -396,7 +473,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/leg_extension/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "leg extension"
+    ]
   },
   {
     "id": 13,
@@ -428,7 +512,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/leg_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "leg curl"
+    ]
   },
   {
     "id": 14,
@@ -460,7 +551,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/calf_raises/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "calf raises"
+    ]
   },
   {
     "id": 15,
@@ -492,7 +590,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/barbell_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Biceps",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "barbell curl"
+    ]
   },
   {
     "id": 16,
@@ -525,7 +630,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/hammer_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Biceps",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "hammer curl"
+    ]
   },
   {
     "id": 17,
@@ -557,7 +669,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/cable_pushdown/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Triceps",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "cable pushdown"
+    ]
   },
   {
     "id": 18,
@@ -589,7 +708,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/dumbbell_overhead_extension/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Triceps",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "dumbbell overhead extension"
+    ]
   },
   {
     "id": 19,
@@ -622,7 +748,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/plank/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Core",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "plank"
+    ]
   },
   {
     "id": 20,
@@ -655,7 +788,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/crunches/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Core",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "crunches"
+    ]
   },
   {
     "id": 21,
@@ -688,7 +828,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/leg_raises/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Core",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "leg raises"
+    ]
   },
   {
     "id": 22,
@@ -720,7 +867,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/bicep_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Biceps",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "bicep curl"
+    ]
   },
   {
     "id": 23,
@@ -754,7 +908,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/dumbbell_squats/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "dumbbell squats"
+    ]
   },
   {
     "id": 24,
@@ -788,7 +949,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/resistance_band_chest_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Chest",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "resistance band chest press"
+    ]
   },
   {
     "id": 25,
@@ -823,7 +991,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/barbell_squat/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "barbell squat"
+    ]
   },
   {
     "id": 26,
@@ -858,7 +1033,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/romanian_deadlift/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "romanian deadlift"
+    ]
   },
   {
     "id": 27,
@@ -890,7 +1072,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/concentration_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Biceps",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "concentration curl"
+    ]
   },
   {
     "id": 28,
@@ -923,7 +1112,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/russian_twists/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Core",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "russian twists"
+    ]
   },
   {
     "id": 29,
@@ -956,7 +1152,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/dumbbell_shoulder_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Shoulders",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "dumbbell shoulder press"
+    ]
   },
   {
     "id": 30,
@@ -989,7 +1192,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/tricep_dips/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Triceps",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "tricep dips"
+    ]
   },
   {
     "id": 31,
@@ -1022,7 +1232,14 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/pull_ups/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "primary_muscle": "Back",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "pull-ups"
+    ]
   },
   {
     "id": 32,
@@ -1056,6 +1273,673 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/goblet_squat/demo.svg",
+    "supported_demo": true,
+    "primary_muscle": "Legs",
+    "gym_suitability": true,
+    "safety_notes": "Maintain controlled form throughout movement.",
+    "alternatives": [],
+    "aliases": [
+      "goblet squat"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Preacher Curl",
+    "slug": "preacher_curl",
+    "category": "Biceps",
+    "primary_muscle": "Biceps",
+    "secondary_muscles": [
+      "Forearms"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Position upper arms flat against the preacher bench pad.",
+      "Grip the bar or dumbbells shoulder-width apart.",
+      "Lower weight under control until arms are extended.",
+      "Curl the weight up towards shoulders squeezing biceps."
+    ],
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": false,
+    "gym_suitability": true,
+    "start_pos": "Arms resting over preacher pad, holding weight extended.",
+    "movement": "Flex elbows to curl weight upward.",
+    "end_pos": "Peak contraction at top, then lower smoothly.",
+    "common_mistakes": [
+      "Swinging torso off pad",
+      "Hyperextending elbows at bottom"
+    ],
+    "safety_notes": "Do not drop weights at bottom extension.",
+    "alternatives": [
+      "Bicep Curl",
+      "Concentration Curl",
+      "Cable Curl"
+    ],
+    "aliases": [
+      "preacher curl",
+      "ez bar preacher curl",
+      "bicep preacher curl"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/preacher_curl/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 34,
+    "name": "Cable Curl",
+    "slug": "cable_curl",
+    "category": "Biceps",
+    "primary_muscle": "Biceps",
+    "secondary_muscles": [
+      "Forearms"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Attach bar to low cable pulley station.",
+      "Stand upright holding bar with underhand grip.",
+      "Curl bar towards chest keeping elbows pinned to sides.",
+      "Lower under constant cable tension."
+    ],
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": false,
+    "gym_suitability": true,
+    "start_pos": "Standing tall, holding cable bar at thighs.",
+    "movement": "Curl bar upward towards shoulders.",
+    "end_pos": "Squeeze biceps at top, return slowly.",
+    "common_mistakes": [
+      "Leaning backward",
+      "Moving elbows forward"
+    ],
+    "safety_notes": "Keep core tight throughout movement.",
+    "alternatives": [
+      "Bicep Curl",
+      "Barbell Curl",
+      "Preacher Curl"
+    ],
+    "aliases": [
+      "cable curl",
+      "low cable curl",
+      "bicep cable curl"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_curl/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 35,
+    "name": "Incline Dumbbell Curl",
+    "slug": "incline_dumbbell_curl",
+    "category": "Biceps",
+    "primary_muscle": "Biceps",
+    "secondary_muscles": [
+      "Forearms"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Sit back on incline bench set to 45-60 degrees.",
+      "Let arms hang fully extended holding dumbbells.",
+      "Curl dumbbells up supinating wrists at top.",
+      "Lower weights under strict control."
+    ],
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Seated on incline bench, arms hanging straight down.",
+    "movement": "Curl weights upward keeping upper arms back.",
+    "end_pos": "Full contraction at top, return under stretch.",
+    "common_mistakes": [
+      "Swinging shoulders",
+      "Lifting back off bench"
+    ],
+    "safety_notes": "Maintain shoulder blade contact with bench.",
+    "alternatives": [
+      "Bicep Curl",
+      "Hammer Curl"
+    ],
+    "aliases": [
+      "incline curl",
+      "incline dumbbell curl",
+      "bench curl"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/incline_dumbbell_curl/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 36,
+    "name": "Skull Crushers",
+    "slug": "skull_crushers",
+    "category": "Triceps",
+    "primary_muscle": "Triceps",
+    "secondary_muscles": [
+      "Shoulders"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Lie on flat bench holding EZ bar above chest.",
+      "Bend elbows lowering weight towards forehead.",
+      "Extend elbows pushing weight back over chest."
+    ],
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 75,
+    "beginner_suitability": false,
+    "home_suitability": false,
+    "gym_suitability": true,
+    "start_pos": "Lying flat, bar held vertically above shoulders.",
+    "movement": "Hinge at elbows lowering bar toward forehead.",
+    "end_pos": "Press back to arm extension over chest.",
+    "common_mistakes": [
+      "Flaring elbows wide",
+      "Moving upper arms"
+    ],
+    "safety_notes": "Use secure overhand grip; use spotter if heavy.",
+    "alternatives": [
+      "Dumbbell Overhead Extension",
+      "Cable Pushdown"
+    ],
+    "aliases": [
+      "skull crusher",
+      "lying tricep extension",
+      "ez bar tricep extension"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/skull_crushers/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 37,
+    "name": "Close Grip Bench Press",
+    "slug": "close_grip_bench_press",
+    "category": "Triceps",
+    "primary_muscle": "Triceps",
+    "secondary_muscles": [
+      "Chest",
+      "Shoulders"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Lie on flat bench gripping barbell shoulder-width apart.",
+      "Lower bar to lower chest keeping elbows tucked.",
+      "Press bar straight back up to arm lockout."
+    ],
+    "default_sets": 4,
+    "default_reps": "8-10",
+    "default_rest": 90,
+    "beginner_suitability": false,
+    "home_suitability": false,
+    "gym_suitability": true,
+    "start_pos": "Lie on bench, bar held shoulder-width above chest.",
+    "movement": "Lower bar to sternum keeping elbows close.",
+    "end_pos": "Press bar up locking triceps.",
+    "common_mistakes": [
+      "Grip too narrow causing wrist pain",
+      "Flaring elbows"
+    ],
+    "safety_notes": "Keep thumbs wrapped securely around bar.",
+    "alternatives": [
+      "Tricep Dips",
+      "Bench Press",
+      "Push-ups"
+    ],
+    "aliases": [
+      "close grip bench",
+      "tricep bench press"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/close_grip_bench_press/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 38,
+    "name": "Seated Cable Row",
+    "slug": "seated_cable_row",
+    "category": "Back",
+    "primary_muscle": "Back",
+    "secondary_muscles": [
+      "Biceps",
+      "Rear Delts"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Sit facing cable row station with feet on footrests.",
+      "Grip handle and pull towards lower abdomen.",
+      "Squeeze shoulder blades together at end range.",
+      "Extend arms forward smoothly."
+    ],
+    "default_sets": 4,
+    "default_reps": "10-12",
+    "default_rest": 75,
+    "beginner_suitability": true,
+    "home_suitability": false,
+    "gym_suitability": true,
+    "start_pos": "Seated upright, arms extended holding cable attachment.",
+    "movement": "Pull handle back squeezing lat muscles.",
+    "end_pos": "Handle near abdomen, then release under control.",
+    "common_mistakes": [
+      "Rounding lower back",
+      "Excessive momentum"
+    ],
+    "safety_notes": "Keep chest proud and spine neutral.",
+    "alternatives": [
+      "Bent Over Row",
+      "One Arm Dumbbell Row",
+      "Lat Pulldown"
+    ],
+    "aliases": [
+      "cable row",
+      "seated row",
+      "v bar row"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/seated_cable_row/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 39,
+    "name": "Arnold Press",
+    "slug": "arnold_press",
+    "category": "Shoulders",
+    "primary_muscle": "Shoulders",
+    "secondary_muscles": [
+      "Triceps"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Sit on bench holding dumbbells at chest level with palms facing in.",
+      "Rotate wrists while pressing dumbbells overhead.",
+      "At top extension, palms face forward.",
+      "Lower and rotate back to starting position."
+    ],
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 75,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Seated, dumbbells in front of shoulders, palms inward.",
+    "movement": "Press up while rotating palms outward.",
+    "end_pos": "Overhead extension with palms facing forward.",
+    "common_mistakes": [
+      "Arching lower back",
+      "Jerking the rotation"
+    ],
+    "safety_notes": "Control the rotation smoothly.",
+    "alternatives": [
+      "Dumbbell Shoulder Press",
+      "Overhead Press"
+    ],
+    "aliases": [
+      "arnold press",
+      "rotating shoulder press"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/arnold_press/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 40,
+    "name": "Reverse Fly",
+    "slug": "reverse_fly",
+    "category": "Shoulders",
+    "primary_muscle": "Rear Delts",
+    "secondary_muscles": [
+      "Upper Back"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Bend forward at hips keeping flat back posture.",
+      "Hold light dumbbells under chest with slight elbow bend.",
+      "Raise arms out to sides until elbows reach shoulder height.",
+      "Lower weights under control."
+    ],
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Hinged forward, arms hanging below chest.",
+    "movement": "Raise arms laterally squeezing rear delts.",
+    "end_pos": "Arms parallel to floor, return under control.",
+    "common_mistakes": [
+      "Swinging torso",
+      "Bending elbows too much"
+    ],
+    "safety_notes": "Use moderate weight to preserve isolation.",
+    "alternatives": [
+      "Lateral Raise",
+      "Seated Cable Row"
+    ],
+    "aliases": [
+      "rear delt fly",
+      "reverse dumbbell fly"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/reverse_fly/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 41,
+    "name": "Hip Thrust",
+    "slug": "hip_thrust",
+    "category": "Glutes",
+    "primary_muscle": "Glutes",
+    "secondary_muscles": [
+      "Hamstrings"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Rest upper back against sturdy bench, feet flat on floor.",
+      "Position barbell across hip crease.",
+      "Drive through heels extending hips toward ceiling.",
+      "Squeeze glutes at peak then lower under control."
+    ],
+    "default_sets": 4,
+    "default_reps": "10-12",
+    "default_rest": 90,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Seated against bench with hips down and bar loaded.",
+    "movement": "Push hips upward until torso is horizontal.",
+    "end_pos": "Peak glute contraction at top, return down.",
+    "common_mistakes": [
+      "Hyper-extending lower back",
+      "Not driving through heels"
+    ],
+    "safety_notes": "Use barbell pad for hip cushion.",
+    "alternatives": [
+      "Romanian Deadlift",
+      "Squat"
+    ],
+    "aliases": [
+      "hip thrust",
+      "barbell hip thrust",
+      "glute thrust"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/hip_thrust/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 42,
+    "name": "Leg Press",
+    "slug": "leg_press",
+    "category": "Legs",
+    "primary_muscle": "Quadriceps",
+    "secondary_muscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "equipment": "Full Gym",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Sit in leg press machine with feet shoulder-width on platform.",
+      "Release safety handles and lower platform toward chest.",
+      "Press platform back up using quads without locking knees."
+    ],
+    "default_sets": 4,
+    "default_reps": "10-12",
+    "default_rest": 90,
+    "beginner_suitability": true,
+    "home_suitability": false,
+    "gym_suitability": true,
+    "start_pos": "Seated with legs extended holding machine platform.",
+    "movement": "Lower platform bending knees to 90 degrees.",
+    "end_pos": "Press platform back up to starting position.",
+    "common_mistakes": [
+      "Locking knees forcefully",
+      "Lifting hips off seat"
+    ],
+    "safety_notes": "Keep lumbar spine pressed firmly against backrest.",
+    "alternatives": [
+      "Squat",
+      "Goblet Squat",
+      "Dumbbell Squats"
+    ],
+    "aliases": [
+      "leg press",
+      "machine leg press",
+      "sled press"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/leg_press/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 43,
+    "name": "Wrist Curls",
+    "slug": "wrist_curls",
+    "category": "Forearms",
+    "primary_muscle": "Forearms",
+    "secondary_muscles": [
+      "Grip"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Rest forearms on bench with palms facing up and wrists hanging off edge.",
+      "Hold dumbbells and curl wrists upward.",
+      "Lower dumbbells slowly to feel deep forearm stretch."
+    ],
+    "default_sets": 3,
+    "default_reps": "15-20",
+    "default_rest": 45,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Forearms flat on bench, wrists hanging with dumbbells.",
+    "movement": "Flex wrists upward squeezing forearm muscles.",
+    "end_pos": "Lower wrists back down under full stretch.",
+    "common_mistakes": [
+      "Lifting forearms off bench",
+      "Using heavy weight jerking wrists"
+    ],
+    "safety_notes": "Use light weight to avoid wrist joint strain.",
+    "alternatives": [
+      "Farmers Walk",
+      "Hammer Curl"
+    ],
+    "aliases": [
+      "wrist curl",
+      "forearm curl",
+      "dumbbell wrist curl"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/wrist_curls/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 44,
+    "name": "Farmers Walk",
+    "slug": "farmers_walk",
+    "category": "Forearms",
+    "primary_muscle": "Forearms",
+    "secondary_muscles": [
+      "Core",
+      "Traps"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Stand tall holding heavy dumbbells at your sides.",
+      "Brace core and walk forward taking smooth steps.",
+      "Maintain erect posture and tight grip throughout."
+    ],
+    "default_sets": 3,
+    "default_reps": "30-45 sec",
+    "default_rest": 60,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Standing upright holding dumbbells at sides.",
+    "movement": "Walk controlled distance with chest high.",
+    "end_pos": "Set weights down safely when finished.",
+    "common_mistakes": [
+      "Rounding shoulders forward",
+      "Slouching spine"
+    ],
+    "safety_notes": "Brace abs and keep spine straight.",
+    "alternatives": [
+      "Wrist Curls",
+      "Plank"
+    ],
+    "aliases": [
+      "farmers walk",
+      "farmers carry",
+      "dumbbell carry"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/farmers_walk/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 45,
+    "name": "Ab Wheel Rollout",
+    "slug": "ab_wheel_rollout",
+    "category": "Core",
+    "primary_muscle": "Abs",
+    "secondary_muscles": [
+      "Lats",
+      "Shoulders"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Advanced",
+    "instructions": [
+      "Kneel on padded mat holding ab roller handles.",
+      "Roll wheel forward extending arms and body.",
+      "Contract abs pulling wheel back to knees."
+    ],
+    "default_sets": 3,
+    "default_reps": "8-10",
+    "default_rest": 60,
+    "beginner_suitability": false,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Kneeling, ab wheel directly below shoulders.",
+    "movement": "Roll wheel forward until body is near floor.",
+    "end_pos": "Pull back using abdominal strength.",
+    "common_mistakes": [
+      "Arching lower back",
+      "Bending arms"
+    ],
+    "safety_notes": "Do not extend farther than abs can support.",
+    "alternatives": [
+      "Plank",
+      "Leg Raises"
+    ],
+    "aliases": [
+      "ab wheel",
+      "ab rollout",
+      "wheel rollout"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/ab_wheel_rollout/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 46,
+    "name": "Bulgarian Split Squat",
+    "slug": "bulgarian_split_squat",
+    "category": "Legs",
+    "primary_muscle": "Quadriceps",
+    "secondary_muscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Intermediate",
+    "instructions": [
+      "Stand lunge distance in front of bench with rear foot elevated.",
+      "Lower hips by bending front knee to 90 degrees.",
+      "Drive through front heel to return to top."
+    ],
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 75,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "One leg elevated on bench, standing on front leg.",
+    "movement": "Lower hips vertically bending front knee.",
+    "end_pos": "Push back up to upright standing position.",
+    "common_mistakes": [
+      "Front foot too close",
+      "Knee caving inward"
+    ],
+    "safety_notes": "Master bodyweight balance before adding dumbbells.",
+    "alternatives": [
+      "Lunges",
+      "Squat",
+      "Goblet Squat"
+    ],
+    "aliases": [
+      "split squat",
+      "bulgarian split squat"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/bulgarian_split_squat/demo.svg",
+    "supported_demo": true
+  },
+  {
+    "id": 47,
+    "name": "Side Plank",
+    "slug": "side_plank",
+    "category": "Core",
+    "primary_muscle": "Obliques",
+    "secondary_muscles": [
+      "Abs",
+      "Glutes"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Beginner",
+    "instructions": [
+      "Lie on side resting on elbow and forearm.",
+      "Lift hips until body forms straight diagonal line.",
+      "Hold position bracing obliques."
+    ],
+    "default_sets": 3,
+    "default_reps": "30-45 sec",
+    "default_rest": 45,
+    "beginner_suitability": true,
+    "home_suitability": true,
+    "gym_suitability": true,
+    "start_pos": "Lying on side, elbow stacked under shoulder.",
+    "movement": "Raise hips off floor holding alignment.",
+    "end_pos": "Hold position for set duration.",
+    "common_mistakes": [
+      "Hips sagging",
+      "Torso leaning forward"
+    ],
+    "safety_notes": "Keep neck in neutral alignment with spine.",
+    "alternatives": [
+      "Plank",
+      "Russian Twists"
+    ],
+    "aliases": [
+      "side plank",
+      "oblique plank"
+    ],
+    "media_type": "animation",
+    "media_path": "/static/exercises/side_plank/demo.svg",
     "supported_demo": true
   }
 ]

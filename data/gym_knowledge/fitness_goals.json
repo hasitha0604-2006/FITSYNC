@@ -1,0 +1,23 @@
+[
+  {
+    "id": "hypertrophy",
+    "name": "Muscle Building (Hypertrophy)",
+    "rep_range": "8-12 reps",
+    "rest": "60-90 sec",
+    "focus": "Moderate to heavy weight, time under tension, high mechanical tension."
+  },
+  {
+    "id": "strength",
+    "name": "Maximal Strength",
+    "rep_range": "4-6 reps",
+    "rest": "120-180 sec",
+    "focus": "Heavy compound loading, explosive intent, full motor unit recruitment."
+  },
+  {
+    "id": "endurance",
+    "name": "Muscle Endurance & Toning",
+    "rep_range": "15-20 reps",
+    "rest": "30-45 sec",
+    "focus": "Higher volume, metabolic fatigue, brief recovery intervals."
+  }
+]

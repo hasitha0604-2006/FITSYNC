@@ -192,6 +192,7 @@ from services.nutrition_engine import calculate_ai_targets, generate_daily_meals
 from services.adaptation_engine import rebuild_remaining_week_logic
 from services.form_analysis import check_exercise_form
 from services.ai_diet_engine import generate_ai_diet_plan
+from services.ai_search_engine import process_ai_gym_query
 
 # Data loaders helper
 def get_exercises_data():
@@ -755,7 +756,12 @@ def exercises():
     if not user:
         return redirect(url_for("login"))
     all_ex = get_exercises_data()
-    return render_template("exercise_library.html", exercises=all_ex)
+    m_path = BASE_DIR / "data" / "gym_knowledge" / "muscles.json"
+    muscles = []
+    if m_path.exists():
+        with open(m_path, "r", encoding="utf-8") as f:
+            muscles = json.load(f)
+    return render_template("exercise_library.html", exercises=all_ex, muscles=muscles)
 
 @app.route("/exercise/<int:ex_id>")
 def exercise_detail(ex_id):
@@ -1022,6 +1028,20 @@ def api_search_exercises():
         "count": len(filtered),
         "results": filtered
     })
+
+
+@app.route("/api/ai/search", methods=["POST", "GET"])
+def api_ai_search():
+    user = get_current_user()
+    if request.method == "POST":
+        data = request.get_json() or {}
+        query = data.get("query", "").strip()
+    else:
+        query = request.args.get("q", "").strip()
+
+    profile = user.profile if user else None
+    result = process_ai_gym_query(query, user_profile=profile)
+    return jsonify(result)
 
 
 @app.route("/api/diet/generate", methods=["POST"])

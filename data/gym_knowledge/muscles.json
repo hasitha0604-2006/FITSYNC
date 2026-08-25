@@ -1,0 +1,110 @@
+[
+  {
+    "id": "chest",
+    "name": "Chest",
+    "anatomical_name": "Pectoralis Major & Minor",
+    "description": "Primary upper body pushing muscle responsible for horizontal adduction and flexion of the shoulder joint.",
+    "sub_groups": ["Upper Chest (Clavicular)", "Mid Chest (Sternal)", "Lower Chest (Abdominal)"],
+    "icon": "shield",
+    "svg_region": "chest"
+  },
+  {
+    "id": "back",
+    "name": "Back",
+    "anatomical_name": "Latissimus Dorsi, Rhomboids, Trapezius & Erector Spinae",
+    "description": "Major upper body pulling muscles responsible for shoulder extension, retraction, and posture.",
+    "sub_groups": ["Lats (Width)", "Upper Back / Rhomboids (Thickness)", "Lower Back (Erector Spinae)"],
+    "icon": "layers",
+    "svg_region": "back"
+  },
+  {
+    "id": "shoulders",
+    "name": "Shoulders",
+    "anatomical_name": "Deltoids (Anterior, Lateral, Posterior)",
+    "description": "Shoulder girdle muscles providing 360-degree shoulder mobility and overhead press strength.",
+    "sub_groups": ["Anterior Deltoid (Front)", "Lateral Deltoid (Side)", "Posterior Deltoid (Rear)"],
+    "icon": "aperture",
+    "svg_region": "shoulders"
+  },
+  {
+    "id": "biceps",
+    "name": "Biceps",
+    "anatomical_name": "Biceps Brachii & Brachialis",
+    "description": "Front upper arm flexors responsible for elbow flexion and forearm supination.",
+    "sub_groups": ["Long Head (Outer)", "Short Head (Inner)", "Brachialis"],
+    "icon": "zap",
+    "svg_region": "biceps"
+  },
+  {
+    "id": "triceps",
+    "name": "Triceps",
+    "anatomical_name": "Triceps Brachii",
+    "description": "Back upper arm extensors responsible for elbow extension and lock-out strength.",
+    "sub_groups": ["Long Head", "Lateral Head", "Medial Head"],
+    "icon": "activity",
+    "svg_region": "triceps"
+  },
+  {
+    "id": "forearms",
+    "name": "Forearms",
+    "anatomical_name": "Brachioradialis & Wrist Flexors/Extensors",
+    "description": "Lower arm muscles providing grip strength and wrist control.",
+    "sub_groups": ["Flexors", "Extensors", "Brachioradialis"],
+    "icon": "crosshair",
+    "svg_region": "forearms"
+  },
+  {
+    "id": "abs",
+    "name": "Abs",
+    "anatomical_name": "Rectus Abdominis",
+    "description": "Front core muscle stabilizing spinal flexion and pelvic control.",
+    "sub_groups": ["Upper Abs", "Lower Abs"],
+    "icon": "square",
+    "svg_region": "abs"
+  },
+  {
+    "id": "obliques",
+    "name": "Obliques",
+    "anatomical_name": "External & Internal Obliques",
+    "description": "Side abdominal muscles controlling torso rotation and lateral flexion.",
+    "sub_groups": ["External Obliques", "Internal Obliques"],
+    "icon": "slash",
+    "svg_region": "obliques"
+  },
+  {
+    "id": "glutes",
+    "name": "Glutes",
+    "anatomical_name": "Gluteus Maximus, Medius & Minimus",
+    "description": "Posterior hip extension and abduction power generator.",
+    "sub_groups": ["Gluteus Maximus", "Gluteus Medius", "Gluteus Minimus"],
+    "icon": "circle",
+    "svg_region": "glutes"
+  },
+  {
+    "id": "quadriceps",
+    "name": "Quadriceps",
+    "anatomical_name": "Rectus Femoris, Vastus Lateralis/Medialis/Intermedius",
+    "description": "Front thigh muscles controlling knee extension and squatting power.",
+    "sub_groups": ["Outer Quad (Vastus Lateralis)", "Inner Teardrop (Vastus Medialis)", "Rectus Femoris"],
+    "icon": "grid",
+    "svg_region": "quadriceps"
+  },
+  {
+    "id": "hamstrings",
+    "name": "Hamstrings",
+    "anatomical_name": "Biceps Femoris, Semitendinosus & Semimembranosus",
+    "description": "Back thigh flexors responsible for knee flexion and hip extension.",
+    "sub_groups": ["Biceps Femoris", "Semimembranosus", "Semitendinosus"],
+    "icon": "disc",
+    "svg_region": "hamstrings"
+  },
+  {
+    "id": "calves",
+    "name": "Calves",
+    "anatomical_name": "Gastrocnemius & Soleus",
+    "description": "Lower leg posterior muscles supporting ankle plantarflexion and push-off.",
+    "sub_groups": ["Gastrocnemius (Outer/Upper)", "Soleus (Lower/Deep)"],
+    "icon": "maximize-2",
+    "svg_region": "calves"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "biceps": ["bicep", "arms", "guns", "bicep curl", "arm workout", "peak"],
+  "triceps": ["tricep", "arm extension", "horseshoe", "pushdown"],
+  "chest": ["pecs", "pectoral", "pushup", "bench press", "chest fly"],
+  "back": ["lats", "latissimus", "pullups", "rows", "back extension"],
+  "shoulders": ["delts", "deltoid", "overhead press", "side lateral"],
+  "quadriceps": ["quads", "thighs", "squats", "leg press"],
+  "hamstrings": ["hams", "posterior chain", "leg curl", "deadlift"],
+  "glutes": ["butt", "gluteus", "hip thrust", "booty"],
+  "abs": ["stomach", "six pack", "core", "crunches"],
+  "obliques": ["side abs", "waist", "twists"],
+  "calves": ["calf", "soleus", "gastrocnemius"],
+  "forearms": ["grip", "wrist", "lower arm"]
+}

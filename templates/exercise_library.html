@@ -1,158 +1,350 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-900 text-slate-100 w-full font-sans">
+<div class="flex-1 p-4 md:p-8 overflow-y-auto space-y-8 pb-24 md:pb-12 bg-slate-950 text-slate-100 w-full font-sans">
   
-  <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+  <!-- Header Banner -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
     <div>
       <div class="flex items-center gap-3">
-        <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Exercise Reference Library</h1>
-        <span class="bg-primary-500/20 text-primary-400 border border-primary-500/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-          Supported Exercises: 30+
-        </span>
+        <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-primary-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-primary-500/20">
+          <i data-lucide="dumbbell" class="h-5 w-5 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Visual AI Gym Library</h1>
+          <p class="text-xs text-slate-400 mt-0.5">Interactive graphical exercise demonstrations, muscle targeting maps, and AI fitness search.</p>
+        </div>
       </div>
-      <p class="text-xs text-slate-400 mt-1">Interactive graphical workout demonstrations, execution checkpoints, and safety guidance.</p>
+    </div>
+    
+    <div class="flex items-center gap-3 shrink-0">
+      <span class="bg-slate-900 border border-slate-800 text-primary-400 text-xs font-extrabold px-3.5 py-1.5 rounded-full flex items-center gap-2 shadow-inner">
+        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Catalog: <span id="exercise-count-badge" class="text-white">{{ exercises|length }} Exercises</span>
+      </span>
     </div>
   </div>
 
-  <!-- Search & Controlled Filters Bar -->
-  <div class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-4 md:p-5 shadow-xl space-y-4">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <!-- Search Input -->
-      <div class="relative flex-1">
-        <i data-lucide="search" class="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-slate-400"></i>
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Search exercises by name, muscle group or equipment..."
-          oninput="handleSearch(this.value)"
-          class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-11 pr-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-primary-500 transition-colors shadow-inner"
-        />
-      </div>
+  <!-- AI Natural Language Search & Discovery Bar -->
+  <div class="bg-slate-900/90 border border-slate-800/90 rounded-3xl p-5 md:p-6 shadow-2xl space-y-4">
+    <form id="ai-search-form" onsubmit="executeAISearch(event)" class="space-y-3">
+      <label for="ai-search-input" class="block text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+        <i data-lucide="sparkles" class="h-4 w-4 text-primary-400"></i> Ask FitSync AI or Search Exercises
+      </label>
 
-      <!-- Demonstration Filter Toggle -->
-      <button
-        type="button"
-        id="demo-toggle-btn"
-        onclick="toggleDemoOnly()"
-        class="flex items-center justify-center gap-2 px-4 py-3 bg-slate-900 border border-slate-700 hover:border-primary-500 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all shrink-0"
-      >
-        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <i data-lucide="play-circle" class="h-4 w-4 text-emerald-400"></i>
-        With Graphical Demonstration
+      <div class="relative flex flex-col md:flex-row gap-3">
+        <div class="relative flex-1">
+          <i data-lucide="search" class="absolute left-4 top-3.5 h-5 w-5 text-slate-400"></i>
+          <input
+            type="text"
+            id="ai-search-input"
+            placeholder="Search exercises or ask FitSync AI... (e.g., 'biceps workout at gym', 'dumbbell shoulder exercises', 'replace bench press')"
+            oninput="handleKeywordInput(this.value)"
+            class="w-full bg-slate-950 border border-slate-700/80 rounded-2xl py-3.5 pl-12 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all shadow-inner"
+          />
+        </div>
+        <button
+          type="submit"
+          id="ai-search-btn"
+          class="px-6 py-3.5 bg-gradient-to-r from-primary-500 to-indigo-600 hover:from-primary-600 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-wider rounded-2xl transition-all shadow-lg hover:shadow-primary-500/25 flex items-center justify-center gap-2 shrink-0"
+        >
+          <i data-lucide="bot" class="h-4 w-4"></i> Ask FitSync AI
+        </button>
+      </div>
+    </form>
+
+    <!-- Quick Prompt Chips -->
+    <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+      <span class="text-slate-500 font-semibold text-[11px]">Try asking:</span>
+      <button onclick="triggerQuickPrompt('biceps workout at gym')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium px-3 py-1 rounded-full border border-slate-700 transition-colors">
+        "biceps workout at gym"
+      </button>
+      <button onclick="triggerQuickPrompt('shoulder exercises with dumbbells')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium px-3 py-1 rounded-full border border-slate-700 transition-colors">
+        "shoulder exercises with dumbbells"
+      </button>
+      <button onclick="triggerQuickPrompt('what can replace bench press?')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium px-3 py-1 rounded-full border border-slate-700 transition-colors">
+        "what can replace bench press?"
+      </button>
+      <button onclick="triggerQuickPrompt('home exercises for back without machines')" class="bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium px-3 py-1 rounded-full border border-slate-700 transition-colors">
+        "home exercises for back"
       </button>
     </div>
 
-    <!-- Category & Equipment Filter Chips -->
-    <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-700/50">
-      <!-- Categories -->
-      <div class="flex flex-wrap gap-1.5 p-1 bg-slate-900/80 rounded-xl border border-slate-800">
-        {% for cat in ['All', 'Chest', 'Back', 'Shoulders', 'Legs', 'Biceps', 'Triceps', 'Core'] %}
+    <!-- AI Response Feedback Box (Dynamic) -->
+    <div id="ai-response-box" class="hidden bg-slate-950/90 border border-primary-500/30 rounded-2xl p-4 md:p-5 space-y-3 shadow-inner">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="h-7 w-7 rounded-xl bg-primary-500/20 text-primary-400 flex items-center justify-center border border-primary-500/30">
+            <i data-lucide="bot" class="h-4 w-4"></i>
+          </span>
+          <h3 class="font-extrabold text-sm text-white">FitSync AI Fitness Assistant</h3>
+        </div>
+        <span id="ai-source-tag" class="text-[10px] font-bold text-slate-400 bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-md">
+          Based on FitSync's exercise library
+        </span>
+      </div>
+      <p id="ai-explanation-text" class="text-xs text-slate-300 leading-relaxed font-medium"></p>
+      <div id="ai-intent-badges" class="flex flex-wrap gap-1.5 pt-1"></div>
+    </div>
+  </div>
+
+  <!-- Muscle Groups & Muscle Map View Switcher Tabs -->
+  <div class="space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+      <h2 class="text-lg font-black text-white tracking-wide flex items-center gap-2">
+        <i data-lucide="layout-grid" class="h-5 w-5 text-primary-400"></i> Muscle Group Categories
+      </h2>
+
+      <!-- View Selector (Grid vs Muscle Map) -->
+      <div class="flex items-center gap-2 p-1 bg-slate-900 rounded-xl border border-slate-800 shrink-0">
         <button
           type="button"
-          onclick="selectCategory('{{ cat }}')"
-          class="cat-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ 'bg-primary-500 text-white shadow' if cat == 'All' else 'text-slate-400 hover:text-white' }}"
+          id="tab-categories-btn"
+          onclick="switchViewMode('categories')"
+          class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-primary-500 text-white shadow"
         >
-          {{ cat }}
+          Categories
         </button>
-        {% endfor %}
+        <button
+          type="button"
+          id="tab-map-btn"
+          onclick="switchViewMode('map')"
+          class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5"
+        >
+          <i data-lucide="user" class="h-3.5 w-3.5"></i> Muscle Map
+        </button>
+      </div>
+    </div>
+
+    <!-- Category Grid Cards -->
+    <div id="view-categories-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+      {% set categories_list = [
+        ('Chest', 'Chest', 'Pectorals', 'Bench Press', 'shield'),
+        ('Back', 'Back', 'Lats & Rhomboids', 'Lat Pulldown', 'layers'),
+        ('Shoulders', 'Shoulders', 'Deltoids', 'Dumbbell Press', 'aperture'),
+        ('Biceps', 'Biceps', 'Biceps Brachii', 'Bicep Curl', 'zap'),
+        ('Triceps', 'Triceps', 'Triceps Brachii', 'Cable Pushdown', 'activity'),
+        ('Forearms', 'Forearms', 'Wrist Flexors', 'Wrist Curls', 'crosshair'),
+        ('Abs', 'Core', 'Abdominals', 'Crunches', 'square'),
+        ('Obliques', 'Core', 'Side Abs', 'Russian Twists', 'slash'),
+        ('Glutes', 'Glutes', 'Gluteus Maximus', 'Hip Thrust', 'circle'),
+        ('Quadriceps', 'Legs', 'Front Thighs', 'Squat', 'grid'),
+        ('Hamstrings', 'Legs', 'Back Thighs', 'Leg Curl', 'disc'),
+        ('Calves', 'Legs', 'Gastrocnemius', 'Calf Raises', 'maximize-2')
+      ] %}
+
+      {% for cat_id, main_cat, subtitle, feat_ex, icon in categories_list %}
+        <button
+          type="button"
+          onclick="selectCategoryFilter('{{ cat_id }}')"
+          class="muscle-cat-card bg-slate-900 border border-slate-800 hover:border-primary-500/60 rounded-2xl p-3.5 text-left transition-all hover:scale-[1.02] shadow-md group flex flex-col justify-between"
+          data-category="{{ cat_id }}"
+        >
+          <div class="flex items-center justify-between mb-2">
+            <span class="h-8 w-8 rounded-xl bg-slate-800 text-primary-400 group-hover:bg-primary-500 group-hover:text-white flex items-center justify-center transition-colors">
+              <i data-lucide="{{ icon }}" class="h-4 w-4"></i>
+            </span>
+            <span class="text-[10px] font-black text-slate-500 bg-slate-950 border border-slate-800 px-2 py-0.5 rounded-full">
+              {{ cat_id }}
+            </span>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm text-white group-hover:text-primary-400 transition-colors">{{ cat_id }}</h3>
+            <p class="text-[10px] text-slate-400 mt-0.5 truncate">{{ subtitle }}</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-bold text-slate-400">
+            <span>Explore</span>
+            <i data-lucide="arrow-right" class="h-3 w-3 text-primary-400 group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </button>
+      {% endfor %}
+    </div>
+
+    <!-- Interactive Muscle Map Component (Human Diagram Selector) -->
+    <div id="view-map-container" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+            <i data-lucide="user-check" class="h-5 w-5 text-emerald-400"></i> Interactive Anatomical Muscle Map
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Click any muscle region below to highlight and filter exercise targeting.</p>
+        </div>
+        <div id="selected-muscle-display" class="bg-slate-950 border border-slate-700 text-xs font-bold text-primary-400 px-4 py-2 rounded-xl flex items-center gap-2">
+          <span>Active Focus:</span>
+          <span id="active-map-muscle-name" class="text-white">All Muscle Groups</span>
+        </div>
       </div>
 
-      <!-- Equipment Dropdown Filter -->
-      <div class="flex items-center gap-2 text-xs">
-        <span class="text-slate-400 font-medium">Equipment:</span>
-        <select
-          id="equipment-select"
-          onchange="filterCards()"
-          class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-primary-500"
-        >
-          <option value="all">All Equipment</option>
-          <option value="No Equipment">No Equipment (Calisthenics)</option>
-          <option value="Dumbbells">Dumbbells</option>
-          <option value="Full Gym">Full Gym</option>
-          <option value="Resistance Bands">Resistance Bands</option>
-        </select>
+      <!-- Human Body Anatomy Graphic Selector -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 pt-2">
+        <button type="button" onclick="selectMapRegion('Chest')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+            <i data-lucide="shield" class="h-5 w-5"></i>
+          </div>
+          <span class="block text-xs font-bold text-white">Chest</span>
+          <span class="block text-[10px] text-slate-400">Pectorals</span>
+        </button>
+
+        <button type="button" onclick="selectMapRegion('Back')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+            <i data-lucide="layers" class="h-5 w-5"></i>
+          </div>
+          <span class="block text-xs font-bold text-white">Back</span>
+          <span class="block text-[10px] text-slate-400">Lats & Upper</span>
+        </button>
+
+        <button type="button" onclick="selectMapRegion('Shoulders')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+            <i data-lucide="aperture" class="h-5 w-5"></i>
+          </div>
+          <span class="block text-xs font-bold text-white">Shoulders</span>
+          <span class="block text-[10px] text-slate-400">Deltoids</span>
+        </button>
+
+        <button type="button" onclick="selectMapRegion('Biceps')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+            <i data-lucide="zap" class="h-5 w-5"></i>
+          </div>
+          <span class="block text-xs font-bold text-white">Arms (Biceps)</span>
+          <span class="block text-[10px] text-slate-400">Biceps Brachii</span>
+        </button>
+
+        <button type="button" onclick="selectMapRegion('Triceps')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+            <i data-lucide="activity" class="h-5 w-5"></i>
+          </div>
+          <span class="block text-xs font-bold text-white">Triceps</span>
+          <span class="block text-[10px] text-slate-400">Arm Extension</span>
+        </button>
+
+        <button type="button" onclick="selectMapRegion('Core')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+            <i data-lucide="square" class="h-5 w-5"></i>
+          </div>
+          <span class="block text-xs font-bold text-white">Core & Abs</span>
+          <span class="block text-[10px] text-slate-400">Abs & Obliques</span>
+        </button>
+
+        <button type="button" onclick="selectMapRegion('Legs')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
+          <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
+            <i data-lucide="grid" class="h-5 w-5"></i>
+          </div>
+          <span class="block text-xs font-bold text-white">Legs & Glutes</span>
+          <span class="block text-[10px] text-slate-400">Quads & Hams</span>
+        </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Filter & Equipment Bar -->
+  <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+    <!-- Active Category Indicator -->
+    <div class="flex items-center gap-2">
+      <span class="text-xs text-slate-400 font-semibold">Active Filter:</span>
+      <span id="active-category-tag" class="bg-primary-500/20 text-primary-400 border border-primary-500/30 text-xs font-bold px-3 py-1 rounded-lg">
+        All Categories
+      </span>
+      <button type="button" onclick="resetFilters()" class="text-[11px] font-bold text-slate-400 hover:text-white underline ml-2">
+        Reset
+      </button>
+    </div>
+
+    <!-- Equipment Chips -->
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-xs text-slate-400 font-medium mr-1">Equipment:</span>
+      {% for eq in ['All', 'Dumbbells', 'Full Gym', 'No Equipment', 'Resistance Bands'] %}
+        <button
+          type="button"
+          onclick="selectEquipmentFilter('{{ eq }}')"
+          class="equip-btn px-3 py-1 rounded-lg text-xs font-bold transition-all {{ 'bg-slate-800 text-white border border-slate-700' if eq == 'All' else 'text-slate-400 hover:text-white bg-slate-950 border border-slate-800' }}"
+          data-equip="{{ eq }}"
+        >
+          {{ eq }}
+        </button>
+      {% endfor %}
     </div>
   </div>
 
   <!-- Exercise Cards Grid -->
-  <div id="exercises-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div id="exercises-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     {% for ex in exercises %}
       <div 
-        class="ex-card bg-slate-800 border border-slate-700/80 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:border-primary-500/50 transition-all flex flex-col justify-between"
+        class="ex-card bg-slate-900 border border-slate-800/90 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:border-primary-500/60 transition-all duration-300 flex flex-col justify-between group"
         data-name="{{ ex.name }}"
         data-category="{{ ex.category }}"
+        data-primary="{{ ex.primary_muscle or ex.category }}"
         data-equipment="{{ ex.equipment }}"
         data-difficulty="{{ ex.difficulty }}"
         data-demo="{{ 'true' if ex.supported_demo else 'false' }}"
       >
-        <!-- Card Top Preview / Graphic Animation -->
-        <div class="relative bg-slate-950 aspect-[4/3] overflow-hidden flex items-center justify-center border-b border-slate-700/60">
-          {% if ex.media_path %}
-            <img 
-              src="{{ ex.media_path }}" 
-              alt="{{ ex.name }} Animation" 
-              class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
-              onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-center p-4 text-slate-400 text-xs\'><i data-lucide=\'video-off\' class=\'h-8 w-8 mx-auto mb-2 text-slate-500\'></i>Demonstration coming soon</div>';"
-            />
-          {% else %}
-            <div class="text-center p-4 text-slate-400 text-xs">
-              <i data-lucide="video-off" class="h-8 w-8 mx-auto mb-2 text-slate-500"></i>
-              Demonstration coming soon
-            </div>
-          {% endif %}
+        <!-- Graphical Exercise Demonstration Box -->
+        <div class="relative bg-slate-950 aspect-[4/3] overflow-hidden flex items-center justify-center border-b border-slate-800">
+          <img 
+            src="{{ ex.media_path or '/static/exercises/fallback_demo.svg' }}" 
+            alt="{{ ex.name }} Animation" 
+            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+            onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';"
+          />
 
-          <span class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur text-primary-400 border border-primary-500/30 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md">
+          <span class="absolute top-3 left-3 bg-slate-950/90 backdrop-blur text-primary-400 border border-primary-500/30 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
             {{ ex.category }}
           </span>
 
-          <span class="absolute top-3 right-3 bg-slate-900/90 backdrop-blur text-slate-300 border border-slate-700 text-[10px] font-bold px-2 py-1 rounded-md">
+          <span class="absolute top-3 right-3 bg-slate-950/90 backdrop-blur text-slate-300 border border-slate-700 text-[10px] font-bold px-2 py-1 rounded-lg">
             {{ ex.difficulty }}
           </span>
         </div>
 
-        <!-- Card Content Body -->
+        <!-- Card Content -->
         <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
           <div>
-            <h4 class="font-extrabold text-white text-base leading-snug tracking-wide">{{ ex.name }}</h4>
-            <div class="mt-2 flex flex-wrap gap-1.5">
-              {% for sec in ex.secondary_muscles %}
-                <span class="text-[10px] font-medium bg-slate-900 text-slate-400 border border-slate-700 px-2 py-0.5 rounded">
-                  {{ sec }}
-                </span>
-              {% endfor %}
+            <h3 class="font-black text-white text-base leading-snug tracking-wide group-hover:text-primary-400 transition-colors">{{ ex.name }}</h3>
+            
+            <div class="mt-2.5 space-y-1 text-xs">
+              <div class="flex items-center gap-1.5 text-slate-400">
+                <span class="text-slate-500 font-medium text-[11px]">Primary Muscle:</span>
+                <span class="text-emerald-400 font-extrabold text-[11px]">{{ ex.primary_muscle or ex.category }}</span>
+              </div>
+
+              {% if ex.secondary_muscles %}
+              <div class="flex flex-wrap gap-1 pt-1">
+                {% for sec in ex.secondary_muscles %}
+                  <span class="text-[10px] font-semibold bg-slate-950 text-slate-400 border border-slate-800 px-2 py-0.5 rounded-md">
+                    {{ sec }}
+                  </span>
+                {% endfor %}
+              </div>
+              {% endif %}
             </div>
           </div>
 
-          <div class="space-y-1.5 text-xs text-slate-400 border-t border-slate-700/60 pt-3">
+          <div class="space-y-1.5 text-xs text-slate-400 border-t border-slate-800/80 pt-3">
             <div class="flex justify-between items-center">
-              <span class="text-slate-500 font-medium">Equipment:</span>
-              <span class="text-slate-200 font-semibold">{{ ex.equipment }}</span>
+              <span class="text-slate-500 font-medium text-[11px]">Equipment:</span>
+              <span class="text-slate-200 font-bold text-[11px]">{{ ex.equipment }}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-slate-500 font-medium">Prescribed Sets:</span>
-              <span class="text-slate-200 font-semibold">{{ ex.default_sets }} × {{ ex.default_reps }}</span>
+              <span class="text-slate-500 font-medium text-[11px]">Prescribed Sets:</span>
+              <span class="text-slate-200 font-bold text-[11px]">{{ ex.default_sets }} × {{ ex.default_reps }}</span>
             </div>
           </div>
 
-          <!-- Buttons -->
-          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-700/60">
+          <!-- Card Actions -->
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80">
             <button
               type="button"
               onclick='openLibraryDetailModal({{ ex|tojson|safe }})'
-              class="flex items-center justify-center gap-1.5 py-2.5 bg-slate-900 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-colors"
+              class="flex items-center justify-center gap-1.5 py-2.5 bg-slate-950 hover:bg-slate-800 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-colors"
             >
-              <i data-lucide="info" class="h-4 w-4 text-primary-400"></i> View Details
+              <i data-lucide="info" class="h-4 w-4 text-primary-400"></i> Details
             </button>
 
             <button
               type="button"
               onclick='playExerciseDemoModal({{ ex|tojson|safe }})'
-              class="flex items-center justify-center gap-1.5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl transition-all shadow-lg hover:shadow-emerald-500/20"
+              class="flex items-center justify-center gap-1.5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md"
             >
-              <i data-lucide="play" class="h-4 w-4 fill-current"></i> Demonstration
+              <i data-lucide="play" class="h-4 w-4 fill-current"></i> Demo
             </button>
           </div>
         </div>
@@ -160,24 +352,15 @@
     {% endfor %}
   </div>
 
-  <!-- Controlled Empty Result State -->
-  <div id="no-results-state" class="hidden bg-slate-800 border border-slate-700/80 rounded-2xl p-10 text-center space-y-4 max-w-lg mx-auto my-12">
-    <div class="h-16 w-16 bg-slate-900 text-amber-400 rounded-full flex items-center justify-center mx-auto border border-amber-500/30">
+  <!-- Controlled Empty Search State -->
+  <div id="no-results-state" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-10 text-center space-y-4 max-w-lg mx-auto my-12 shadow-2xl">
+    <div class="h-16 w-16 bg-slate-950 text-amber-400 rounded-full flex items-center justify-center mx-auto border border-amber-500/30">
       <i data-lucide="search-x" class="h-8 w-8"></i>
     </div>
-    <h3 class="text-lg font-bold text-white">We don't currently have a guided demonstration for this exercise.</h3>
+    <h3 class="text-base font-extrabold text-white">No matching exercises found in current filter.</h3>
     <p class="text-xs text-slate-400 leading-relaxed">
-      FitSync AI maintains a curated catalog of 30+ verified exercises with graphical demonstrations.
+      FitSync AI maintains a verified gym catalog of 47 exercises with graphical demonstrations.
     </p>
-    <div class="bg-slate-900 p-4 rounded-xl text-xs text-slate-300 border border-slate-800 space-y-1">
-      <p class="font-bold text-primary-400">Try searching for supported exercises:</p>
-      <div class="flex flex-wrap justify-center gap-2 pt-2">
-        <button onclick="quickSearch('Squat')" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded border border-slate-700">Squat</button>
-        <button onclick="quickSearch('Push-up')" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded border border-slate-700">Push-up</button>
-        <button onclick="quickSearch('Bench Press')" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded border border-slate-700">Bench Press</button>
-        <button onclick="quickSearch('Bicep Curl')" class="bg-slate-800 hover:bg-slate-700 text-xs px-2.5 py-1 rounded border border-slate-700">Bicep Curl</button>
-      </div>
-    </div>
     <button
       onclick="resetFilters()"
       class="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs rounded-xl shadow-lg transition-colors"
@@ -186,7 +369,7 @@
     </button>
   </div>
 
-  <!-- EXERCISE DEMONSTRATION PLAYER MODAL -->
+  <!-- DEMONSTRATION PLAYER MODAL -->
   <div id="demo-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh] shadow-2xl">
       <!-- Modal Header -->
@@ -200,37 +383,33 @@
         </button>
       </div>
 
-      <!-- Modal Video / Graphic Container -->
+      <!-- Modal Content -->
       <div class="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
+        <!-- SVG Graphic Demonstration Container -->
         <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[16/9] flex items-center justify-center relative shadow-inner">
           <img id="demo-modal-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
-          <div id="demo-modal-fallback" class="hidden text-center p-6 text-slate-400 space-y-2">
-            <i data-lucide="video-off" class="h-10 w-10 mx-auto text-slate-500"></i>
-            <p class="font-bold text-white text-sm">Demonstration Coming Soon</p>
-            <p class="text-xs text-slate-400 max-w-xs mx-auto">This exercise is supported in our database. Follow the execution steps below.</p>
-          </div>
         </div>
 
-        <!-- Biomechanics Checkpoints -->
+        <!-- Start -> Movement -> End Checkpoints -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700/60">
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">▶ Start Position</p>
             <p id="demo-modal-start" class="text-slate-200 font-medium"></p>
           </div>
-          <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700/60">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">⚡ Movement Path</p>
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">⚡ Movement</p>
             <p id="demo-modal-move" class="text-slate-200 font-medium"></p>
           </div>
-          <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700/60">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">🎯 Peak End Pos</p>
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">🎯 End Position</p>
             <p id="demo-modal-end" class="text-slate-200 font-medium"></p>
           </div>
         </div>
 
         <!-- Instructions -->
-        <div class="space-y-2 bg-slate-800/40 p-4 rounded-xl border border-slate-800">
-          <h4 class="font-extrabold text-sm text-white flex items-center gap-2">
-            <i data-lucide="list-checks" class="h-4 w-4 text-emerald-400"></i> Step-by-Step Execution
+        <div class="space-y-2 bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+          <h4 class="font-extrabold text-xs uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+            <i data-lucide="list-checks" class="h-4 w-4 text-emerald-400"></i> How to Perform
           </h4>
           <ol id="demo-modal-instructions" class="list-decimal list-inside space-y-1.5 text-slate-300 pl-1"></ol>
         </div>
@@ -238,7 +417,7 @@
         <!-- Common Mistakes -->
         <div id="demo-modal-mistakes-box" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-200 space-y-1.5 hidden">
           <h4 class="font-bold text-xs uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-            ⚠️ Common Execution Mistakes
+            ⚠️ Common Mistakes
           </h4>
           <ul id="demo-modal-mistakes" class="list-disc list-inside space-y-1 text-xs"></ul>
         </div>
@@ -252,12 +431,12 @@
     </div>
   </div>
 
-  <!-- EXERCISE DETAILS GUIDE MODAL -->
+  <!-- EXERCISE DETAILS MODAL -->
   <div id="lib-detail-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
       <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
         <div>
-          <h3 id="lib-modal-name" class="font-bold text-lg">Exercise Name</h3>
+          <h3 id="lib-modal-name" class="font-black text-lg">Exercise Name</h3>
           <p id="lib-modal-cat" class="text-xs text-primary-400 capitalize">Category</p>
         </div>
         <button onclick="closeLibraryDetailModal()" class="h-8 w-8 bg-slate-800 rounded-full text-slate-400 hover:text-white flex items-center justify-center transition-colors">
@@ -266,16 +445,32 @@
       </div>
 
       <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-300">
+        <!-- Target Info -->
+        <div class="grid grid-cols-2 gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          <div>
+            <span class="text-slate-500 block text-[10px] font-bold uppercase">Primary Muscle</span>
+            <span id="lib-modal-primary" class="font-extrabold text-emerald-400 text-xs"></span>
+          </div>
+          <div>
+            <span class="text-slate-500 block text-[10px] font-bold uppercase">Equipment</span>
+            <span id="lib-modal-equip" class="font-bold text-slate-200 text-xs"></span>
+          </div>
+        </div>
+
         <div>
-          <h4 class="font-bold text-sm text-white mb-2">Instructions:</h4>
+          <h4 class="font-extrabold text-xs uppercase tracking-wider text-white mb-2">Execution Steps:</h4>
           <ol id="lib-modal-instructions" class="list-decimal list-inside space-y-1.5 text-slate-300"></ol>
         </div>
 
-        <div id="lib-modal-mistakes-container" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-200 hidden">
-          <h4 class="font-bold text-xs uppercase tracking-wide text-amber-400 mb-1.5">
-            ⚠️ Common Mistakes
-          </h4>
-          <ul id="lib-modal-mistakes" class="list-disc list-inside space-y-1"></ul>
+        <div id="lib-modal-safety-box" class="p-3.5 bg-indigo-500/10 border border-indigo-500/30 rounded-xl text-indigo-200 hidden">
+          <h4 class="font-bold text-xs uppercase tracking-wide text-indigo-400 mb-1">🛡️ Safety Notes</h4>
+          <p id="lib-modal-safety" class="text-xs"></p>
+        </div>
+
+        <!-- Alternatives -->
+        <div id="lib-modal-alts-box" class="space-y-2 hidden">
+          <h4 class="font-bold text-xs uppercase tracking-wide text-slate-300">Exercise Alternatives:</h4>
+          <div id="lib-modal-alts-list" class="flex flex-wrap gap-1.5"></div>
         </div>
       </div>
 
@@ -292,71 +487,152 @@
 
 {% block scripts %}
 <script>
-  let searchVal = '';
-  let activeCat = 'All';
-  let demoOnly = false;
+  let activeCategory = 'All';
+  let activeEquip = 'All';
+  let activeKeyword = '';
 
-  function handleSearch(val) {
-    searchVal = val;
+  function handleKeywordInput(val) {
+    activeKeyword = val.trim();
     filterCards();
   }
 
-  function toggleDemoOnly() {
-    demoOnly = !demoOnly;
-    const btn = document.getElementById('demo-toggle-btn');
-    if (demoOnly) {
-      btn.className = "flex items-center justify-center gap-2 px-4 py-3 bg-emerald-500/20 border border-emerald-500 text-xs font-bold text-emerald-300 transition-all shrink-0 rounded-xl";
-    } else {
-      btn.className = "flex items-center justify-center gap-2 px-4 py-3 bg-slate-900 border border-slate-700 hover:border-primary-500 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all shrink-0";
+  function triggerQuickPrompt(promptText) {
+    document.getElementById('ai-search-input').value = promptText;
+    activeKeyword = promptText;
+    executeAISearch();
+  }
+
+  async function executeAISearch(e) {
+    if (e) e.preventDefault();
+    const query = document.getElementById('ai-search-input').value.trim();
+    if (!query) return;
+
+    const resBox = document.getElementById('ai-response-box');
+    const expText = document.getElementById('ai-explanation-text');
+    const badgesDiv = document.getElementById('ai-intent-badges');
+    const sourceTag = document.getElementById('ai-source-tag');
+
+    try {
+      const response = await fetch('/api/ai/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query })
+      });
+      const data = await response.json();
+
+      if (data.status === 'success') {
+        resBox.classList.remove('hidden');
+        expText.innerHTML = data.explanation || 'Processed fitness query.';
+        sourceTag.innerText = data.source || "Based on FitSync's exercise library";
+
+        badgesDiv.innerHTML = '';
+        if (data.intent) {
+          if (data.intent.target_muscles && data.intent.target_muscles.length) {
+            data.intent.target_muscles.forEach(m => {
+              badgesDiv.innerHTML += `<span class="text-[10px] font-extrabold bg-primary-500/20 text-primary-400 border border-primary-500/30 px-2.5 py-0.5 rounded-md">Target: ${m.toUpperCase()}</span>`;
+            });
+          }
+          if (data.intent.is_gym) {
+            badgesDiv.innerHTML += `<span class="text-[10px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2.5 py-0.5 rounded-md">Environment: Gym</span>`;
+          }
+          if (data.intent.is_home) {
+            badgesDiv.innerHTML += `<span class="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-md">Environment: Home</span>`;
+          }
+        }
+
+        // Render AI returned exercises
+        if (data.exercises && data.exercises.length) {
+          displayCustomExerciseList(data.exercises);
+        } else {
+          filterCards();
+        }
+      }
+    } catch (err) {
+      console.error("AI Search Error:", err);
+      filterCards();
     }
+  }
+
+  function switchViewMode(mode) {
+    const catBtn = document.getElementById('tab-categories-btn');
+    const mapBtn = document.getElementById('tab-map-btn');
+    const catContainer = document.getElementById('view-categories-container');
+    const mapContainer = document.getElementById('view-map-container');
+
+    if (mode === 'map') {
+      catBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all";
+      mapBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-primary-500 text-white shadow flex items-center gap-1.5";
+      catContainer.classList.add('hidden');
+      mapContainer.classList.remove('hidden');
+    } else {
+      catBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-primary-500 text-white shadow";
+      mapBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+      catContainer.classList.remove('hidden');
+      mapContainer.classList.add('hidden');
+    }
+  }
+
+  function selectCategoryFilter(cat) {
+    activeCategory = cat;
+    document.getElementById('active-category-tag').innerText = `${cat} Category`;
     filterCards();
   }
 
-  function selectCategory(cat) {
-    activeCat = cat;
-    document.querySelectorAll('.cat-btn').forEach(btn => {
-      if (btn.innerText.trim() === cat) {
-        btn.className = "cat-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-primary-500 text-white shadow";
+  function selectMapRegion(regionName) {
+    activeCategory = regionName;
+    document.getElementById('active-map-muscle-name').innerText = `${regionName} Focus`;
+    document.getElementById('active-category-tag').innerText = `${regionName} Focus`;
+    filterCards();
+  }
+
+  function selectEquipmentFilter(eq) {
+    activeEquip = eq;
+    document.querySelectorAll('.equip-btn').forEach(btn => {
+      if (btn.dataset.equip === eq) {
+        btn.className = "equip-btn px-3 py-1 rounded-lg text-xs font-bold transition-all bg-slate-800 text-white border border-slate-700 shadow";
       } else {
-        btn.className = "cat-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white";
+        btn.className = "equip-btn px-3 py-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white bg-slate-950 border border-slate-800";
       }
     });
     filterCards();
   }
 
-  function quickSearch(term) {
-    document.getElementById('search-input').value = term;
-    searchVal = term;
-    filterCards();
-  }
-
   function resetFilters() {
-    document.getElementById('search-input').value = '';
-    searchVal = '';
-    activeCat = 'All';
-    demoOnly = false;
-    document.getElementById('equipment-select').value = 'all';
-    selectCategory('All');
+    activeCategory = 'All';
+    activeEquip = 'All';
+    activeKeyword = '';
+    document.getElementById('ai-search-input').value = '';
+    document.getElementById('active-category-tag').innerText = 'All Categories';
+    document.getElementById('ai-response-box').classList.add('hidden');
+    selectEquipmentFilter('All');
     filterCards();
   }
 
   function filterCards() {
     const cards = document.querySelectorAll('.ex-card');
-    const equipVal = document.getElementById('equipment-select').value.toLowerCase();
     let visibleCount = 0;
+    const kw = activeKeyword.toLowerCase();
 
     cards.forEach(card => {
       const name = card.dataset.name.toLowerCase();
       const cat = card.dataset.category.toLowerCase();
+      const primary = card.dataset.primary.toLowerCase();
       const equip = card.dataset.equipment.toLowerCase();
-      const hasDemo = card.dataset.demo === 'true';
 
-      const matchesSearch = name.includes(searchVal.toLowerCase()) || cat.includes(searchVal.toLowerCase()) || equip.includes(searchVal.toLowerCase());
-      const matchesCategory = activeCat === 'All' || cat === activeCat.toLowerCase();
-      const matchesEquip = equipVal === 'all' || equip.includes(equipVal);
-      const matchesDemo = !demoOnly || hasDemo;
+      const matchesKw = !kw || name.includes(kw) || cat.includes(kw) || primary.includes(kw) || equip.includes(kw);
+      
+      let matchesCat = true;
+      if (activeCategory !== 'All') {
+        const target = activeCategory.toLowerCase();
+        matchesCat = cat.includes(target) || primary.includes(target);
+      }
 
-      if (matchesSearch && matchesCategory && matchesEquip && matchesDemo) {
+      let matchesEq = true;
+      if (activeEquip !== 'All') {
+        matchesEq = equip.includes(activeEquip.toLowerCase());
+      }
+
+      if (matchesKw && matchesCat && matchesEq) {
         card.classList.remove('hidden');
         visibleCount++;
       } else {
@@ -364,11 +640,40 @@
       }
     });
 
-    const noResultsState = document.getElementById('no-results-state');
+    const countBadge = document.getElementById('exercise-count-badge');
+    if (countBadge) countBadge.innerText = `${visibleCount} Exercises`;
+
+    const noResults = document.getElementById('no-results-state');
     if (visibleCount === 0) {
-      noResultsState.classList.remove('hidden');
+      noResults.classList.remove('hidden');
     } else {
-      noResultsState.classList.add('hidden');
+      noResults.classList.add('hidden');
+    }
+  }
+
+  function displayCustomExerciseList(exerciseList) {
+    const cards = document.querySelectorAll('.ex-card');
+    const allowedSlugs = new Set(exerciseList.map(e => e.name.toLowerCase()));
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const name = card.dataset.name.toLowerCase();
+      if (allowedSlugs.has(name) || Array.from(allowedSlugs).some(s => name.includes(s) || s.includes(name))) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    const countBadge = document.getElementById('exercise-count-badge');
+    if (countBadge) countBadge.innerText = `${visibleCount} Exercises`;
+
+    const noResults = document.getElementById('no-results-state');
+    if (visibleCount === 0) {
+      noResults.classList.remove('hidden');
+    } else {
+      noResults.classList.add('hidden');
     }
   }
 
@@ -381,16 +686,7 @@
     document.getElementById('demo-modal-end').innerText = ex.end_pos || 'Contract target muscle group at peak.';
 
     const img = document.getElementById('demo-modal-img');
-    const fallback = document.getElementById('demo-modal-fallback');
-
-    if (ex.media_path) {
-      img.src = ex.media_path;
-      img.classList.remove('hidden');
-      fallback.classList.add('hidden');
-    } else {
-      img.classList.add('hidden');
-      fallback.classList.remove('hidden');
-    }
+    img.src = ex.media_path || '/static/exercises/fallback_demo.svg';
 
     const ol = document.getElementById('demo-modal-instructions');
     ol.innerHTML = '';
@@ -429,6 +725,8 @@
   function openLibraryDetailModal(ex) {
     document.getElementById('lib-modal-name').innerText = ex.name;
     document.getElementById('lib-modal-cat').innerText = `${ex.category} Category — ${ex.difficulty}`;
+    document.getElementById('lib-modal-primary').innerText = ex.primary_muscle || ex.category;
+    document.getElementById('lib-modal-equip').innerText = ex.equipment;
 
     const ol = document.getElementById('lib-modal-instructions');
     ol.innerHTML = '';
@@ -440,20 +738,24 @@
       }
     });
 
-    const mDiv = document.getElementById('lib-modal-mistakes-container');
-    const ul = document.getElementById('lib-modal-mistakes');
-    ul.innerHTML = '';
-    if (ex.common_mistakes && ex.common_mistakes.length > 0) {
-      mDiv.classList.remove('hidden');
-      ex.common_mistakes.forEach(m => {
-        if (m.trim()) {
-          const li = document.createElement('li');
-          li.innerText = m;
-          ul.appendChild(li);
-        }
+    const safetyBox = document.getElementById('lib-modal-safety-box');
+    if (ex.safety_notes) {
+      safetyBox.classList.remove('hidden');
+      document.getElementById('lib-modal-safety').innerText = ex.safety_notes;
+    } else {
+      safetyBox.classList.add('hidden');
+    }
+
+    const altsBox = document.getElementById('lib-modal-alts-box');
+    const altsList = document.getElementById('lib-modal-alts-list');
+    altsList.innerHTML = '';
+    if (ex.alternatives && ex.alternatives.length) {
+      altsBox.classList.remove('hidden');
+      ex.alternatives.forEach(alt => {
+        altsList.innerHTML += `<button type="button" onclick="triggerQuickPrompt('${alt}')" class="text-[11px] font-bold bg-slate-950 text-slate-300 border border-slate-700 hover:border-primary-500 px-2.5 py-1 rounded-lg transition-colors">${alt}</button>`;
       });
     } else {
-      mDiv.classList.add('hidden');
+      altsBox.classList.add('hidden');
     }
 
     document.getElementById('lib-detail-modal').classList.remove('hidden');

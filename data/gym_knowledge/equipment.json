@@ -1,0 +1,38 @@
+[
+  {
+    "id": "dumbbells",
+    "name": "Dumbbells",
+    "environment": "Home or Gym",
+    "description": "Versatile free weights for unilateral and bilateral movement patterns."
+  },
+  {
+    "id": "barbell",
+    "name": "Barbell",
+    "environment": "Gym",
+    "description": "Heavy free-weight bar ideal for compound strength loading."
+  },
+  {
+    "id": "cable",
+    "name": "Cable Machine",
+    "environment": "Gym",
+    "description": "Constant tension cable pulley systems for isolated range of motion."
+  },
+  {
+    "id": "machine",
+    "name": "Full Gym / Machines",
+    "environment": "Gym",
+    "description": "Guided path resistance machines isolating specific muscle groups safely."
+  },
+  {
+    "id": "bodyweight",
+    "name": "Bodyweight (No Equipment)",
+    "environment": "Home or Outdoor",
+    "description": "Calisthenic exercises utilizing gravity and body mass."
+  },
+  {
+    "id": "resistance_bands",
+    "name": "Resistance Bands",
+    "environment": "Home or Travel",
+    "description": "Elastic band resistance adaptable to multi-angle training."
+  }
+]

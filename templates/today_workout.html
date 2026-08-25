@@ -208,6 +208,24 @@
           </h4>
           <ul id="modal-ex-mistakes" class="list-disc list-inside space-y-0.5 text-xs"></ul>
         </div>
+        <!-- Ask FitSync AI Context Options -->
+        <div class="p-4 bg-slate-950/80 border border-primary-500/20 rounded-xl space-y-2">
+          <p class="font-extrabold text-[11px] uppercase tracking-wider text-primary-400 flex items-center gap-1.5">
+            <i data-lucide="bot" class="h-3.5 w-3.5"></i> Ask FitSync AI About This Exercise
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <button onclick="askAIAboutExercise('Why am I doing this exercise?')" class="text-[10px] font-bold bg-slate-900 text-slate-300 border border-slate-700 hover:border-primary-500 px-2.5 py-1 rounded-lg transition-colors">
+              "Why am I doing this?"
+            </button>
+            <button onclick="askAIAboutExercise('What can replace this?')" class="text-[10px] font-bold bg-slate-900 text-slate-300 border border-slate-700 hover:border-primary-500 px-2.5 py-1 rounded-lg transition-colors">
+              "What can replace this?"
+            </button>
+            <button onclick="askAIAboutExercise('How should I perform this?')" class="text-[10px] font-bold bg-slate-900 text-slate-300 border border-slate-700 hover:border-primary-500 px-2.5 py-1 rounded-lg transition-colors">
+              "How should I perform this?"
+            </button>
+          </div>
+          <div id="modal-ai-answer-box" class="hidden text-xs text-slate-300 bg-slate-900 p-2.5 rounded-lg border border-slate-800 mt-2"></div>
+        </div>
       </div>
 
       <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-end">
@@ -305,16 +323,20 @@
 
 {% block scripts %}
 <script>
+  let currentActiveModalEx = null;
+
   // Guide Modal handlers
   function openGuideModal(ex) {
+    currentActiveModalEx = ex;
+    document.getElementById('modal-ai-answer-box').classList.add('hidden');
     document.getElementById('modal-ex-name').innerText = ex.name;
     document.getElementById('modal-ex-cat').innerText = `${ex.category} Category`;
     document.getElementById('modal-ex-start').innerText = ex.start_pos || 'Stabilize body anchor.';
     document.getElementById('modal-ex-move').innerText = ex.movement || 'Perform concentric flexion.';
     document.getElementById('modal-ex-end').innerText = ex.end_pos || 'Hold and reverse.';
 
-    const slug = ex.name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_');
-    document.getElementById('modal-ex-img').src = `/static/exercises/${slug}/demo.svg`;
+    const slug = ex.slug || ex.name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_');
+    document.getElementById('modal-ex-img').src = ex.media_path || `/static/exercises/${slug}/demo.svg`;
 
     const ol = document.getElementById('modal-ex-instructions');
     ol.innerHTML = '';
@@ -349,6 +371,26 @@
 
   function closeGuideModal() {
     document.getElementById('guide-modal').classList.add('hidden');
+  }
+
+  async function askAIAboutExercise(promptPrefix) {
+    if (!currentActiveModalEx) return;
+    const ansBox = document.getElementById('modal-ai-answer-box');
+    ansBox.classList.remove('hidden');
+    ansBox.innerHTML = '<span class="animate-pulse">Consulting FitSync AI...</span>';
+
+    const fullQuery = `${promptPrefix} (${currentActiveModalEx.name})`;
+    try {
+      const res = await fetch('/api/ai/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: fullQuery })
+      });
+      const data = await res.json();
+      ansBox.innerHTML = `<strong>FitSync AI:</strong> ${data.explanation || 'Exercise guidance retrieved.'}`;
+    } catch(err) {
+      ansBox.innerHTML = '<strong>FitSync AI:</strong> This exercise targets ' + (currentActiveModalEx.category || 'the target muscle') + ' with prescribed sets: ' + (currentActiveModalEx.sets || 3) + ' x ' + (currentActiveModalEx.reps || '10-12') + '.';
+    }
   }
 
   // Toggle exercise check state

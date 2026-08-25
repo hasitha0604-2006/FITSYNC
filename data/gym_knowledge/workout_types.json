@@ -1,0 +1,38 @@
+[
+  {
+    "id": "push",
+    "name": "Push Workout",
+    "muscles": ["Chest", "Shoulders", "Triceps"],
+    "description": "Upper body workout focusing on pressing movements."
+  },
+  {
+    "id": "pull",
+    "name": "Pull Workout",
+    "muscles": ["Back", "Biceps", "Forearms"],
+    "description": "Upper body workout focusing on pulling movements."
+  },
+  {
+    "id": "legs",
+    "name": "Legs & Glutes",
+    "muscles": ["Quadriceps", "Hamstrings", "Calves", "Glutes"],
+    "description": "Lower body strength and hypertrophy training."
+  },
+  {
+    "id": "upper_body",
+    "name": "Upper Body",
+    "muscles": ["Chest", "Back", "Shoulders", "Biceps", "Triceps"],
+    "description": "Complete upper torso training session."
+  },
+  {
+    "id": "lower_body",
+    "name": "Lower Body",
+    "muscles": ["Quadriceps", "Hamstrings", "Glutes", "Calves"],
+    "description": "Complete lower body session."
+  },
+  {
+    "id": "core",
+    "name": "Core & Abs",
+    "muscles": ["Abs", "Obliques"],
+    "description": "Abdominal flexors and rotational stability."
+  }
+]

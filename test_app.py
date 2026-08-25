@@ -426,6 +426,117 @@ class FitSyncTestCase(unittest.TestCase):
             resp = c.post('/api/diet/generate')
             self.assertEqual(resp.status_code, 200)
             data = resp.get_json()
+            # TEST 13: Preferred food receives higher priority where practical
+            prefs_love = [
+                {"food_name": "Sprouts Salad", "is_preferred": True, "is_available": True, "is_avoided": False},
+                {"food_name": "Avocado Toast", "is_preferred": False, "is_available": True, "is_avoided": False}
+            ]
+            # Both are available, but Sprouts Salad is preferred and cheaper. It should be selected.
+            meals_love = generate_daily_meals(profile, prefs_love, targets, mock_foods_pref, "2026-08-25")
+            self.assertEqual(meals_love[0]["food_id"], 1)
+
+    def test_custom_food_features(self):
+        user = User(email="customfood@fitsync.ai", password_hash="hash")
+        db.session.add(user)
+        db.session.commit()
+
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = user.id
+
+            # 1. Create valid custom food
+            resp = c.post('/api/custom-foods', json={
+                "name": "Homemade Paneer Wrap",
+                "category": "Homemade",
+                "serving_size_g": 180,
+                "calories": 320,
+                "protein": 18.0,
+                "carbs": 25.0,
+                "fat": 14.0,
+                "cost": 40
+            })
+            self.assertEqual(resp.status_code, 200)
+            data = resp.get_json()
+            self.assertEqual(data["status"], "success")
+
+            # 2. Verify persistence in DB
+            c_foods = c.get('/api/custom-foods').get_json()["custom_foods"]
+            self.assertEqual(len(c_foods), 1)
+            self.assertEqual(c_foods[0]["name"], "Homemade Paneer Wrap")
+
+            # 3. Test validation - Empty Name
+            resp_err = c.post('/api/custom-foods', json={
+                "name": "  ",
+                "serving_size_g": 100,
+                "calories": 200
+            })
+            self.assertEqual(resp_err.status_code, 400)
+
+            # 4. Test validation - Negative Calories
+            resp_neg = c.post('/api/custom-foods', json={
+                "name": "Negative Food",
+                "serving_size_g": 100,
+                "calories": -50
+            })
+            self.assertEqual(resp_neg.status_code, 400)
+
+            # 5. Delete custom food
+            cf_id = c_foods[0]["id"]
+            del_resp = c.delete(f'/api/custom-foods/{cf_id}')
+            self.assertEqual(del_resp.status_code, 200)
+            self.assertEqual(len(c.get('/api/custom-foods').get_json()["custom_foods"]), 0)
+
+    def test_exercise_search_api(self):
+        with self.app as c:
+            # 1. Search exact
+            resp = c.get('/api/exercises/search?q=squat')
+            self.assertEqual(resp.status_code, 200)
+            data = resp.get_json()
+            self.assertGreater(data["count"], 0)
+            self.assertTrue(any("squat" in ex["name"].lower() for ex in data["results"]))
+
+            # 2. Search by muscle category
+            resp_cat = c.get('/api/exercises/search?category=chest')
+            self.assertEqual(resp_cat.status_code, 200)
+            data_cat = resp_cat.get_json()
+            self.assertGreater(data_cat["count"], 0)
+            self.assertTrue(all(ex["category"].lower() == "chest" for ex in data_cat["results"]))
+
+            # 3. Search unsupported query
+            resp_none = c.get('/api/exercises/search?q=unsupported_exercise_xyz')
+            self.assertEqual(resp_none.status_code, 200)
+            self.assertEqual(resp_none.get_json()["count"], 0)
+
+    def test_ai_diet_generation_and_fallback(self):
+        user = User(email="aidiet@fitsync.ai", password_hash="hash")
+        db.session.add(user)
+        db.session.commit()
+
+        profile = UserProfile(
+            user_id=user.id,
+            name="AI Diet User",
+            age=22,
+            gender="Male",
+            height=178.0,
+            weight=74.0,
+            fitness_goal="Muscle Gain",
+            fitness_level="Intermediate",
+            workout_days_per_week=4,
+            workout_duration_mins=45,
+            dietary_preference="Eggetarian",
+            daily_food_budget=150,
+            onboarding_completed=True
+        )
+        db.session.add(profile)
+        db.session.commit()
+
+        with self.app as c:
+            with c.session_transaction() as sess:
+                sess['user_id'] = user.id
+
+            resp = c.post('/api/diet/generate')
+            self.assertEqual(resp.status_code, 200)
+            data = resp.get_json()
             self.assertEqual(data["status"], "success")
             self.assertTrue("meals" in data)
             self.assertEqual(len(data["meals"]), 5)
@@ -435,10 +546,67 @@ class FitSyncTestCase(unittest.TestCase):
         with self.app as c:
             resp = c.get('/api/exercises/search')
             all_ex = resp.get_json()["results"]
-            self.assertGreaterEqual(len(all_ex), 30)
+            self.assertGreaterEqual(len(all_ex), 40)
             for ex in all_ex:
                 self.assertIn("media_path", ex)
                 self.assertIn("supported_demo", ex)
+
+    def test_ai_gym_search_api(self):
+        with self.app as c:
+            # 1. Biceps Gym Search
+            resp = c.post('/api/ai/search', json={"query": "biceps workout at gym"})
+            self.assertEqual(resp.status_code, 200)
+            data = resp.get_json()
+            self.assertEqual(data["status"], "success")
+            self.assertEqual(data["category"], "discovery")
+            self.assertIn("biceps", data["intent"]["target_muscles"])
+            self.assertTrue(data["intent"]["is_gym"])
+            self.assertGreater(len(data["exercises"]), 0)
+
+            # 2. Dumbbell Shoulder Search
+            resp_sh = c.post('/api/ai/search', json={"query": "shoulder exercises with dumbbells"})
+            self.assertEqual(resp_sh.status_code, 200)
+            data_sh = resp_sh.get_json()
+            self.assertEqual(data_sh["status"], "success")
+            self.assertIn("shoulders", data_sh["intent"]["target_muscles"])
+
+            # 3. Exercise Replacement Search
+            resp_alt = c.post('/api/ai/search', json={"query": "replace bench press"})
+            self.assertEqual(resp_alt.status_code, 200)
+            data_alt = resp_alt.get_json()
+            self.assertEqual(data_alt["category"], "alternative")
+            self.assertGreater(len(data_alt["exercises"]), 0)
+
+            # 4. Injury / Pain Safety Disclaimer
+            resp_safe = c.post('/api/ai/search', json={"query": "knee pain during squat"})
+            self.assertEqual(resp_safe.status_code, 200)
+            data_safe = resp_safe.get_json()
+            self.assertEqual(data_safe["category"], "safety")
+            self.assertIn("Safety First", data_safe["explanation"])
+
+            # 5. Unsupported Query Fallback
+            resp_unk = c.post('/api/ai/search', json={"query": "xyz_unknown_exercise_99"})
+            self.assertEqual(resp_unk.status_code, 200)
+            data_unk = resp_unk.get_json()
+            self.assertEqual(data_unk["category"], "unsupported")
+
+    def test_gym_knowledge_base_files(self):
+        import os
+        base_path = "data/gym_knowledge"
+        required_files = ["muscles.json", "equipment.json", "workout_types.json", "fitness_goals.json", "exercise_aliases.json", "common_questions.json"]
+        for f in required_files:
+            full_p = os.path.join(base_path, f)
+            self.assertTrue(os.path.exists(full_p), f"Missing knowledge base file: {full_p}")
+
+    def test_exercise_catalog_expansion(self):
+        with self.app as c:
+            resp = c.get('/api/exercises/search')
+            all_ex = resp.get_json()["results"]
+            self.assertGreaterEqual(len(all_ex), 45)
+            categories = {ex["category"] for ex in all_ex}
+            expected_cats = {"Chest", "Back", "Shoulders", "Biceps", "Triceps", "Forearms", "Core", "Glutes", "Legs"}
+            for ec in expected_cats:
+                self.assertIn(ec, categories)
 
 if __name__ == '__main__':
     unittest.main()
