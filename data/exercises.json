@@ -38,7 +38,18 @@
     "alternatives": [],
     "aliases": [
       "bench press"
-    ]
+    ],
+    "working_location": "Upper & Mid Chest (Pectoralis Sternal/Clavicular)",
+    "joint_action": "Shoulder Joint Horizontal Adduction & Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Chest",
+      "secondary_muscles": [
+        "Triceps",
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 2,
@@ -79,7 +90,19 @@
     "alternatives": [],
     "aliases": [
       "incline dumbbell press"
-    ]
+    ],
+    "working_location": "Upper & Mid Chest (Pectoralis Sternal/Clavicular)",
+    "joint_action": "Shoulder Joint Horizontal Adduction & Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Chest",
+      "secondary_muscles": [
+        "Triceps",
+        "Upper Chest",
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 3,
@@ -120,7 +143,19 @@
     "alternatives": [],
     "aliases": [
       "push-ups"
-    ]
+    ],
+    "working_location": "Upper & Mid Chest (Pectoralis Sternal/Clavicular)",
+    "joint_action": "Shoulder Joint Horizontal Adduction & Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Chest",
+      "secondary_muscles": [
+        "Triceps",
+        "Shoulders",
+        "Core"
+      ]
+    }
   },
   {
     "id": 4,
@@ -159,7 +194,17 @@
     "alternatives": [],
     "aliases": [
       "chest fly"
-    ]
+    ],
+    "working_location": "Upper & Mid Chest (Pectoralis Sternal/Clavicular)",
+    "joint_action": "Shoulder Joint Horizontal Adduction & Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Chest",
+      "secondary_muscles": [
+        "Front Deltoids"
+      ]
+    }
   },
   {
     "id": 5,
@@ -199,7 +244,18 @@
     "alternatives": [],
     "aliases": [
       "lat pulldown"
-    ]
+    ],
+    "working_location": "Upper & Mid Back (Lats, Rhomboids & Trapezius)",
+    "joint_action": "Shoulder Retraction & Latissimus Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Back",
+      "secondary_muscles": [
+        "Biceps",
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 6,
@@ -240,7 +296,18 @@
     "alternatives": [],
     "aliases": [
       "one arm dumbbell row"
-    ]
+    ],
+    "working_location": "Upper & Mid Back (Lats, Rhomboids & Trapezius)",
+    "joint_action": "Shoulder Retraction & Latissimus Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Back",
+      "secondary_muscles": [
+        "Biceps",
+        "Rear Deltoids"
+      ]
+    }
   },
   {
     "id": 7,
@@ -280,7 +347,18 @@
     "alternatives": [],
     "aliases": [
       "bent over row"
-    ]
+    ],
+    "working_location": "Upper & Mid Back (Lats, Rhomboids & Trapezius)",
+    "joint_action": "Shoulder Retraction & Latissimus Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Back",
+      "secondary_muscles": [
+        "Biceps",
+        "Erector Spinae"
+      ]
+    }
   },
   {
     "id": 8,
@@ -320,7 +398,18 @@
     "alternatives": [],
     "aliases": [
       "shoulder press"
-    ]
+    ],
+    "working_location": "Shoulder Girdle (Deltoids - Front, Side & Rear)",
+    "joint_action": "Shoulder Joint Abduction & Overhead Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Shoulders",
+      "secondary_muscles": [
+        "Triceps",
+        "Upper Chest"
+      ]
+    }
   },
   {
     "id": 9,
@@ -359,7 +448,17 @@
     "alternatives": [],
     "aliases": [
       "lateral raise"
-    ]
+    ],
+    "working_location": "Shoulder Girdle (Deltoids - Front, Side & Rear)",
+    "joint_action": "Shoulder Joint Abduction & Overhead Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Shoulders",
+      "secondary_muscles": [
+        "Traps"
+      ]
+    }
   },
   {
     "id": 10,
@@ -401,7 +500,19 @@
     "alternatives": [],
     "aliases": [
       "squat"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Glutes",
+        "Hamstrings",
+        "Core"
+      ]
+    }
   },
   {
     "id": 11,
@@ -441,7 +552,18 @@
     "alternatives": [],
     "aliases": [
       "lunges"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Glutes",
+        "Quads"
+      ]
+    }
   },
   {
     "id": 12,
@@ -480,7 +602,17 @@
     "alternatives": [],
     "aliases": [
       "leg extension"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Quads"
+      ]
+    }
   },
   {
     "id": 13,
@@ -519,7 +651,17 @@
     "alternatives": [],
     "aliases": [
       "leg curl"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Hamstrings"
+      ]
+    }
   },
   {
     "id": 14,
@@ -558,7 +700,17 @@
     "alternatives": [],
     "aliases": [
       "calf raises"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Calves"
+      ]
+    }
   },
   {
     "id": 15,
@@ -597,7 +749,17 @@
     "alternatives": [],
     "aliases": [
       "barbell curl"
-    ]
+    ],
+    "working_location": "Front Upper Arm (Biceps Peak & Brachialis)",
+    "joint_action": "Elbow Joint Flexion & Forearm Supination",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Biceps",
+      "secondary_muscles": [
+        "Forearms"
+      ]
+    }
   },
   {
     "id": 16,
@@ -637,7 +799,18 @@
     "alternatives": [],
     "aliases": [
       "hammer curl"
-    ]
+    ],
+    "working_location": "Front Upper Arm (Biceps Peak & Brachialis)",
+    "joint_action": "Elbow Joint Flexion & Forearm Supination",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Biceps",
+      "secondary_muscles": [
+        "Brachialis",
+        "Forearms"
+      ]
+    }
   },
   {
     "id": 17,
@@ -676,7 +849,17 @@
     "alternatives": [],
     "aliases": [
       "cable pushdown"
-    ]
+    ],
+    "working_location": "Back Upper Arm (Triceps Horseshoe & Lockout)",
+    "joint_action": "Elbow Joint Extension",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Triceps",
+      "secondary_muscles": [
+        "Forearms"
+      ]
+    }
   },
   {
     "id": 18,
@@ -715,7 +898,17 @@
     "alternatives": [],
     "aliases": [
       "dumbbell overhead extension"
-    ]
+    ],
+    "working_location": "Back Upper Arm (Triceps Horseshoe & Lockout)",
+    "joint_action": "Elbow Joint Extension",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Triceps",
+      "secondary_muscles": [
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 19,
@@ -755,7 +948,18 @@
     "alternatives": [],
     "aliases": [
       "plank"
-    ]
+    ],
+    "working_location": "Abdominal Wall & Obliques (Rectus Abdominis)",
+    "joint_action": "Spinal Flexion & Pelvic Stabilization",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Core",
+      "secondary_muscles": [
+        "Shoulders",
+        "Glutes"
+      ]
+    }
   },
   {
     "id": 20,
@@ -795,7 +999,17 @@
     "alternatives": [],
     "aliases": [
       "crunches"
-    ]
+    ],
+    "working_location": "Abdominal Wall & Obliques (Rectus Abdominis)",
+    "joint_action": "Spinal Flexion & Pelvic Stabilization",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Core",
+      "secondary_muscles": [
+        "Obliques"
+      ]
+    }
   },
   {
     "id": 21,
@@ -835,7 +1049,18 @@
     "alternatives": [],
     "aliases": [
       "leg raises"
-    ]
+    ],
+    "working_location": "Abdominal Wall & Obliques (Rectus Abdominis)",
+    "joint_action": "Spinal Flexion & Pelvic Stabilization",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Core",
+      "secondary_muscles": [
+        "Hip Flexors",
+        "Lower Abs"
+      ]
+    }
   },
   {
     "id": 22,
@@ -874,7 +1099,17 @@
     "alternatives": [],
     "aliases": [
       "bicep curl"
-    ]
+    ],
+    "working_location": "Front Upper Arm (Biceps Peak & Brachialis)",
+    "joint_action": "Elbow Joint Flexion & Forearm Supination",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Biceps",
+      "secondary_muscles": [
+        "Forearms"
+      ]
+    }
   },
   {
     "id": 23,
@@ -915,7 +1150,18 @@
     "alternatives": [],
     "aliases": [
       "dumbbell squats"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Glutes",
+        "Hamstrings"
+      ]
+    }
   },
   {
     "id": 24,
@@ -956,7 +1202,18 @@
     "alternatives": [],
     "aliases": [
       "resistance band chest press"
-    ]
+    ],
+    "working_location": "Upper & Mid Chest (Pectoralis Sternal/Clavicular)",
+    "joint_action": "Shoulder Joint Horizontal Adduction & Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Chest",
+      "secondary_muscles": [
+        "Triceps",
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 25,
@@ -998,7 +1255,19 @@
     "alternatives": [],
     "aliases": [
       "barbell squat"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Glutes",
+        "Hamstrings",
+        "Core"
+      ]
+    }
   },
   {
     "id": 26,
@@ -1040,7 +1309,19 @@
     "alternatives": [],
     "aliases": [
       "romanian deadlift"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Hamstrings",
+        "Glutes",
+        "Lower Back"
+      ]
+    }
   },
   {
     "id": 27,
@@ -1079,7 +1360,17 @@
     "alternatives": [],
     "aliases": [
       "concentration curl"
-    ]
+    ],
+    "working_location": "Front Upper Arm (Biceps Peak & Brachialis)",
+    "joint_action": "Elbow Joint Flexion & Forearm Supination",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Biceps",
+      "secondary_muscles": [
+        "Brachialis"
+      ]
+    }
   },
   {
     "id": 28,
@@ -1119,7 +1410,18 @@
     "alternatives": [],
     "aliases": [
       "russian twists"
-    ]
+    ],
+    "working_location": "Abdominal Wall & Obliques (Rectus Abdominis)",
+    "joint_action": "Spinal Flexion & Pelvic Stabilization",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Core",
+      "secondary_muscles": [
+        "Obliques",
+        "Abs"
+      ]
+    }
   },
   {
     "id": 29,
@@ -1159,7 +1461,18 @@
     "alternatives": [],
     "aliases": [
       "dumbbell shoulder press"
-    ]
+    ],
+    "working_location": "Shoulder Girdle (Deltoids - Front, Side & Rear)",
+    "joint_action": "Shoulder Joint Abduction & Overhead Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Shoulders",
+      "secondary_muscles": [
+        "Triceps",
+        "Traps"
+      ]
+    }
   },
   {
     "id": 30,
@@ -1199,7 +1512,18 @@
     "alternatives": [],
     "aliases": [
       "tricep dips"
-    ]
+    ],
+    "working_location": "Back Upper Arm (Triceps Horseshoe & Lockout)",
+    "joint_action": "Elbow Joint Extension",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Triceps",
+      "secondary_muscles": [
+        "Lower Chest",
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 31,
@@ -1239,7 +1563,18 @@
     "alternatives": [],
     "aliases": [
       "pull-ups"
-    ]
+    ],
+    "working_location": "Upper & Mid Back (Lats, Rhomboids & Trapezius)",
+    "joint_action": "Shoulder Retraction & Latissimus Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Back",
+      "secondary_muscles": [
+        "Biceps",
+        "Core"
+      ]
+    }
   },
   {
     "id": 32,
@@ -1280,7 +1615,19 @@
     "alternatives": [],
     "aliases": [
       "goblet squat"
-    ]
+    ],
+    "working_location": "Front & Back Thighs (Quadriceps & Hamstrings)",
+    "joint_action": "Knee Extension & Hip Flexion/Extension",
+    "muscle_engagement": {
+      "primary_pct": 75,
+      "secondary_pct": 25,
+      "primary_muscle": "Legs",
+      "secondary_muscles": [
+        "Quads",
+        "Core",
+        "Glutes"
+      ]
+    }
   },
   {
     "id": 33,
@@ -1325,7 +1672,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/preacher_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Front Upper Arm (Biceps Peak & Brachialis)",
+    "joint_action": "Elbow Joint Flexion & Forearm Supination",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Biceps",
+      "secondary_muscles": [
+        "Forearms"
+      ]
+    }
   },
   {
     "id": 34,
@@ -1370,7 +1727,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/cable_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Front Upper Arm (Biceps Peak & Brachialis)",
+    "joint_action": "Elbow Joint Flexion & Forearm Supination",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Biceps",
+      "secondary_muscles": [
+        "Forearms"
+      ]
+    }
   },
   {
     "id": 35,
@@ -1414,7 +1781,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/incline_dumbbell_curl/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Front Upper Arm (Biceps Peak & Brachialis)",
+    "joint_action": "Elbow Joint Flexion & Forearm Supination",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Biceps",
+      "secondary_muscles": [
+        "Forearms"
+      ]
+    }
   },
   {
     "id": 36,
@@ -1457,7 +1834,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/skull_crushers/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Back Upper Arm (Triceps Horseshoe & Lockout)",
+    "joint_action": "Elbow Joint Extension",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Triceps",
+      "secondary_muscles": [
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 37,
@@ -1501,7 +1888,18 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/close_grip_bench_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Back Upper Arm (Triceps Horseshoe & Lockout)",
+    "joint_action": "Elbow Joint Extension",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Triceps",
+      "secondary_muscles": [
+        "Chest",
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 38,
@@ -1547,7 +1945,18 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/seated_cable_row/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Upper & Mid Back (Lats, Rhomboids & Trapezius)",
+    "joint_action": "Shoulder Retraction & Latissimus Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Back",
+      "secondary_muscles": [
+        "Biceps",
+        "Rear Delts"
+      ]
+    }
   },
   {
     "id": 39,
@@ -1590,7 +1999,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/arnold_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Shoulder Girdle (Deltoids - Front, Side & Rear)",
+    "joint_action": "Shoulder Joint Abduction & Overhead Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Shoulders",
+      "secondary_muscles": [
+        "Triceps"
+      ]
+    }
   },
   {
     "id": 40,
@@ -1633,7 +2052,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/reverse_fly/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Shoulder Girdle (Deltoids - Front, Side & Rear)",
+    "joint_action": "Shoulder Joint Abduction & Overhead Extension",
+    "muscle_engagement": {
+      "primary_pct": 80,
+      "secondary_pct": 20,
+      "primary_muscle": "Rear Delts",
+      "secondary_muscles": [
+        "Upper Back"
+      ]
+    }
   },
   {
     "id": 41,
@@ -1677,7 +2106,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/hip_thrust/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Gluteal Region (Gluteus Maximus & Medius)",
+    "joint_action": "Hip Joint Extension & Pelvic Alignment",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Glutes",
+      "secondary_muscles": [
+        "Hamstrings"
+      ]
+    }
   },
   {
     "id": 42,
@@ -1722,7 +2161,18 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/leg_press/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Front Thighs (Quadriceps - Outer Sweep & Teardrop)",
+    "joint_action": "Knee Joint Extension",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Quadriceps",
+      "secondary_muscles": [
+        "Glutes",
+        "Hamstrings"
+      ]
+    }
   },
   {
     "id": 43,
@@ -1765,7 +2215,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/wrist_curls/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Lower Forearms (Wrist Flexors & Brachioradialis)",
+    "joint_action": "Wrist Joint Flexion & Grip Retention",
+    "muscle_engagement": {
+      "primary_pct": 90,
+      "secondary_pct": 10,
+      "primary_muscle": "Forearms",
+      "secondary_muscles": [
+        "Grip"
+      ]
+    }
   },
   {
     "id": 44,
@@ -1809,7 +2269,18 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/farmers_walk/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Lower Forearms (Wrist Flexors & Brachioradialis)",
+    "joint_action": "Wrist Joint Flexion & Grip Retention",
+    "muscle_engagement": {
+      "primary_pct": 90,
+      "secondary_pct": 10,
+      "primary_muscle": "Forearms",
+      "secondary_muscles": [
+        "Core",
+        "Traps"
+      ]
+    }
   },
   {
     "id": 45,
@@ -1853,7 +2324,18 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/ab_wheel_rollout/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Front Abdominal Wall (Six-Pack Rectus Abdominis)",
+    "joint_action": "Spinal Trunk Flexion",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Abs",
+      "secondary_muscles": [
+        "Lats",
+        "Shoulders"
+      ]
+    }
   },
   {
     "id": 46,
@@ -1897,7 +2379,18 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/bulgarian_split_squat/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Front Thighs (Quadriceps - Outer Sweep & Teardrop)",
+    "joint_action": "Knee Joint Extension",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Quadriceps",
+      "secondary_muscles": [
+        "Glutes",
+        "Hamstrings"
+      ]
+    }
   },
   {
     "id": 47,
@@ -1940,6 +2433,17 @@
     ],
     "media_type": "animation",
     "media_path": "/static/exercises/side_plank/demo.svg",
-    "supported_demo": true
+    "supported_demo": true,
+    "working_location": "Side Abdominal Wall (External & Internal Obliques)",
+    "joint_action": "Torso Rotation & Lateral Trunk Flexion",
+    "muscle_engagement": {
+      "primary_pct": 85,
+      "secondary_pct": 15,
+      "primary_muscle": "Obliques",
+      "secondary_muscles": [
+        "Abs",
+        "Glutes"
+      ]
+    }
   }
 ]

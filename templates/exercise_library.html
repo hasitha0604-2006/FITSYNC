@@ -160,7 +160,7 @@
       {% endfor %}
     </div>
 
-    <!-- Interactive Muscle Map Component (Human Diagram Selector) -->
+    <!-- Interactive Muscle Map Component -->
     <div id="view-map-container" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
@@ -175,7 +175,7 @@
         </div>
       </div>
 
-      <!-- Human Body Anatomy Graphic Selector -->
+      <!-- Human Body Anatomy Selector -->
       <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 pt-2">
         <button type="button" onclick="selectMapRegion('Chest')" class="map-region-btn p-3 bg-slate-950 border border-slate-800 hover:border-primary-500 rounded-2xl text-center space-y-1 transition-all">
           <div class="h-10 w-10 mx-auto rounded-full bg-slate-900 flex items-center justify-center text-primary-400">
@@ -302,8 +302,12 @@
             
             <div class="mt-2.5 space-y-1 text-xs">
               <div class="flex items-center gap-1.5 text-slate-400">
-                <span class="text-slate-500 font-medium text-[11px]">Primary Muscle:</span>
+                <span class="text-slate-500 font-medium text-[11px]">Primary Target:</span>
                 <span class="text-emerald-400 font-extrabold text-[11px]">{{ ex.primary_muscle or ex.category }}</span>
+              </div>
+              
+              <div class="text-[10px] text-slate-400 truncate">
+                <span class="text-slate-500">Location:</span> {{ ex.working_location or 'Target Muscle Region' }}
               </div>
 
               {% if ex.secondary_muscles %}
@@ -369,7 +373,7 @@
     </button>
   </div>
 
-  <!-- DEMONSTRATION PLAYER MODAL -->
+  <!-- DEMONSTRATION PLAYER MODAL (WITH EXACT MUSCLE INVOLVEMENT OVERLAY) -->
   <div id="demo-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh] shadow-2xl">
       <!-- Modal Header -->
@@ -385,9 +389,55 @@
 
       <!-- Modal Content -->
       <div class="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
-        <!-- SVG Graphic Demonstration Container -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[16/9] flex items-center justify-center relative shadow-inner">
+        <!-- SVG Video Graphic Demonstration Container -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[16/9] flex items-center justify-center relative shadow-inner group">
           <img id="demo-modal-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
+          
+          <div class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur border border-slate-700 px-3 py-1.5 rounded-xl shadow-lg">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold text-slate-200">Animated Motion Video</span>
+          </div>
+        </div>
+
+        <!-- TARGET MUSCLE INVOLVEMENT & EXACT WORKING LOCATION OVERLAY -->
+        <div class="p-4 bg-slate-950 border border-emerald-500/30 rounded-2xl space-y-3 shadow-inner">
+          <div class="flex items-center justify-between">
+            <h4 class="font-extrabold text-xs uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+              <i data-lucide="target" class="h-4 w-4 text-emerald-400"></i> Target Muscle Involvement & Exact Location
+            </h4>
+            <span class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded">
+              Active Biomechanics
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">📍 Involved Muscle Location</span>
+              <p id="demo-modal-working-loc" class="font-bold text-white text-xs"></p>
+            </div>
+            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">⚙️ Primary Joint Motion</span>
+              <p id="demo-modal-joint-action" class="font-bold text-slate-200 text-xs"></p>
+            </div>
+          </div>
+
+          <!-- Muscle Engagement Split Progress Bar -->
+          <div class="space-y-2 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+            <div class="flex justify-between text-[11px] font-bold">
+              <span class="text-emerald-400 flex items-center gap-1">
+                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                Primary Target: <span id="demo-modal-primary-muscle" class="text-white"></span>
+              </span>
+              <span id="demo-modal-primary-pct" class="text-emerald-400">85% Load</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+              <div id="demo-modal-primary-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width: 85%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-400 pt-0.5">
+              <span>Secondary Muscles: <span id="demo-modal-secondary-muscles" class="text-slate-300"></span></span>
+              <span id="demo-modal-secondary-pct">15% Load</span>
+            </div>
+          </div>
         </div>
 
         <!-- Start -> Movement -> End Checkpoints -->
@@ -540,7 +590,6 @@
           }
         }
 
-        // Render AI returned exercises
         if (data.exercises && data.exercises.length) {
           displayCustomExerciseList(data.exercises);
         } else {
@@ -677,13 +726,26 @@
     }
   }
 
-  // Demonstration Player Modal
+  // Demonstration Player Modal (With Exact Muscle Involvement Overlay)
   function playExerciseDemoModal(ex) {
     document.getElementById('demo-modal-name').innerText = ex.name;
     document.getElementById('demo-modal-category').innerText = `${ex.category} • ${ex.difficulty}`;
     document.getElementById('demo-modal-start').innerText = ex.start_pos || 'Position figure in starting alignment.';
     document.getElementById('demo-modal-move').innerText = ex.movement || 'Execute fluid repetition under control.';
     document.getElementById('demo-modal-end').innerText = ex.end_pos || 'Contract target muscle group at peak.';
+
+    // Muscle Location & Action Overlays
+    document.getElementById('demo-modal-working-loc').innerText = ex.working_location || ex.primary_muscle || ex.category;
+    document.getElementById('demo-modal-joint-action').innerText = ex.joint_action || 'Concentric Joint Flexion & Controlled Extension';
+    document.getElementById('demo-modal-primary-muscle').innerText = ex.primary_muscle || ex.category;
+
+    const pPct = (ex.muscle_engagement && ex.muscle_engagement.primary_pct) ? ex.muscle_engagement.primary_pct : 85;
+    const sPct = (ex.muscle_engagement && ex.muscle_engagement.secondary_pct) ? ex.muscle_engagement.secondary_pct : 15;
+
+    document.getElementById('demo-modal-primary-pct').innerText = `${pPct}% Load`;
+    document.getElementById('demo-modal-secondary-pct').innerText = `${sPct}% Load`;
+    document.getElementById('demo-modal-primary-bar').style.width = `${pPct}%`;
+    document.getElementById('demo-modal-secondary-muscles').innerText = (ex.secondary_muscles && ex.secondary_muscles.length) ? ex.secondary_muscles.join(', ') : 'Stabilizer muscles';
 
     const img = document.getElementById('demo-modal-img');
     img.src = ex.media_path || '/static/exercises/fallback_demo.svg';

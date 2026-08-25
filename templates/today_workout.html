@@ -178,6 +178,29 @@
           <img id="modal-ex-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
         </div>
 
+        <!-- Target Muscle Involvement & Exact Location Overlay -->
+        <div class="p-4 bg-slate-950 border border-emerald-500/30 rounded-xl space-y-2.5 shadow-inner">
+          <div class="flex items-center justify-between">
+            <h5 class="font-extrabold uppercase tracking-wider text-[10px] text-emerald-400 flex items-center gap-1.5">
+              <i data-lucide="target" class="h-3.5 w-3.5"></i> Target Muscle Involvement & Location
+            </h5>
+            <span class="text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
+              Active Biomechanics
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-[10px]">
+            <div class="bg-slate-900 p-2 rounded border border-slate-800">
+              <span class="text-slate-400 font-bold uppercase block text-[9px]">📍 Working Location</span>
+              <p id="modal-ex-working-loc" class="font-bold text-white text-xs mt-0.5"></p>
+            </div>
+            <div class="bg-slate-900 p-2 rounded border border-slate-800">
+              <span class="text-slate-400 font-bold uppercase block text-[9px]">⚙️ Joint Motion</span>
+              <p id="modal-ex-joint-action" class="font-bold text-slate-200 text-xs mt-0.5"></p>
+            </div>
+          </div>
+        </div>
+
         <!-- Biomechanics checklists -->
         <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
           <h5 class="font-bold uppercase tracking-wider text-[10px] text-primary-400">Positioning Guidance</h5>
@@ -334,6 +357,9 @@
     document.getElementById('modal-ex-start').innerText = ex.start_pos || 'Stabilize body anchor.';
     document.getElementById('modal-ex-move').innerText = ex.movement || 'Perform concentric flexion.';
     document.getElementById('modal-ex-end').innerText = ex.end_pos || 'Hold and reverse.';
+
+    document.getElementById('modal-ex-working-loc').innerText = ex.working_location || ex.primary_muscle || ex.category;
+    document.getElementById('modal-ex-joint-action').innerText = ex.joint_action || 'Joint Flexion & Extension';
 
     const slug = ex.slug || ex.name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_');
     document.getElementById('modal-ex-img').src = ex.media_path || `/static/exercises/${slug}/demo.svg`;

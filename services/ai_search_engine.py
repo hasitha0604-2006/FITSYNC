@@ -1,6 +1,6 @@
 """
-FitSync AI Search & Knowledge Engine
-Parses natural language gym questions and queries the structured FitSync Gym Knowledge Base.
+FitSync AI Search & Gym Knowledge Engine
+Parses natural language gym questions, extracts intent, and queries the structured FitSync Gym Knowledge Base.
 """
 
 import os
@@ -77,20 +77,22 @@ def process_ai_gym_query(query_text, user_profile=None):
                     matched_alts.append(ex)
 
             if not matched_alts:
-                # Find same category/primary muscle exercises
                 matched_alts = [
                     ex for ex in all_exercises
                     if ex["category"] == target_ex["category"] and ex["id"] != target_ex["id"]
                 ][:4]
 
+            prim = target_ex.get("primary_muscle", target_ex["category"])
+            loc = target_ex.get("working_location", "Target Muscle Area")
+
             return {
                 "status": "success",
                 "query": query_text,
-                "intent": {"type": "alternative", "exercise": target_ex["name"]},
+                "intent": {"type": "alternative", "exercise": target_ex["name"], "target_muscle": prim},
                 "category": "alternative",
                 "explanation": (
                     f"Based on FitSync's exercise library, here are effective alternatives to replace **{target_ex['name']}** "
-                    f"targeting the same primary muscles ({target_ex.get('primary_muscle', target_ex['category'])}):"
+                    f"targeting **{prim}** ({loc}):"
                 ),
                 "exercises": matched_alts,
                 "source": "Based on FitSync's exercise library"
@@ -98,18 +100,18 @@ def process_ai_gym_query(query_text, user_profile=None):
 
     # 3. Target Muscle Group Extraction
     muscle_map = {
-        "biceps": ["bicep", "biceps", "arm", "arms", "peak"],
-        "triceps": ["tricep", "triceps", "horseshoe"],
-        "chest": ["chest", "pec", "pecs", "pectoral"],
-        "back": ["back", "lat", "lats", "rhomboid", "traps"],
+        "biceps": ["bicep", "biceps", "arm", "arms", "peak", "guns"],
+        "triceps": ["tricep", "triceps", "horseshoe", "pushdown"],
+        "chest": ["chest", "pec", "pecs", "pectoral", "pushup", "bench"],
+        "back": ["back", "lat", "lats", "rhomboid", "traps", "pullup", "row"],
         "shoulders": ["shoulder", "shoulders", "delt", "delts", "overhead"],
-        "quadriceps": ["quad", "quads", "quadriceps", "thigh", "thighs"],
-        "hamstrings": ["hamstring", "hamstrings", "hams"],
-        "glutes": ["glute", "glutes", "butt", "hip"],
-        "calves": ["calf", "calves"],
+        "quadriceps": ["quad", "quads", "quadriceps", "thigh", "thighs", "leg press"],
+        "hamstrings": ["hamstring", "hamstrings", "hams", "posterior chain"],
+        "glutes": ["glute", "glutes", "butt", "hip", "booty"],
+        "calves": ["calf", "calves", "soleus"],
         "forearms": ["forearm", "forearms", "grip", "wrist"],
-        "abs": ["abs", "ab", "core", "stomach", "six pack"],
-        "obliques": ["oblique", "obliques", "side abs"]
+        "abs": ["abs", "ab", "core", "stomach", "six pack", "crunch"],
+        "obliques": ["oblique", "obliques", "side abs", "twist"]
     }
 
     detected_muscles = []
@@ -135,9 +137,8 @@ def process_ai_gym_query(query_text, user_profile=None):
     is_home = "home" in q or "house" in q or "bedroom" in q
     is_gym = "gym" in q or "fitness club" in q
 
-    # Apply User Profile Defaults if constraints not explicit in query
-    if user_profile:
-        if not detected_equip and hasattr(user_profile, 'equipment_available') and user_profile.equipment_available:
+    if user_profile and not detected_equip:
+        if hasattr(user_profile, 'equipment_available') and user_profile.equipment_available:
             if "Dumbbell" in user_profile.equipment_available:
                 detected_equip.append("Dumbbells")
 
@@ -152,12 +153,18 @@ def process_ai_gym_query(query_text, user_profile=None):
         ex_name = ex["name"].lower()
         ex_aliases = [a.lower() for a in ex.get("aliases", [])]
 
-        # Direct name or keyword match
+        # Exact name or alias match
         if q in ex_name or any(q in alias for alias in ex_aliases):
             results.append(ex)
             continue
 
-        # Muscle match
+        # Token matching
+        tokens = [t for t in q.split() if len(t) > 2 and t not in ["the", "and", "for", "with", "workout", "exercise", "exercises"]]
+        if any(t in ex_name or t in ex_cat or t in ex_prim or any(t in s for s in ex_sec) for t in tokens):
+            results.append(ex)
+            continue
+
+        # Intent Muscle match
         muscle_match = False
         if detected_muscles:
             for dm in detected_muscles:
@@ -181,14 +188,7 @@ def process_ai_gym_query(query_text, user_profile=None):
         if muscle_match and equip_match:
             results.append(ex)
 
-    # If no results matched, fallback to partial search
-    if not results:
-        for ex in all_exercises:
-            tokens = [t for t in q.split() if len(t) > 2]
-            if any(t in ex["name"].lower() or t in ex["category"].lower() for t in tokens):
-                results.append(ex)
-
-    # Final unsupported fallback handling
+    # Unsupported fallback
     if not results:
         return {
             "status": "success",
@@ -200,11 +200,14 @@ def process_ai_gym_query(query_text, user_profile=None):
             "source": "FitSync Knowledge Base Fallback"
         }
 
-    # Format Explanation Summary
-    muscle_str = ", ".join([m.title() for m in detected_muscles]) if detected_muscles else "target"
+    # Format rich explanation with exact muscle working location
+    muscle_str = ", ".join([m.title() for m in detected_muscles]) if detected_muscles else "Target Muscle"
     env_str = "gym" if is_gym else ("home" if is_home else "workout")
     
-    explanation = f"Based on FitSync's exercise library, here are top exercises for **{muscle_str}** in a **{env_str}** environment."
+    first_ex_loc = results[0].get("working_location", "Target Muscle Area") if results else ""
+    loc_str = f" ({first_ex_loc})" if first_ex_loc else ""
+
+    explanation = f"Based on FitSync's exercise library, I found **{len(results)} exercises** targeting **{muscle_str}**{loc_str} suitable for a **{env_str}** environment."
 
     return {
         "status": "success",
