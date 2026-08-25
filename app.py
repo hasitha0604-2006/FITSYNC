@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Path Safety
@@ -18,8 +19,14 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fitsync_super_secret_sih_key_2026')
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{INSTANCE_DIR / 'fitsync.db'}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
 db = SQLAlchemy(app)
+
+def normalize_email(email_str):
+    if not email_str:
+        return ""
+    return str(email_str).strip().lower()
 
 # -----------------------------------------------------------------------------
 # DATABASE MODELS
@@ -582,12 +589,19 @@ def get_current_user():
     return User.query.get(session['user_id'])
 
 def is_user_onboarded(user):
-    if not user or not user.profile:
+    if not user:
         return False
-    if user.profile.onboarding_completed:
-        return True
-    # Robust fallback check: if profile already has valid filled details, auto-complete flag and return True!
-    if user.profile.name and user.profile.fitness_goal and user.profile.height and user.profile.weight:
+    if user.profile:
+        if user.profile.onboarding_completed:
+            return True
+        if user.profile.name and user.profile.fitness_goal and (user.profile.height or user.profile.weight):
+            user.profile.onboarding_completed = True
+            db.session.commit()
+            return True
+
+    # Also check if user already has an active workout plan or meal plan
+    has_plan = WorkoutPlan.query.filter_by(user_id=user.id).first()
+    if has_plan and user.profile:
         user.profile.onboarding_completed = True
         db.session.commit()
         return True
@@ -619,23 +633,25 @@ def register():
         return redirect(url_for("onboarding"))
 
     if request.method == "POST":
-        email = request.form.get("email")
+        raw_email = request.form.get("email")
         password = request.form.get("password")
         
-        if not email or not password:
+        if not raw_email or not password:
             flash("Please enter both email and password.", "error")
             return redirect(url_for("register"))
 
-        existing = User.query.filter_by(email=email).first()
+        clean_email = normalize_email(raw_email)
+        existing = User.query.filter(func.lower(User.email) == clean_email).first()
         if existing:
-            flash("Email already registered.", "error")
-            return redirect(url_for("register"))
+            flash("An account with this email already exists. Please log in below.", "warning")
+            return redirect(url_for("login"))
 
         hashed = generate_password_hash(password)
-        new_user = User(email=email, password_hash=hashed)
+        new_user = User(email=clean_email, password_hash=hashed)
         db.session.add(new_user)
         db.session.commit()
 
+        session.permanent = True
         session['user_id'] = new_user.id
         return redirect(url_for("onboarding"))
 
@@ -650,15 +666,27 @@ def login():
         return redirect(url_for("onboarding"))
 
     if request.method == "POST":
-        email = request.form.get("email")
+        raw_email = request.form.get("email")
         password = request.form.get("password")
         
-        user = User.query.filter_by(email=email).first()
-        if not user or not check_password_hash(user.password_hash, password):
-            flash("Incorrect email or password.", "error")
+        if not raw_email or not password:
+            flash("Please enter both email and password.", "error")
             return redirect(url_for("login"))
 
+        clean_email = normalize_email(raw_email)
+        user = User.query.filter(func.lower(User.email) == clean_email).first()
+
+        if not user:
+            flash("No account found with this email address. Please check your email or create an account.", "error")
+            return redirect(url_for("login"))
+
+        if not check_password_hash(user.password_hash, password):
+            flash("Incorrect password. Please try again.", "error")
+            return redirect(url_for("login"))
+
+        session.permanent = True
         session['user_id'] = user.id
+
         if is_user_onboarded(user):
             return redirect(url_for("dashboard"))
         return redirect(url_for("onboarding"))
@@ -669,7 +697,7 @@ def login():
 def logout():
     session.pop('user_id', None)
     flash("Successfully logged out.", "success")
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 @app.route("/onboarding", methods=["GET", "POST"])
 def onboarding():

@@ -716,5 +716,102 @@ class FitSyncTestCase(unittest.TestCase):
             data_diff = resp_diff.get_json()
             self.assertEqual(data_diff["status"], "success")
 
+    def test_full_authentication_persistence_lifecycle(self):
+        """Verify new user registration -> onboarding -> logout -> login again restores complete user data."""
+        with self.app as c:
+            email = "persistent_user@fitsync.ai"
+            pwd = "Password123!"
+
+            # 1. Register
+            r_reg = c.post('/register', data={'email': email, 'password': pwd}, follow_redirects=False)
+            self.assertEqual(r_reg.status_code, 302)
+            self.assertTrue(r_reg.location.endswith('/onboarding'))
+
+            # 2. Onboard
+            r_onb = c.post('/onboarding', json={
+                "name": "Persistent Hero",
+                "age": 23,
+                "gender": "Female",
+                "height": 168.0,
+                "weight": 58.0,
+                "fitness_goal": "Fat Loss",
+                "fitness_level": "Intermediate",
+                "workout_days_per_week": 4,
+                "workout_duration_mins": 45,
+                "workout_environment": "Gym",
+                "dietary_preference": "Vegetarian",
+                "daily_food_budget": 160,
+                "equipments": ["Dumbbells"],
+                "food_preferences": []
+            })
+            self.assertEqual(r_onb.status_code, 200)
+
+            # Verify Database State after Onboarding
+            with app.app_context():
+                user_in_db = User.query.filter_by(email=email).first()
+                self.assertIsNotNone(user_in_db)
+                self.assertIsNotNone(user_in_db.profile)
+                self.assertEqual(user_in_db.profile.name, "Persistent Hero")
+                self.assertTrue(user_in_db.profile.onboarding_completed)
+
+            # 3. Logout
+            r_logout = c.get('/logout', follow_redirects=False)
+            self.assertEqual(r_logout.status_code, 302)
+            self.assertTrue(r_logout.location.endswith('/login'))
+
+            # Verify DB state is COMPLETELY INTACT post-logout
+            with app.app_context():
+                user_after_logout = User.query.filter_by(email=email).first()
+                self.assertIsNotNone(user_after_logout)
+                self.assertEqual(user_after_logout.profile.name, "Persistent Hero")
+
+            # 4. Login Again with SAME Credentials
+            r_login = c.post('/login', data={'email': email, 'password': pwd}, follow_redirects=False)
+            self.assertEqual(r_login.status_code, 302)
+            # MUST redirect directly to /dashboard without asking to re-register or onboard!
+            self.assertTrue(r_login.location.endswith('/dashboard'))
+
+            # 5. Access Dashboard
+            r_dash = c.get('/dashboard')
+            self.assertEqual(r_dash.status_code, 200)
+            self.assertIn(b"Persistent Hero", r_dash.data)
+
+    def test_email_case_insensitivity_and_whitespace_normalization(self):
+        """Verify uppercase and whitespace variants during registration/login find the same account."""
+        with self.app as c:
+            # Register with mixed case and spaces
+            c.post('/register', data={'email': ' CaseTest@FitSync.AI ', 'password': 'Password123!'}, follow_redirects=True)
+            c.post('/onboarding', json={
+                "name": "Case User",
+                "age": 20,
+                "gender": "Male",
+                "height": 175,
+                "weight": 70,
+                "fitness_goal": "Muscle Gain",
+                "fitness_level": "Beginner",
+                "workout_days_per_week": 3,
+                "workout_duration_mins": 45,
+                "dietary_preference": "Non-Vegetarian",
+                "equipments": ["Dumbbells"],
+                "food_preferences": []
+            })
+            c.get('/logout')
+
+            # Login with lowercase version
+            r_login = c.post('/login', data={'email': 'casetest@fitsync.ai', 'password': 'Password123!'}, follow_redirects=False)
+            self.assertEqual(r_login.status_code, 302)
+            self.assertTrue(r_login.location.endswith('/dashboard'))
+
+    def test_duplicate_email_prevention(self):
+        """Verify attempting to register existing email redirects cleanly to login."""
+        with self.app as c:
+            c.post('/register', data={'email': 'dup@fitsync.ai', 'password': 'Password123!'}, follow_redirects=True)
+            c.get('/logout')
+
+            # Attempt to register again
+            r_dup = c.post('/register', data={'email': 'DUP@FITSYNC.AI', 'password': 'Password123!'}, follow_redirects=False)
+            self.assertEqual(r_dup.status_code, 302)
+            self.assertTrue(r_dup.location.endswith('/login'))
+
 if __name__ == '__main__':
     unittest.main()
