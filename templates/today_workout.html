@@ -1,0 +1,536 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-50 w-full font-sans">
+  
+  <!-- Header controls -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Today's Workout Plan</h1>
+      <p class="text-xs text-slate-500 mt-1">Check off exercise sets, view instructions, or swap movements to match available equipment.</p>
+    </div>
+    
+    <!-- Weekday Selection Tabs -->
+    <div class="flex flex-wrap gap-1 bg-slate-200/60 p-1 rounded-xl border w-fit">
+      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+      <a
+        href="{{ url_for('today_workout', day=day) }}"
+        class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ 'bg-primary-500 text-white shadow' if day_name == day else 'text-slate-500 hover:text-slate-800' }}"
+      >
+        {{ day[:3] }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Rebuild Week Adaptive Banner -->
+  <section class="bg-gradient-to-r from-slate-900 to-slate-850 text-white p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow">
+    <div class="space-y-1">
+      <h3 class="font-bold text-sm text-primary-400 uppercase tracking-wider">Missed Workouts?</h3>
+      <p class="text-xs text-slate-400 max-w-xl leading-relaxed">
+        Fitting exams, lab sessions, and gym time is hard. If you missed your previous routine, FitSync AI can rearrange the schedule. We'll shift exercises to your upcoming Rest Days so you don't fall behind.
+      </p>
+    </div>
+    <button
+      onclick="rebuildRemainingWeek()"
+      class="shrink-0 flex items-center justify-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold px-4 py-3 rounded-xl transition-colors shadow"
+    >
+      <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+      Rebuild Remaining Week
+    </button>
+  </section>
+
+  <!-- Workout details -->
+  {% if not workout_day or workout_day.is_rest_day %}
+    <div class="bg-white border rounded-2xl p-10 text-center shadow-sm select-none">
+      <i data-lucide="award" class="h-10 w-10 text-slate-300 mx-auto mb-3"></i>
+      <h2 class="text-lg font-bold text-slate-850">Active Rest & Recovery Day</h2>
+      <p class="text-xs text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
+        Muscles grow during rest! Today has no scheduled resistance training. Focus on stretching, walking, eating to hit your calorie budget, and staying hydrated.
+      </p>
+    </div>
+  {% else %}
+    {% set completed = workout_day.exercises|selectattr('is_completed')|list|length %}
+    {% set total = workout_day.exercises|length %}
+    {% set progress = (completed / total * 100)|round|int if total > 0 else 0 %}
+
+    <div class="space-y-6">
+      <!-- Progress Bar -->
+      <div class="bg-white border rounded-2xl p-5 shadow-sm space-y-3 select-none">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          <span class="font-bold text-slate-800">
+            Workout Focus: <span class="text-primary-600 font-black uppercase">{{ workout_day.focus }}</span>
+          </span>
+          <span class="font-semibold text-slate-500">
+            Overall Progress: <strong class="text-slate-800">{{ completed }}</strong> of {{ total }} exercises ({{ progress }}%)
+          </span>
+        </div>
+        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div class="h-full bg-primary-500 rounded-full" style="width: {{ progress }}%"></div>
+        </div>
+      </div>
+
+      <!-- Exercise list grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for ex in workout_day.exercises %}
+          <div class="bg-white border rounded-2xl p-5 shadow-sm flex flex-col justify-between {{ 'border-primary-100 bg-primary-50/10' if ex.is_completed else '' }}">
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <h4 class="font-bold text-base {{ 'text-slate-400 line-through' if ex.is_completed else 'text-slate-800' }}">
+                    {{ ex.name }}
+                  </h4>
+                  <span class="inline-block text-[10px] uppercase font-extrabold tracking-wide text-primary-600 bg-primary-50 px-2 py-0.5 rounded mt-1">
+                    {{ ex.category }}
+                  </span>
+                </div>
+                
+                <button
+                  onclick="toggleExercise({{ ex.id }})"
+                  class="h-7 w-7 rounded-full flex items-center justify-center border transition-all {{ 'bg-primary-500 border-primary-500 text-white' if ex.is_completed else 'border-slate-350 hover:border-primary-500 text-transparent hover:text-primary-400' }}"
+                >
+                  <i data-lucide="check" class="h-4 w-4 stroke-[3]"></i>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 text-center text-xs py-3 border-y border-slate-100 my-3">
+                <div>
+                  <p class="text-[10px] text-slate-400 font-medium">Sets</p>
+                  <p class="font-bold text-slate-750">{{ ex.sets }}</p>
+                </div>
+                <div>
+                  <p class="text-[10px] text-slate-400 font-medium">Reps</p>
+                  <p class="font-bold text-slate-750">{{ ex.reps }}</p>
+                </div>
+                <div>
+                  <p class="text-[10px] text-slate-400 font-medium">Rest</p>
+                  <p class="font-bold text-slate-750">{{ ex.rest_seconds }}s</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="flex items-center gap-2 pt-3">
+              <button
+                onclick="openGuideModal({{ ex|tojson|safe }})"
+                class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-750 text-xs font-bold border transition-colors"
+              >
+                <i data-lucide="eye" class="h-4 w-4"></i> Instructions
+              </button>
+              
+              {% if 'squat' in ex.name|lower or 'push-up' in ex.name|lower or 'pushup' in ex.name|lower or 'bicep curl' in ex.name|lower %}
+              <button
+                onclick="startAIFormCheck('{{ ex.name }}')"
+                class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-primary-50 hover:bg-primary-100 text-primary-650 text-xs font-bold border border-primary-200 transition-colors"
+              >
+                <i data-lucide="video" class="h-4 w-4"></i> AI Form
+              </button>
+              {% endif %}
+
+              <button
+                onclick="openSwapModal({{ ex.id }})"
+                class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-450 border hover:text-slate-700 transition-colors"
+                title="Find Alternative"
+              >
+                <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- MODAL 1: Instructions Modal -->
+  <div id="guide-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
+      <div class="bg-slate-900 text-white p-5 flex items-center justify-between">
+        <div>
+          <h3 id="modal-ex-name" class="font-bold text-lg">Exercise Name</h3>
+          <p id="modal-ex-cat" class="text-xs text-primary-400 capitalize">Category</p>
+        </div>
+        <button onclick="closeGuideModal()" class="text-slate-450 hover:text-white transition-colors">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5 text-xs leading-relaxed text-slate-650">
+        <!-- Biomechanics checklists -->
+        <div class="p-4 bg-slate-950 border rounded-xl text-white space-y-3">
+          <h5 class="font-bold uppercase tracking-wider text-[10px] text-primary-400">Positioning Guidance</h5>
+          <div class="grid grid-cols-3 gap-2.5 text-center text-[9px] leading-snug">
+            <div class="bg-slate-900 p-2 rounded border border-slate-850">
+              <p class="text-slate-500 font-bold uppercase tracking-wide">Start Position</p>
+              <p id="modal-ex-start" class="text-slate-205 mt-1"></p>
+            </div>
+            <div class="bg-slate-900 p-2 rounded border border-slate-850">
+              <p class="text-slate-500 font-bold uppercase tracking-wide">Movement Path</p>
+              <p id="modal-ex-move" class="text-slate-205 mt-1"></p>
+            </div>
+            <div class="bg-slate-900 p-2 rounded border border-slate-850">
+              <p class="text-slate-500 font-bold uppercase tracking-wide">End Position</p>
+              <p id="modal-ex-end" class="text-slate-205 mt-1"></p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm text-slate-900 mb-1.5">How to Perform:</h4>
+          <ol id="modal-ex-instructions" class="list-decimal list-inside space-y-1 pl-1"></ol>
+        </div>
+
+        <div id="modal-ex-mistakes-container" class="p-4 bg-amber-50 rounded-xl border border-amber-100 text-amber-955 hidden">
+          <h4 class="font-bold text-xs uppercase tracking-wide text-amber-800 mb-1.5 flex items-center gap-1.5">
+            ⚠️ Common Mistakes
+          </h4>
+          <ul id="modal-ex-mistakes" class="list-disc list-inside space-y-0.5"></ul>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t flex justify-end">
+        <button onclick="closeGuideModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 rounded-lg transition-colors">
+          Close Guide
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Swap/Alternative Modal -->
+  <div id="swap-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm border overflow-hidden p-6 space-y-4 shadow-xl">
+      <div>
+        <h3 class="font-bold text-base text-slate-900">Modify Exercise</h3>
+        <p class="text-xs text-slate-500 mt-1">Why are you looking for an alternative exercise?</p>
+      </div>
+
+      <div class="space-y-2.5">
+        {% for reason in ['No equipment', 'Not enough time', 'Exercise unavailable', 'Too difficult', 'Prefer another exercise'] %}
+        <button
+          type="button"
+          onclick="selectSwapReason('{{ reason }}')"
+          class="swap-reason-btn w-full text-left px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all border-slate-200 text-slate-650 hover:bg-slate-50"
+        >
+          {{ reason }}
+        </button>
+        {% endfor %}
+      </div>
+
+      <div class="flex gap-2 pt-2 text-xs font-bold">
+        <button onclick="closeSwapModal()" class="flex-1 py-2.5 border rounded-lg hover:bg-slate-50">Cancel</button>
+        <button onclick="executeSwap()" class="flex-1 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors">Swap</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Camera AI Overlay -->
+  <div id="camera-modal" class="hidden fixed inset-0 bg-slate-950/95 z-50 flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-md flex flex-col items-center space-y-4">
+      <div class="w-full flex items-center justify-between border-b border-slate-900 pb-3">
+        <div>
+          <h3 class="text-white font-bold text-lg flex items-center gap-2">
+            <i data-lucide="camera" class="h-5 w-5 text-primary-400"></i>
+            AI Form Checker
+          </h3>
+          <p id="camera-ex-title" class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Testing: Squat</p>
+        </div>
+        <button onclick="stopAIFormCheck()" class="bg-slate-900 hover:bg-slate-800 text-slate-450 p-2 rounded-full transition-colors">
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <div class="relative border border-slate-800 bg-black rounded-2xl w-full h-[280px] overflow-hidden flex items-center justify-center">
+        <video id="webcam-video" class="absolute inset-0 w-full h-full object-cover scale-x-[-1] hidden" playsinline muted></video>
+        <canvas id="hidden-canvas" class="hidden"></canvas>
+        
+        <div id="virtual-coach-info" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-slate-450 space-y-2">
+          <i data-lucide="camera-off" class="h-8 w-8 text-amber-500 mb-2"></i>
+          <h4 class="text-sm font-bold text-slate-200">Virtual AI Simulator Active</h4>
+          <p class="text-[10px] max-w-[280px]">
+            Webcam blocked/unavailable. Simulating coordinate waves to evaluate posture angles cleanly.
+          </p>
+        </div>
+
+        <div class="absolute top-4 left-4 bg-slate-900/85 text-white font-mono text-[10px] px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
+          <span class="h-2 w-2 rounded-full bg-primary-500 animate-ping"></span>
+          Joint Angle: <strong id="joint-angle-text" class="text-primary-400">180°</strong>
+        </div>
+
+        <div id="sim-active-badge" class="absolute top-4 right-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono text-[9px] px-2 py-0.5 rounded hidden">
+          SIMULATION
+        </div>
+      </div>
+
+      <div class="w-full p-4 rounded-xl bg-slate-900 border border-slate-800 text-center flex flex-col items-center justify-center min-h-[80px]">
+        <p class="text-xs font-bold text-slate-450 uppercase tracking-widest mb-1 text-primary-400">AI Coach Feedback</p>
+        <h4 id="coach-feedback-text" class="text-sm font-semibold text-slate-100 max-w-[400px] leading-relaxed">
+          "Align your body..."
+        </h4>
+      </div>
+
+      <p class="text-[10px] text-slate-500 text-center max-w-[360px]">
+        🔒 Camera snapshots are evaluated locally for joint coordinates. FitSync AI does not store or upload video recordings.
+      </p>
+      
+      <button onclick="stopAIFormCheck()" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-bold py-3 rounded-xl transition-colors text-xs">
+        Finish Analysis & Exit
+      </button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Guide Modal handlers
+  function openGuideModal(ex) {
+    document.getElementById('modal-ex-name').innerText = ex.name;
+    document.getElementById('modal-ex-cat').innerText = `${ex.category} Category`;
+    document.getElementById('modal-ex-start').innerText = ex.start_pos || 'Stabilize body anchor.';
+    document.getElementById('modal-ex-move').innerText = ex.movement || 'Perform concentric flexion.';
+    document.getElementById('modal-ex-end').innerText = ex.end_pos || 'Hold and reverse.';
+
+    // instructions list
+    const ol = document.getElementById('modal-ex-instructions');
+    ol.innerHTML = '';
+    ex.instructions.split('\n').forEach(step => {
+      if (step.trim()) {
+        const li = document.createElement('li');
+        li.innerText = step;
+        ol.appendChild(li);
+      }
+    });
+
+    // mistakes list
+    const mDiv = document.getElementById('modal-ex-mistakes-container');
+    const ul = document.getElementById('modal-ex-mistakes');
+    ul.innerHTML = '';
+    if (ex.common_mistakes) {
+      mDiv.classList.remove('hidden');
+      ex.common_mistakes.split('\n').forEach(m => {
+        if (m.trim()) {
+          const li = document.createElement('li');
+          li.innerText = m;
+          ul.appendChild(li);
+        }
+      });
+    } else {
+      mDiv.classList.add('hidden');
+    }
+
+    document.getElementById('guide-modal').classList.remove('hidden');
+  }
+
+  function closeGuideModal() {
+    document.getElementById('guide-modal').classList.add('hidden');
+  }
+
+  // Toggle exercise check state
+  async function toggleExercise(exId) {
+    try {
+      const res = await fetch("{{ url_for('api_toggle_exercise') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: exId })
+      });
+      if (res.ok) {
+        window.location.reload();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // Swap Modal handlers
+  let activeSwapExId = null;
+  let activeSwapReason = 'No equipment';
+
+  function openSwapModal(exId) {
+    activeSwapExId = exId;
+    activeSwapReason = 'No equipment';
+    
+    document.querySelectorAll('.swap-reason-btn').forEach(btn => {
+      btn.className = "swap-reason-btn w-full text-left px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all border-slate-200 text-slate-650 hover:bg-slate-50";
+    });
+    
+    // Preset active UI
+    const buttons = document.querySelectorAll('.swap-reason-btn');
+    if (buttons.length > 0) {
+      buttons[0].className = "swap-reason-btn w-full text-left px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all border-primary-500 bg-primary-50/55 text-primary-700 font-bold";
+    }
+
+    document.getElementById('swap-modal').classList.remove('hidden');
+  }
+
+  function selectSwapReason(reason) {
+    activeSwapReason = reason;
+    document.querySelectorAll('.swap-reason-btn').forEach(btn => {
+      if (btn.innerText.trim() === reason) {
+        btn.className = "swap-reason-btn w-full text-left px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all border-primary-500 bg-primary-50/55 text-primary-700 font-bold";
+      } else {
+        btn.className = "swap-reason-btn w-full text-left px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all border-slate-200 text-slate-650 hover:bg-slate-50";
+      }
+    });
+  }
+
+  function closeSwapModal() {
+    document.getElementById('swap-modal').classList.add('hidden');
+    activeSwapExId = null;
+  }
+
+  async function executeSwap() {
+    if (!activeSwapExId) return;
+    try {
+      const res = await fetch("{{ url_for('api_substitute_exercise') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: activeSwapExId, reason: activeSwapReason })
+      });
+      if (res.ok) {
+        window.location.reload();
+      } else {
+        alert("Alternative exercise not found targeting same group.");
+        closeSwapModal();
+      }
+    } catch (e) {
+      console.error(e);
+      closeSwapModal();
+    }
+  }
+
+  // Rebuild remaining week
+  async function rebuildRemainingWeek() {
+    try {
+      const res = await fetch("{{ url_for('api_rebuild_week') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.detail || "Split rearranged successfully!");
+        window.location.reload();
+      } else {
+        alert(data.message || "Failed to rebuild week.");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // Camera AI Form Checker
+  let cameraActive = false;
+  let poseInterval = null;
+  let formCheckExName = '';
+
+  async function startAIFormCheck(exName) {
+    formCheckExName = exName;
+    document.getElementById('camera-ex-title').innerText = `Testing: ${exName}`;
+    document.getElementById('coach-feedback-text').innerText = "Initializing camera telemetry...";
+    document.getElementById('camera-modal').classList.remove('hidden');
+
+    const video = document.getElementById('webcam-video');
+    const simBadge = document.getElementById('sim-active-badge');
+    const coachInfo = document.getElementById('virtual-coach-info');
+
+    cameraActive = false;
+    simBadge.classList.add('hidden');
+    coachInfo.classList.remove('hidden');
+    video.classList.add('hidden');
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 400, height: 300, facingMode: "user" }
+      });
+      video.srcObject = stream;
+      video.play();
+      
+      cameraActive = true;
+      video.classList.remove('hidden');
+      coachInfo.classList.add('hidden');
+
+      // Loop frame capture
+      poseInterval = setInterval(() => {
+        captureFrameAndAnalyze();
+      }, 800);
+
+    } catch (err) {
+      // Fallback to simulator
+      console.warn("Webcam blocked, using virtual coordinates.");
+      simBadge.classList.remove('hidden');
+      
+      poseInterval = setInterval(() => {
+        simulateFrameAnalysis();
+      }, 1000);
+    }
+  }
+
+  function stopAIFormCheck() {
+    if (poseInterval) clearInterval(poseInterval);
+    
+    const video = document.getElementById('webcam-video');
+    if (video && video.srcObject) {
+      video.srcObject.getTracks().forEach(track => track.stop());
+      video.srcObject = null;
+    }
+    
+    document.getElementById('camera-modal').classList.add('hidden');
+    cameraActive = false;
+  }
+
+  async function captureFrameAndAnalyze() {
+    const video = document.getElementById('webcam-video');
+    const canvas = document.getElementById('hidden-canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = video.videoWidth || 400;
+    canvas.height = video.videoHeight || 300;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const base64Frame = canvas.toDataURL('image/jpeg');
+
+    try {
+      const res = await fetch("{{ url_for('api_form_analysis') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          exercise_name: formCheckExName,
+          frame_base64: base64Frame
+        })
+      });
+      const result = await res.json();
+      updateAIFeedbackUI(result);
+    } catch (e) {
+      simulateFrameAnalysis();
+    }
+  }
+
+  async function simulateFrameAnalysis() {
+    try {
+      const res = await fetch("{{ url_for('api_form_analysis') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          exercise_name: formCheckExName,
+          frame_base64: "MOCK_FRAME"
+        })
+      });
+      const result = await res.json();
+      updateAIFeedbackUI(result);
+    } catch (e) {}
+  }
+
+  function updateAIFeedbackUI(result) {
+    document.getElementById('coach-feedback-text').innerText = `"${result.feedback}"`;
+    document.getElementById('joint-angle-text').innerText = `${result.angle}°`;
+    const simBadge = document.getElementById('sim-active-badge');
+    if (result.simulated) {
+      simBadge.classList.remove('hidden');
+    } else {
+      simBadge.classList.add('hidden');
+    }
+  }
+
+  // Cleanup on exit
+  window.addEventListener('beforeunload', stopAIFormCheck);
+</script>
+{% endblock %}

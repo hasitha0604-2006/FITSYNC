@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-8 bg-slate-50 pb-20 md:pb-10 w-full font-sans">
+  
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Progress Analytics & History</h1>
+    <p class="text-xs text-slate-500 mt-1">Review weight trend shifts, calorie budgets, and protein target adherence metrics over time.</p>
+  </div>
+
+  <!-- Grid: Logging Form and Stats Cards -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- Log Weight Form -->
+    <section class="bg-white border rounded-2xl p-5 shadow-sm lg:col-span-1 flex flex-col justify-between">
+      <div class="space-y-3 select-none">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5 uppercase tracking-wide">
+          <i data-lucide="scale" class="h-4.5 w-4.5 text-primary-500"></i>
+          Weight Tracker
+        </h3>
+        <p class="text-xs text-slate-450 leading-relaxed">
+          Log your weight regularly. Fitsync AI automatically scales macro recommendations if your base metabolic weight shifts.
+        </p>
+      </div>
+
+      <form id="weight-log-form" onsubmit="logWeight(event)" class="mt-4 space-y-3 text-xs">
+        <div>
+          <label class="block text-[10px] text-slate-450 uppercase font-bold tracking-wide mb-1">Body Weight (kg)</label>
+          <div class="flex gap-2">
+            <input
+              type="number"
+              step="0.1"
+              id="log-weight-input"
+              required
+              value="{{ profile.weight }}"
+              class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-850 focus:outline-none focus:border-primary-500 font-semibold"
+            />
+            <button
+              type="submit"
+              class="bg-primary-500 hover:bg-primary-600 text-white font-bold px-4 py-2 rounded-lg transition-colors shrink-0"
+            >
+              Log Weight
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Historical Telemetry Overview -->
+    <section class="bg-slate-900 text-white border rounded-2xl p-5 shadow-sm lg:col-span-2 flex flex-col justify-between">
+      <div class="space-y-1 select-none">
+        <h3 class="font-bold text-primary-400 text-xs uppercase tracking-wider">Historical Telemetry</h3>
+        <p class="text-slate-400 text-xs">Adherence patterns based on SQLite database queries.</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 text-center my-4">
+        <div class="p-3 bg-slate-800 border border-slate-700/50 rounded-xl">
+          <span class="block text-[9px] text-slate-450 uppercase font-bold">Starting Weight</span>
+          <span id="start-weight-span" class="block text-lg font-black text-white mt-1">--</span>
+        </div>
+        
+        <div class="p-3 bg-slate-800 border border-slate-700/50 rounded-xl">
+          <span class="block text-[9px] text-slate-450 uppercase font-bold">Latest Weight</span>
+          <span id="latest-weight-span" class="block text-lg font-black text-white mt-1">--</span>
+        </div>
+
+        <div class="p-3 bg-slate-800 border border-slate-700/50 rounded-xl">
+          <span class="block text-[9px] text-slate-450 uppercase font-bold">Goal State</span>
+          <span class="block text-xs font-black text-primary-400 capitalize mt-1.5 truncate">
+            {{ profile.fitness_goal }}
+          </span>
+        </div>
+      </div>
+
+      <p class="text-[10px] text-slate-450 leading-relaxed select-none">
+        💡 <strong class="text-slate-300">Coach Insight:</strong> Calorie and macronutrient compliance percentages are calculated using actual foods loaded from the database versus custom targets.
+      </p>
+    </section>
+
+  </div>
+
+  <!-- Chart.js Graphical Visualizer Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    
+    <!-- Weight Trend -->
+    <div class="bg-white border rounded-2xl p-5 shadow-sm space-y-4">
+      <h4 class="font-bold text-xs uppercase tracking-wider text-slate-450">Weight Trend Line (7 Days)</h4>
+      <div class="h-64 relative">
+        <canvas id="weight-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Calories compliance -->
+    <div class="bg-white border rounded-2xl p-5 shadow-sm space-y-4">
+      <h4 class="font-bold text-xs uppercase tracking-wider text-slate-450">Calorie Adherence History</h4>
+      <div class="h-64 relative">
+        <canvas id="calorie-chart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  let weightChartInstance = null;
+  let calorieChartInstance = null;
+
+  async function loadCharts() {
+    try {
+      const res = await fetch("{{ url_for('api_progress_history') }}");
+      const data = await res.ok ? await res.json() : [];
+      
+      if (data.length === 0) return;
+
+      // Update metrics
+      document.getElementById('start-weight-span').innerText = `${data[0].weight} kg`;
+      document.getElementById('latest-weight-span').innerText = `${data[data.length - 1].weight} kg`;
+
+      const labels = data.map(item => {
+        const d = new Date(item.date);
+        return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      });
+
+      const weights = data.map(item => item.weight);
+      const calories = data.map(item => item.calories_consumed);
+
+      // Destroy previous instances if re-loading
+      if (weightChartInstance) weightChartInstance.destroy();
+      if (calorieChartInstance) calorieChartInstance.destroy();
+
+      // Render Weight Line Chart
+      const weightCtx = document.getElementById('weight-chart').getContext('2d');
+      weightChartInstance = new Chart(weightCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Body Weight (kg)',
+            data: weights,
+            borderColor: '#32ad7a',
+            backgroundColor: 'rgba(50, 173, 122, 0.05)',
+            borderWidth: 2.5,
+            tension: 0.15,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              grid: { color: '#f1f5f9' },
+              ticks: { color: '#94a3b8', font: { size: 9 } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#94a3b8', font: { size: 9 } }
+            }
+          }
+        }
+      });
+
+      // Render Calorie Bar Chart
+      const calorieCtx = document.getElementById('calorie-chart').getContext('2d');
+      calorieChartInstance = new Chart(calorieCtx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Calories (kcal)',
+            data: calories,
+            backgroundColor: '#3b82f6',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              grid: { color: '#f1f5f9' },
+              ticks: { color: '#94a3b8', font: { size: 9 } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#94a3b8', font: { size: 9 } }
+            }
+          }
+        }
+      });
+
+    } catch (e) {
+      console.error("Failed to render Chart.js graphs: ", e);
+    }
+  }
+
+  async function logWeight(event) {
+    event.preventDefault();
+    const weightVal = parseFloat(document.getElementById('log-weight-input').value);
+    if (isNaN(weightVal)) return;
+
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const res = await fetch("{{ url_for('api_log_progress') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: todayStr,
+          weight: weightVal
+        })
+      });
+      if (res.ok) {
+        alert("Weight logged successfully!");
+        loadCharts();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCharts);
+</script>
+{% endblock %}

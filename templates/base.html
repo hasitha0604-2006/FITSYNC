@@ -1,0 +1,146 @@
+<!class="bg-slate-50">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2332ad7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6.5 6.5 11 11'%3E%3C/path%3E%3Cpath d='m17.5 6.5-11 11'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3C/svg%3E" />
+  <title>FitSync AI — Your lifestyle. Your fitness plan.</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0fbf6',
+              100: '#dcf6e9',
+              200: '#bcecd5',
+              300: '#8cddb8',
+              400: '#56c896',
+              500: '#32ad7a',
+              600: '#238c60',
+              700: '#1d704f',
+              800: '#1a5940',
+              900: '#164a36',
+              950: '#0c291f',
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-50 text-slate-800 min-h-screen flex flex-col md:flex-row">
+
+  {% if session.get('user_id') %}
+  <!-- Desktop Sidebar -->
+  <aside class="hidden md:flex flex-col w-64 bg-slate-900 text-white min-h-screen border-r border-slate-850 shrink-0">
+    <div className="logo-box" class="p-6 flex items-center gap-3 border-b border-slate-800">
+      <i data-lucide="activity" class="h-8 w-8 text-primary-400"></i>
+      <div>
+        <h1 class="font-bold text-xl tracking-tight">FitSync <span class="text-primary-400 font-black">AI</span></h1>
+        <p class="text-[10px] text-slate-400 tracking-wider">SIH PROTOTYPE</p>
+      </div>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-1.5">
+      <a href="{{ url_for('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-400 {{ 'bg-primary-500 text-white hover:bg-primary-600' if request.path == '/dashboard' else '' }}">
+        <i data-lucide="home" class="h-5 w-5"></i>
+        Dashboard
+      </a>
+      <a href="{{ url_for('today_workout') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-400 {{ 'bg-primary-500 text-white hover:bg-primary-600' if request.path == '/today-workout' else '' }}">
+        <i data-lucide="dumbbell" class="h-5 w-5"></i>
+        Today's Workout
+      </a>
+      <a href="{{ url_for('nutrition') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-400 {{ 'bg-primary-500 text-white hover:bg-primary-600' if request.path == '/nutrition' else '' }}">
+        <i data-lucide="apple" class="h-5 w-5"></i>
+        Nutrition Plan
+      </a>
+      <a href="{{ url_for('exercises') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-400 {{ 'bg-primary-500 text-white hover:bg-primary-600' if request.path == '/exercises' else '' }}">
+        <i data-lucide="compass" class="h-5 w-5"></i>
+        Exercise Library
+      </a>
+      <a href="{{ url_for('progress') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-400 {{ 'bg-primary-500 text-white hover:bg-primary-600' if request.path == '/progress' else '' }}">
+        <i data-lucide="line-chart" class="h-5 w-5"></i>
+        Progress Tracking
+      </a>
+      <a href="{{ url_for('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-slate-800 text-slate-400 {{ 'bg-primary-500 text-white hover:bg-primary-600' if request.path == '/profile' else '' }}">
+        <i data-lucide="user" class="h-5 w-5"></i>
+        Profile / Settings
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-slate-800">
+      <a href="{{ url_for('logout') }}" class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors">
+        <i data-lucide="log-out" class="h-5 w-5"></i>
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900 text-white border-t border-slate-800 flex justify-around py-2 z-50">
+    <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center justify-center p-2 text-[10px] font-medium {{ 'text-primary-400' if request.path == '/dashboard' else 'text-slate-400' }}">
+      <i data-lucide="home" class="h-5 w-5 mb-0.5"></i>
+      Home
+    </a>
+    <a href="{{ url_for('today_workout') }}" class="flex flex-col items-center justify-center p-2 text-[10px] font-medium {{ 'text-primary-400' if request.path == '/today-workout' else 'text-slate-400' }}">
+      <i data-lucide="dumbbell" class="h-5 w-5 mb-0.5"></i>
+      Workout
+    </a>
+    <a href="{{ url_for('nutrition') }}" class="flex flex-col items-center justify-center p-2 text-[10px] font-medium {{ 'text-primary-400' if request.path == '/nutrition' else 'text-slate-400' }}">
+      <i data-lucide="apple" class="h-5 w-5 mb-0.5"></i>
+      Meals
+    </a>
+    <a href="{{ url_for('exercises') }}" class="flex flex-col items-center justify-center p-2 text-[10px] font-medium {{ 'text-primary-400' if request.path == '/exercises' else 'text-slate-400' }}">
+      <i data-lucide="compass" class="h-5 w-5 mb-0.5"></i>
+      Library
+    </a>
+    <a href="{{ url_for('progress') }}" class="flex flex-col items-center justify-center p-2 text-[10px] font-medium {{ 'text-primary-400' if request.path == '/progress' else 'text-slate-400' }}">
+      <i data-lucide="line-chart" class="h-5 w-5 mb-0.5"></i>
+      Progress
+    </a>
+    <a href="{{ url_for('logout') }}" class="flex flex-col items-center justify-center p-2 text-[10px] font-medium text-red-400">
+      <i data-lucide="log-out" class="h-5 w-5 mb-0.5"></i>
+      Exit
+    </a>
+  </nav>
+  {% endif %}
+
+  <!-- Core Content Area -->
+  <main class="flex-1 flex flex-col min-h-screen overflow-hidden">
+    <!-- Messages Block -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="fixed top-4 right-4 z-50 space-y-2">
+          {% for category, message in messages %}
+            <div class="p-4 rounded-xl shadow-lg border text-xs font-semibold flex items-center gap-2.5 
+              {{ 'bg-emerald-50 border-emerald-200 text-emerald-800' if category == 'success' else 'bg-amber-50 border-amber-200 text-amber-800' }}">
+              <i data-lucide="info" class="h-4.5 w-4.5"></i>
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="flex-1 flex flex-col min-h-0">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- Lucide Icons and Helper Scripts -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+    // Dynamic fade-out for notifications
+    setTimeout(() => {
+      const alerts = document.querySelectorAll('.fixed.top-4.right-4 > div');
+      alerts.forEach(a => a.remove());
+    }, 4000);
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

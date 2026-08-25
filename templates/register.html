@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6 w-full">
+  <div class="w-full max-w-md bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl shadow-black/40">
+    
+    <!-- Header -->
+    <div class="flex flex-col items-center text-center mb-8">
+      <i data-lucide="activity" class="h-10 w-10 text-primary-400 stroke-[2.5] mb-2"></i>
+      <h2 class="text-2xl font-bold tracking-tight">Create Your Account</h2>
+      <p class="text-slate-400 text-sm mt-1">Get your personalized student fitness plan</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('register') }}" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+          Email Address
+        </label>
+        <div class="relative">
+          <i data-lucide="mail" class="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-slate-550"></i>
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="you@college.edu"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+          Password
+        </label>
+        <div class="relative">
+          <i data-lucide="lock" class="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-slate-550"></i>
+          <input
+            type="password"
+            name="password"
+            required
+            placeholder="••••••••"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all"
+          />
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-primary-500/10"
+      >
+        Sign Up
+        <i data-lucide="arrow-right" class="h-4.5 w-4.5"></i>
+      </button>
+    </form>
+
+    <div class="mt-8 pt-6 border-t border-slate-850 text-center">
+      <a
+        href="{{ url_for('login') }}"
+        class="text-xs text-slate-450 hover:text-white transition-colors font-medium"
+      >
+        Already have an account? Sign In
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

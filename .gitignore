@@ -1,0 +1,17 @@
+# Node / Frontend
+node_modules/
+dist/
+.env
+
+# Python / Backend
+__pycache__/
+*.pyc
+venv/
+.venv
+fitsync.db
+test_fitsync.db
+
+# VS Code / OS
+.vscode/
+.DS_Store
+Thumbs.db

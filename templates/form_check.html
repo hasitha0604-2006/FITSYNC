@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-50 w-full font-sans select-none">
+  
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Real-Time AI Form Analysis</h1>
+    <p class="text-xs text-slate-500 mt-1">Select an exercise, enable your camera, and let our computer vision formulas guide your movement angles.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- LEFT PANEL: Settings & Selections -->
+    <div class="lg:col-span-1 space-y-6">
+      
+      <!-- Exercise Selector -->
+      <section class="bg-white border rounded-2xl p-5 shadow-sm space-y-4">
+        <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wide">1. Select Movement</h3>
+        
+        <div class="space-y-2.5 text-xs font-semibold">
+          {% for item in [
+            ('Squat', 'Lower body posture, knee alignment, and thigh parallel check'),
+            ('Push-up', 'Upper body plank focus, chest depth, and elbow alignment'),
+            ('Bicep Curl', 'Arm flexion range, arm extension, and peak contraction squeeze')
+          ] %}
+          <button
+            type="button"
+            onclick="selectExercise('{{ item[0] }}')"
+            id="btn-ex-{{ item[0]|replace(' ', '-') }}"
+            class="ex-selector-btn w-full text-left p-4 rounded-xl border transition-all border-slate-205 bg-slate-50/50 hover:bg-slate-50"
+          >
+            <span class="block font-bold text-slate-800 text-sm">{{ item[0] }}</span>
+            <span class="block text-[10px] text-slate-450 mt-1 font-normal leading-normal">{{ item[1] }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Privacy and Instructions -->
+      <section class="bg-white border rounded-2xl p-5 shadow-sm space-y-3 text-xs leading-relaxed text-slate-550">
+        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+          <i data-lucide="shield" class="h-4.5 w-4.5 text-primary-500"></i>
+          Privacy Safeguard
+        </h3>
+        <p>
+          Camera frames are captured and analyzed locally to extract joint points using Python standard math formulas. snapshot binaries are not saved or transmitted to cloud services.
+        </p>
+      </section>
+
+    </div>
+
+    <!-- RIGHT PANEL: Video / Canvas Screen -->
+    <div class="lg:col-span-2 space-y-4">
+      
+      <div class="relative border bg-black rounded-2xl w-full h-[320px] md:h-[400px] overflow-hidden flex items-center justify-center shadow-lg">
+        <video id="webcam-view" class="absolute inset-0 w-full h-full object-cover scale-x-[-1] hidden" playsinline muted></video>
+        <canvas id="hidden-cv-canvas" class="hidden"></canvas>
+        
+        <!-- Virtual simulation indicator -->
+        <div id="sim-info-screen" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-slate-450 space-y-2">
+          <i data-lucide="camera-off" class="h-10 w-10 text-amber-500 mb-2"></i>
+          <h4 class="text-sm font-bold text-slate-200">Virtual AI Simulation Mode</h4>
+          <p class="text-[10px] max-w-[280px]">
+            Please select an exercise on the left to start. If webcam access is denied, our simulated wave coordinator will launch automatic angle streams.
+          </p>
+        </div>
+
+        <div class="absolute top-4 left-4 bg-slate-900/85 text-white font-mono text-[10px] px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5 z-10 select-none">
+          <span class="h-2 w-2 rounded-full bg-primary-500 animate-ping"></span>
+          Joint Angle: <strong id="angle-telemetry" class="text-primary-400">180°</strong>
+        </div>
+
+        <div id="standalone-sim-badge" class="absolute top-4 right-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono text-[9px] px-2 py-0.5 rounded hidden z-10 select-none">
+          SIMULATION
+        </div>
+      </div>
+
+      <!-- Coach Output -->
+      <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-center flex flex-col items-center justify-center min-h-[90px] shadow-lg select-none">
+        <p class="text-[10px] font-bold text-primary-400 uppercase tracking-widest mb-1.5">Posture Coach Feedback</p>
+        <h4 id="coach-telemetry-text" class="text-xs md:text-sm font-semibold text-slate-100 max-w-[500px] leading-relaxed">
+          "Waiting for exercise selection..."
+        </h4>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let activeEx = null;
+  let formCheckInterval = null;
+  let isCameraOnline = false;
+
+  function selectExercise(exName) {
+    if (formCheckInterval) clearInterval(formCheckInterval);
+    
+    activeEx = exName;
+    
+    // Toggle active classes
+    document.querySelectorAll('.ex-selector-btn').forEach(btn => {
+      btn.className = "ex-selector-btn w-full text-left p-4 rounded-xl border transition-all border-slate-200 bg-slate-50/50 text-slate-650 hover:bg-slate-50";
+    });
+    
+    document.getElementById(`btn-ex-${exName.replace(/\s+/g, '-')}`).className = 
+      "ex-selector-btn w-full text-left p-4 rounded-xl border transition-all border-primary-500 bg-primary-50/30 text-primary-850 font-bold shadow-sm";
+
+    document.getElementById('coach-telemetry-text').innerText = "Initializing posture checkpoints...";
+    initFormCamera();
+  }
+
+  async function initFormCamera() {
+    const video = document.getElementById('webcam-view');
+    const simBadge = document.getElementById('standalone-sim-badge');
+    const simScreen = document.getElementById('sim-info-screen');
+
+    isCameraOnline = false;
+    simBadge.classList.add('hidden');
+    simScreen.classList.remove('hidden');
+    video.classList.add('hidden');
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 400, height: 300, facingMode: "user" }
+      });
+      video.srcObject = stream;
+      video.play();
+      
+      isCameraOnline = true;
+      video.classList.remove('hidden');
+      simScreen.classList.add('hidden');
+
+      formCheckInterval = setInterval(sendSnapshotToBackend, 800);
+
+    } catch (e) {
+      console.warn("Camera locked/unavailable. Loading simulation fallback.");
+      simBadge.classList.remove('hidden');
+      formCheckInterval = setInterval(sendMockSnapshot, 1000);
+    }
+  }
+
+  async function sendSnapshotToBackend() {
+    if (!activeEx) return;
+
+    const video = document.getElementById('webcam-view');
+    const canvas = document.getElementById('hidden-cv-canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = video.videoWidth || 400;
+    canvas.height = video.videoHeight || 300;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const base64Str = canvas.toDataURL('image/jpeg');
+
+    try {
+      const res = await fetch("{{ url_for('api_form_analysis') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          exercise_name: activeEx,
+          frame_base64: base64Str
+        })
+      });
+      const data = await res.json();
+      updateDashboardTelemetry(data);
+    } catch (err) {
+      sendMockSnapshot();
+    }
+  }
+
+  async function sendMockSnapshot() {
+    if (!activeEx) return;
+    try {
+      const res = await fetch("{{ url_for('api_form_analysis') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          exercise_name: activeEx,
+          frame_base64: "MOCK_FRAME"
+        })
+      });
+      const data = await res.json();
+      updateDashboardTelemetry(data);
+    } catch (err) {}
+  }
+
+  function updateDashboardTelemetry(data) {
+    document.getElementById('coach-telemetry-text').innerText = `"${data.feedback}"`;
+    document.getElementById('angle-telemetry').innerText = `${data.angle}°`;
+    const simBadge = document.getElementById('standalone-sim-badge');
+    if (data.simulated) {
+      simBadge.classList.remove('hidden');
+    } else {
+      simBadge.classList.add('hidden');
+    }
+  }
+
+  function stopCameraCheck() {
+    if (formCheckInterval) clearInterval(formCheckInterval);
+    const video = document.getElementById('webcam-view');
+    if (video && video.srcObject) {
+      video.srcObject.getTracks().forEach(track => track.stop());
+      video.srcObject = null;
+    }
+  }
+
+  window.addEventListener('beforeunload', stopCameraCheck);
+</script>
+{% endblock %}

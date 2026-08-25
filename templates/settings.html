@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-50 w-full font-sans select-none">
+  
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Application Settings</h1>
+    <p class="text-xs text-slate-500 mt-1">Manage onboarding splits, targets, preferences, and security configurations.</p>
+  </div>
+
+  <div class="max-w-2xl space-y-6">
+    <!-- Food Preferences and Budget Card -->
+    <div class="bg-white border rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="flex items-start gap-4">
+        <div class="p-3 bg-rose-50 rounded-xl text-rose-600 shrink-0">
+          <i data-lucide="cookie" class="h-6 w-6"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-bold text-slate-850">Food Preferences & Daily Budget</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            Customize which ingredients you prefer, what foods are currently available to you, and what to avoid. Also configure your daily food budget limit.
+          </p>
+        </div>
+      </div>
+      
+      <hr class="border-slate-100" />
+      
+      <!-- BUDGET SECTION -->
+      <div class="space-y-3 select-none">
+        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Daily Food Budget</h4>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {% for b_val in [80, 100, 120, 150, 200, 300] %}
+          <button 
+            type="button"
+            onclick="selectSettingsBudget({{ b_val }})"
+            id="settings-budget-{{ b_val }}"
+            class="settings-budget-btn py-2 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all"
+          >
+            ₹{{ b_val }}/day
+          </button>
+          {% endfor %}
+          <button 
+            type="button"
+            onclick="selectSettingsBudget('Custom')"
+            id="settings-budget-Custom"
+            class="settings-budget-btn py-2 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all"
+          >
+            Custom
+          </button>
+        </div>
+        
+        <div id="settings-custom-budget-container" class="hidden mt-2 p-3 bg-slate-50 border rounded-xl flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-450">₹</span>
+          <input 
+            type="number" 
+            id="settings-custom-budget-input" 
+            placeholder="135"
+            oninput="onSettingsCustomBudgetChange()"
+            class="w-24 bg-white border rounded-lg px-2.5 py-1 text-xs text-slate-800 placeholder-slate-400 focus:border-primary-500 focus:outline-none"
+          />
+          <span class="text-[10px] text-slate-500 font-semibold">per day</span>
+        </div>
+        
+        <p class="text-xs font-semibold text-slate-600">
+          Current selected budget: <span class="text-primary-600" id="settings-budget-display">₹{{ profile.daily_food_budget or 150 }} / day</span>
+        </p>
+      </div>
+
+      <hr class="border-slate-100" />
+
+      <!-- FOOD PREFERENCES SECTION -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center select-none">
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Food Checklist & Availability</h4>
+          <div class="text-[10px] text-slate-500 flex gap-2 font-semibold">
+            <span>❤️ <span id="pref-count-display">0</span> preferred</span>
+            <span>📦 <span id="avail-count-display">0</span> available</span>
+            <span>🚫 <span id="avoid-count-display">0</span> avoided</span>
+          </div>
+        </div>
+
+        <div class="space-y-2 select-none">
+          <input 
+            type="text" 
+            id="settings-food-search" 
+            placeholder="Search foods..." 
+            oninput="filterSettingsFoodList()"
+            class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 focus:border-primary-500 focus:outline-none placeholder-slate-400"
+          />
+          <div class="flex flex-wrap gap-1">
+            {% for cat in ['All', 'Protein', 'Grains', 'Dairy', 'Vegetables', 'Fruits', 'Legumes', 'Snacks'] %}
+            <button 
+              type="button" 
+              onclick="selectSettingsFoodCategory('{{ cat }}')"
+              id="settings-cat-btn-{{ cat }}"
+              class="settings-cat-filter-btn px-2 py-0.5 rounded text-[10px] font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors"
+            >
+              {{ cat }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="overflow-y-auto max-h-[300px] border border-slate-100 rounded-xl divide-y divide-slate-100 bg-slate-50/50" id="settings-food-list">
+          {% for food in foods %}
+          <div 
+            class="settings-food-row flex items-center justify-between p-3"
+            data-name="{{ food.name|lower }}"
+            data-category="{{ food.category }}"
+          >
+            <div>
+              <span class="font-bold text-xs text-slate-800 block">{{ food.name }}</span>
+              <span class="text-[10px] text-slate-500 block">Protein: {{ food.protein }}g/100g &bull; {{ food.category }}</span>
+            </div>
+            
+            <div class="flex gap-1">
+              <button
+                type="button"
+                onclick="toggleSettingsFoodPref('{{ food.name }}', 'is_preferred')"
+                id="settings-food-{{ food.name|replace(' ', '-') }}-Prefer"
+                class="settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold border hover:bg-slate-100"
+              >
+                ❤️ Prefer
+              </button>
+              <button
+                type="button"
+                onclick="toggleSettingsFoodPref('{{ food.name }}', 'is_available')"
+                id="settings-food-{{ food.name|replace(' ', '-') }}-Available"
+                class="settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold border hover:bg-slate-100"
+              >
+                📦 Available
+              </button>
+              <button
+                type="button"
+                onclick="toggleSettingsFoodPref('{{ food.name }}', 'is_avoided')"
+                id="settings-food-{{ food.name|replace(' ', '-') }}-Avoid"
+                class="settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold border hover:bg-slate-100"
+              >
+                🚫 Avoid
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <hr class="border-slate-100" />
+      
+      <!-- ACTION BUTTONS -->
+      <div class="flex items-center justify-between">
+        <span id="settings-status-message" class="text-xs font-semibold hidden"></span>
+        <button 
+          type="button"
+          onclick="saveSettingsPreferences()"
+          id="save-preferences-btn"
+          class="bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-5 py-2.5 rounded-lg transition-colors shadow-md shadow-primary-500/10 ml-auto"
+        >
+          Save Food Preferences & Budget
+        </button>
+      </div>
+    </div>
+
+    <!-- Onboarding wizard card -->
+    <div class="bg-white border rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="flex items-start gap-4">
+        <div class="p-3 bg-primary-50 rounded-xl text-primary-650 shrink-0">
+          <i data-lucide="sliders" class="h-6 w-6"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-850">Reset Configuration Wizard</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            Running the onboarding wizard again resets your weekly workouts, recalculates macro budgets, and re-allocates Indian canteen meal presets.
+          </p>
+          <a 
+            href="{{ url_for('onboarding') }}"
+            class="inline-flex items-center gap-1 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2.5 rounded-lg mt-3 transition-colors shadow-md shadow-primary-500/10"
+          >
+            Rerun Onboarding Wizard
+            <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+          </a>
+        </div>
+      </div>
+
+      <hr class="border-slate-100" />
+
+      <div class="flex items-start gap-4">
+        <div class="p-3 bg-red-50 rounded-xl text-red-500 shrink-0">
+          <i data-lucide="log-out" class="h-6 w-6"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-850">Log Out of FitSync AI</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            Clears active login sessions. Pre-saved SQLite records will be retained inside the database.
+          </p>
+          <a 
+            href="{{ url_for('logout') }}"
+            class="inline-flex items-center gap-1 bg-red-500 hover:bg-red-650 text-white font-bold text-xs px-4 py-2.5 rounded-lg mt-3 transition-colors shadow-md shadow-red-500/10"
+          >
+            Exit Application
+            <i data-lucide="log-out" class="h-3.5 w-3.5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let settingsBudget = {{ profile.daily_food_budget or 150 }};
+  const defaultBudgetOptions = [80, 100, 120, 150, 200, 300];
+  
+  // Initialize foodPrefs with values passed from Flask
+  const settingsFoodPrefs = {};
+  {% for food in foods %}
+    {% set f_key = food.name|lower %}
+    {% if f_key in user_prefs %}
+      settingsFoodPrefs['{{ food.name }}'] = {
+        is_preferred: {{ 'true' if user_prefs[f_key].is_preferred else 'false' }},
+        is_available: {{ 'true' if user_prefs[f_key].is_available else 'false' }},
+        is_avoided: {{ 'true' if user_prefs[f_key].is_avoided else 'false' }}
+      };
+    {% else %}
+      settingsFoodPrefs['{{ food.name }}'] = {
+        is_preferred: false,
+        is_available: true,
+        is_avoided: false
+      };
+    {% endif %}
+  {% endfor %}
+
+  function selectSettingsBudget(b) {
+    document.querySelectorAll('.settings-budget-btn').forEach(btn => {
+      btn.className = "settings-budget-btn py-2 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all";
+    });
+    
+    const container = document.getElementById('settings-custom-budget-container');
+    const input = document.getElementById('settings-custom-budget-input');
+    
+    if (b === 'Custom') {
+      document.getElementById('settings-budget-Custom').className = "settings-budget-btn py-2 text-xs font-bold rounded-lg border border-primary-500 bg-primary-50 text-primary-650 transition-all";
+      container.classList.remove('hidden');
+      if (input.value) {
+        settingsBudget = parseInt(input.value) || 150;
+      } else {
+        settingsBudget = 150;
+      }
+    } else {
+      document.getElementById(`settings-budget-${b}`).className = "settings-budget-btn py-2 text-xs font-bold rounded-lg border border-primary-500 bg-primary-50 text-primary-650 transition-all";
+      container.classList.add('hidden');
+      settingsBudget = b;
+    }
+    updateSettingsBudgetDisplay();
+  }
+
+  function onSettingsCustomBudgetChange() {
+    const input = document.getElementById('settings-custom-budget-input');
+    const val = parseInt(input.value);
+    if (!isNaN(val) && val > 0) {
+      settingsBudget = val;
+      updateSettingsBudgetDisplay();
+    }
+  }
+
+  function updateSettingsBudgetDisplay() {
+    document.getElementById('settings-budget-display').textContent = `₹${settingsBudget} / day`;
+  }
+
+  // Preference toggling logic
+  function toggleSettingsFoodPref(foodName, stateType) {
+    if (!settingsFoodPrefs[foodName]) {
+      settingsFoodPrefs[foodName] = { is_preferred: false, is_available: false, is_avoided: false };
+    }
+    
+    settingsFoodPrefs[foodName][stateType] = !settingsFoodPrefs[foodName][stateType];
+    
+    if (stateType === 'is_avoided' && settingsFoodPrefs[foodName].is_avoided) {
+      settingsFoodPrefs[foodName].is_preferred = false;
+      settingsFoodPrefs[foodName].is_available = false;
+    }
+    if ((stateType === 'is_preferred' || stateType === 'is_available') && settingsFoodPrefs[foodName][stateType]) {
+      settingsFoodPrefs[foodName].is_avoided = false;
+    }
+    
+    updateSettingsFoodCardUI(foodName);
+    updatePreferencesCounters();
+  }
+
+  function updateSettingsFoodCardUI(foodName) {
+    const pref = settingsFoodPrefs[foodName] || { is_preferred: false, is_available: false, is_avoided: false };
+    const safeId = foodName.replace(/\s+/g, '-');
+    
+    const preferBtn = document.getElementById(`settings-food-${safeId}-Prefer`);
+    const availBtn = document.getElementById(`settings-food-${safeId}-Available`);
+    const avoidBtn = document.getElementById(`settings-food-${safeId}-Avoid`);
+    
+    if (preferBtn) {
+      if (pref.is_preferred) {
+        preferBtn.className = "settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold bg-rose-500 text-white border border-rose-500 shadow-sm";
+      } else {
+        preferBtn.className = "settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50";
+      }
+    }
+    
+    if (availBtn) {
+      if (pref.is_available) {
+        availBtn.className = "settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold bg-emerald-500 text-white border border-emerald-500 shadow-sm";
+      } else {
+        availBtn.className = "settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50";
+      }
+    }
+    
+    if (avoidBtn) {
+      if (pref.is_avoided) {
+        avoidBtn.className = "settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold bg-slate-700 text-white border border-slate-700 shadow-sm";
+      } else {
+        avoidBtn.className = "settings-food-btn px-2.5 py-1 rounded text-[10px] font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50";
+      }
+    }
+  }
+
+  function updatePreferencesCounters() {
+    let prefCount = 0;
+    let availCount = 0;
+    let avoidCount = 0;
+    
+    Object.values(settingsFoodPrefs).forEach(item => {
+      if (item.is_preferred) prefCount++;
+      if (item.is_available) availCount++;
+      if (item.is_avoided) avoidCount++;
+    });
+    
+    document.getElementById('pref-count-display').textContent = prefCount;
+    document.getElementById('avail-count-display').textContent = availCount;
+    document.getElementById('avoid-count-display').textContent = avoidCount;
+  }
+
+  // Filter food search & categories
+  let settingsActiveFoodCategory = 'All';
+
+  function selectSettingsFoodCategory(cat) {
+    settingsActiveFoodCategory = cat;
+    document.querySelectorAll('.settings-cat-filter-btn').forEach(btn => {
+      if (btn.id === `settings-cat-btn-${cat}`) {
+        btn.className = "settings-cat-filter-btn px-2 py-0.5 rounded text-[10px] font-semibold border border-primary-500 bg-primary-50 text-primary-650";
+      } else {
+        btn.className = "settings-cat-filter-btn px-2 py-0.5 rounded text-[10px] font-semibold border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors";
+      }
+    });
+    filterSettingsFoodList();
+  }
+
+  function filterSettingsFoodList() {
+    const searchVal = document.getElementById('settings-food-search').value.toLowerCase().trim();
+    document.querySelectorAll('.settings-food-row').forEach(row => {
+      const name = row.getAttribute('data-name');
+      const cat = row.getAttribute('data-category');
+      
+      const matchesSearch = !searchVal || name.includes(searchVal);
+      const matchesCategory = settingsActiveFoodCategory === 'All' || cat.toLowerCase().includes(settingsActiveFoodCategory.toLowerCase());
+      
+      if (matchesSearch && matchesCategory) {
+        row.classList.remove('hidden');
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+  }
+
+  async function saveSettingsPreferences() {
+    const saveBtn = document.getElementById('save-preferences-btn');
+    const msg = document.getElementById('settings-status-message');
+    
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+    
+    // Check validation of custom budget
+    const input = document.getElementById('settings-custom-budget-input');
+    const container = document.getElementById('settings-custom-budget-container');
+    if (!container.classList.contains('hidden')) {
+      const customVal = parseInt(input.value);
+      if (isNaN(customVal) || customVal <= 0) {
+        msg.className = "text-xs font-semibold text-red-500 block";
+        msg.textContent = "Please enter a valid daily food budget.";
+        msg.classList.remove('hidden');
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Food Preferences & Budget";
+        return;
+      }
+      settingsBudget = customVal;
+    }
+
+    const formattedFoodPrefs = Object.entries(settingsFoodPrefs).map(([food_name, prefObj]) => ({
+      food_name,
+      is_preferred: prefObj.is_preferred,
+      is_available: prefObj.is_available,
+      is_avoided: prefObj.is_avoided
+    }));
+
+    const payload = {
+      daily_food_budget: settingsBudget,
+      food_preferences: formattedFoodPrefs
+    };
+
+    try {
+      const res = await fetch("/api/profile/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      if (!res.ok) {
+        msg.className = "text-xs font-semibold text-red-500 block";
+        msg.textContent = result.message || "Unable to save food preferences. Please try again.";
+        msg.classList.remove('hidden');
+      } else {
+        msg.className = "text-xs font-semibold text-emerald-600 block";
+        msg.innerHTML = "&nbsp;&#10003; Food preferences saved successfully.";
+        msg.classList.remove('hidden');
+        
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          msg.classList.add('hidden');
+        }, 3000);
+      }
+    } catch (e) {
+      msg.className = "text-xs font-semibold text-red-500 block";
+      msg.textContent = "Connection failed. Could not save preferences.";
+      msg.classList.remove('hidden');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save Food Preferences & Budget";
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Select correct budget button on startup
+    if (defaultBudgetOptions.includes(settingsBudget)) {
+      selectSettingsBudget(settingsBudget);
+    } else {
+      document.getElementById('settings-custom-budget-input').value = settingsBudget;
+      selectSettingsBudget('Custom');
+    }
+    
+    // Set UI classes for all food preference buttons
+    Object.keys(settingsFoodPrefs).forEach(name => {
+      updateSettingsFoodCardUI(name);
+    });
+    
+    updatePreferencesCounters();
+    selectSettingsFoodCategory('All');
+  });
+</script>
+{% endblock %}

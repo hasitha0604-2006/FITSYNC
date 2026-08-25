@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-slate-950 text-white min-h-screen flex flex-col font-sans select-none w-full">
+  <!-- Header -->
+  <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i data-lucide="activity" class="h-7 w-7 text-primary-400"></i>
+        <span class="font-bold text-lg tracking-tight">FitSync <span class="text-primary-400">AI</span></span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="{{ url_for('login') }}" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Sign In</a>
+        <a href="{{ url_for('register') }}" class="text-sm font-semibold bg-primary-500 hover:bg-primary-600 px-4 py-2 rounded-lg transition-all text-white shadow-lg shadow-primary-500/20">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center max-w-5xl mx-auto px-6 py-12 md:py-24">
+    <!-- Hackathon Badge -->
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-xs font-semibold uppercase tracking-wider mb-6">
+      <i data-lucide="zap" class="h-3.5 w-3.5 fill-primary-400"></i>
+      Smart India Hackathon Prototype
+    </div>
+
+    <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight max-w-3xl">
+      Your lifestyle. <br />
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-emerald-300">Your fitness plan.</span>
+    </h1>
+
+    <p class="mt-6 text-base md:text-xl text-slate-400 max-w-2xl leading-relaxed">
+      FitSync AI adapts fitness and nutrition recommendations around the real-world constraints of college students—budget limits, hostel food, timing, and equipment availability.
+    </p>
+
+    <!-- Action Button -->
+    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+      <a
+        href="{{ url_for('register') }}"
+        class="group flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-base px-8 py-4 rounded-xl shadow-xl shadow-primary-500/10 hover:shadow-primary-500/25 transition-all"
+      >
+        Create Your Plan
+        <i data-lucide="arrow-right" class="h-5 w-5 group-hover:translate-x-1 transition-transform"></i>
+      </a>
+    </div>
+
+    <!-- Core Innovation Statement Card -->
+    <section class="mt-20 border border-slate-900 bg-slate-900/40 p-8 rounded-2xl text-left max-w-4xl">
+      <h3 class="font-bold text-lg text-primary-400 uppercase tracking-wider">The FitSync Innovation</h3>
+      <p class="text-slate-300 text-sm md:text-base leading-relaxed mt-2">
+        "Unlike generic fitness applications that provide fixed workout and diet plans, FitSync AI generates and continuously adapts a student's fitness and nutrition plan according to personal goals, lifestyle, food availability, nutritional targets, budget, workout constraints, and progress."
+      </p>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 text-left w-full">
+      <div class="border border-slate-900 bg-slate-900/20 p-6 rounded-xl hover:border-slate-800 transition-colors">
+        <div class="p-3 bg-blue-500/10 rounded-lg w-fit text-blue-400 mb-4">
+          <i data-lucide="target" class="h-6 w-6"></i>
+        </div>
+        <h4 class="font-bold text-lg mb-2">Equipment Aware</h4>
+        <p class="text-sm text-slate-450 leading-relaxed">
+          No bench? Only bands? No problem. FitSync dynamically filters your exercises, providing effective bodyweight or alternative movements that keep you on track.
+        </p>
+      </div>
+
+      <div class="border border-slate-900 bg-slate-900/20 p-6 rounded-xl hover:border-slate-800 transition-colors">
+        <div class="p-3 bg-primary-50/5 rounded-lg w-fit text-primary-400 mb-4">
+          <i data-lucide="indian-rupee" class="h-6 w-6"></i>
+        </div>
+        <h4 class="font-bold text-lg mb-2">Hostel & Budget Friendly</h4>
+        <p class="text-sm text-slate-450 leading-relaxed">
+          Specify your daily food budget (₹80 - ₹300) and food preferences. Replace eggs or paneer with cheap, high-protein alternatives like roasted chana or lentils.
+        </p>
+      </div>
+
+      <div class="border border-slate-900 bg-slate-900/20 p-6 rounded-xl hover:border-slate-800 transition-colors">
+        <div class="p-3 bg-red-500/10 rounded-lg w-fit text-red-400 mb-4">
+          <i data-lucide="flame" class="h-6 w-6"></i>
+        </div>
+        <h4 class="font-bold text-lg mb-2">Missed Workout Shift</h4>
+        <p class="text-sm text-slate-450 leading-relaxed">
+          Missed Monday due to an exam? Rebuild your week safely. The scheduler relocates missed workouts to upcoming rest days without overloading you.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Safety Disclaimer Footer -->
+  <footer class="border-t border-slate-900 py-8 bg-slate-950 mt-auto">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left text-xs text-slate-500">
+      <div class="max-w-xl">
+        <h5 class="font-semibold text-slate-400 flex items-center gap-1.5 justify-center md:justify-start">
+          <i data-lucide="shield" class="h-3.5 w-3.5"></i>
+          Safety Disclaimer
+        </h5>
+        <p class="mt-1 leading-relaxed text-slate-500">
+          FitSync AI provides general fitness and nutrition guidance for educational and wellness purposes. It is not medical advice. Users with medical conditions, injuries, or special dietary requirements should consult a qualified healthcare professional.
+        </p>
+      </div>
+      <div class="shrink-0 text-slate-600">
+        &copy; 2026 FitSync AI. Built for Smart India Hackathon.
+      </div>
+    </div>
+  </footer>
+</div>
+{% endblock %}

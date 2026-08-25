@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-8 pb-20 md:pb-10 bg-slate-50 w-full">
+  
+  <!-- Greetings Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 select-none">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
+        <span id="greeting-text">Hello</span>, <span class="text-primary-600">{{ profile.name }}</span> 👋
+      </h1>
+      <p class="text-slate-500 text-sm mt-1">Here is your customized lifestyle schedule for today.</p>
+    </div>
+    <div class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border shadow-sm text-xs font-semibold text-slate-700">
+      <i data-lucide="calendar" class="h-4.5 w-4.5 text-primary-500"></i>
+      <span id="current-date-str">Loading Date...</span>
+    </div>
+  </div>
+
+  <!-- Grid of Panels -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    
+    <!-- PANEL A: Today's Workout -->
+    <section class="bg-white border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between mb-4 select-none">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 bg-primary-50 rounded-xl text-primary-600">
+              <i data-lucide="dumbbell" class="h-5 w-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900">Today's Workout</h3>
+              <p class="text-xs text-slate-500 capitalize" id="workout-day-name">
+                {{ workout_day.day_name if workout_day else 'Rest Day' }}
+              </p>
+            </div>
+          </div>
+          
+          {% if not workout_day or workout_day.is_rest_day %}
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded bg-slate-100 text-slate-500">Rest Day</span>
+          {% else %}
+            {% set completed = workout_day.exercises|selectattr('is_completed')|list|length %}
+            {% set total = workout_day.exercises|length %}
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded bg-primary-100 text-primary-600">
+              {{ completed }}/{{ total }} Done
+            </span>
+          {% endif %}
+        </div>
+
+        {% if not workout_day or workout_day.is_rest_day %}
+          <div class="py-8 text-center text-slate-450 border border-dashed rounded-xl my-4 select-none">
+            <i data-lucide="award" class="h-8 w-8 text-slate-400 mx-auto mb-2"></i>
+            <h4 class="font-bold text-sm text-slate-755">Active Recovery Day</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-[280px] mx-auto leading-normal">
+              Give your muscles time to recover. Try walking, dynamic stretches, or light cardio!
+            </p>
+          </div>
+        {% else %}
+          {% set completed = workout_day.exercises|selectattr('is_completed')|list|length %}
+          {% set total = workout_day.exercises|length %}
+          {% set progress = (completed / total * 100)|round|int if total > 0 else 0 %}
+          <div class="my-4 space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-800">Muscle Focus: <span class="text-primary-600 font-extrabold capitalize">{{ workout_day.focus }}</span></span>
+              <span class="font-semibold text-slate-500">{{ progress }}% Completed</span>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div 
+                class="h-full bg-primary-500 rounded-full transition-all duration-300"
+                style="width: {{ progress }}%"
+              ></div>
+            </div>
+
+            <!-- Exercises list snippet -->
+            <div class="space-y-1.5 pt-2">
+              {% for ex in workout_day.exercises[:3] %}
+                <div class="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-50 border">
+                  <span class="font-medium text-slate-700">{{ ex.name }}</span>
+                  <span class="text-slate-500 text-[10px]">{{ ex.sets }} sets × {{ ex.reps }} reps</span>
+                </div>
+              {% endfor %}
+              {% if total > 3 %}
+                <p class="text-[10px] text-slate-400 text-center font-medium">+ {{ total - 3 }} more exercises</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="pt-4 border-t mt-4 flex items-center justify-between">
+        <span class="text-xs text-slate-400 font-medium">Estimated: {{ profile.workout_duration_mins }}m</span>
+        {% if workout_day and not workout_day.is_rest_day %}
+          <a 
+            href="{{ url_for('today_workout') }}"
+            class="inline-flex items-center gap-1 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors shadow-md shadow-primary-500/10"
+          >
+            Start Workout
+            <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+          </a>
+        {% else %}
+          <a 
+            href="{{ url_for('exercises') }}"
+            class="text-xs text-primary-600 font-bold hover:underline"
+          >
+            Browse Exercises
+          </a>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- PANEL B: Nutrition Compliance Tracker -->
+    <section class="bg-white border rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-2.5 mb-4 select-none">
+          <div class="p-2.5 bg-emerald-50 rounded-xl text-emerald-600">
+            <i data-lucide="apple" class="h-5 w-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900">Today's Nutrition Summary</h3>
+            <p class="text-xs text-slate-500">Planned meals vs targets</p>
+          </div>
+        </div>
+
+        {% if not meal_plan %}
+          <div class="py-8 text-center text-slate-450 border border-dashed rounded-xl my-4 select-none">
+            <i data-lucide="info" class="h-8 w-8 text-slate-400 mx-auto mb-2"></i>
+            <h4 class="font-bold text-sm text-slate-755">No meal plan generated</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-[280px] mx-auto">
+              Please go to the Nutrition tab to generate today's adaptive meal schedule.
+            </p>
+          </div>
+        {% else %}
+          {% set target_cals = targets.calories if targets else 2000 %}
+          {% set cal_pct = (meal_plan.total_calories / target_cals * 100)|round|int %}
+          
+          {% set target_prot = targets.protein if targets else 100 %}
+          {% set prot_pct = (meal_plan.total_protein / target_prot * 100)|round|int %}
+
+          {% set target_carbs = targets.carbs if targets else 250 %}
+          {% set carbs_pct = (meal_plan.total_carbs / target_carbs * 100)|round|int %}
+
+          {% set target_fat = targets.fat if targets else 60 %}
+          {% set fat_pct = (meal_plan.total_fat / target_fat * 100)|round|int %}
+
+          <div class="space-y-4 my-2 text-xs">
+            <!-- Calories -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-medium">
+                <span class="text-slate-800 font-semibold">Calories</span>
+                <span class="text-slate-500">
+                  <strong class="text-slate-800">{{ meal_plan.total_calories }}</strong> / {{ target_cals }} kcal
+                </span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width: {{ [cal_pct, 100]|min }}%"></div>
+              </div>
+            </div>
+
+            <!-- Protein -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-medium">
+                <span class="text-slate-800 font-semibold">Protein</span>
+                <span class="text-slate-500">
+                  <strong class="text-slate-800">{{ meal_plan.total_protein }}g</strong> / {{ target_prot }}g
+                </span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-blue-500 rounded-full" style="width: {{ [prot_pct, 100]|min }}%"></div>
+              </div>
+            </div>
+
+            <!-- Carbs -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-medium">
+                <span class="text-slate-800 font-semibold">Carbohydrates</span>
+                <span class="text-slate-500">
+                  <strong class="text-slate-800">{{ meal_plan.total_carbs }}g</strong> / {{ target_carbs }}g
+                </span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-amber-500 rounded-full" style="width: {{ [carbs_pct, 100]|min }}%"></div>
+              </div>
+            </div>
+
+            <!-- Fat -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between font-medium">
+                <span class="text-slate-800 font-semibold">Fat</span>
+                <span class="text-slate-500">
+                  <strong class="text-slate-800">{{ meal_plan.total_fat }}g</strong> / {{ target_fat }}g
+                </span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-red-400 rounded-full" style="width: {{ [fat_pct, 100]|min }}%"></div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="pt-4 border-t mt-4 flex items-center justify-between">
+        <span class="text-xs text-slate-400 font-medium">Budget: {{ profile.budget_preference }}/day</span>
+        <a 
+          href="{{ url_for('nutrition') }}"
+          class="inline-flex items-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors shadow-md shadow-emerald-500/10"
+        >
+          Adjust Meals
+          <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+        </a>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Smart Student Integration Innovations -->
+  <section class="bg-slate-900 text-white p-6 rounded-2xl shadow-lg select-none">
+    <h3 class="font-bold text-lg text-primary-400 flex items-center gap-2 mb-4">
+      <i data-lucide="trending-up" class="h-5 w-5 text-primary-400"></i>
+      Smart Student Integration
+    </h3>
+    <p class="text-slate-450 text-xs leading-relaxed max-w-3xl mb-6">
+      FitSync AI syncs your target nutritional allocations with dynamic exercise constraints. If you miss training slots, click <strong class="text-white">Rebuild Week</strong> to adapt schedules. If food items are missing or expensive, trigger <strong class="text-white">Substitution Swaps</strong> to recalculate macros instantly using SQLite databases.
+    </p>
+
+    <!-- Quick Actions Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3.5 text-xs text-center font-bold text-slate-300">
+      <a href="{{ url_for('today_workout') }}" class="p-4 bg-slate-800 hover:bg-slate-750 border border-slate-700/50 rounded-xl transition-all flex flex-col items-center gap-2 text-primary-300">
+        <i data-lucide="dumbbell" class="h-5 w-5"></i>
+        Start Workout
+      </a>
+      <a href="{{ url_for('nutrition') }}" class="p-4 bg-slate-800 hover:bg-slate-750 border border-slate-700/50 rounded-xl transition-all flex flex-col items-center gap-2 text-emerald-450">
+        <i data-lucide="apple" class="h-5 w-5"></i>
+        View Diet Plan
+      </a>
+      <a href="{{ url_for('exercises') }}" class="p-4 bg-slate-800 hover:bg-slate-750 border border-slate-700/50 rounded-xl transition-all flex flex-col items-center gap-2 text-blue-400">
+        <i data-lucide="compass" class="h-5 w-5"></i>
+        Browse Exercises
+      </a>
+      <a href="{{ url_for('progress') }}" class="p-4 bg-slate-800 hover:bg-slate-750 border border-slate-700/50 rounded-xl transition-all flex flex-col items-center gap-2 text-amber-400">
+        <i data-lucide="line-chart" class="h-5 w-5"></i>
+        Analytics History
+      </a>
+      <a href="{{ url_for('settings') }}" class="p-4 bg-slate-800 hover:bg-slate-750 border border-slate-700/50 rounded-xl transition-all flex flex-col items-center gap-2 text-slate-300 col-span-2 md:col-span-1">
+        <i data-lucide="settings" class="h-5 w-5"></i>
+        Modify Settings
+      </a>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Set dynamic greeting based on time of day
+  const hrs = new Date().getHours();
+  let greet = 'Good evening';
+  if (hrs < 12) greet = 'Good morning';
+  else if (hrs < 17) greet = 'Good afternoon';
+  document.getElementById('greeting-text').innerText = greet;
+
+  // Format date display
+  const opt = { weekday: 'long', day: 'numeric', month: 'short' };
+  document.getElementById('current-date-str').innerText = new Date().toLocaleDateString('en-IN', opt);
+</script>
+{% endblock %}

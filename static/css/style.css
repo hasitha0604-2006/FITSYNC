@@ -1,0 +1,30 @@
+/* Custom Scrollbar for Onboarding Food panel */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a; /* slate-900 */
+}
+::-webkit-scrollbar-thumb {
+  background: #334155; /* slate-700 */
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #32ad7a; /* primary-500 */
+}
+
+/* Animations for step panels */
+.step-panel {
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

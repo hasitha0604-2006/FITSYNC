@@ -1,0 +1,900 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center p-4 md:p-8 font-sans w-full">
+  
+  <!-- Progress Header -->
+  <div class="w-full max-w-xl mb-6 select-none">
+    <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+      <span id="step-title-display">STEP 1 OF 9 — Basic Info</span>
+      <span class="font-bold text-primary-400" id="percent-display">11% COMPLETE</span>
+    </div>
+    <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+      <div 
+        id="progress-bar"
+        class="h-full bg-gradient-to-r from-primary-500 to-emerald-400 rounded-full transition-all duration-300"
+        style="width: 11%"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Wizard Card Container -->
+  <div class="w-full max-w-xl bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/30 flex flex-col min-h-[465px]">
+    
+    <div id="error-container" class="hidden mb-4 bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg text-sm flex items-start gap-2">
+      <i data-lucide="info" class="h-4.5 w-4.5 shrink-0 mt-0.5"></i>
+      <p id="error-text"></p>
+    </div>
+
+    <!-- STEP CONTENT -->
+    <div class="flex-1 flex flex-col justify-center">
+
+      <!-- STEP 1: Basic Information -->
+      <div id="step-1" class="step-panel space-y-4">
+        <h2 class="text-xl font-bold text-white mb-2">Tell us about yourself</h2>
+        <div>
+          <label class="block text-xs text-slate-400 font-semibold mb-1">Full Name</label>
+          <input 
+            type="text" 
+            id="user-name" 
+            placeholder="e.g. Rahul Sharma"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary-500 transition-colors"
+          />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-400 font-semibold mb-1">Age</label>
+            <input 
+              type="number" 
+              id="user-age" 
+              value="20"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary-500"
+            />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 font-semibold mb-1">Gender</label>
+            <select 
+              id="user-gender"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary-500"
+            >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-400 font-semibold mb-1">Height (cm)</label>
+            <input 
+              type="number" 
+              id="user-height" 
+              value="170"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary-500"
+            />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 font-semibold mb-1">Weight (kg)</label>
+            <input 
+              type="number" 
+              id="user-weight" 
+              value="65"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-primary-500"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Fitness Goal -->
+      <div id="step-2" class="step-panel hidden space-y-4">
+        <h2 class="text-xl font-bold text-white mb-2">What is your primary fitness goal?</h2>
+        <div class="grid grid-cols-1 gap-3">
+          {% for goal in ['Weight Loss', 'Muscle Gain', 'Strength', 'General Fitness', 'Maintain Weight'] %}
+          <button
+            type="button"
+            onclick="selectGoal('{{ goal }}')"
+            id="goal-{{ goal|replace(' ', '-') }}"
+            class="goal-btn flex items-center justify-between px-5 py-4 rounded-xl border text-sm font-semibold text-left transition-all border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-750"
+          >
+            <span>{{ goal }}</span>
+            <i data-lucide="check" class="check-icon h-5 w-5 text-primary-400 hidden"></i>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- STEP 3: Fitness Level -->
+      <div id="step-3" class="step-panel hidden space-y-4">
+        <h2 class="text-xl font-bold text-white mb-2">Choose your fitness experience level</h2>
+        <div class="grid grid-cols-1 gap-3">
+          {% for lvl in [
+            ('Beginner', 'New to exercise or restarting after a long break'),
+            ('Intermediate', 'Consistently training for 6+ months, comfortable with free weights'),
+            ('Advanced', 'Training regularly for 2+ years, looking for progressive loading')
+          ] %}
+          <button
+            type="button"
+            onclick="selectLevel('{{ lvl[0] }}')"
+            id="level-{{ lvl[0] }}"
+            class="level-btn flex flex-col px-5 py-4 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-750"
+          >
+            <span class="font-bold text-sm text-white">{{ lvl[0] }}</span>
+            <span class="text-xs text-slate-400 mt-1 leading-relaxed">{{ lvl[1] }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- STEP 4: Workout Availability -->
+      <div id="step-4" class="step-panel hidden space-y-6">
+        <h2 class="text-xl font-bold text-white">How much time do you have?</h2>
+        
+        <div>
+          <label class="block text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">
+            Workout Days Per Week
+          </label>
+          <div class="flex gap-2.5">
+            {% for days in [3, 4, 5, 6] %}
+            <button
+              type="button"
+              onclick="selectDays({{ days }})"
+              id="days-{{ days }}"
+              class="days-btn flex-1 py-3.5 rounded-xl border font-bold text-sm transition-colors border-slate-850 bg-slate-950 text-slate-450 hover:border-slate-700"
+            >
+              {{ days }} Days
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">
+            Workout Duration (Minutes)
+          </label>
+          <div class="flex flex-wrap gap-2">
+            {% for mins in [20, 30, 45, 60, 90] %}
+            <button
+              type="button"
+              onclick="selectDuration({{ mins }})"
+              id="dur-{{ mins }}"
+              class="dur-btn flex-1 min-w-[70px] py-3 rounded-xl border font-bold text-sm transition-colors border-slate-850 bg-slate-950 text-slate-450 hover:border-slate-700"
+            >
+              {{ mins }}m
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5: Available Equipment -->
+      <div id="step-5" class="step-panel hidden space-y-4">
+        <h2 class="text-xl font-bold text-white mb-1">What equipment is available to you?</h2>
+        <p class="text-xs text-slate-400 leading-relaxed mb-3">Select multiple. FitSync AI will filter exercises to match your equipment.</p>
+        
+        <div class="grid grid-cols-1 gap-2.5">
+          {% for eq in [
+            ('No Equipment', 'Pure bodyweight movements, calisthenics'),
+            ('Dumbbells', 'Basic free weight exercises suitable for home/hostel'),
+            ('Resistance Bands', 'Elastic bands, highly compact for dorm rooms'),
+            ('Full Gym', 'Access to barbells, cable stations, leg presses, and racks')
+          ] %}
+          <button
+            type="button"
+            onclick="toggleEquipment('{{ eq[0] }}')"
+            id="eq-{{ eq[0]|replace(' ', '-') }}"
+            class="eq-btn flex items-start gap-4 px-5 py-3.5 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750"
+          >
+            <div class="checkbox-box mt-0.5 shrink-0 h-4.5 w-4.5 rounded border border-slate-755 bg-slate-950 flex items-center justify-center">
+              <i data-lucide="check" class="check-icon-eq h-3.5 w-3.5 stroke-[3] hidden text-white"></i>
+            </div>
+            <div>
+              <span class="font-bold text-sm text-white">{{ eq[0] }}</span>
+              <span class="block text-xs text-slate-400 mt-0.5">{{ eq[1] }}</span>
+            </div>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- STEP 6: Dietary Preference -->
+      <div id="step-6" class="step-panel hidden space-y-4">
+        <h2 class="text-xl font-bold text-white mb-2">What is your dietary preference?</h2>
+        <div class="grid grid-cols-1 gap-3">
+          {% for pref in ['Vegetarian', 'Eggetarian', 'Non-Vegetarian', 'Vegan'] %}
+          <button
+            type="button"
+            onclick="selectDiet('{{ pref }}')"
+            id="diet-{{ pref }}"
+            class="diet-btn flex items-center justify-between px-5 py-4 rounded-xl border text-sm font-semibold text-left transition-all border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-755"
+          >
+            <span>{{ pref }}</span>
+            <i data-lucide="check" class="check-icon-diet h-5 w-5 text-primary-400 hidden"></i>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- STEP 7: Food Preferences Checklist -->
+      <!-- STEP 7: Food Preferences Checklist -->
+      <div id="step-7" class="step-panel hidden space-y-3 flex-1 flex flex-col min-h-0">
+        <h2 class="text-lg font-bold text-white">Food preferences & availability</h2>
+        <p class="text-xs text-slate-400 leading-relaxed">Tell the system which foods you prefer, which are available in your canteen, and which to avoid entirely.</p>
+        
+        <!-- Search and Category Filters -->
+        <div class="space-y-2 select-none">
+          <input 
+            type="text" 
+            id="food-search-input" 
+            placeholder="Search foods..." 
+            oninput="filterFoodList()"
+            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:border-primary-500 focus:outline-none"
+          />
+          <div class="flex flex-wrap gap-1" id="food-category-filters">
+            {% for cat in ['All', 'Protein', 'Grains', 'Dairy', 'Vegetables', 'Fruits', 'Legumes', 'Snacks'] %}
+            <button 
+              type="button" 
+              onclick="selectFoodCategory('{{ cat }}')"
+              id="cat-btn-{{ cat }}"
+              class="cat-filter-btn px-2 py-0.5 rounded text-[10px] font-semibold border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700 transition-colors"
+            >
+              {{ cat }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto max-h-[220px] pr-1 space-y-2 text-xs" id="food-list-container">
+          {% for food in foods %}
+          <div 
+            class="food-item-row flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-slate-850"
+            data-name="{{ food.name|lower }}"
+            data-category="{{ food.category }}"
+          >
+            <div>
+              <span class="font-semibold text-slate-200 block">{{ food.name }}</span>
+              <span class="block text-[10px] text-slate-500">Protein: {{ food.protein }}g / 100g &bull; {{ food.category }}</span>
+            </div>
+            
+            <div class="flex gap-1">
+              <button
+                type="button"
+                onclick="toggleFoodPrefState('{{ food.name }}', 'is_preferred')"
+                id="food-{{ food.name|replace(' ', '-') }}-Prefer"
+                class="food-btn px-2 py-1 rounded text-[10px] font-bold border border-slate-800 bg-slate-900 text-slate-400 hover:bg-slate-850"
+              >
+                ❤️ Prefer
+              </button>
+              <button
+                type="button"
+                onclick="toggleFoodPrefState('{{ food.name }}', 'is_available')"
+                id="food-{{ food.name|replace(' ', '-') }}-Available"
+                class="food-btn px-2 py-1 rounded text-[10px] font-bold border border-slate-850 bg-slate-900 text-slate-450 hover:bg-slate-850"
+              >
+                📦 Available
+              </button>
+              <button
+                type="button"
+                onclick="toggleFoodPrefState('{{ food.name }}', 'is_avoided')"
+                id="food-{{ food.name|replace(' ', '-') }}-Avoid"
+                class="food-btn px-2 py-1 rounded text-[10px] font-bold border border-slate-800 bg-slate-900 text-slate-455 hover:bg-slate-850"
+              >
+                🚫 Avoid
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- STEP 8: Nutrition Targets -->
+      <div id="step-8" class="step-panel hidden space-y-4">
+        <h2 class="text-xl font-bold text-white mb-1">Set your nutrition targets</h2>
+        
+        <div class="flex gap-2 border-b border-slate-800 pb-3 mb-4">
+          <button
+            type="button"
+            id="target-ai-btn"
+            onclick="selectTargetType('AI')"
+            class="flex-1 py-2 text-xs font-bold rounded-lg bg-primary-500 text-white"
+          >
+            🤖 AI Recommended
+          </button>
+          <button
+            type="button"
+            id="target-custom-btn"
+            onclick="selectTargetType('Custom')"
+            class="flex-1 py-2 text-xs font-bold rounded-lg bg-slate-950 text-slate-450"
+          >
+            ⚙️ User Defined
+          </button>
+        </div>
+
+        <div id="target-ai-info" class="p-4 rounded-xl bg-slate-950 border border-slate-850 space-y-2">
+          <h4 class="text-sm font-semibold text-primary-400 flex items-center gap-1.5">
+            <i data-lucide="trending-up" class="h-4 w-4"></i>
+            How AI recommendations work:
+          </h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            FitSync AI calculates your BMR and TDEE using the Harris-Benedict formula. Based on your goals and weight inputs, it estimates daily calories and macro allocations automatically.
+          </p>
+        </div>
+
+        <div id="target-custom-inputs" class="grid grid-cols-2 gap-3 text-xs hidden">
+          <div>
+            <label class="block text-[10px] text-slate-400 font-semibold mb-1">Calories (kcal)</label>
+            <input 
+              type="number" 
+              id="custom-calories" 
+              value="2000"
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"
+            />
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-semibold mb-1">Protein (g)</label>
+            <input 
+              type="number" 
+              id="custom-protein" 
+              value="100"
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"
+            />
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-semibold mb-1">Carbs (g)</label>
+            <input 
+              type="number" 
+              id="custom-carbs" 
+              value="250"
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"
+            />
+          </div>
+          <div>
+            <label class="block text-[10px] text-slate-400 font-semibold mb-1">Fat (g)</label>
+            <input 
+              type="number" 
+              id="custom-fat" 
+              value="60"
+              class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 9: Budget Preference -->
+      <div id="step-9" class="step-panel hidden space-y-4">
+        <h2 class="text-xl font-bold text-white mb-1">Select your daily food budget</h2>
+        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+          Fitting high-protein food options inside a student budget is tough. We will prioritize cost-efficient choices based on this threshold.
+        </p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {% for item in [
+            ('₹80', 'Ultra-Saver: Rice, Dal, Peanuts, Roasted Chana'),
+            ('₹100', 'Saver: Milk, Curd, Dal, Eggs, Oats'),
+            ('₹120', 'Moderate Saver: Eggs, Dal, Peanuts, Tofu, Chapati'),
+            ('₹150', 'Standard Student: Eggs, Milk, Tofu, Soy chunks, Paneer'),
+            ('₹200', 'Premium: Paneer, Eggs, Chicken Breast, Fruits'),
+            ('₹300+', 'Unlimited: Fish, Chicken Breast, Oats, Paneer')
+          ] %}
+          <button
+            type="button"
+            onclick="selectOnboardingBudget('{{ item[0] }}')"
+            id="budget-{{ item[0]|replace('₹', '')|replace('+', '') }}"
+            class="budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750"
+          >
+            <span class="font-bold text-sm text-white flex items-center gap-1">
+              <i data-lucide="indian-rupee" class="h-4 w-4 text-primary-400"></i>
+              {{ item[0] }} / Day
+            </span>
+            <span class="text-[10px] text-slate-450 mt-1 leading-normal">{{ item[1] }}</span>
+          </button>
+          {% endfor %}
+          
+          <button
+            type="button"
+            onclick="selectOnboardingBudget('Custom')"
+            id="budget-Custom"
+            class="budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750"
+          >
+            <span class="font-bold text-sm text-white flex items-center gap-1">
+              <i data-lucide="sliders" class="h-4 w-4 text-primary-400"></i>
+              Custom Budget
+            </span>
+            <span class="text-[10px] text-slate-450 mt-1 leading-normal">Enter any custom value (e.g. ₹135/day)</span>
+          </button>
+        </div>
+
+        <div id="custom-budget-input-container" class="hidden mt-3 p-4 rounded-xl bg-slate-950 border border-slate-850 space-y-2 select-none">
+          <label class="block text-xs font-semibold text-slate-400">Enter custom daily food budget (₹)</label>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold text-slate-400">₹</span>
+            <input 
+              type="number" 
+              id="custom-daily-budget-input" 
+              placeholder="135" 
+              oninput="onCustomBudgetChange()"
+              class="w-32 bg-slate-900 border border-slate-850 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-600 focus:border-primary-500 focus:outline-none"
+            />
+            <span class="text-[10px] text-slate-450">per day</span>
+          </div>
+          <span id="custom-budget-error" class="hidden text-[10px] text-red-500 block"></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM CONTROLS -->
+    <div class="mt-8 pt-6 border-t border-slate-850 flex items-center justify-between select-none">
+      <button
+        type="button"
+        id="back-btn"
+        onclick="prevStep()"
+        class="hidden flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+      >
+        <i data-lucide="arrow-left" class="h-4 w-4"></i> Back
+      </button>
+      <div id="spacer" class="flex-1"></div>
+      
+      <button
+        type="button"
+        id="next-btn"
+        onclick="nextStep()"
+        class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-colors ml-auto"
+      >
+        Next <i data-lucide="arrow-right" class="h-4 w-4"></i>
+      </button>
+
+      <button
+        type="button"
+        id="complete-btn"
+        onclick="submitProfile()"
+        class="hidden flex items-center gap-1.5 bg-gradient-to-r from-primary-500 to-emerald-450 hover:opacity-90 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all shadow-lg ml-auto"
+      >
+        Generate My Plans
+        <i data-lucide="chevron-right" class="h-4 w-4"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let currentStep = 1;
+  const totalSteps = 9;
+
+  // Form states
+  let fitnessGoal = 'Muscle Gain';
+  let fitnessLevel = 'Beginner';
+  let workoutDays = 4;
+  let workoutDuration = 45;
+  let equipments = ['No Equipment'];
+  let dietaryPreference = 'Vegetarian';
+  let budget = '₹150';
+  let targetType = 'AI';
+  
+  // Initialize foodPrefs with Available for all foods
+  const foodPrefs = {};
+  {% for food in foods %}
+    foodPrefs['{{ food.name }}'] = {
+      is_preferred: false,
+      is_available: true,
+      is_avoided: false
+    };
+  {% endfor %}
+
+  const stepTitles = [
+    'Basic Info',
+    'Goal',
+    'Level',
+    'Schedule',
+    'Equipment',
+    'Dietary Type',
+    'Foods Preferences',
+    'Targets',
+    'Budget'
+  ];
+
+  function showStep(stepNum) {
+    // Hide all step panels
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.add('hidden'));
+    
+    // Show active panel
+    document.getElementById(`step-${stepNum}`).classList.remove('hidden');
+
+    // Update Progress info
+    document.getElementById('step-title-display').innerText = `STEP ${stepNum} OF ${totalSteps} — ${stepTitles[stepNum - 1]}`;
+    const pct = Math.round((stepNum / totalSteps) * 100);
+    document.getElementById('percent-display').innerText = `${pct}% COMPLETE`;
+    document.getElementById('progress-bar').style.width = `${pct}%`;
+
+    // Manage button visibilities
+    const backBtn = document.getElementById('back-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const completeBtn = document.getElementById('complete-btn');
+
+    if (stepNum > 1) {
+      backBtn.classList.remove('hidden');
+      document.getElementById('spacer').classList.add('hidden');
+    } else {
+      backBtn.classList.add('hidden');
+      document.getElementById('spacer').classList.remove('hidden');
+    }
+
+    if (stepNum === totalSteps) {
+      nextBtn.classList.add('hidden');
+      completeBtn.classList.remove('hidden');
+    } else {
+      nextBtn.classList.remove('hidden');
+      completeBtn.classList.add('hidden');
+    }
+  }
+
+  function nextStep() {
+    document.getElementById('error-container').classList.add('hidden');
+    
+    if (currentStep === 1) {
+      const name = document.getElementById('user-name').value.trim();
+      if (!name) {
+        showError('Please enter your name.');
+        return;
+      }
+    }
+    
+    if (currentStep < totalSteps) {
+      currentStep++;
+      showStep(currentStep);
+    }
+  }
+
+  function prevStep() {
+    document.getElementById('error-container').classList.add('hidden');
+    if (currentStep > 1) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  }
+
+  function showError(msg) {
+    document.getElementById('error-text').innerText = msg;
+    document.getElementById('error-container').classList.remove('hidden');
+  }
+
+  // Value Selectors
+  function selectGoal(g) {
+    fitnessGoal = g;
+    document.querySelectorAll('.goal-btn').forEach(btn => {
+      btn.className = "goal-btn flex items-center justify-between px-5 py-4 rounded-xl border text-sm font-semibold text-left transition-all border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-750";
+      btn.querySelector('.check-icon').classList.add('hidden');
+    });
+
+    const activeBtn = document.getElementById(`goal-${g.replace(/\s+/g, '-')}`);
+    if (activeBtn) {
+      activeBtn.className = "goal-btn flex items-center justify-between px-5 py-4 rounded-xl border text-sm font-semibold text-left transition-all border-primary-500 bg-primary-500/10 text-white";
+      activeBtn.querySelector('.check-icon').classList.remove('hidden');
+    }
+  }
+
+  function selectLevel(l) {
+    fitnessLevel = l;
+    document.querySelectorAll('.level-btn').forEach(btn => {
+      btn.className = "level-btn flex flex-col px-5 py-4 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-750";
+    });
+
+    const activeBtn = document.getElementById(`level-${l}`);
+    if (activeBtn) {
+      activeBtn.className = "level-btn flex flex-col px-5 py-4 rounded-xl border text-left transition-all border-primary-500 bg-primary-500/10 text-white";
+    }
+  }
+
+  function selectDays(d) {
+    workoutDays = d;
+    document.querySelectorAll('.days-btn').forEach(btn => {
+      btn.className = "days-btn flex-1 py-3.5 rounded-xl border font-bold text-sm transition-colors border-slate-850 bg-slate-950 text-slate-450 hover:border-slate-700";
+    });
+    document.getElementById(`days-${d}`).className = "days-btn flex-1 py-3.5 rounded-xl border font-bold text-sm transition-colors border-primary-500 bg-primary-500/10 text-white";
+  }
+
+  function selectDuration(m) {
+    workoutDuration = m;
+    document.querySelectorAll('.dur-btn').forEach(btn => {
+      btn.className = "dur-btn flex-1 min-w-[70px] py-3 rounded-xl border font-bold text-sm transition-colors border-slate-850 bg-slate-950 text-slate-450 hover:border-slate-700";
+    });
+    document.getElementById(`dur-${m}`).className = "dur-btn flex-1 min-w-[70px] py-3 rounded-xl border font-bold text-sm transition-colors border-primary-500 bg-primary-500/10 text-white";
+  }
+
+  function toggleEquipment(eq) {
+    if (eq === 'No Equipment') {
+      equipments = ['No Equipment'];
+    } else {
+      equipments = equipments.filter(item => item !== 'No Equipment');
+      if (equipments.includes(eq)) {
+        equipments = equipments.filter(item => item !== eq);
+        if (equipments.length === 0) equipments = ['No Equipment'];
+      } else {
+        equipments.push(eq);
+      }
+    }
+    updateEquipmentUI();
+  }
+
+  function updateEquipmentUI() {
+    document.querySelectorAll('.eq-btn').forEach(btn => {
+      btn.className = "eq-btn flex items-start gap-4 px-5 py-3.5 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750";
+      btn.querySelector('.checkbox-box').className = "checkbox-box mt-0.5 shrink-0 h-4.5 w-4.5 rounded border border-slate-700 bg-slate-950 flex items-center justify-center";
+      btn.querySelector('.check-icon-eq').classList.add('hidden');
+    });
+
+    equipments.forEach(eq => {
+      const btn = document.getElementById(`eq-${eq.replace(/\s+/g, '-')}`);
+      if (btn) {
+        btn.className = "eq-btn flex items-start gap-4 px-5 py-3.5 rounded-xl border text-left transition-all border-primary-500 bg-primary-500/10 text-white";
+        btn.querySelector('.checkbox-box').className = "checkbox-box mt-0.5 shrink-0 h-4.5 w-4.5 rounded border border-primary-400 bg-primary-500 flex items-center justify-center";
+        btn.querySelector('.check-icon-eq').classList.remove('hidden');
+      }
+    });
+  }
+
+  function selectDiet(d) {
+    dietaryPreference = d;
+    document.querySelectorAll('.diet-btn').forEach(btn => {
+      btn.className = "diet-btn flex items-center justify-between px-5 py-4 rounded-xl border text-sm font-semibold text-left transition-all border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-755";
+      btn.querySelector('.check-icon-diet').classList.add('hidden');
+    });
+
+    const activeBtn = document.getElementById(`diet-${d}`);
+    if (activeBtn) {
+      activeBtn.className = "diet-btn flex items-center justify-between px-5 py-4 rounded-xl border text-sm font-semibold text-left transition-all border-primary-500 bg-primary-500/10 text-white";
+      activeBtn.querySelector('.check-icon-diet').classList.remove('hidden');
+    }
+  }
+
+  // Preference toggling logic
+  function toggleFoodPrefState(foodName, stateType) {
+    if (!foodPrefs[foodName]) {
+      foodPrefs[foodName] = { is_preferred: false, is_available: false, is_avoided: false };
+    }
+    
+    foodPrefs[foodName][stateType] = !foodPrefs[foodName][stateType];
+    
+    if (stateType === 'is_avoided' && foodPrefs[foodName].is_avoided) {
+      foodPrefs[foodName].is_preferred = false;
+      foodPrefs[foodName].is_available = false;
+    }
+    if ((stateType === 'is_preferred' || stateType === 'is_available') && foodPrefs[foodName][stateType]) {
+      foodPrefs[foodName].is_avoided = false;
+    }
+    
+    updateFoodCardUI(foodName);
+  }
+
+  function updateFoodCardUI(foodName) {
+    const pref = foodPrefs[foodName] || { is_preferred: false, is_available: false, is_avoided: false };
+    const safeId = foodName.replace(/\s+/g, '-');
+    
+    const preferBtn = document.getElementById(`food-${safeId}-Prefer`);
+    const availBtn = document.getElementById(`food-${safeId}-Available`);
+    const avoidBtn = document.getElementById(`food-${safeId}-Avoid`);
+    
+    if (preferBtn) {
+      if (pref.is_preferred) {
+        preferBtn.className = "food-btn px-2 py-1 rounded text-[10px] font-bold bg-rose-500 text-white border border-rose-500 shadow-sm";
+      } else {
+        preferBtn.className = "food-btn px-2 py-1 rounded text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-850";
+      }
+    }
+    
+    if (availBtn) {
+      if (pref.is_available) {
+        availBtn.className = "food-btn px-2 py-1 rounded text-[10px] font-bold bg-emerald-500 text-white border border-emerald-500 shadow-sm";
+      } else {
+        availBtn.className = "food-btn px-2 py-1 rounded text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-855 hover:bg-slate-850";
+      }
+    }
+    
+    if (avoidBtn) {
+      if (pref.is_avoided) {
+        avoidBtn.className = "food-btn px-2 py-1 rounded text-[10px] font-bold bg-slate-700 text-white border border-slate-700 shadow-sm";
+      } else {
+        avoidBtn.className = "food-btn px-2 py-1 rounded text-[10px] font-bold bg-slate-900 text-slate-455 border border-slate-800 hover:bg-slate-855";
+      }
+    }
+  }
+
+  // Food Search & Category Filter Logic
+  let activeFoodCategory = 'All';
+
+  function selectFoodCategory(cat) {
+    activeFoodCategory = cat;
+    document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+      if (btn.id === `cat-btn-${cat}`) {
+        btn.className = "cat-filter-btn px-2 py-0.5 rounded text-[10px] font-semibold border border-primary-500 bg-primary-500/10 text-white";
+      } else {
+        btn.className = "cat-filter-btn px-2 py-0.5 rounded text-[10px] font-semibold border border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700 transition-colors";
+      }
+    });
+    filterFoodList();
+  }
+
+  function filterFoodList() {
+    const searchVal = document.getElementById('food-search-input').value.toLowerCase().trim();
+    document.querySelectorAll('.food-item-row').forEach(row => {
+      const name = row.getAttribute('data-name');
+      const cat = row.getAttribute('data-category');
+      
+      const matchesSearch = !searchVal || name.includes(searchVal);
+      const matchesCategory = activeFoodCategory === 'All' || cat.toLowerCase().includes(activeFoodCategory.toLowerCase());
+      
+      if (matchesSearch && matchesCategory) {
+        row.classList.remove('hidden');
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+  }
+
+  function selectTargetType(type) {
+    targetType = type;
+    const aiBtn = document.getElementById('target-ai-btn');
+    const customBtn = document.getElementById('target-custom-btn');
+    const aiInfo = document.getElementById('target-ai-info');
+    const customInputs = document.getElementById('target-custom-inputs');
+
+    if (type === 'AI') {
+      aiBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-primary-500 text-white";
+      customBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-slate-950 text-slate-450";
+      aiInfo.classList.remove('hidden');
+      customInputs.classList.add('hidden');
+    } else {
+      aiBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-slate-950 text-slate-450";
+      customBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-primary-500 text-white";
+      aiInfo.classList.add('hidden');
+      customInputs.classList.remove('hidden');
+    }
+  }
+
+  // Onboarding Budget Selectors
+  function selectOnboardingBudget(b) {
+    budget = b;
+    document.querySelectorAll('.budget-btn').forEach(btn => {
+      btn.className = "budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750";
+    });
+
+    const activeBtn = document.getElementById(`budget-${b.replace('₹', '').replace('+', '')}`);
+    if (activeBtn) {
+      activeBtn.className = "budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-primary-500 bg-primary-500/10 text-white";
+    }
+
+    const container = document.getElementById('custom-budget-input-container');
+    const input = document.getElementById('custom-daily-budget-input');
+    
+    if (b === 'Custom') {
+      container.classList.remove('hidden');
+      if (input.value) {
+        budget = parseInt(input.value) || 150;
+      } else {
+        budget = 150;
+      }
+    } else {
+      container.classList.add('hidden');
+    }
+  }
+
+  function onCustomBudgetChange() {
+    const input = document.getElementById('custom-daily-budget-input');
+    const val = parseInt(input.value);
+    const err = document.getElementById('custom-budget-error');
+    if (isNaN(val) || val <= 0) {
+      err.textContent = "Please enter a valid daily food budget.";
+      err.classList.remove('hidden');
+    } else {
+      err.classList.add('hidden');
+      budget = val;
+    }
+  }
+
+  async function submitProfile() {
+    const completeBtn = document.getElementById('complete-btn');
+    completeBtn.disabled = true;
+    completeBtn.innerText = "Generating AI Plan...";
+
+    // Build payload
+    const name = document.getElementById('user-name').value.trim();
+    const age = parseInt(document.getElementById('user-age').value);
+    const gender = document.getElementById('user-gender').value;
+    const height = parseFloat(document.getElementById('user-height').value);
+    const weight = parseFloat(document.getElementById('user-weight').value);
+
+    // Map boolean preferences
+    const formattedFoodPrefs = Object.entries(foodPrefs).map(([food_name, prefObj]) => ({
+      food_name,
+      is_preferred: prefObj.is_preferred,
+      is_available: prefObj.is_available,
+      is_avoided: prefObj.is_avoided
+    }));
+
+    let numericBudget = null;
+    let budgetPrefStr = String(budget);
+    if (typeof budget === 'number') {
+      numericBudget = budget;
+      budgetPrefStr = `₹${budget}`;
+    } else {
+      const match = budget.match(/\d+/);
+      if (match) {
+        numericBudget = parseInt(match[0]);
+      }
+    }
+
+    const payload = {
+      name,
+      age,
+      gender,
+      height,
+      weight,
+      fitness_goal: fitnessGoal,
+      fitness_level: fitnessLevel,
+      workout_days_per_week: workoutDays,
+      workout_duration_mins: workoutDuration,
+      dietary_preference: dietaryPreference,
+      budget_preference: budgetPrefStr,
+      daily_food_budget: numericBudget,
+      equipments,
+      food_preferences: formattedFoodPrefs
+    };
+
+    try {
+      const res = await fetch("{{ url_for('onboarding') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      const result = await res.json();
+      if (!res.ok) {
+        showError(result.message || "Failed to save profile.");
+        completeBtn.disabled = false;
+        completeBtn.innerText = "Generate My Plans";
+        return;
+      }
+
+      // If user specified custom targets, save them
+      if (targetType === 'Custom') {
+        const customRes = await fetch("{{ url_for('api_update_targets') }}", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            calories: parseInt(document.getElementById('custom-calories').value),
+            protein: parseFloat(document.getElementById('custom-protein').value),
+            carbs: parseFloat(document.getElementById('custom-carbs').value),
+            fat: parseFloat(document.getElementById('custom-fat').value)
+          })
+        });
+      }
+
+      window.location.href = "{{ url_for('dashboard') }}";
+    } catch (e) {
+      showError("Connection failed. Please ensure backend server is online.");
+      completeBtn.disabled = false;
+      completeBtn.innerText = "Generate My Plans";
+    }
+  }
+
+  // Initialize UIs on start
+  document.addEventListener('DOMContentLoaded', () => {
+    selectGoal(fitnessGoal);
+    selectLevel(fitnessLevel);
+    selectDays(workoutDays);
+    selectDuration(workoutDuration);
+    updateEquipmentUI();
+    selectDiet(dietaryPreference);
+    selectOnboardingBudget(budget);
+    selectFoodCategory('All');
+    showStep(1);
+    
+    // Set active food UI default states
+    {% for food in foods %}
+      updateFoodCardUI('{{ food.name }}');
+    {% endfor %}
+  });
+</script>
+{% endblock %}
