@@ -88,7 +88,7 @@ def process_coach_command(user, prompt_text, app_context=None):
             today_name = datetime.now().strftime("%A")
             today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
             if today_w and not today_w.is_rest_day:
-                scale_workout_duration(today_w, target_mins, db, WorkoutExercise)
+                scale_workout_duration(today_w, target_mins, db.session, WorkoutExercise)
                 user.profile.workout_duration_mins = target_mins
                 db.session.commit()
                 return {
@@ -107,7 +107,7 @@ def process_coach_command(user, prompt_text, app_context=None):
             today_name = datetime.now().strftime("%A")
             today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
             if today_w and not today_w.is_rest_day:
-                scale_workout_difficulty(today_w, direction, db)
+                scale_workout_difficulty(today_w, direction, db.session)
                 return {
                     "status": "success",
                     "action": "difficulty_adjusted",
