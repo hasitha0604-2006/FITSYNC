@@ -225,14 +225,17 @@
             {# Exercise mini-list #}
             <ul class="space-y-1">
               {% for ex in day.exercises[:4] %}
-                <li class="flex items-center gap-1.5 text-[10px] {% if ex.is_completed %}text-slate-400 line-through{% else %}text-slate-600{% endif %}">
-                  <div class="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center
-                               {% if ex.is_completed %}bg-primary-500 border-primary-500{% else %}border-slate-300{% endif %}">
-                    {% if ex.is_completed %}
-                      <svg class="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                    {% endif %}
+                <li class="flex items-center justify-between text-[10px] {% if ex.is_completed %}text-slate-400 line-through{% else %}text-slate-600{% endif %}">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <div class="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center
+                                 {% if ex.is_completed %}bg-primary-500 border-primary-500{% else %}border-slate-300{% endif %}">
+                      {% if ex.is_completed %}
+                        <svg class="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                      {% endif %}
+                    </div>
+                    <span class="truncate font-medium">{{ ex.name }}</span>
                   </div>
-                  <span class="truncate font-medium">{{ ex.name }}</span>
+                  <button onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})" class="text-[9px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded transition-colors shrink-0 ml-1">Demo</button>
                 </li>
               {% endfor %}
               {% if day.exercises | length > 4 %}
@@ -368,10 +371,181 @@
   </div>
 </div>
 
+{# ── Graphical Demonstration & Guide Modal ── #}
+<div id="guide-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
+    <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
+      <div>
+        <h3 id="modal-ex-name" class="font-bold text-lg">Exercise Name</h3>
+        <p id="modal-ex-cat" class="text-xs text-primary-400 capitalize">Category</p>
+      </div>
+      <button onclick="closeGuideModal()" class="h-8 w-8 bg-slate-800 rounded-full text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+        <span class="text-xl font-bold">×</span>
+      </button>
+    </div>
+
+    <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-300">
+      <!-- Side-by-Side Animation & Anatomical Model -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Motion Avatar -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner">
+          <img id="modal-ex-img" src="" alt="Demonstration" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';" />
+          <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
+            Movement Guide
+          </div>
+        </div>
+
+        <!-- Anatomical Muscle Map -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex flex-col items-center justify-center relative" id="modal-anatomy-container">
+          {% include 'anatomy_model.html' %}
+          <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
+            Anatomical Target
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-950 border border-emerald-500/30 rounded-xl space-y-2.5 shadow-inner">
+        <div class="flex items-center justify-between">
+          <h5 class="font-extrabold uppercase tracking-wider text-[10px] text-emerald-400 flex items-center gap-1.5">
+            <i data-lucide="target" class="h-3.5 w-3.5"></i> Target Muscle & Location
+          </h5>
+          <span class="text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded">
+            Active Biomechanics
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-[10px]">
+          <div class="bg-slate-900 p-2 rounded border border-slate-800">
+            <span class="text-slate-400 font-bold uppercase block text-[9px]">📍 Primary Target</span>
+            <p id="modal-ex-working-loc" class="font-bold text-emerald-400 text-xs mt-0.5"></p>
+          </div>
+          <div class="bg-slate-900 p-2 rounded border border-slate-800">
+            <span class="text-slate-400 font-bold uppercase block text-[9px]">⚙️ Secondary Support</span>
+            <p id="modal-ex-joint-action" class="font-bold text-cyan-400 text-xs mt-0.5"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
+        <h5 class="font-bold uppercase tracking-wider text-[10px] text-primary-400">Positioning & Breathing</h5>
+        <div class="grid grid-cols-3 gap-2.5 text-center text-[9px] leading-snug">
+          <div class="bg-slate-900 p-2 rounded border border-slate-800">
+            <p class="text-slate-400 font-bold uppercase tracking-wide">Start Position</p>
+            <p id="modal-ex-start" class="text-slate-200 mt-1"></p>
+          </div>
+          <div class="bg-slate-900 p-2 rounded border border-slate-800">
+            <p class="text-slate-400 font-bold uppercase tracking-wide">Movement Path</p>
+            <p id="modal-ex-move" class="text-slate-200 mt-1"></p>
+          </div>
+          <div class="bg-slate-900 p-2 rounded border border-slate-800">
+            <p class="text-slate-400 font-bold uppercase tracking-wide">End Position</p>
+            <p id="modal-ex-end" class="text-slate-200 mt-1"></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[10px] pt-1">
+          <div class="bg-slate-900 p-2 rounded border border-slate-800">
+            <span class="text-blue-400 font-bold uppercase block text-[9px]">🌬️ Inhale</span>
+            <p class="text-slate-300 text-[10px] mt-0.5">During controlled eccentric lowering phase.</p>
+          </div>
+          <div class="bg-slate-900 p-2 rounded border border-slate-800">
+            <span class="text-emerald-400 font-bold uppercase block text-[9px]">💨 Exhale</span>
+            <p class="text-slate-300 text-[10px] mt-0.5">During powerful concentric lifting phase.</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-bold text-sm text-white mb-1.5">Step-by-Step Instructions:</h4>
+        <ol id="modal-ex-instructions" class="list-decimal list-inside space-y-1 pl-1 text-slate-300"></ol>
+      </div>
+
+      <!-- Form Performance Checklist -->
+      <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
+        <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-400">Form Checklist</h4>
+        <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300">
+          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Stable Posture</div>
+          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Controlled Movement</div>
+          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Full Safe Range</div>
+          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Proper Breathing</div>
+        </div>
+      </div>
+
+      <div id="modal-ex-mistakes-container" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-200 hidden">
+        <h4 class="font-bold text-xs uppercase tracking-wide text-amber-400 mb-1.5 flex items-center gap-1.5">
+          ⚠️ Common Mistakes
+        </h4>
+        <ul id="modal-ex-mistakes" class="list-disc list-inside space-y-0.5 text-xs"></ul>
+      </div>
+    </div>
+
+    <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-end">
+      <button onclick="closeGuideModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl border border-slate-700 transition-colors">
+        Close Guide
+      </button>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
+function openGuideModal(ex) {
+  document.getElementById('modal-ex-name').innerText = ex.name;
+  document.getElementById('modal-ex-cat').innerText = `${ex.category} Category`;
+  document.getElementById('modal-ex-start').innerText = ex.start_pos || 'Position figure in starting alignment.';
+  document.getElementById('modal-ex-move').innerText = ex.movement || 'Execute movement under control.';
+  document.getElementById('modal-ex-end').innerText = ex.end_pos || 'Contract target muscle group at peak.';
+
+  const prim = ex.primary_muscles && ex.primary_muscles.length ? ex.primary_muscles.join(', ') : (ex.primary_muscle || ex.category);
+  const sec = ex.secondary_muscles && ex.secondary_muscles.length ? ex.secondary_muscles.join(', ') : 'Stabilizer muscles';
+
+  document.getElementById('modal-ex-working-loc').innerText = prim;
+  document.getElementById('modal-ex-joint-action').innerText = sec;
+
+  if (typeof highlightAnatomyMuscles === 'function') {
+    highlightAnatomyMuscles(prim, sec, '#modal-anatomy-container');
+  }
+
+  const demoAsset = ex.media_path || ex.demonstration_asset || `/static/exercises/${ex.slug || ex.name.toLowerCase().replace(/ /g, '_')}/demo.svg`;
+  document.getElementById('modal-ex-img').src = demoAsset;
+
+  const ol = document.getElementById('modal-ex-instructions');
+  ol.innerHTML = '';
+  const instStr = Array.isArray(ex.instructions) ? ex.instructions.join('\n') : (ex.instructions || '');
+  instStr.split('\n').forEach(step => {
+    if (step.trim()) {
+      const li = document.createElement('li');
+      li.innerText = step;
+      ol.appendChild(li);
+    }
+  });
+
+  const mDiv = document.getElementById('modal-ex-mistakes-container');
+  const ul = document.getElementById('modal-ex-mistakes');
+  ul.innerHTML = '';
+  const mistStr = Array.isArray(ex.common_mistakes) ? ex.common_mistakes.join('\n') : (ex.common_mistakes || '');
+  if (mistStr.trim()) {
+    mDiv.classList.remove('hidden');
+    mistStr.split('\n').forEach(m => {
+      if (m.trim()) {
+        const li = document.createElement('li');
+        li.innerText = m;
+        ul.appendChild(li);
+      }
+    });
+  } else {
+    mDiv.classList.add('hidden');
+  }
+
+  document.getElementById('guide-modal').classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeGuideModal() {
+  document.getElementById('guide-modal').classList.add('hidden');
+}
+
 // ── History Toggle ──
 function toggleHistory() {
   const panel = document.getElementById('history-panel');
@@ -443,6 +617,9 @@ function showToast(msg, success=true) {
 // Close modal on overlay click
 document.getElementById('regenerate-modal').addEventListener('click', function(e) {
   if (e.target === this) closeRegenModal();
+});
+document.getElementById('guide-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeGuideModal();
 });
 </script>
 {% endblock %}

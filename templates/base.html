@@ -52,6 +52,10 @@
         <i data-lucide="layout-dashboard" class="h-4.5 w-4.5"></i>
         Dashboard
       </a>
+      <a href="{{ url_for('ai_coach_page') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all {{ 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' if request.path == '/ai-coach' else 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+        <i data-lucide="bot" class="h-4.5 w-4.5"></i>
+        AI Coach
+      </a>
       <a href="{{ url_for('today_workout') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all {{ 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20' if request.path in ['/today-workout', '/workout-plan'] else 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
         <i data-lucide="dumbbell" class="h-4.5 w-4.5"></i>
         Workout Plan
@@ -91,6 +95,10 @@
     <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center justify-center p-1.5 text-[9px] font-semibold {{ 'text-primary-400 font-bold' if request.path == '/dashboard' else 'text-slate-400' }}">
       <i data-lucide="layout-dashboard" class="h-4.5 w-4.5 mb-0.5"></i>
       Home
+    </a>
+    <a href="{{ url_for('ai_coach_page') }}" class="flex flex-col items-center justify-center p-1.5 text-[9px] font-semibold {{ 'text-primary-400 font-bold' if request.path == '/ai-coach' else 'text-slate-400' }}">
+      <i data-lucide="bot" class="h-4.5 w-4.5 mb-0.5"></i>
+      AI Coach
     </a>
     <a href="{{ url_for('today_workout') }}" class="flex flex-col items-center justify-center p-1.5 text-[9px] font-semibold {{ 'text-primary-400 font-bold' if request.path in ['/today-workout', '/workout-plan'] else 'text-slate-400' }}">
       <i data-lucide="dumbbell" class="h-4.5 w-4.5 mb-0.5"></i>
@@ -275,11 +283,29 @@
       input.value = '';
 
       try {
-        const res = await fetch('/api/ai/coach', {
+        const res = await fetch('/api/ai/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: text })
+          body: JSON.stringify({ message: text, prompt: text })
         });
+        if (res.status === 401) {
+          if (container) {
+            const eMsg = document.createElement('div');
+            eMsg.className = 'text-[11px] text-amber-400 p-2 bg-amber-500/10 rounded-xl font-medium';
+            eMsg.textContent = 'Please log in again to use your AI Coach.';
+            container.appendChild(eMsg);
+          }
+          return;
+        }
+        if (!res.ok) {
+          if (container) {
+            const eMsg = document.createElement('div');
+            eMsg.className = 'text-[11px] text-red-400 p-2 bg-red-500/10 rounded-xl font-medium';
+            eMsg.textContent = 'Something went wrong while processing your request.';
+            container.appendChild(eMsg);
+          }
+          return;
+        }
         const data = await res.json();
         
         if (container) {
@@ -290,7 +316,7 @@
               <i data-lucide="bot" class="h-4 w-4"></i>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl text-slate-200 shadow-sm leading-relaxed max-w-[85%] space-y-2">
-              <p>${data.coach_reply || 'Got it!'}</p>
+              <p>${data.coach_reply || data.message || 'Got it!'}</p>
               ${data.redirect_url ? `<a href="${data.redirect_url}" class="inline-block mt-2 text-[10px] bg-emerald-500 text-white font-bold px-3 py-1 rounded-lg">View Changes &rarr;</a>` : ''}
             </div>
           `;
@@ -305,7 +331,7 @@
       } catch (err) {
         if (container) {
           const eMsg = document.createElement('div');
-          eMsg.className = 'text-[11px] text-red-400 p-2 bg-red-500/10 rounded-xl';
+          eMsg.className = 'text-[11px] text-red-400 p-2 bg-red-500/10 rounded-xl font-medium';
           eMsg.textContent = 'Coach connection interrupted. Please ensure backend is running.';
           container.appendChild(eMsg);
         }

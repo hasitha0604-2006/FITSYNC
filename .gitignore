@@ -10,6 +10,8 @@ venv/
 .venv
 fitsync.db
 test_fitsync.db
+instance/
+*.db
 
 # VS Code / OS
 .vscode/

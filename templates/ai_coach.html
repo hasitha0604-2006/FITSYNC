@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex-1 flex flex-col h-[calc(100vh-4rem)] md:h-screen bg-slate-900 text-slate-100 overflow-hidden">
+  
+  <!-- AI Coach Top Header -->
+  <header class="p-4 md:px-6 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between shrink-0 backdrop-blur-md">
+    <div class="flex items-center gap-3.5">
+      <div class="relative">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-lg shadow-emerald-500/20">
+          <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-emerald-400">
+            <i data-lucide="bot" class="h-6 w-6"></i>
+          </div>
+        </div>
+        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-bold text-base md:text-lg text-white tracking-tight">FitSync AI Coach</h1>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+        </div>
+        <p class="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
+          <i data-lucide="sparkles" class="h-3.5 w-3.5 text-emerald-400"></i>
+          Personalized for {{ profile.name if profile and profile.name else 'you' }} ({{ profile.fitness_goal if profile else 'Fitness' }})
+        </p>
+      </div>
+    </div>
+
+    <button id="clearChatBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700">
+      <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+      Clear Chat
+    </button>
+  </header>
+
+  <!-- Quick Actions Bar -->
+  <div class="px-4 py-2.5 bg-slate-950/40 border-b border-slate-800/60 overflow-x-auto flex items-center gap-2 shrink-0 scrollbar-none">
+    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 shrink-0 mr-1">Quick Actions:</span>
+    
+    <button onclick="sendQuickAction('Explain today\'s workout')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="dumbbell" class="h-3.5 w-3.5 text-emerald-400"></i>
+      Today's Workout
+    </button>
+    <button onclick="sendQuickAction('How do I perform a bicep curl?')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="help-circle" class="h-3.5 w-3.5 text-emerald-400"></i>
+      Exercise Help
+    </button>
+    <button onclick="sendQuickAction('I only have 30 minutes today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="clock" class="h-3.5 w-3.5 text-emerald-400"></i>
+      30-Min Express
+    </button>
+    <button onclick="sendQuickAction('I only have dumbbells today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-emerald-400"></i>
+      Dumbbells Only
+    </button>
+    <button onclick="sendQuickAction('Suggest a high-protein dinner')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="apple" class="h-3.5 w-3.5 text-emerald-400"></i>
+      High-Protein Meal
+    </button>
+    <button onclick="sendQuickAction('How am I progressing?')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="trending-up" class="h-3.5 w-3.5 text-emerald-400"></i>
+      Progress Check
+    </button>
+    <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="activity" class="h-3.5 w-3.5 text-emerald-400"></i>
+      Sports Warm-Up
+    </button>
+  </div>
+
+  <!-- Messages Container -->
+  <div id="chatMessages" class="flex-1 p-4 md:p-6 overflow-y-auto space-y-4 scroll-smooth">
+    
+    <!-- Welcome Greeting Message -->
+    <div class="flex gap-3 max-w-3xl">
+      <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+        <i data-lucide="bot" class="h-4.5 w-4.5"></i>
+      </div>
+      <div class="bg-slate-800/90 border border-slate-700/80 p-4 rounded-2xl rounded-tl-sm text-sm text-slate-200 leading-relaxed shadow-sm">
+        <p class="font-semibold text-white mb-1.5">👋 Hi {{ profile.name if profile and profile.name else 'there' }}!</p>
+        <p>I'm your <strong>FitSync AI Coach</strong>. I'm connected directly to your profile, equipment setup, nutrition targets, and workout split.</p>
+        <div class="mt-3 p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 flex flex-wrap gap-2 text-xs text-slate-300">
+          <span class="px-2 py-1 bg-slate-800 rounded-md">🎯 Goal: {{ profile.fitness_goal if profile else 'Fitness' }}</span>
+          <span class="px-2 py-1 bg-slate-800 rounded-md">🏋️ Env: {{ profile.workout_environment if profile else 'Gym' }}</span>
+          <span class="px-2 py-1 bg-slate-800 rounded-md">🥗 Diet: {{ profile.dietary_preference if profile else 'Eggetarian' }}</span>
+          <span class="px-2 py-1 bg-slate-800 rounded-md">💰 Budget: ₹{{ profile.daily_food_budget if profile else 150 }}/day</span>
+        </div>
+        <p class="mt-3 text-slate-400">Ask me anything about workouts, exercise form, meal swaps, or sports conditioning!</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Typing Indicator -->
+  <div id="typingIndicator" class="hidden px-4 md:px-6 py-2 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+      <i data-lucide="bot" class="h-4.5 w-4.5"></i>
+    </div>
+    <div class="bg-slate-800/90 border border-slate-700/80 px-4 py-2.5 rounded-2xl flex items-center gap-1.5">
+      <span class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></span>
+      <span class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+      <span class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+      <span class="text-xs text-slate-400 ml-2 font-medium">Coach is thinking...</span>
+    </div>
+  </div>
+
+  <!-- Chat Input Form -->
+  <div class="p-4 bg-slate-900 border-t border-slate-800 shrink-0">
+    <form id="chatForm" class="max-w-4xl mx-auto flex items-center gap-2">
+      <input type="text" id="userInput" placeholder="Ask your FitSync coach anything (e.g. 'Explain today\'s workout' or 'Swap my lunch')..." 
+        class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner"
+        autocomplete="off" required />
+      
+      <button type="submit" id="sendBtn" class="px-5 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50">
+        <span>Send</span>
+        <i data-lucide="send" class="h-4 w-4"></i>
+      </button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  let currentConversationId = null;
+
+  document.addEventListener("DOMContentLoaded", function() {
+    loadConversationHistory();
+
+    document.getElementById("chatForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendUserMessage(message);
+      input.value = "";
+      sendChatMessage(message);
+    });
+
+    document.getElementById("clearChatBtn").addEventListener("click", function() {
+      if (confirm("Clear AI Coach conversation history?")) {
+        clearChatHistory();
+      }
+    });
+  });
+
+  function sendQuickAction(promptText) {
+    document.getElementById("userInput").value = promptText;
+    document.getElementById("chatForm").dispatchEvent(new Event("submit"));
+  }
+
+  function appendUserMessage(text) {
+    const container = document.getElementById("chatMessages");
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    const msgHTML = `
+      <div class="flex gap-3 max-w-3xl justify-end ml-auto">
+        <div class="bg-emerald-600 text-white p-4 rounded-2xl rounded-tr-sm text-sm shadow-md">
+          <p class="leading-relaxed">${escapeHTML(text)}</p>
+          <span class="text-[10px] text-emerald-200 mt-1 block text-right font-medium">${timeStr}</span>
+        </div>
+      </div>
+    `;
+    container.insertAdjacentHTML("beforeend", msgHTML);
+    scrollToBottom();
+  }
+
+  function appendCoachMessage(text, extraData = {}) {
+    const container = document.getElementById("chatMessages");
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    let extraHTML = "";
+
+    if (extraData.exercises && extraData.exercises.length > 0) {
+      extraHTML += `<div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">`;
+      extraData.exercises.slice(0, 4).forEach(ex => {
+        const demoUrl = ex.media_path || ex.demonstration_asset || `/static/exercises/${(ex.name||'').toLowerCase().replace(/ /g,'_')}/demo.svg`;
+        extraHTML += `
+          <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-3 flex gap-3 items-center">
+            <img src="${demoUrl}" alt="${ex.name}" class="w-14 h-14 object-contain bg-slate-800 rounded-lg p-1 shrink-0" onerror="this.src='/static/exercises/bicep_curl/demo.svg'" />
+            <div class="min-w-0 flex-1">
+              <h4 class="font-bold text-xs text-white truncate">${ex.name}</h4>
+              <p class="text-[11px] text-emerald-400 font-medium">${ex.category} • ${ex.equipment || 'No Equipment'}</p>
+              <div class="flex items-center gap-2 mt-1">
+                <a href="/exercise/${ex.id || ex.exercise_id || 1}" class="text-[10px] font-bold text-slate-300 hover:text-white bg-slate-800 px-2 py-0.5 rounded border border-slate-700">View Exercise</a>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      extraHTML += `</div>`;
+    }
+
+    if (extraData.proposed_action) {
+      const act = extraData.proposed_action;
+      const payloadStr = JSON.stringify(act.payload || {}).replace(/"/g, '&quot;');
+      const redir = act.redirect_url || extraData.redirect_url || '';
+
+      extraHTML += `
+        <div class="mt-3 bg-slate-950 border border-emerald-500/30 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+              ⚡ PROPOSED PLAN CHANGE
+            </span>
+            <span class="text-[9px] font-bold text-slate-400">Confirmation Required</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+              <span class="text-[9px] font-bold text-slate-400 uppercase block">CURRENT</span>
+              <span class="font-bold text-slate-200 block mt-0.5">${act.current || 'Standard Plan'}</span>
+            </div>
+            <div class="bg-slate-900 p-2.5 rounded-xl border border-emerald-500/30">
+              <span class="text-[9px] font-bold text-emerald-400 uppercase block">PROPOSED</span>
+              <span class="font-bold text-white block mt-0.5">${act.proposed || 'Adapted Plan'}</span>
+            </div>
+          </div>
+
+          ${act.reason ? `<p class="text-[11px] text-slate-300 italic">"${act.reason}"</p>` : ''}
+
+          <div class="flex gap-2 pt-1">
+            <button onclick="cancelActionCard(this)" class="flex-1 py-2 rounded-xl border border-slate-700 bg-slate-900 text-xs font-bold text-slate-400 hover:text-white transition-colors">
+              Cancel
+            </button>
+            <button onclick="confirmActionCard(this, '${act.endpoint}', ${payloadStr}, '${redir}')" class="flex-1 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-xs font-bold text-white transition-colors shadow-md shadow-emerald-500/20">
+              Confirm & Apply
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    if (extraData.redirect_url && !extraData.proposed_action) {
+      extraHTML += `
+        <div class="mt-3">
+          <a href="${extraData.redirect_url}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 rounded-xl text-xs font-bold border border-emerald-500/30 transition-colors">
+            <span>Open Updated Plan</span>
+            <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+          </a>
+        </div>
+      `;
+    }
+
+    const msgHTML = `
+      <div class="flex gap-3 max-w-3xl">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+          <i data-lucide="bot" class="h-4.5 w-4.5"></i>
+        </div>
+        <div class="bg-slate-800/90 border border-slate-700/80 p-4 rounded-2xl rounded-tl-sm text-sm text-slate-200 leading-relaxed shadow-sm">
+          <div>${formatMarkdown(text)}</div>
+          ${extraHTML}
+          <span class="text-[10px] text-slate-400 mt-2 block font-medium">${timeStr}</span>
+        </div>
+      </div>
+    `;
+    container.insertAdjacentHTML("beforeend", msgHTML);
+    if (window.lucide) lucide.createIcons();
+    scrollToBottom();
+  }
+
+  async function confirmActionCard(btn, endpoint, payload, redirectUrl) {
+    btn.disabled = true;
+    btn.innerText = 'Applying...';
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload || {})
+      });
+      const data = await res.json();
+      if (res.ok && (data.status === 'success' || data.success)) {
+        btn.className = 'flex-1 py-2 rounded-xl bg-emerald-600 text-xs font-bold text-white';
+        btn.innerText = '✅ Applied!';
+        appendCoachMessage("Done! Your plan changes have been applied to your database schedule.");
+        if (redirectUrl) {
+          setTimeout(() => { window.location.href = redirectUrl; }, 1000);
+        }
+      } else {
+        btn.innerText = '❌ Failed';
+        appendCoachMessage("⚠️ Could not apply changes: " + (data.message || "Server error"));
+      }
+    } catch(e) {
+      btn.innerText = '❌ Error';
+      appendCoachMessage("⚠️ Network error while confirming action.");
+    }
+  }
+
+  function cancelActionCard(btn) {
+    const card = btn.closest('.mt-3');
+    if (card) {
+      card.style.opacity = '0.5';
+      card.style.pointerEvents = 'none';
+    }
+    appendCoachMessage("Action cancelled. Your plan remains unchanged.");
+  }
+
+  function sendChatMessage(messageText) {
+    showTyping(true);
+
+    fetch("/api/ai/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: messageText,
+        conversation_id: currentConversationId
+      })
+    })
+    .then(res => {
+      if (res.status === 401) {
+        throw new Error("AUTH_REQUIRED");
+      }
+      if (res.status === 400) {
+        throw new Error("BAD_REQUEST");
+      }
+      if (res.status === 429) {
+        throw new Error("RATE_LIMIT");
+      }
+      if (!res.ok) {
+        throw new Error("SERVER_ERROR");
+      }
+      return res.json();
+    })
+    .then(data => {
+      showTyping(false);
+      if (data.status === "success" || data.success) {
+        currentConversationId = data.conversation_id;
+        appendCoachMessage(data.coach_reply || data.message, {
+          exercises: data.results || [],
+          foods: data.food_results || [],
+          proposed_action: data.proposed_action || data.action,
+          redirect_url: data.redirect_url
+        });
+      } else {
+        appendCoachMessage("⚠️ " + (data.message || "Please try again."));
+      }
+    })
+    .catch(err => {
+      showTyping(false);
+      if (err.message === "AUTH_REQUIRED") {
+        appendCoachMessage("⚠️ Please log in again to use your AI Coach.");
+      } else if (err.message === "BAD_REQUEST") {
+        appendCoachMessage("⚠️ Please check your message and try again.");
+      } else if (err.message === "RATE_LIMIT") {
+        appendCoachMessage("⚠️ Coach is temporarily busy. Please try again shortly.");
+      } else if (err.message === "SERVER_ERROR") {
+        appendCoachMessage("⚠️ Coach encountered a temporary server problem.");
+      } else {
+        appendCoachMessage("⚠️ Coach connection interrupted. Please check your internet connection.");
+      }
+    });
+  }
+
+  function loadConversationHistory() {
+    fetch("/api/ai/conversations")
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success" && data.conversations && data.conversations.length > 0) {
+          const conv = data.conversations[0];
+          currentConversationId = conv.id;
+          if (conv.messages && conv.messages.length > 0) {
+            conv.messages.forEach(m => {
+              if (m.role === "user") {
+                appendUserMessage(m.message);
+              } else {
+                appendCoachMessage(m.message, m.extra_data || {});
+              }
+            });
+          }
+        }
+      })
+      .catch(() => {});
+  }
+
+  function clearChatHistory() {
+    fetch("/api/ai/conversations/clear", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conversation_id: currentConversationId })
+    })
+    .then(res => res.json())
+    .then(() => {
+      const container = document.getElementById("chatMessages");
+      container.innerHTML = `
+        <div class="flex gap-3 max-w-3xl">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+            <i data-lucide="bot" class="h-4.5 w-4.5"></i>
+          </div>
+          <div class="bg-slate-800/90 border border-slate-700/80 p-4 rounded-2xl rounded-tl-sm text-sm text-slate-200 leading-relaxed shadow-sm">
+            <p class="font-semibold text-white mb-1">Conversation cleared!</p>
+            <p>How else can I help with your fitness and nutrition today?</p>
+          </div>
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+    });
+  }
+
+  function showTyping(isTyping) {
+    const indicator = document.getElementById("typingIndicator");
+    if (isTyping) {
+      indicator.classList.remove("hidden");
+      scrollToBottom();
+    } else {
+      indicator.classList.add("hidden");
+    }
+  }
+
+  function scrollToBottom() {
+    const container = document.getElementById("chatMessages");
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, 
+      tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+    );
+  }
+
+  function formatMarkdown(txt) {
+    if (!txt) return "";
+    let html = escapeHTML(txt);
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+    html = html.replace(/\n/g, '<br/>');
+    return html;
+  }
+</script>
+{% endblock %}

@@ -14,14 +14,35 @@ from werkzeug.security import generate_password_hash, check_password_hash
 BASE_DIR = Path(__file__).resolve().parent
 INSTANCE_DIR = BASE_DIR / "instance"
 INSTANCE_DIR.mkdir(exist_ok=True)
+DB_PATH = (INSTANCE_DIR / "fitsync.db").resolve()
 
-app = Flask(__name__)
+app = Flask(__name__, instance_path=str(INSTANCE_DIR))
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fitsync_super_secret_sih_key_2026')
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{INSTANCE_DIR / 'fitsync.db'}"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH.as_posix()}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
 db = SQLAlchemy(app)
+
+def print_db_debug_info():
+    try:
+        inspector = db.inspect(db.engine)
+        existing_tables = set(inspector.get_table_names())
+        users_exists = "users" in existing_tables
+        total_tables = len(existing_tables)
+    except Exception:
+        users_exists = False
+        total_tables = 0
+
+    print("[DB DEBUG]")
+    print(f"Application directory: {BASE_DIR}")
+    print(f"Working directory: {Path.cwd().resolve()}")
+    print(f"Configured database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
+    print(f"Resolved database file: {DB_PATH}")
+    print(f"Database exists: {'YES' if DB_PATH.exists() else 'NO'}")
+    print(f"Database file size: {DB_PATH.stat().st_size if DB_PATH.exists() else 0}")
+    print(f"Users table exists: {'YES' if users_exists else 'NO'}")
+    print(f"Total tables: {total_tables}")
 
 def normalize_email(email_str):
     if not email_str:
@@ -50,6 +71,7 @@ class User(db.Model):
     progress_records = db.relationship("ProgressRecord", backref="user", cascade="all, delete-orphan")
     completed_workouts = db.relationship("CompletedWorkout", backref="user", cascade="all, delete-orphan")
     custom_foods = db.relationship("CustomFood", backref="user", cascade="all, delete-orphan")
+    conversations = db.relationship("ChatConversation", backref="user", cascade="all, delete-orphan")
 
 class CustomFood(db.Model):
     __tablename__ = "custom_foods"
@@ -66,6 +88,43 @@ class CustomFood(db.Model):
     cost = db.Column(db.Integer, nullable=False, default=0)
     notes = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ChatConversation(db.Model):
+    __tablename__ = "chat_conversations"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    title = db.Column(db.String(120), nullable=True, default="Fitness Coaching")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    messages = db.relationship("ChatMessage", backref="conversation", cascade="all, delete-orphan", order_by="ChatMessage.id")
+
+class ChatMessage(db.Model):
+    __tablename__ = "chat_messages"
+    id = db.Column(db.Integer, primary_key=True)
+    conversation_id = db.Column(db.Integer, db.ForeignKey("chat_conversations.id", ondelete="CASCADE"), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    intent = db.Column(db.String(50), nullable=True)
+    extra_data_json = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        extra = None
+        if self.extra_data_json:
+            try:
+                extra = json.loads(self.extra_data_json)
+            except Exception:
+                extra = None
+        return {
+            "id": self.id,
+            "conversation_id": self.conversation_id,
+            "role": self.role,
+            "message": self.message,
+            "intent": self.intent or "GENERAL_FITNESS",
+            "extra_data": extra,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S") if self.created_at else ""
+        }
 
 class Exercise(db.Model):
     __tablename__ = "exercises"
@@ -92,6 +151,12 @@ class Exercise(db.Model):
 
     def to_dict(self):
         slug = self.name.lower().replace(' ', '_').replace('-', '_')
+        asset_path = f"/static/exercises/{slug}/demo.svg"
+        if self.demonstration_asset and os.path.exists(self.demonstration_asset.lstrip('/')):
+            asset_path = self.demonstration_asset
+        elif not os.path.exists(asset_path.lstrip('/')):
+            asset_path = "/static/exercises/fallback_demo.svg"
+
         return {
             "id": self.id,
             "exercise_id": self.id,
@@ -113,8 +178,8 @@ class Exercise(db.Model):
             "reps_max": self.default_reps_max or 12,
             "rest_seconds": self.default_rest_seconds or 60,
             "demonstration_available": self.demonstration_available,
-            "demonstration_asset": self.demonstration_asset or f"/static/exercises/{slug}/demo.svg",
-            "media_path": self.demonstration_asset or f"/static/exercises/{slug}/demo.svg",
+            "demonstration_asset": asset_path,
+            "media_path": asset_path,
             "supported_demo": True,
             "thumbnail": self.thumbnail or f"/static/exercises/{slug}/thumbnail.png",
             "slug": slug
@@ -124,17 +189,17 @@ class Food(db.Model):
     __tablename__ = "foods"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
-    category = db.Column(db.String(50), nullable=False, default="General")
+    category = db.Column(db.String(50), nullable=False)
     serving_size_g = db.Column(db.Integer, nullable=False, default=100)
     calories = db.Column(db.Integer, nullable=False)
     protein = db.Column(db.Float, nullable=False)
     carbs = db.Column(db.Float, nullable=False)
     fat = db.Column(db.Float, nullable=False)
-    fiber = db.Column(db.Float, default=0.0)
-    cost_approx = db.Column(db.Integer, default=0)
+    fiber = db.Column(db.Float, nullable=True, default=0.0)
+    cost_approx = db.Column(db.Integer, nullable=True, default=0)
     common_unit = db.Column(db.String(100), nullable=True)
     is_vegetarian = db.Column(db.Boolean, default=True)
-    is_vegan = db.Column(db.Boolean, default=False)
+    is_vegan = db.Column(db.Boolean, default=True)
 
     def to_dict(self):
         return {
@@ -184,9 +249,9 @@ class UserFoodPreference(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"))
     food_name = db.Column(db.String(100), nullable=False)
-    is_preferred = db.Column(db.Boolean, default=False, nullable=False)
-    is_available = db.Column(db.Boolean, default=False, nullable=False)
-    is_avoided = db.Column(db.Boolean, default=False, nullable=False)
+    is_preferred = db.Column(db.Boolean, default=True)
+    is_available = db.Column(db.Boolean, default=True)
+    is_avoided = db.Column(db.Boolean, default=False)
 
 class NutritionTarget(db.Model):
     __tablename__ = "nutrition_targets"
@@ -223,7 +288,7 @@ class WorkoutExercise(db.Model):
     __tablename__ = "workout_exercises"
     id = db.Column(db.Integer, primary_key=True)
     workout_day_id = db.Column(db.Integer, db.ForeignKey("workout_days.id", ondelete="CASCADE"))
-    exercise_id = db.Column(db.Integer, nullable=False)
+    exercise_id = db.Column(db.Integer, db.ForeignKey("exercises.id", ondelete="SET NULL"), nullable=True)
     name = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(50), nullable=False)
     sets = db.Column(db.Integer, nullable=False)
@@ -241,6 +306,30 @@ class WorkoutExercise(db.Model):
 
     def to_dict(self):
         slug = self.name.lower().replace(' ', '_').replace('-', '_')
+        master = Exercise.query.get(self.exercise_id) if self.exercise_id else None
+        
+        p_muscles = []
+        s_muscles = []
+        inst_text = self.instructions or ""
+        mistakes_text = self.common_mistakes or ""
+        demo_asset = f"/static/exercises/{slug}/demo.svg"
+
+        if master:
+            master_dict = master.to_dict()
+            p_muscles = master_dict.get("primary_muscles") or [self.category]
+            s_muscles = master_dict.get("secondary_muscles") or []
+            if not inst_text:
+                inst_text = master.instructions or ""
+            if not mistakes_text:
+                mistakes_text = master.common_mistakes or ""
+            demo_asset = master_dict.get("demonstration_asset") or demo_asset
+
+        if not os.path.exists(demo_asset.lstrip('/')):
+            demo_asset = "/static/exercises/fallback_demo.svg"
+
+        if not p_muscles:
+            p_muscles = [self.category]
+
         return {
             "id": self.id,
             "exercise_id": self.exercise_id,
@@ -251,14 +340,19 @@ class WorkoutExercise(db.Model):
             "reps_min": self.reps_min or 8,
             "reps_max": self.reps_max or 12,
             "rest_seconds": self.rest_seconds,
-            "instructions": self.instructions or "",
-            "start_pos": self.start_pos or "",
-            "movement": self.movement or "",
-            "end_pos": self.end_pos or "",
-            "common_mistakes": self.common_mistakes or "",
+            "instructions": inst_text,
+            "start_pos": self.start_pos or "Position figure in starting alignment.",
+            "movement": self.movement or "Execute movement under control.",
+            "end_pos": self.end_pos or "Contract target muscle group at peak.",
+            "common_mistakes": mistakes_text,
             "is_completed": self.is_completed,
             "slug": slug,
-            "media_path": f"/static/exercises/{slug}/demo.svg"
+            "media_path": demo_asset,
+            "demonstration_asset": demo_asset,
+            "primary_muscles": p_muscles,
+            "secondary_muscles": s_muscles,
+            "primary_muscle": p_muscles[0] if p_muscles else self.category,
+            "supported_demo": True
         }
 
 class MealPlan(db.Model):
@@ -408,10 +502,20 @@ def run_migrations():
         db.session.execute(db.text("SELECT is_preferred FROM user_food_preferences LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Re-creating user_food_preferences table with boolean preference states...")
-        db.session.execute(db.text("DROP TABLE IF EXISTS user_food_preferences"))
+        print("[MIGRATION] Adding boolean preference columns to user_food_preferences...")
+        try:
+            db.session.execute(db.text("ALTER TABLE user_food_preferences ADD COLUMN is_preferred BOOLEAN DEFAULT 0"))
+        except Exception:
+            db.session.rollback()
+        try:
+            db.session.execute(db.text("ALTER TABLE user_food_preferences ADD COLUMN is_available BOOLEAN DEFAULT 0"))
+        except Exception:
+            db.session.rollback()
+        try:
+            db.session.execute(db.text("ALTER TABLE user_food_preferences ADD COLUMN is_avoided BOOLEAN DEFAULT 0"))
+        except Exception:
+            db.session.rollback()
         db.session.commit()
-        db.create_all()
 
     # 5. Add workout_environment to user_profiles
     try:
@@ -764,13 +868,36 @@ def seed_database():
         db.session.rollback()
         print(f"[SEED ERROR] Seeder failed: {e}")
 
+def init_app_database(app_instance):
+    with app_instance.app_context():
+        try:
+            db.create_all()
+            run_migrations()
+            seed_database()
+        except Exception as e:
+            db.session.rollback()
+            print(f"[DB INIT WARNING] {e}")
+        print_db_debug_info()
+
+# Automatic safe initialization on application startup
+init_app_database(app)
+
 # -----------------------------------------------------------------------------
 # FLASK ROUTE AND SESSION CONTROLLER
 # -----------------------------------------------------------------------------
 def get_current_user():
     if 'user_id' not in session:
         return None
-    return User.query.get(session['user_id'])
+    try:
+        user = User.query.get(session['user_id'])
+        if not user:
+            session.pop('user_id', None)
+            return None
+        return user
+    except Exception:
+        db.session.rollback()
+        session.pop('user_id', None)
+        return None
 
 def is_user_onboarded(user):
     if not user:
@@ -1295,6 +1422,14 @@ def settings():
         }
     return render_template("settings.html", profile=user.profile, foods=all_foods, user_prefs=user_prefs)
 
+@app.route("/ai-coach", endpoint="ai_coach_page")
+@app.route("/ai-coach", endpoint="ai_coach")
+def ai_coach_page():
+    user, redir = require_onboarded_user()
+    if redir:
+        return redir
+    return render_template("ai_coach.html", profile=user.profile)
+
 # -----------------------------------------------------------------------------
 # CUSTOM FOODS & EXERCISE SEARCH & AI DIET API ROUTES
 # -----------------------------------------------------------------------------
@@ -1480,16 +1615,134 @@ def api_ai_search():
     return jsonify(result)
 
 
+@app.route("/api/ai/chat", methods=["POST"])
+def api_ai_chat():
+    user = get_current_user()
+    if not user:
+        return jsonify({"status": "error", "message": "Please log in again to use your AI Coach."}), 401
+
+    data = request.get_json() or {}
+    message_text = (data.get("message") or data.get("prompt") or "").strip()
+    if not message_text:
+        return jsonify({"status": "error", "message": "Please enter a message."}), 400
+
+    try:
+        conv_id = data.get("conversation_id")
+        conv = None
+        if conv_id:
+            conv = ChatConversation.query.filter_by(id=conv_id, user_id=user.id).first()
+
+        if not conv:
+            conv = ChatConversation.query.filter_by(user_id=user.id).order_by(ChatConversation.updated_at.desc()).first()
+            if not conv:
+                conv = ChatConversation(user_id=user.id, title="FitSync AI Coaching")
+                db.session.add(conv)
+                db.session.commit()
+
+        # Build recent conversation history
+        history_records = ChatMessage.query.filter_by(conversation_id=conv.id).order_by(ChatMessage.id.desc()).limit(10).all()
+        history_list = [{"role": m.role, "message": m.message} for m in reversed(history_records)] if history_records else []
+
+        user_msg = ChatMessage(
+            conversation_id=conv.id,
+            role="user",
+            message=message_text
+        )
+        db.session.add(user_msg)
+        db.session.commit()
+
+        result = process_coach_command(user, message_text, app_context=app, history=history_list)
+
+        reply_text = result.get("coach_reply") or result.get("message") or "I'm your FitSync Coach. How can I help today?"
+        intent = result.get("intent") or result.get("action") or "GENERAL_FITNESS"
+        proposed_act = result.get("proposed_action")
+        
+        extra_data = {
+            "exercises": result.get("exercises") or result.get("results") or [],
+            "foods": result.get("foods") or result.get("food_results") or [],
+            "actions": result.get("actions") or [],
+            "action": result.get("action"),
+            "proposed_action": proposed_act,
+            "explanation": result.get("explanation"),
+            "redirect_url": result.get("redirect_url")
+        }
+
+        if reply_text:
+            assistant_msg = ChatMessage(
+                conversation_id=conv.id,
+                role="assistant",
+                message=reply_text,
+                intent=intent,
+                extra_data_json=json.dumps(extra_data)
+            )
+            db.session.add(assistant_msg)
+            conv.updated_at = datetime.utcnow()
+            db.session.commit()
+
+        return jsonify({
+            "status": "success",
+            "success": True,
+            "conversation_id": conv.id,
+            "message": reply_text,
+            "coach_reply": reply_text,
+            "intent": intent,
+            "action": result.get("action"),
+            "proposed_action": proposed_act,
+            "explanation": result.get("explanation"),
+            "results": extra_data["exercises"],
+            "food_results": extra_data["foods"],
+            "actions": extra_data["actions"],
+            "redirect_url": result.get("redirect_url")
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": "Coach encountered a temporary server problem."}), 500
+
+
 @app.route("/api/ai/coach", methods=["POST"])
 def api_ai_coach():
+    return api_ai_chat()
+
+
+@app.route("/api/ai/conversations", methods=["GET"])
+def api_ai_conversations():
     user = get_current_user()
     if not user:
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    
+    convs = ChatConversation.query.filter_by(user_id=user.id).order_by(ChatConversation.updated_at.desc()).all()
+    res = []
+    for c in convs:
+        msgs = [m.to_dict() for m in c.messages]
+        res.append({
+            "id": c.id,
+            "title": c.title,
+            "updated_at": c.updated_at.strftime("%Y-%m-%d %H:%M:%S") if c.updated_at else "",
+            "messages": msgs
+        })
+    return jsonify({"status": "success", "conversations": res})
 
+
+@app.route("/api/ai/conversations/clear", methods=["POST"])
+def api_ai_clear_conversation():
+    user = get_current_user()
+    if not user:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    
     data = request.get_json() or {}
-    prompt = data.get("prompt", "").strip()
-    result = process_coach_command(user, prompt, app_context=app)
-    return jsonify(result)
+    conv_id = data.get("conversation_id")
+    if conv_id:
+        conv = ChatConversation.query.filter_by(id=conv_id, user_id=user.id).first()
+        if conv:
+            ChatMessage.query.filter_by(conversation_id=conv.id).delete()
+            db.session.commit()
+    else:
+        convs = ChatConversation.query.filter_by(user_id=user.id).all()
+        for c in convs:
+            ChatMessage.query.filter_by(conversation_id=c.id).delete()
+        db.session.commit()
+
+    return jsonify({"status": "success", "message": "Conversation history cleared"})
 
 
 @app.route("/api/workout/change-focus", methods=["POST"])
@@ -1525,7 +1778,7 @@ def api_adjust_duration():
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
     data = request.get_json() or {}
-    duration_mins = int(data.get("duration_minutes", 30))
+    duration_mins = int(data.get("duration_minutes") or data.get("duration_mins") or data.get("duration") or 30)
 
     plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
     if not plan:
@@ -1534,7 +1787,10 @@ def api_adjust_duration():
     today_name = datetime.now().strftime("%A")
     today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
     if not today_w or today_w.is_rest_day:
-        return jsonify({"status": "error", "message": "Today is a rest day."}), 400
+        today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
+
+    if not today_w:
+        return jsonify({"status": "error", "message": "No active workout day found."}), 400
 
     scale_workout_duration(today_w, duration_mins, db.session, WorkoutExercise)
     user.profile.workout_duration_mins = duration_mins
@@ -1559,7 +1815,10 @@ def api_adjust_difficulty():
     today_name = datetime.now().strftime("%A")
     today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
     if not today_w or today_w.is_rest_day:
-        return jsonify({"status": "error", "message": "Today is a rest day."}), 400
+        today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
+
+    if not today_w:
+        return jsonify({"status": "error", "message": "No active workout day found."}), 400
 
     scale_workout_difficulty(today_w, direction, db.session)
     return jsonify({"status": "success", "message": f"Scaled today's workout intensity ({direction}).", "direction": direction})
@@ -1691,13 +1950,24 @@ def api_substitute_exercise():
     user = get_current_user()
     if not user: return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
-    data = request.json
-    ex_id = data.get("id")
+    data = request.json or {}
+    ex_id = data.get("id") or data.get("exercise_id")
+    new_ex_id = data.get("new_exercise_id")
     reason = data.get("reason", "")
 
     orig_ex = WorkoutExercise.query.get(ex_id)
     if not orig_ex or orig_ex.workout_day.plan.user_id != user.id:
         return jsonify({"status": "error", "message": "Exercise not found"}), 404
+
+    if new_ex_id:
+        new_master = Exercise.query.get(new_ex_id)
+        if new_master:
+            orig_ex.exercise_id = new_master.id
+            orig_ex.name = new_master.name
+            orig_ex.category = new_master.category
+            orig_ex.instructions = new_master.instructions
+            db.session.commit()
+            return jsonify({"status": "success", "message": f"Substituted with {new_master.name}", "exercise": orig_ex.to_dict()})
 
     equipments = [eq.equipment_name for eq in user.equipments]
     all_ex = get_exercises_data()
@@ -1923,13 +2193,44 @@ def api_save_profile():
     if not user:
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
         
-    data = request.json
+    data = request.json or {}
     try:
         profile = UserProfile.query.filter_by(user_id=user.id).first()
         if not profile:
-            return jsonify({"status": "error", "message": "Profile not found"}), 404
+            profile = UserProfile(user_id=user.id)
+            db.session.add(profile)
             
-        # Parse and validate daily food budget
+        # Update core profile attributes if passed
+        if "name" in data and data["name"]:
+            user.name = str(data["name"]).strip()
+            profile.name = str(data["name"]).strip()
+        if "age" in data and data["age"]:
+            profile.age = int(data["age"])
+        if "gender" in data and data["gender"]:
+            profile.gender = str(data["gender"])
+        if "height" in data and data["height"]:
+            profile.height = float(data["height"])
+        if "weight" in data and data["weight"]:
+            profile.weight = float(data["weight"])
+        if "fitness_goal" in data and data["fitness_goal"]:
+            profile.fitness_goal = str(data["fitness_goal"])
+        if "fitness_level" in data and data["fitness_level"]:
+            profile.fitness_level = str(data["fitness_level"])
+        if "workout_days_per_week" in data and data["workout_days_per_week"]:
+            profile.workout_days_per_week = int(data["workout_days_per_week"])
+        if "workout_duration_mins" in data and data["workout_duration_mins"]:
+            profile.workout_duration_mins = int(data["workout_duration_mins"])
+        if "workout_environment" in data and data["workout_environment"]:
+            profile.workout_environment = str(data["workout_environment"])
+        if "dietary_preference" in data and data["dietary_preference"]:
+            profile.dietary_preference = str(data["dietary_preference"])
+
+        if "equipments" in data and isinstance(data["equipments"], list):
+            UserEquipment.query.filter_by(user_id=user.id).delete()
+            for eq in data["equipments"]:
+                db.session.add(UserEquipment(user_id=user.id, equipment_name=eq))
+
+        # Parse and validate daily food budget if passed
         budget_val = data.get("daily_food_budget")
         if budget_val is not None:
             try:
@@ -1940,29 +2241,39 @@ def api_save_profile():
                 profile.budget_preference = f"₹{val}"
             except (ValueError, TypeError):
                 return jsonify({"status": "error", "message": "Please enter a valid daily food budget."}), 400
-        else:
+        elif "name" not in data:
             return jsonify({"status": "error", "message": "Daily food budget is required."}), 400
 
         # Save food preferences
-        UserFoodPreference.query.filter_by(user_id=user.id).delete()
-        for pref in data.get("food_preferences", []):
-            db.session.add(UserFoodPreference(
-                user_id=user.id,
-                food_name=pref["food_name"],
-                is_preferred=pref.get("is_preferred", False),
-                is_available=pref.get("is_available", False),
-                is_avoided=pref.get("is_avoided", False)
-            ))
+        if "food_preferences" in data and isinstance(data["food_preferences"], list):
+            UserFoodPreference.query.filter_by(user_id=user.id).delete()
+            for pref in data.get("food_preferences", []):
+                db.session.add(UserFoodPreference(
+                    user_id=user.id,
+                    food_name=pref["food_name"],
+                    is_preferred=pref.get("is_preferred", False),
+                    is_available=pref.get("is_available", False),
+                    is_avoided=pref.get("is_avoided", False)
+                ))
             
+        # Update macro targets based on updated profile
+        macros = calculate_ai_targets(profile)
+        targets = NutritionTarget.query.filter_by(user_id=user.id).first()
+        if not targets:
+            targets = NutritionTarget(user_id=user.id)
+            db.session.add(targets)
+        targets.calories = macros["calories"]
+        targets.protein = macros["protein"]
+        targets.carbs = macros["carbs"]
+        targets.fat = macros["fat"]
+
         db.session.commit()
         
         # Regenerate daily meal plan for today
         today_str = datetime.now().strftime("%Y-%m-%d")
         MealPlan.query.filter_by(user_id=user.id, date=today_str).delete()
         
-        targets = NutritionTarget.query.filter_by(user_id=user.id).first()
         all_foods = get_all_user_foods(user)
-        
         daily_meals = generate_daily_meals(profile, user.food_preferences, targets, all_foods, today_str)
         m_plan = MealPlan(
             user_id=user.id,
@@ -2005,11 +2316,11 @@ def api_save_profile():
         m_plan.total_cost = cost
         
         db.session.commit()
-        return jsonify({"status": "success", "message": "Food preferences saved successfully."})
+        return jsonify({"status": "success", "message": "Profile updated successfully."})
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({"status": "error", "message": f"Unable to save food preferences. Please try again: {str(e)}"}), 500
+        return jsonify({"status": "error", "message": f"Unable to update profile: {str(e)}"}), 500
 
 
 @app.route("/api/nutrition/meal/substitute", methods=["POST"])
@@ -2017,12 +2328,40 @@ def api_substitute_meal():
     user = get_current_user()
     if not user or not user.profile: return jsonify({"status": "error", "message": "Unauthorized"}), 401
     
-    data = request.json
-    meal_id = data.get("id")
+    data = request.json or {}
+    meal_id = data.get("id") or data.get("meal_id")
+    new_food_id = data.get("new_food_id") or data.get("food_id")
     
     meal = Meal.query.get(meal_id)
     if not meal or meal.meal_plan.user_id != user.id:
         return jsonify({"status": "error", "message": "Meal item not found"}), 404
+
+    if new_food_id:
+        food = Food.query.get(new_food_id)
+        if food:
+            meal.food_id = food.id
+            meal.food_name = food.name
+            meal.calories = food.calories
+            meal.protein = food.protein
+            meal.carbs = food.carbs
+            meal.fat = food.fat
+            meal.cost = getattr(food, 'cost_approx', getattr(food, 'cost', 0))
+            db.session.commit()
+            return jsonify({
+                "status": "success",
+                "message": f"Swapped to {food.name}",
+                "meal": {
+                    "id": meal.id,
+                    "meal_type": meal.meal_type,
+                    "food_id": meal.food_id,
+                    "food_name": meal.food_name,
+                    "calories": meal.calories,
+                    "protein": meal.protein,
+                    "carbs": meal.carbs,
+                    "fat": meal.fat,
+                    "cost": meal.cost
+                }
+            })
 
     all_foods = get_all_user_foods(user)
     alt = get_food_alternative(
@@ -2160,4 +2499,4 @@ if __name__ == "__main__":
         
     # Start thread to open browser only once (daemon shuts down when server stops)
     threading.Thread(target=open_browser, daemon=True).start()
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True)
