@@ -4,6 +4,10 @@ Verifies Dashboard, Profile Updates, Exercise Library, Workout Execution/Replace
 Nutrition/Meal Swaps/Custom Foods/Budget, Progress Tracking across process restarts, and User Isolation.
 """
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import json
 import unittest
 from datetime import datetime

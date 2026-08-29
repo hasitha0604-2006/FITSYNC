@@ -56,7 +56,8 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
             f"Data: {json.dumps(prompt_data)}"
         )
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
             "generationConfig": {"temperature": 0.3, "responseMimeType": "application/json"}
@@ -68,7 +69,7 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
             headers={'Content-Type': 'application/json'}
         )
         
-        with urllib.request.urlopen(req, timeout=5) as response:
+        with urllib.request.urlopen(req, timeout=15) as response:
             res_body = json.loads(response.read().decode('utf-8'))
             text_content = res_body['candidates'][0]['content']['parts'][0]['text']
             parsed = json.loads(text_content)
@@ -99,3 +100,73 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
             "explanation": explanation,
             "meals": base_meals
         }
+
+
+def generate_ai_grocery_list(profile, active_meals):
+    """
+    Generates a 7-day categorized hostel grocery & canteen shopping list with estimated INR budget totals.
+    Uses Gemini AI if available or structured local aggregation as fallback.
+    """
+    api_key = os.getenv("AI_API_KEY") or os.getenv("GEMINI_API_KEY")
+    daily_budget = profile.daily_food_budget or 150
+    weekly_budget = daily_budget * 7
+
+    # Aggregated items from 5-meal plan
+    items_map = {}
+    for m in active_meals:
+        fn = m.get("food_name", "Staple Item")
+        cost = m.get("cost", 10) * 7
+        if fn in items_map:
+            items_map[fn]["weekly_cost"] += cost
+            items_map[fn]["servings"] += 7
+        else:
+            items_map[fn] = {
+                "name": fn,
+                "weekly_cost": cost,
+                "servings": 7,
+                "category": m.get("category", "Staples")
+            }
+
+    grocery_items = list(items_map.values())
+    total_est_cost = sum(i["weekly_cost"] for i in grocery_items)
+
+    if api_key:
+        try:
+            model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+            prompt = (
+                "You are FitSync AI's budget nutrition expert. Create a concise 7-day hostel grocery list summary "
+                f"for a college student with a ₹{weekly_budget} weekly food budget based on these foods: {json.dumps(grocery_items)}. "
+                "Return JSON matching: {\"summary\": \"string\", \"tip\": \"string\"}"
+            )
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.3, "responseMimeType": "application/json"}
+            }
+            req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'})
+            with urllib.request.urlopen(req, timeout=10) as response:
+                res_body = json.loads(response.read().decode('utf-8'))
+                text_content = res_body['candidates'][0]['content']['parts'][0]['text']
+                parsed = json.loads(text_content)
+                return {
+                    "status": "success",
+                    "is_ai": True,
+                    "weekly_budget": weekly_budget,
+                    "total_est_cost": total_est_cost,
+                    "summary": parsed.get("summary", f"7-day grocery list tailored to your ₹{weekly_budget} budget."),
+                    "pro_tip": parsed.get("tip", "Buy dry staples (chana, peanuts, lentils) in bulk to save ~15% weekly!"),
+                    "items": grocery_items
+                }
+        except Exception:
+            pass
+
+    return {
+        "status": "success",
+        "is_ai": False,
+        "weekly_budget": weekly_budget,
+        "total_est_cost": total_est_cost,
+        "summary": f"7-day hostel grocery list optimized for your ₹{weekly_budget}/week budget.",
+        "pro_tip": "Buy dry staples like roasted chana, peanuts, and dal in bulk at local markets to maximize protein per Rupee!",
+        "items": grocery_items
+    }
+

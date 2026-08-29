@@ -36,7 +36,7 @@
   <div class="px-4 py-2.5 bg-slate-950/40 border-b border-slate-800/60 overflow-x-auto flex items-center gap-2 shrink-0 scrollbar-none">
     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 shrink-0 mr-1">Quick Actions:</span>
     
-    <button onclick="sendQuickAction('Explain today\'s workout')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('Explain today workout')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
       <i data-lucide="dumbbell" class="h-3.5 w-3.5 text-emerald-400"></i>
       Today's Workout
     </button>
@@ -189,7 +189,7 @@
       extraHTML += `</div>`;
     }
 
-    if (extraData.proposed_action) {
+    if (extraData.proposed_action && typeof extraData.proposed_action === 'object' && extraData.proposed_action.endpoint) {
       const act = extraData.proposed_action;
       const payloadStr = JSON.stringify(act.payload || {}).replace(/"/g, '&quot;');
       const redir = act.redirect_url || extraData.redirect_url || '';
@@ -325,7 +325,7 @@
         appendCoachMessage(data.coach_reply || data.message, {
           exercises: data.results || [],
           foods: data.food_results || [],
-          proposed_action: data.proposed_action || data.action,
+          proposed_action: (typeof data.proposed_action === 'object' && data.proposed_action !== null) ? data.proposed_action : null,
           redirect_url: data.redirect_url
         });
       } else {

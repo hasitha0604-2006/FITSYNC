@@ -2,7 +2,7 @@
 
 ## Project Status Overview
 
-* **PROJECT**: FitSync AI (SIH Prototype)
+* **PROJECT**: FitSync AI Platform
 * **ARCHITECTURE**: Unified Python Flask Application (Flask, Flask-SQLAlchemy, Jinja2, Chart.js, SQLite)
 * **STATUS**: **Fully Working & Complete** (Demo-Ready)
 * **DATE**: August 25, 2026
@@ -42,7 +42,7 @@
 
 ### 🔐 4. Authentication & Onboarding
 * Secure session-based registration, login, and logout.
-* Integrated **SIH Demo Credentials** box to log in with a single click.
+* Integrated **Instant Demo Access Credentials** box to log in with a single click.
 * 9-step onboarding wizard collecting name, age, physical stats (height/weight), fitness goal, experience level, workout frequency/duration, equipment list, dietary type, food preferences, and daily budget.
 
 ### 🤖 5. Adaptive Engines

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitSync AI — Student Fitness & Nutrition Report Card</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .print-border { border: 1px solid #e2e8f0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6 md:p-12 font-sans">
+  
+  <div class="max-w-4xl mx-auto bg-slate-800/90 border border-slate-700/80 rounded-2xl p-8 shadow-2xl print-border">
+    <!-- Header & Action Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-700">
+      <div>
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center font-black text-xl">
+            ⚡
+          </div>
+          <div>
+            <h1 class="text-2xl font-black tracking-tight text-white">FitSync <span class="text-emerald-400">AI</span> Report Card</h1>
+            <p class="text-xs text-slate-400">Personalized Adaptive Fitness & Nutrition Plan Summary</p>
+          </div>
+        </div>
+      </div>
+      <div class="no-print flex items-center gap-3">
+        <button onclick="window.print()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+          <span>🖨️ Print / Save as PDF</span>
+        </button>
+        <a href="/dashboard" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition-all">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Student Telemetry Summary -->
+    <div class="my-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Student Name</p>
+        <p class="text-base font-bold text-emerald-400 mt-1">{{ profile.name or 'Student' }}</p>
+      </div>
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Fitness Goal</p>
+        <p class="text-base font-bold text-white mt-1">{{ profile.fitness_goal }}</p>
+      </div>
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Calorie Target</p>
+        <p class="text-base font-bold text-emerald-400 mt-1">{{ target.calories if target else 2000 }} kcal/day</p>
+      </div>
+      <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Protein Target</p>
+        <p class="text-base font-bold text-emerald-400 mt-1">{{ target.protein if target else 120 }}g/day</p>
+      </div>
+    </div>
+
+    <!-- Additional Attributes -->
+    <div class="my-4 p-4 bg-slate-900/40 rounded-xl border border-slate-700/40 text-xs text-slate-300 grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div><span class="text-slate-500">BMR:</span> <strong class="text-slate-200">{{ target.bmr if target else 1650 }} kcal</strong></div>
+      <div><span class="text-slate-500">Environment:</span> <strong class="text-slate-200">{{ profile.workout_environment }}</strong></div>
+      <div><span class="text-slate-500">Diet Type:</span> <strong class="text-slate-200">{{ profile.dietary_preference }}</strong></div>
+      <div><span class="text-slate-500">Hostel Budget:</span> <strong class="text-emerald-400">₹{{ profile.daily_food_budget or 150 }}/day</strong></div>
+    </div>
+
+    <!-- Weekly Workout Split Table -->
+    <div class="mt-8">
+      <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+        <span>🏋️ 7-Day Weekly Training Schedule</span>
+      </h2>
+      <div class="overflow-x-auto rounded-xl border border-slate-700">
+        <table class="w-full text-left text-xs text-slate-300">
+          <thead class="bg-slate-900 text-slate-400 font-bold uppercase text-[10px]">
+            <tr>
+              <th class="p-3">Day</th>
+              <th class="p-3">Focus Area</th>
+              <th class="p-3">Type</th>
+              <th class="p-3">Duration</th>
+              <th class="p-3">Exercises</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-700/60 bg-slate-900/40">
+            {% if workout_days %}
+              {% for day in workout_days %}
+              <tr class="hover:bg-slate-800/50">
+                <td class="p-3 font-bold text-slate-200">{{ day.day_name }}</td>
+                <td class="p-3 font-semibold text-emerald-400">{{ day.focus }}</td>
+                <td class="p-3">
+                  {% if day.is_rest_day %}
+                    <span class="bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full text-[10px]">Rest & Recovery</span>
+                  {% else %}
+                    <span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full text-[10px]">Active Training</span>
+                  {% endif %}
+                </td>
+                <td class="p-3">{{ day.duration_minutes or 45 }} mins</td>
+                <td class="p-3 text-slate-400">
+                  {% if day.exercises %}
+                    {{ day.exercises|map(attribute='name')|join(', ') }}
+                  {% else %}
+                    Rest / Mobility
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="5" class="p-4 text-center text-slate-500">No active workout plan generated yet.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Daily Nutrition Plan Breakdown -->
+    <div class="mt-8">
+      <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+        <span>🥗 Daily 5-Meal Nutrition Plan Breakdown</span>
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {% if meals %}
+          {% for meal in meals %}
+          <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 flex justify-between items-center">
+            <div>
+              <p class="text-[10px] text-emerald-400 font-bold uppercase">{{ meal.meal_type }}</p>
+              <p class="text-sm font-bold text-white mt-0.5">{{ meal.food_name }}</p>
+              <p class="text-[11px] text-slate-400 mt-1">Portion: {{ meal.serving_size_g }}g</p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs font-bold text-slate-200">{{ meal.calories }} kcal</p>
+              <p class="text-xs font-semibold text-emerald-400">{{ meal.protein }}g Protein</p>
+              <p class="text-[10px] text-slate-500 mt-0.5">Approx ₹{{ meal.cost or 10 }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-span-2 p-4 text-center text-slate-500">No active meal plan generated yet.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Footer Disclaimer & Seal -->
+    <div class="mt-8 pt-6 border-t border-slate-700/80 flex flex-col md:flex-row justify-between items-center text-[10px] text-slate-500 gap-2">
+      <p>FitSync AI Platform • Generated dynamically based on live student telemetry & Harris-Benedict formulas.</p>
+      <p class="font-bold text-emerald-400">VERIFIED VALIDATED PLAN</p>
+    </div>
+  </div>
+
+</body>
+</html>

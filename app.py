@@ -1,14 +1,26 @@
 import os
+import sys
 import json
 import time
 import threading
 import webbrowser
+
+# Reconfigure Windows console output to UTF-8
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 from datetime import datetime, timedelta
 from pathlib import Path
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
+
+# Load environment variables from .env
+load_dotenv()
 
 # Path Safety
 BASE_DIR = Path(__file__).resolve().parent
@@ -17,7 +29,7 @@ INSTANCE_DIR.mkdir(exist_ok=True)
 DB_PATH = (INSTANCE_DIR / "fitsync.db").resolve()
 
 app = Flask(__name__, instance_path=str(INSTANCE_DIR))
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fitsync_super_secret_sih_key_2026')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fitsync_super_secret_production_key_2026')
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH.as_posix()}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
@@ -693,7 +705,7 @@ def seed_database():
     if user:
         return
 
-    print("[SEED] Seeding SIH Demo User...")
+    print("[SEED] Seeding Demo User...")
     try:
         # 1. User
         hashed_pwd = generate_password_hash("Demo@123")
@@ -1657,9 +1669,19 @@ def api_ai_chat():
         intent = result.get("intent") or result.get("action") or "GENERAL_FITNESS"
         proposed_act = result.get("proposed_action")
         
+        def _serialize_item(item):
+            if hasattr(item, "to_dict"):
+                return item.to_dict()
+            if isinstance(item, dict):
+                return item
+            return str(item)
+
+        raw_exercises = result.get("exercises") or result.get("results") or []
+        raw_foods = result.get("foods") or result.get("food_results") or []
+
         extra_data = {
-            "exercises": result.get("exercises") or result.get("results") or [],
-            "foods": result.get("foods") or result.get("food_results") or [],
+            "exercises": [_serialize_item(e) for e in raw_exercises],
+            "foods": [_serialize_item(f) for f in raw_foods],
             "actions": result.get("actions") or [],
             "action": result.get("action"),
             "proposed_action": proposed_act,
@@ -2076,6 +2098,12 @@ def api_regenerate_plan():
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
     try:
+        data = request.get_json() or {}
+        new_env = data.get("environment")
+        if new_env:
+            user.profile.workout_environment = new_env
+            db.session.commit()
+
         # Soft-delete old plan
         old_plans = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).all()
         for old in old_plans:
@@ -2483,6 +2511,45 @@ def api_form_analysis():
     result = check_exercise_form(ex_name, frame)
     return jsonify(result)
 
+@app.route("/export/report")
+@app.route("/api/export/report")
+def export_report():
+    user = get_current_user()
+    if not user:
+        flash("Please log in to export your plan report.", "warning")
+        return redirect(url_for("login"))
+    
+    target = NutritionTarget.query.filter_by(user_id=user.id).first()
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    workout_days = plan.days if plan else []
+    
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    meal_plan = MealPlan.query.filter_by(user_id=user.id, date=today_str).first()
+    meals = meal_plan.meals if meal_plan else []
+    
+    return render_template(
+        "export_report.html",
+        user=user,
+        profile=user.profile,
+        target=target,
+        workout_days=workout_days,
+        meals=meals
+    )
+
+@app.route("/api/diet/grocery-list")
+def api_grocery_list():
+    user = get_current_user()
+    if not user: return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    
+    from services.ai_diet_engine import generate_ai_grocery_list
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    meal_plan = MealPlan.query.filter_by(user_id=user.id, date=today_str).first()
+    meals_list = [m.to_dict() for m in meal_plan.meals] if (meal_plan and meal_plan.meals) else []
+    
+    result = generate_ai_grocery_list(user.profile, meals_list)
+    return jsonify(result)
+
+
 # -----------------------------------------------------------------------------
 # AUTO OPEN DEFAULT BROWSER
 # -----------------------------------------------------------------------------
@@ -2497,6 +2564,8 @@ if __name__ == "__main__":
     with app.app_context():
         seed_database()
         
-    # Start thread to open browser only once (daemon shuts down when server stops)
-    threading.Thread(target=open_browser, daemon=True).start()
+    # Prevent 2 tabs from opening due to Flask Werkzeug reloader process spawning
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        threading.Thread(target=open_browser, daemon=True).start()
+
     app.run(debug=True)

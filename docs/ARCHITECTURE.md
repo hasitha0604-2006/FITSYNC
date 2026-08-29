@@ -1,6 +1,6 @@
 # FitSync AI — Software Architecture
 
-FitSync AI is structured as a unified, single-command Python web application designed for simplicity, ease of deployment, and high reliability during Smart India Hackathon (SIH) presentations.
+FitSync AI is structured as a unified, single-command Python web application designed for simplicity, ease of deployment, and high reliability during platform demonstrations.
 
 ---
 

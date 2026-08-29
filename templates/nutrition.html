@@ -13,6 +13,15 @@
     </div>
     
     <div class="flex flex-wrap items-center gap-3">
+      <!-- Weekly Grocery List Button -->
+      <button
+        onclick="openGroceryListModal()"
+        class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs px-4 py-2.5 rounded-xl transition-colors border border-emerald-500/30 shadow"
+      >
+        <i data-lucide="shopping-cart" class="h-4 w-4"></i>
+        🛒 Grocery List
+      </button>
+
       <!-- Add Custom Food Button -->
       <button
         onclick="openCustomFoodModal()"
@@ -718,6 +727,63 @@
     } catch (e) {
       console.error(e);
       closeSwapFoodModal();
+    }
+  }
+
+  async function openGroceryListModal() {
+    let modal = document.getElementById('grocery-list-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'grocery-list-modal';
+      modal.className = 'fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+      modal.innerHTML = `
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="font-black text-lg text-white flex items-center gap-2">🛒 Weekly Hostel Grocery List</h3>
+            <button onclick="document.getElementById('grocery-list-modal').classList.add('hidden')" class="text-slate-400 hover:text-white">✕</button>
+          </div>
+          <div id="grocery-modal-body" class="text-xs text-slate-300 space-y-3 min-h-[120px] flex items-center justify-center">
+            <p class="text-slate-400 font-semibold animate-pulse">Generating your 7-day grocery list...</p>
+          </div>
+          <div class="pt-3 border-t border-slate-800 flex justify-end">
+            <button onclick="document.getElementById('grocery-list-modal').classList.add('hidden')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2 rounded-xl">Close</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+    modal.classList.remove('hidden');
+    
+    try {
+      const res = await fetch('/api/diet/grocery-list');
+      const data = await res.json();
+      const body = document.getElementById('grocery-modal-body');
+      body.className = 'text-xs text-slate-300 space-y-3';
+      
+      let itemsHTML = (data.items || []).map(i => `
+        <div class="flex justify-between items-center p-2.5 bg-slate-800/60 rounded-xl border border-slate-700/50">
+          <div>
+            <span class="font-bold text-white block">${i.name}</span>
+            <span class="text-[10px] text-slate-400">${i.category} • ${i.servings} portions/week</span>
+          </div>
+          <span class="font-bold text-emerald-400">~₹${i.weekly_cost}</span>
+        </div>
+      `).join('');
+      
+      body.innerHTML = `
+        <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-300 text-[11px] font-medium">
+          💡 <strong>Pro Tip</strong>: ${data.pro_tip || 'Buy dry staples in bulk!'}
+        </div>
+        <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
+          ${itemsHTML}
+        </div>
+        <div class="flex justify-between items-center pt-2 font-bold text-slate-200">
+          <span>Est. 7-Day Total:</span>
+          <span class="text-base text-emerald-400">₹${data.total_est_cost || 0} / ₹${data.weekly_budget || 0} Budget</span>
+        </div>
+      `;
+    } catch(err) {
+      console.error(err);
     }
   }
 </script>

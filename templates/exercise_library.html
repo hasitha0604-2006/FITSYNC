@@ -290,15 +290,17 @@
           <img 
             src="{{ ex.media_path or '/static/exercises/fallback_demo.svg' }}" 
             alt="{{ ex.name }} Animation" 
-            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+            class="w-full h-full object-contain p-2 transform group-hover:scale-105 transition-transform duration-500"
             onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';"
           />
 
-          <span class="absolute top-3 left-3 bg-slate-950/90 backdrop-blur text-primary-400 border border-primary-500/30 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
-            {{ ex.category }}
-          </span>
+          <div class="absolute bottom-2 left-2.5 flex items-center gap-1.5 z-10">
+            <span class="bg-slate-950/90 backdrop-blur text-emerald-400 border border-emerald-500/40 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-lg shadow-md">
+              {{ ex.category }}
+            </span>
+          </div>
 
-          <span class="absolute top-3 right-3 bg-slate-950/90 backdrop-blur text-slate-300 border border-slate-700 text-[10px] font-bold px-2 py-1 rounded-lg">
+          <span class="absolute top-2.5 right-2.5 bg-slate-950/90 backdrop-blur text-slate-300 border border-slate-700/80 text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-md z-10">
             {{ ex.difficulty }}
           </span>
         </div>
@@ -356,7 +358,7 @@
               onclick='playExerciseDemoModal({{ ex|tojson|safe }})'
               class="flex items-center justify-center gap-1.5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md"
             >
-              <i data-lucide="play" class="h-4 w-4 fill-current"></i> Demo
+              <i data-lucide="play" class="h-4 w-4 fill-current"></i> Animation
             </button>
           </div>
         </div>

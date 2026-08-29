@@ -1,6 +1,6 @@
 # FitSync AI — "Your lifestyle. Your fitness plan."
 
-FitSync AI is an adaptive fitness and nutrition planning web platform designed specifically around the constraints of college students. Built as a unified prototype for the Smart India Hackathon (SIH) presentation, it launches with a single command and includes a 5–7 minute interactive demonstration.
+FitSync AI is an adaptive fitness and nutrition planning web platform designed specifically around the constraints of college students. Built as a unified platform presentation, it launches with a single command and includes a 5–7 minute interactive demonstration.
 
 ---
 
@@ -102,7 +102,7 @@ Open `http://127.0.0.1:5000` in Google Chrome or Microsoft Edge (it opens automa
 
 ---
 
-## 🎥 Recommended 5-Minute SIH Demo Flow
+## 🎥 Recommended 5-Minute Demo Flow
 
 1. **Access Portal**: Run `python app.py`. The browser will automatically open `http://127.0.0.1:5000`.
 2. **One-Click Demo Login**: Click **Sign In**. Click the **Fill Demo** button to pre-fill the form with credentials:

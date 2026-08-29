@@ -1,35 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6 w-full select-none">
-  <div class="w-full max-w-md bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl shadow-black/40">
+<div class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6 w-full select-none relative overflow-hidden">
+  <!-- Ambient Glow Spots -->
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="w-full max-w-md bg-slate-900/80 backdrop-blur-2xl border border-slate-800/80 hover:border-emerald-500/30 p-8 rounded-3xl shadow-2xl shadow-black/60 relative z-10 transition-all duration-300">
     
     <!-- Header -->
     <div class="flex flex-col items-center text-center mb-8">
-      <div class="p-2.5 bg-emerald-500/10 text-emerald-450 rounded-2xl mb-3">
+      <div class="p-3 bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 text-emerald-400 rounded-2xl mb-3 border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
         <i data-lucide="activity" class="h-8 w-8"></i>
       </div>
-      <h2 class="text-xl font-bold tracking-tight">Welcome Back</h2>
-      <p class="text-slate-500 text-xs mt-1">Log in to your lifestyle dashboard</p>
+      <h2 class="text-2xl font-black tracking-tight text-white">Welcome Back</h2>
+      <p class="text-slate-400 text-xs mt-1">Log in to your FitSync AI dashboard</p>
     </div>
 
-    <!-- Demo Account Callout -->
-    <div class="mb-6 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl">
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wide">🎯 SIH Demo Bypass Credentials</span>
-        <button 
-          type="button"
-          onclick="fillDemoCredentials()"
-          class="text-[9px] bg-emerald-500 hover:bg-emerald-600 text-white px-2 py-0.5 rounded font-bold transition-all shadow shadow-emerald-500/10"
-        >
-          Fill Demo
-        </button>
-      </div>
-      <div class="text-[11px] text-slate-400 space-y-0.5 mt-2 font-medium">
-        <p><span class="font-semibold text-slate-350">Email:</span> demo@fitsync.ai</p>
-        <p><span class="font-semibold text-slate-350">Password:</span> Demo@123</p>
-      </div>
-    </div>
+
 
     <form method="POST" action="{{ url_for('login') }}" class="space-y-4">
       <div>

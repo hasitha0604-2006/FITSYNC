@@ -1,65 +1,71 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-8 pb-20 md:pb-10 bg-slate-50 w-full">
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-8 pb-20 md:pb-10 bg-slate-950 text-slate-100 w-full font-sans">
   
   <!-- Greetings Header -->
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 select-none">
     <div>
-      <h1 class="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
-        <span id="greeting-text">Hello</span>, <span class="text-primary-600">{{ profile.name }}</span> 👋
+      <h1 class="text-2xl md:text-3xl font-black text-white leading-tight tracking-tight">
+        <span id="greeting-text">Hello</span>, <span class="text-gradient-emerald">{{ profile.name }}</span> 👋
       </h1>
-      <p class="text-slate-500 text-sm mt-1">Here is your customized lifestyle schedule for today.</p>
+      <p class="text-slate-400 text-xs md:text-sm mt-1">Here is your customized lifestyle & training schedule for today.</p>
     </div>
-    <div class="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border shadow-sm text-xs font-semibold text-slate-700">
-      <i data-lucide="calendar" class="h-4.5 w-4.5 text-primary-500"></i>
-      <span id="current-date-str">Loading Date...</span>
+    <div class="flex items-center gap-2">
+      <a href="/export/report" target="_blank" class="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 text-xs font-bold transition-all hover:scale-105">
+        <i data-lucide="file-text" class="h-4 w-4"></i>
+        <span>Export Report</span>
+      </a>
+      <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-800 px-4 py-2.5 rounded-xl shadow-sm text-xs font-semibold text-slate-300">
+        <i data-lucide="calendar" class="h-4.5 w-4.5 text-emerald-400"></i>
+        <span id="current-date-str">Loading Date...</span>
+      </div>
     </div>
   </div>
 
   <!-- Personalization & Quick Stats Row -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 select-none">
     <!-- Stat 1: Fitness Goal -->
-    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
-      <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+    <div class="bg-slate-900/70 backdrop-blur-xl border border-slate-800/80 hover:border-emerald-500/40 rounded-2xl p-4 shadow-xl flex items-center gap-3 transition-all duration-300 hover:-translate-y-1">
+      <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
         <i data-lucide="target" class="h-5 w-5"></i>
       </div>
       <div>
         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Goal</span>
-        <span class="text-xs font-bold text-slate-805 block capitalize">{{ profile.fitness_goal }}</span>
+        <span class="text-xs font-bold text-white block capitalize">{{ profile.fitness_goal }}</span>
       </div>
     </div>
 
     <!-- Stat 2: Fitness Level -->
-    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
-      <div class="p-2 bg-blue-50 text-blue-600 rounded-xl">
+    <div class="bg-slate-900/70 backdrop-blur-xl border border-slate-800/80 hover:border-emerald-500/40 rounded-2xl p-4 shadow-xl flex items-center gap-3 transition-all duration-300 hover:-translate-y-1">
+      <div class="p-2.5 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20">
         <i data-lucide="dumbbell" class="h-5 w-5"></i>
       </div>
       <div>
         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Experience</span>
-        <span class="text-xs font-bold text-slate-805 block capitalize">{{ profile.fitness_level }}</span>
+        <span class="text-xs font-bold text-white block capitalize">{{ profile.fitness_level }}</span>
       </div>
     </div>
 
     <!-- Stat 3: Diet Preference -->
-    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
-      <div class="p-2 bg-amber-50 text-amber-600 rounded-xl">
+    <div class="bg-slate-900/70 backdrop-blur-xl border border-slate-800/80 hover:border-emerald-500/40 rounded-2xl p-4 shadow-xl flex items-center gap-3 transition-all duration-300 hover:-translate-y-1">
+      <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
         <i data-lucide="cookie" class="h-5 w-5"></i>
       </div>
       <div>
         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Diet Preference</span>
-        <span class="text-xs font-bold text-slate-805 block capitalize">{{ profile.dietary_preference }}</span>
+        <span class="text-xs font-bold text-white block capitalize">{{ profile.dietary_preference }}</span>
       </div>
     </div>
 
     <!-- Stat 4: Food Budget -->
-    <div class="bg-white border rounded-2xl p-4 shadow-sm flex items-center gap-3">
-      <div class="p-2 bg-rose-50 text-rose-600 rounded-xl">
+    <div class="bg-slate-900/70 backdrop-blur-xl border border-slate-800/80 hover:border-emerald-500/40 rounded-2xl p-4 shadow-xl flex items-center gap-3 transition-all duration-300 hover:-translate-y-1">
+      <div class="p-2.5 bg-rose-500/10 text-rose-400 rounded-xl border border-rose-500/20">
         <i data-lucide="indian-rupee" class="h-5 w-5"></i>
       </div>
       <div>
         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Daily Budget</span>
-        <span class="text-xs font-bold text-slate-805 block">₹{{ profile.daily_food_budget or 150 }} / day</span>
+        <span class="text-xs font-bold text-emerald-400 block">₹{{ profile.daily_food_budget or 150 }} / day</span>
       </div>
     </div>
   </div>

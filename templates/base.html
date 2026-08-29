@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2332ad7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6.5 6.5 11 11'%3E%3C/path%3E%3Cpath d='m17.5 6.5-11 11'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3C/svg%3E" />
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#10b981">
   <title>FitSync AI — Your lifestyle. Your fitness plan.</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -32,18 +34,18 @@
   </script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-gray-50 text-slate-800 min-h-screen flex flex-col md:flex-row">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col md:flex-row font-sans selection:bg-emerald-500 selection:text-white">
 
   {% if session.get('user_id') %}
   <!-- Desktop Sidebar -->
-  <aside class="hidden md:flex flex-col w-64 bg-slate-900 text-white min-h-screen border-r border-slate-800 shrink-0">
-    <div class="p-6 flex items-center gap-3 border-b border-slate-800 select-none">
-      <div class="p-2 bg-primary-500/10 text-primary-400 rounded-xl">
+  <aside class="hidden md:flex flex-col w-64 bg-slate-900/95 backdrop-blur-2xl text-white min-h-screen border-r border-slate-800/80 shrink-0">
+    <div class="p-6 flex items-center gap-3 border-b border-slate-800/80 select-none">
+      <div class="p-2.5 bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 text-emerald-400 rounded-xl border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
         <i data-lucide="activity" class="h-6 w-6"></i>
       </div>
       <div>
         <h1 class="font-bold text-lg tracking-tight">FitSync <span class="text-primary-400 font-black">AI</span></h1>
-        <p class="text-[9px] text-slate-500 tracking-wider uppercase font-bold">SIH PROTOTYPE</p>
+        <p class="text-[9px] text-emerald-400 tracking-wider uppercase font-bold">AI PLATFORM v1.0</p>
       </div>
     </div>
 
@@ -165,7 +167,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="{{ url_for('static', filename='js/anatomical_renderer.js') }}"></script>
 
-  {% if session.get('user_id') %}
+  {% if session.get('user_id') and request.path != '/ai-coach' %}
   <!-- Persistent Floating AI Personal Coach Widget Button -->
   <div class="fixed bottom-20 md:bottom-6 right-6 z-40 select-none">
     <button 
@@ -336,6 +338,13 @@
           container.appendChild(eMsg);
         }
       }
+    }
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/sw.js').catch(err => console.log('SW Registration failed:', err));
+      });
     }
   </script>
   {% block scripts %}{% endblock %}

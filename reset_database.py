@@ -1,6 +1,6 @@
 """
 FitSync AI — Standalone Developer Database Reset Script
-Deletes instance/fitsync.db, creates all tables via SQLAlchemy, seeds 47 exercises, foods, and SIH Demo User, and validates relational integrity.
+Deletes instance/fitsync.db, creates all tables via SQLAlchemy, seeds 47 exercises, foods, and Demo User, and validates relational integrity.
 Run manually via: python reset_database.py
 """
 

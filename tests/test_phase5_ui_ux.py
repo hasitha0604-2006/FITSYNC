@@ -6,6 +6,10 @@ Nutrition & Food Budget calculations, Meal Swap options, Progress analytics, and
 
 import os
 import json
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import unittest
 from app import app, db, User, UserProfile, NutritionTarget, WorkoutPlan, WorkoutDay, WorkoutExercise, MealPlan, Meal, Exercise, Food, CustomFood, seed_database
 

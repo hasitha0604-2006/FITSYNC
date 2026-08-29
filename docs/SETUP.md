@@ -15,7 +15,7 @@ This document contains instructions to set up, troubleshoot, and run the FitSync
 ### Standard CLI Setup
 
 #### Step 1: Open Terminal
-Open VS Code in the root `FITSYNC-AI-SIH` directory and open an integrated PowerShell terminal.
+Open VS Code in the root `FITSYNC` directory and open an integrated PowerShell terminal.
 
 #### Step 2: Create Virtual Environment
 Run the following command to create a local virtual environment:

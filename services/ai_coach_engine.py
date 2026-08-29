@@ -38,7 +38,8 @@ def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
             "Return valid JSON matching this schema: {\"coach_reply\": \"string\", \"intent\": \"string\"}"
         )
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
             "generationConfig": {"temperature": 0.4, "responseMimeType": "application/json"}
@@ -50,7 +51,7 @@ def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
             headers={'Content-Type': 'application/json'}
         )
 
-        with urllib.request.urlopen(req, timeout=5) as response:
+        with urllib.request.urlopen(req, timeout=15) as response:
             res_body = json.loads(response.read().decode('utf-8'))
             text_content = res_body['candidates'][0]['content']['parts'][0]['text']
             parsed = json.loads(text_content)

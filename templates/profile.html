@@ -1,43 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-50 w-full font-sans">
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-950 text-slate-100 w-full font-sans">
   
   <!-- Header -->
   <div>
-    <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Profile & Preferences</h1>
-    <p class="text-xs text-slate-500 mt-1">Review your body metrics, workout frequencies, and dietary allocations.</p>
+    <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Profile & Preferences</h1>
+    <p class="text-xs text-slate-400 mt-1">Review your body metrics, workout frequencies, and dietary allocations.</p>
   </div>
 
   <!-- Main Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     
     <!-- Metric A: Body Stats & BMI -->
-    <section class="bg-white border rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-6 lg:col-span-1">
+    <section class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between space-y-6 lg:col-span-1">
       <div class="space-y-4">
         <div class="flex items-center gap-2.5 select-none">
-          <div class="p-2.5 bg-primary-50 rounded-xl text-primary-650">
+          <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
             <i data-lucide="user" class="h-5 w-5"></i>
           </div>
-          <h3 class="font-bold text-slate-900">Physical Metrics</h3>
+          <h3 class="font-bold text-white">Physical Metrics</h3>
         </div>
         
         <div class="grid grid-cols-2 gap-4 text-xs font-semibold">
-          <div class="bg-slate-50 p-3 rounded-lg border">
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Height</span>
-            <span class="text-sm font-black text-slate-750 mt-1 block">{{ profile.height }} cm</span>
+            <span class="text-sm font-black text-white mt-1 block">{{ profile.height }} cm</span>
           </div>
-          <div class="bg-slate-50 p-3 rounded-lg border">
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Weight</span>
-            <span class="text-sm font-black text-slate-755 mt-1 block">{{ profile.weight }} kg</span>
+            <span class="text-sm font-black text-white mt-1 block">{{ profile.weight }} kg</span>
           </div>
-          <div class="bg-slate-50 p-3 rounded-lg border">
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Age</span>
-            <span class="text-sm font-black text-slate-755 mt-1 block">{{ profile.age }} years</span>
+            <span class="text-sm font-black text-white mt-1 block">{{ profile.age }} years</span>
           </div>
-          <div class="bg-slate-50 p-3 rounded-lg border">
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Gender</span>
-            <span class="text-sm font-black text-slate-755 mt-1 block capitalize">{{ profile.gender }}</span>
+            <span class="text-sm font-black text-white mt-1 block capitalize">{{ profile.gender }}</span>
           </div>
         </div>
       </div>
@@ -48,60 +48,60 @@
       
       {% if bmiScore < 18.5 %}
         {% set bmiLabel = 'Underweight' %}
-        {% set bmiColor = 'text-amber-500' %}
+        {% set bmiColor = 'text-amber-400' %}
       {% elif bmiScore >= 25 and bmiScore < 30 %}
         {% set bmiLabel = 'Overweight' %}
-        {% set bmiColor = 'text-amber-500' %}
+        {% set bmiColor = 'text-amber-400' %}
       {% elif bmiScore >= 30 %}
         {% set bmiLabel = 'Obese' %}
-        {% set bmiColor = 'text-red-500' %}
+        {% set bmiColor = 'text-rose-400' %}
       {% else %}
         {% set bmiLabel = 'Normal' %}
-        {% set bmiColor = 'text-emerald-500' %}
+        {% set bmiColor = 'text-emerald-400' %}
       {% endif %}
 
-      <div class="bg-slate-950 border border-slate-900 text-white p-4 rounded-xl flex items-center justify-between shadow select-none">
+      <div class="bg-slate-950/80 border border-slate-800 text-white p-4 rounded-xl flex items-center justify-between shadow select-none">
         <div>
-          <span class="block text-[9px] text-slate-450 uppercase font-bold">Estimated BMI</span>
+          <span class="block text-[9px] text-slate-400 uppercase font-bold">Estimated BMI</span>
           <span class="block text-2xl font-black text-white mt-1">{{ bmiScore }}</span>
         </div>
         <div class="text-right">
-          <span class="block text-[9px] text-slate-455 uppercase font-bold">Status</span>
+          <span class="block text-[9px] text-slate-400 uppercase font-bold">Status</span>
           <span class="block text-xs font-black mt-1 {{ bmiColor }}">{{ bmiLabel }}</span>
         </div>
       </div>
     </section>
 
     <!-- Metric B: Parameter settings summary -->
-    <section class="bg-white border rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-4 lg:col-span-2">
+    <section class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between space-y-4 lg:col-span-2">
       <div class="space-y-4">
         <div class="flex items-center gap-2.5 select-none">
-          <div class="p-2.5 bg-primary-50 rounded-xl text-primary-650">
+          <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
             <i data-lucide="settings" class="h-5 w-5"></i>
           </div>
-          <h3 class="font-bold text-slate-900">Training & Dietary Parameters</h3>
+          <h3 class="font-bold text-white">Training & Dietary Parameters</h3>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-slate-700 select-none">
-          <div class="border border-slate-100 p-4 rounded-xl bg-slate-50/50">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-slate-200 select-none">
+          <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Fitness Goal</span>
-            <span class="text-sm font-bold text-slate-800 capitalize mt-1 block">{{ profile.fitness_goal }}</span>
+            <span class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.fitness_goal }}</span>
           </div>
           
-          <div class="border border-slate-100 p-4 rounded-xl bg-slate-50/50">
+          <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Fitness Level</span>
-            <span class="text-sm font-bold text-slate-800 capitalize mt-1 block">{{ profile.fitness_level }}</span>
+            <span class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.fitness_level }}</span>
           </div>
 
-          <div class="border border-slate-100 p-4 rounded-xl bg-slate-50/50">
+          <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Dietary Preference</span>
-            <span class="text-sm font-bold text-slate-800 capitalize mt-1 block">{{ profile.dietary_preference }}</span>
+            <span class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.dietary_preference }}</span>
           </div>
 
-          <div class="border border-slate-100 p-4 rounded-xl bg-slate-50/50">
+          <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Budget Preference</span>
-            <span class="text-sm font-bold text-slate-800 capitalize mt-1 block flex items-center gap-1">
-              <i data-lucide="indian-rupee" class="h-4.5 w-4.5 text-slate-500"></i>
+            <span class="text-sm font-bold text-emerald-400 capitalize mt-1 block flex items-center gap-1">
+              <i data-lucide="indian-rupee" class="h-4.5 w-4.5 text-emerald-400"></i>
               ₹{{ profile.daily_food_budget or 150 }} / day
             </span>
           </div>
@@ -109,63 +109,63 @@
       </div>
 
       <!-- FOOD & NUTRITION DETAILS -->
-      <div class="pt-4 border-t border-slate-100 space-y-4">
+      <div class="pt-4 border-t border-slate-800 space-y-4">
         <div class="flex items-center gap-2 select-none">
-          <i data-lucide="cookie" class="h-5 w-5 text-rose-500"></i>
-          <h4 class="font-bold text-slate-850 text-xs uppercase tracking-wider">Food & Nutrition Profile</h4>
+          <i data-lucide="cookie" class="h-5 w-5 text-rose-400"></i>
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider">Food & Nutrition Profile</h4>
         </div>
         
-        <div class="grid grid-cols-1 gap-3 text-xs font-semibold text-slate-700 select-none">
-          <div class="border border-slate-100 p-3 rounded-xl bg-slate-50/50">
+        <div class="grid grid-cols-1 gap-3 text-xs font-semibold text-slate-300 select-none">
+          <div class="border border-slate-800 p-3 rounded-xl bg-slate-950/60">
             <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">❤️ Preferred Foods</span>
-            <span class="text-xs text-slate-805 mt-1 block leading-relaxed">
+            <span class="text-xs text-slate-200 mt-1 block leading-relaxed">
               {% if preferred_foods %}
                 {{ preferred_foods|join(', ') }}
               {% else %}
-                <span class="text-slate-400 font-normal italic">None selected</span>
+                <span class="text-slate-500 font-normal italic">None selected</span>
               {% endif %}
             </span>
           </div>
 
-          <div class="border border-slate-100 p-3 rounded-xl bg-slate-50/50">
+          <div class="border border-slate-800 p-3 rounded-xl bg-slate-950/60">
             <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">📦 Available Foods (Canteen)</span>
-            <span class="text-xs text-slate-805 mt-1 block leading-relaxed">
+            <span class="text-xs text-slate-200 mt-1 block leading-relaxed">
               {% if available_foods %}
                 {{ available_foods|join(', ') }}
               {% else %}
-                <span class="text-slate-400 font-normal italic">None selected</span>
+                <span class="text-slate-500 font-normal italic">None selected</span>
               {% endif %}
             </span>
           </div>
 
-          <div class="border border-slate-100 p-3 rounded-xl bg-slate-50/50">
+          <div class="border border-slate-800 p-3 rounded-xl bg-slate-950/60">
             <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">🚫 Avoided Foods</span>
-            <span class="text-xs text-slate-805 mt-1 block leading-relaxed">
+            <span class="text-xs text-slate-200 mt-1 block leading-relaxed">
               {% if avoided_foods %}
                 {{ avoided_foods|join(', ') }}
               {% else %}
-                <span class="text-slate-400 font-normal italic">None selected</span>
+                <span class="text-slate-500 font-normal italic">None selected</span>
               {% endif %}
             </span>
           </div>
         </div>
       </div>
 
-      <div class="pt-4 border-t flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
-        <div class="flex items-start gap-1.5 text-[10px] text-slate-450 leading-relaxed max-w-sm">
+      <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
+        <div class="flex items-start gap-1.5 text-[10px] text-slate-400 leading-relaxed max-w-sm">
           <i data-lucide="info" class="h-4 w-4 shrink-0 text-slate-400 mt-0.5"></i>
           <p>Need to adapt your split because you signed up for a gym, bought dumbbells, or changed diet preferences? Reset onboarding parameters below.</p>
         </div>
         <div class="flex gap-2 w-full sm:w-auto">
           <a
             href="{{ url_for('settings') }}"
-            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 bg-white hover:bg-slate-55 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-lg border transition-colors shadow-sm shrink-0"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-colors shadow-sm shrink-0"
           >
             Customize Food Preferences
           </a>
           <a
             href="{{ url_for('onboarding') }}"
-            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors shadow-md shadow-primary-500/10 shrink-0"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-emerald-500/20 shrink-0"
           >
             Reset / Change Constraints
             <i data-lucide="chevron-right" class="h-4 w-4"></i>
@@ -177,12 +177,12 @@
   </div>
 
   <!-- Medical disclaimer -->
-  <section class="bg-slate-900 text-white p-6 rounded-2xl border border-slate-800 space-y-2 select-none">
-    <h4 class="font-bold text-xs uppercase tracking-wider text-primary-400 flex items-center gap-1.5">
+  <section class="bg-slate-900/80 backdrop-blur-xl text-white p-6 rounded-2xl border border-slate-800 space-y-2 select-none">
+    <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
       <i data-lucide="activity" class="h-4.5 w-4.5"></i>
       Health & Wellness Disclaimer
     </h4>
-    <p class="text-[11px] text-slate-450 leading-relaxed max-w-4xl">
+    <p class="text-[11px] text-slate-400 leading-relaxed max-w-4xl">
       FitSync AI provides estimated targets and template-driven splits to improve general fitness. BMI calculations, TDEE metrics, and exercise selections are not medical prescriptions. If you experience joint discomfort, back stiffness, or require targeted diabetic/cardiac medical diets, always consult with certified physiotherapists or clinical nutritionists.
     </p>
   </section>
