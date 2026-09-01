@@ -33,6 +33,8 @@ class FitSyncTestCase(unittest.TestCase):
             db.session.rollback()
         db.session.remove()
         self.ctx.pop()
+        if hasattr(self, 'orig_uri') and self.orig_uri:
+            app.config['SQLALCHEMY_DATABASE_URI'] = self.orig_uri
 
     def test_auth_flow(self):
         # Test Register

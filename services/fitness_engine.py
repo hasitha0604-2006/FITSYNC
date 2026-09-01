@@ -635,14 +635,25 @@ def generate_custom_today_workout(plan, today_day_name, focus_str, duration_mins
     Dynamically generates and sets today's workout for any specific single muscle group,
     custom split, or duration chosen on-demand by the user.
     """
-    today_day = None
-    for d in plan.days:
-        if d.day_name.lower() == today_day_name.lower():
-            today_day = d
-            break
+    today_day = WorkoutDayModel.query.filter_by(workout_plan_id=plan.id, day_name=today_day_name).first()
+    if not today_day:
+        for d in plan.days:
+            if d.day_name.lower() == today_day_name.lower():
+                today_day = d
+                break
 
     if not today_day:
-        return False, "Target workout day not found in plan.", []
+        today_day = WorkoutDayModel(
+            workout_plan_id=plan.id,
+            day_name=today_day_name,
+            day_number=1,
+            focus=focus_str,
+            duration_minutes=int(duration_mins or 45),
+            is_rest_day=False,
+            status="upcoming"
+        )
+        db_session.add(today_day)
+        db_session.commit()
 
     target_env = env_override or user_profile.workout_environment or "Gym"
     allowed_eq = _get_allowed_equipment([eq.equipment_name for eq in equipments] if equipments else [], target_env)

@@ -2848,5 +2848,2662 @@
       "Focus on the target muscle.",
       "Breathe regularly."
     ]
+  },
+  {
+    "id": 48,
+    "name": "Decline Barbell Bench Press",
+    "slug": "decline_barbell_bench_press",
+    "category": "Chest",
+    "primary_muscles": [
+      "Lower Chest",
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Triceps",
+      "Front Delts"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Muscle Gain",
+    "instructions": [
+      "Secure legs on decline bench",
+      "Unrack barbell over lower chest",
+      "Lower bar smoothly to lower pectorals",
+      "Press back up to lock out."
+    ],
+    "start_pos": "Secured on decline bench, bar over lower chest.",
+    "movement": "Lower to lower sternum.",
+    "end_pos": "Full press extension.",
+    "common_mistakes": [
+      "Bar touching too high on chest"
+    ],
+    "safety_notes": "Always lock your legs into the pads securely.",
+    "default_sets": 3,
+    "default_reps": "8-10",
+    "default_rest": 90,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/decline_barbell_bench_press/demo.svg",
+    "demonstration_asset": "/static/exercises/decline_barbell_bench_press/demo.svg",
+    "thumbnail": "/static/exercises/decline_barbell_bench_press/thumbnail.png",
+    "aliases": [
+      "decline barbell bench press"
+    ]
+  },
+  {
+    "id": 49,
+    "name": "Incline Push-Up",
+    "slug": "incline_push_up",
+    "category": "Chest",
+    "primary_muscles": [
+      "Lower Chest",
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Triceps",
+      "Core"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "Place hands on an elevated bench or sturdy platform",
+      "Keep body in straight line",
+      "Lower chest to edge of platform",
+      "Push back up."
+    ],
+    "start_pos": "Plank with hands elevated on bench.",
+    "movement": "Lower body towards platform.",
+    "end_pos": "Full arm extension.",
+    "common_mistakes": [
+      "Sagging hips"
+    ],
+    "safety_notes": "Great scalable variation for beginners.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/incline_push_up/demo.svg",
+    "demonstration_asset": "/static/exercises/incline_push_up/demo.svg",
+    "thumbnail": "/static/exercises/incline_push_up/thumbnail.png",
+    "aliases": [
+      "incline push-up"
+    ]
+  },
+  {
+    "id": 50,
+    "name": "Decline Push-Up",
+    "slug": "decline_push_up",
+    "category": "Chest",
+    "primary_muscles": [
+      "Upper Chest",
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Front Delts",
+      "Triceps",
+      "Core"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "Muscle Gain",
+    "instructions": [
+      "Place feet on bench or elevated surface and hands on the floor",
+      "Lower chest to floor under control",
+      "Press back up."
+    ],
+    "start_pos": "Feet elevated, hands on floor in plank.",
+    "movement": "Lower chest toward floor.",
+    "end_pos": "Full push-up extension.",
+    "common_mistakes": [
+      "Hips sagging"
+    ],
+    "safety_notes": "Maintain firm core tension.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/decline_push_up/demo.svg",
+    "demonstration_asset": "/static/exercises/decline_push_up/demo.svg",
+    "thumbnail": "/static/exercises/decline_push_up/thumbnail.png",
+    "aliases": [
+      "decline push-up"
+    ]
+  },
+  {
+    "id": 51,
+    "name": "Cable Crossover",
+    "slug": "cable_crossover",
+    "category": "Chest",
+    "primary_muscles": [
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Front Delts"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Set high pulleys with D-handles",
+      "Take a slight forward lunge stance",
+      "Bring handles down and together across front of hips",
+      "Squeeze chest firmly at peak."
+    ],
+    "start_pos": "Standing between cable pulleys, slight forward lean.",
+    "movement": "Sweep arms forward and down in an arc.",
+    "end_pos": "Hands meet in front of pelvis, chest contracted.",
+    "common_mistakes": [
+      "Using momentum"
+    ],
+    "safety_notes": "Maintain constant tension throughout.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_crossover/demo.svg",
+    "demonstration_asset": "/static/exercises/cable_crossover/demo.svg",
+    "thumbnail": "/static/exercises/cable_crossover/thumbnail.png",
+    "aliases": [
+      "cable crossover"
+    ]
+  },
+  {
+    "id": 52,
+    "name": "Chest Dips",
+    "slug": "chest_dips",
+    "category": "Chest",
+    "primary_muscles": [
+      "Lower Chest",
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Triceps",
+      "Front Delts"
+    ],
+    "equipment": "Pull-up Bar",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Grip parallel bars, lean torso forward 30 degrees",
+      "Lower until elbows reach 90 degrees",
+      "Push through chest back up."
+    ],
+    "start_pos": "Supported on dip bars, leaning forward.",
+    "movement": "Lower torso with forward lean.",
+    "end_pos": "Press back up to lock out.",
+    "common_mistakes": [
+      "Staying upright (targets triceps more)"
+    ],
+    "safety_notes": "Stop at 90-degree elbow bend if you feel shoulder pinch.",
+    "default_sets": 3,
+    "default_reps": "8-12",
+    "default_rest": 90,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/chest_dips/demo.svg",
+    "demonstration_asset": "/static/exercises/chest_dips/demo.svg",
+    "thumbnail": "/static/exercises/chest_dips/thumbnail.png",
+    "aliases": [
+      "chest dips"
+    ]
+  },
+  {
+    "id": 53,
+    "name": "Machine Chest Press",
+    "slug": "machine_chest_press",
+    "category": "Chest",
+    "primary_muscles": [
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Triceps",
+      "Front Delts"
+    ],
+    "equipment": "Machines",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Muscle Gain",
+    "instructions": [
+      "Adjust seat height so handles align with mid-chest",
+      "Press handles forward until arms are almost straight",
+      "Return slowly."
+    ],
+    "start_pos": "Seated back against pad, handles at chest level.",
+    "movement": "Press handles away from chest.",
+    "end_pos": "Full press with soft lockout.",
+    "common_mistakes": [
+      "Shoulders rolling forward"
+    ],
+    "safety_notes": "Keep shoulder blades pinned to the back pad.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/machine_chest_press/demo.svg",
+    "demonstration_asset": "/static/exercises/machine_chest_press/demo.svg",
+    "thumbnail": "/static/exercises/machine_chest_press/thumbnail.png",
+    "aliases": [
+      "machine chest press"
+    ]
+  },
+  {
+    "id": 54,
+    "name": "Pec Deck Fly",
+    "slug": "pec_deck_fly",
+    "category": "Chest",
+    "primary_muscles": [
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Front Delts"
+    ],
+    "equipment": "Machines",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Sit with back firmly against pad, grasp handles or pads with forearms",
+      "Bring arms together in front of chest",
+      "Hold contraction 1 sec then return."
+    ],
+    "start_pos": "Arms open out to sides on machine pads.",
+    "movement": "Squeeze arms together horizontally.",
+    "end_pos": "Pads touch or meet at midline.",
+    "common_mistakes": [
+      "Shrugging shoulders"
+    ],
+    "safety_notes": "Keep chest high and shoulders depressed.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/pec_deck_fly/demo.svg",
+    "demonstration_asset": "/static/exercises/pec_deck_fly/demo.svg",
+    "thumbnail": "/static/exercises/pec_deck_fly/thumbnail.png",
+    "aliases": [
+      "pec deck fly"
+    ]
+  },
+  {
+    "id": 55,
+    "name": "Dumbbell Floor Press",
+    "slug": "dumbbell_floor_press",
+    "category": "Chest",
+    "primary_muscles": [
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Triceps"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Strength",
+    "instructions": [
+      "Lie on the floor with knees bent, holding dumbbells at chest",
+      "Press up until arms are straight",
+      "Lower until triceps lightly touch the floor, pause, and press."
+    ],
+    "start_pos": "Supine on floor, triceps resting on ground holding dumbbells.",
+    "movement": "Press dumbbells upwards vertically.",
+    "end_pos": "Arms locked over chest.",
+    "common_mistakes": [
+      "Bouncing elbows hard on the floor"
+    ],
+    "safety_notes": "Great shoulder-safe pressing variation.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_floor_press/demo.svg",
+    "demonstration_asset": "/static/exercises/dumbbell_floor_press/demo.svg",
+    "thumbnail": "/static/exercises/dumbbell_floor_press/thumbnail.png",
+    "aliases": [
+      "dumbbell floor press"
+    ]
+  },
+  {
+    "id": 56,
+    "name": "Barbell Deadlift",
+    "slug": "barbell_deadlift",
+    "category": "Back",
+    "primary_muscles": [
+      "Lower Back",
+      "Hamstrings",
+      "Glutes",
+      "Back"
+    ],
+    "secondary_muscles": [
+      "Lats",
+      "Traps",
+      "Forearms",
+      "Core"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Advanced",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Stand with feet hip-width, barbell over midfoot",
+      "Hinge down, grip bar just outside shins",
+      "Brace core, drive through the floor to stand upright",
+      "Lower bar with controlled hip hinge."
+    ],
+    "start_pos": "Hinged down at bar, shins touching bar, spine locked flat.",
+    "movement": "Drive hips and knees to lock out vertically.",
+    "end_pos": "Standing erect with glutes squeezed.",
+    "common_mistakes": [
+      "Rounding lower spine"
+    ],
+    "safety_notes": "Brace intra-abdominal pressure firmly before pulling.",
+    "default_sets": 4,
+    "default_reps": "5-6",
+    "default_rest": 120,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/barbell_deadlift/demo.svg",
+    "demonstration_asset": "/static/exercises/barbell_deadlift/demo.svg",
+    "thumbnail": "/static/exercises/barbell_deadlift/thumbnail.png",
+    "aliases": [
+      "barbell deadlift"
+    ]
+  },
+  {
+    "id": 57,
+    "name": "Chin-Up",
+    "slug": "chin_up",
+    "category": "Back",
+    "primary_muscles": [
+      "Lats",
+      "Biceps",
+      "Back"
+    ],
+    "secondary_muscles": [
+      "Forearms",
+      "Core"
+    ],
+    "equipment": "Pull-up Bar",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Grip bar underhand shoulder-width",
+      "Pull chest up to bar focusing on bicep and lat pull",
+      "Lower slowly."
+    ],
+    "start_pos": "Hanging with supinated grip.",
+    "movement": "Pull body up to chin over bar.",
+    "end_pos": "Chin clears bar.",
+    "common_mistakes": [
+      "Swinging legs"
+    ],
+    "safety_notes": "Keep shoulders packed.",
+    "default_sets": 3,
+    "default_reps": "8-10",
+    "default_rest": 90,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/chin_up/demo.svg",
+    "demonstration_asset": "/static/exercises/chin_up/demo.svg",
+    "thumbnail": "/static/exercises/chin_up/thumbnail.png",
+    "aliases": [
+      "chin-up"
+    ]
+  },
+  {
+    "id": 58,
+    "name": "T-Bar Row",
+    "slug": "t_bar_row",
+    "category": "Back",
+    "primary_muscles": [
+      "Back",
+      "Rhomboids",
+      "Lats"
+    ],
+    "secondary_muscles": [
+      "Biceps",
+      "Traps"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Muscle Gain",
+    "instructions": [
+      "Straddle T-bar platform with hips hinged",
+      "Grip handles and pull weight towards chest",
+      "Squeeze middle back, lower slowly."
+    ],
+    "start_pos": "Hinged over T-bar handles.",
+    "movement": "Pull weight into upper abdomen.",
+    "end_pos": "Shoulder blades squeezed.",
+    "common_mistakes": [
+      "Rounding spine"
+    ],
+    "safety_notes": "Keep knees soft and lower back flat.",
+    "default_sets": 3,
+    "default_reps": "8-10",
+    "default_rest": 75,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/t_bar_row/demo.svg",
+    "demonstration_asset": "/static/exercises/t_bar_row/demo.svg",
+    "thumbnail": "/static/exercises/t_bar_row/thumbnail.png",
+    "aliases": [
+      "t-bar row"
+    ]
+  },
+  {
+    "id": 59,
+    "name": "Inverted Bodyweight Row",
+    "slug": "inverted_bodyweight_row",
+    "category": "Back",
+    "primary_muscles": [
+      "Back",
+      "Rhomboids"
+    ],
+    "secondary_muscles": [
+      "Biceps",
+      "Core",
+      "Rear Delts"
+    ],
+    "equipment": "Smith Machine",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "General Fitness",
+    "instructions": [
+      "Position bar in rack at waist height",
+      "Lie underneath, grip bar with overhand grip",
+      "Pull chest to bar keeping body plank-straight."
+    ],
+    "start_pos": "Hanging under bar with heels on floor, body straight.",
+    "movement": "Pull chest to bar.",
+    "end_pos": "Chest contacts bar.",
+    "common_mistakes": [
+      "Sagging hips"
+    ],
+    "safety_notes": "Adjust bar higher to make it easier.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/inverted_bodyweight_row/demo.svg",
+    "demonstration_asset": "/static/exercises/inverted_bodyweight_row/demo.svg",
+    "thumbnail": "/static/exercises/inverted_bodyweight_row/thumbnail.png",
+    "aliases": [
+      "inverted bodyweight row"
+    ]
+  },
+  {
+    "id": 60,
+    "name": "Straight Arm Pulldown",
+    "slug": "straight_arm_pulldown",
+    "category": "Back",
+    "primary_muscles": [
+      "Lats",
+      "Back"
+    ],
+    "secondary_muscles": [
+      "Core",
+      "Triceps"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Stand facing high cable with straight bar or rope",
+      "Keeping arms almost straight, sweep bar down to thighs",
+      "Squeeze lats at bottom."
+    ],
+    "start_pos": "Standing hinged 30 deg, arms extended holding cable bar high.",
+    "movement": "Sweep bar in arc down to thighs.",
+    "end_pos": "Bar at upper thighs, lats contracted.",
+    "common_mistakes": [
+      "Bending elbows"
+    ],
+    "safety_notes": "Lock elbow angle and move only through shoulder joint.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/straight_arm_pulldown/demo.svg",
+    "demonstration_asset": "/static/exercises/straight_arm_pulldown/demo.svg",
+    "thumbnail": "/static/exercises/straight_arm_pulldown/thumbnail.png",
+    "aliases": [
+      "straight arm pulldown"
+    ]
+  },
+  {
+    "id": 61,
+    "name": "Barbell Shrug",
+    "slug": "barbell_shrug",
+    "category": "Back",
+    "primary_muscles": [
+      "Traps",
+      "Back"
+    ],
+    "secondary_muscles": [
+      "Forearms"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Hold barbell in front of thighs with shoulder-width grip",
+      "Elevate shoulders straight up towards ears",
+      "Hold 1 sec, lower smoothly."
+    ],
+    "start_pos": "Standing tall holding barbell at arms length.",
+    "movement": "Shrug shoulders vertically.",
+    "end_pos": "Traps fully contracted at top.",
+    "common_mistakes": [
+      "Rolling shoulders"
+    ],
+    "safety_notes": "Move straight up and down, do not roll.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/barbell_shrug/demo.svg",
+    "demonstration_asset": "/static/exercises/barbell_shrug/demo.svg",
+    "thumbnail": "/static/exercises/barbell_shrug/thumbnail.png",
+    "aliases": [
+      "barbell shrug"
+    ]
+  },
+  {
+    "id": 62,
+    "name": "Hyperextensions",
+    "slug": "hyperextensions",
+    "category": "Back",
+    "primary_muscles": [
+      "Lower Back",
+      "Back"
+    ],
+    "secondary_muscles": [
+      "Glutes",
+      "Hamstrings"
+    ],
+    "equipment": "Bench",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Endurance",
+    "instructions": [
+      "Lock legs into 45-degree hyperextension bench",
+      "Cross arms over chest, hinge down at hips",
+      "Raise torso until aligned with legs."
+    ],
+    "start_pos": "Hips resting against pad, torso hinged down.",
+    "movement": "Extend spine and hips upward.",
+    "end_pos": "Body forms a straight line.",
+    "common_mistakes": [
+      "Hyperextending spine backward at top"
+    ],
+    "safety_notes": "Stop when body is in a straight line.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/hyperextensions/demo.svg",
+    "demonstration_asset": "/static/exercises/hyperextensions/demo.svg",
+    "thumbnail": "/static/exercises/hyperextensions/thumbnail.png",
+    "aliases": [
+      "hyperextensions"
+    ]
+  },
+  {
+    "id": 63,
+    "name": "Cable Lateral Raise",
+    "slug": "cable_lateral_raise",
+    "category": "Shoulders",
+    "primary_muscles": [
+      "Side Delts",
+      "Shoulders"
+    ],
+    "secondary_muscles": [
+      "Traps"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Attach single handle to lowest cable pulley",
+      "Stand sideways, pull handle across body out to shoulder height",
+      "Lower with resistance."
+    ],
+    "start_pos": "Cable across body at hip.",
+    "movement": "Raise arm laterally to 90 degrees.",
+    "end_pos": "Arm at shoulder height.",
+    "common_mistakes": [
+      "Leaning torso"
+    ],
+    "safety_notes": "Provides continuous tension unlike dumbbells.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_lateral_raise/demo.svg",
+    "demonstration_asset": "/static/exercises/cable_lateral_raise/demo.svg",
+    "thumbnail": "/static/exercises/cable_lateral_raise/thumbnail.png",
+    "aliases": [
+      "cable lateral raise"
+    ]
+  },
+  {
+    "id": 64,
+    "name": "Face Pull",
+    "slug": "face_pull",
+    "category": "Shoulders",
+    "primary_muscles": [
+      "Rear Delts",
+      "Rotator Cuff",
+      "Shoulders"
+    ],
+    "secondary_muscles": [
+      "Traps",
+      "Rhomboids"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "General Fitness",
+    "instructions": [
+      "Set rope attachment at eye level on cable machine",
+      "Pull rope ends towards eyes, separating hands and rotating forearms up",
+      "Hold 1 sec, extend arms smoothly."
+    ],
+    "start_pos": "Standing holding rope with arms straight in front.",
+    "movement": "Pull rope towards bridge of nose, externally rotating shoulders.",
+    "end_pos": "Hands by ears with elbows high.",
+    "common_mistakes": [
+      "Pulling too low"
+    ],
+    "safety_notes": "Essential for shoulder health and posture.",
+    "default_sets": 3,
+    "default_reps": "15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/face_pull/demo.svg",
+    "demonstration_asset": "/static/exercises/face_pull/demo.svg",
+    "thumbnail": "/static/exercises/face_pull/thumbnail.png",
+    "aliases": [
+      "face pull"
+    ]
+  },
+  {
+    "id": 65,
+    "name": "Dumbbell Front Raise",
+    "slug": "dumbbell_front_raise",
+    "category": "Shoulders",
+    "primary_muscles": [
+      "Front Delts",
+      "Shoulders"
+    ],
+    "secondary_muscles": [
+      "Traps"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Hold dumbbells in front of thighs",
+      "Raise one or both arms forward to shoulder height",
+      "Lower under control."
+    ],
+    "start_pos": "Standing holding dumbbells against thighs.",
+    "movement": "Raise straight arm forward.",
+    "end_pos": "Dumbbell at eye level.",
+    "common_mistakes": [
+      "Rocking body"
+    ],
+    "safety_notes": "Control the descent.",
+    "default_sets": 3,
+    "default_reps": "12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_front_raise/demo.svg",
+    "demonstration_asset": "/static/exercises/dumbbell_front_raise/demo.svg",
+    "thumbnail": "/static/exercises/dumbbell_front_raise/thumbnail.png",
+    "aliases": [
+      "dumbbell front raise"
+    ]
+  },
+  {
+    "id": 66,
+    "name": "Pike Push-Up",
+    "slug": "pike_push_up",
+    "category": "Shoulders",
+    "primary_muscles": [
+      "Shoulders",
+      "Front Delts"
+    ],
+    "secondary_muscles": [
+      "Triceps",
+      "Upper Chest",
+      "Core"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "Strength",
+    "instructions": [
+      "Get into downward dog position with hips high in an inverted V",
+      "Lower top of head towards floor between hands",
+      "Press back up through shoulders."
+    ],
+    "start_pos": "Inverted V-shape with hands on floor and hips high.",
+    "movement": "Lower head diagonally forward.",
+    "end_pos": "Press back up to pike apex.",
+    "common_mistakes": [
+      "Letting hips drop into regular pushup"
+    ],
+    "safety_notes": "Great bodyweight alternative to overhead press.",
+    "default_sets": 3,
+    "default_reps": "8-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/pike_push_up/demo.svg",
+    "demonstration_asset": "/static/exercises/pike_push_up/demo.svg",
+    "thumbnail": "/static/exercises/pike_push_up/thumbnail.png",
+    "aliases": [
+      "pike push-up"
+    ]
+  },
+  {
+    "id": 67,
+    "name": "Upright Row",
+    "slug": "upright_row",
+    "category": "Shoulders",
+    "primary_muscles": [
+      "Side Delts",
+      "Traps",
+      "Shoulders"
+    ],
+    "secondary_muscles": [
+      "Biceps",
+      "Forearms"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Grip bar with shoulder-width grip",
+      "Pull bar vertically up along torso, driving elbows high",
+      "Lower slowly."
+    ],
+    "start_pos": "Standing holding barbell at thighs.",
+    "movement": "Pull bar upwards leading with elbows.",
+    "end_pos": "Bar at mid-chest, elbows high.",
+    "common_mistakes": [
+      "Grip too narrow"
+    ],
+    "safety_notes": "Keep grip at shoulder width to protect rotator cuff.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/upright_row/demo.svg",
+    "demonstration_asset": "/static/exercises/upright_row/demo.svg",
+    "thumbnail": "/static/exercises/upright_row/thumbnail.png",
+    "aliases": [
+      "upright row"
+    ]
+  },
+  {
+    "id": 68,
+    "name": "Spider Curl",
+    "slug": "spider_curl",
+    "category": "Biceps",
+    "primary_muscles": [
+      "Biceps"
+    ],
+    "secondary_muscles": [
+      "Brachialis"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Lie chest-down on an incline bench",
+      "Let arms hang straight down with dumbbells",
+      "Curl weights up without moving upper arms."
+    ],
+    "start_pos": "Prone on incline bench, arms perpendicular to floor.",
+    "movement": "Curl weights towards forehead.",
+    "end_pos": "Full peak contraction.",
+    "common_mistakes": [
+      "Swinging elbows back"
+    ],
+    "safety_notes": "Eliminates momentum completely.",
+    "default_sets": 3,
+    "default_reps": "12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/spider_curl/demo.svg",
+    "demonstration_asset": "/static/exercises/spider_curl/demo.svg",
+    "thumbnail": "/static/exercises/spider_curl/thumbnail.png",
+    "aliases": [
+      "spider curl"
+    ]
+  },
+  {
+    "id": 69,
+    "name": "Reverse Barbell Curl",
+    "slug": "reverse_barbell_curl",
+    "category": "Biceps",
+    "primary_muscles": [
+      "Brachialis",
+      "Forearms",
+      "Biceps"
+    ],
+    "secondary_muscles": [
+      "Brachioradialis"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Muscle Gain",
+    "instructions": [
+      "Grip barbell with overhand (pronated) grip",
+      "Curl bar up keeping wrists straight",
+      "Lower under control."
+    ],
+    "start_pos": "Standing holding barbell with knuckles facing forward.",
+    "movement": "Curl bar upwards with overhand grip.",
+    "end_pos": "Bar at chest level.",
+    "common_mistakes": [
+      "Wrist curling backward"
+    ],
+    "safety_notes": "Strengthens forearm extensors and upper arm thickness.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/reverse_barbell_curl/demo.svg",
+    "demonstration_asset": "/static/exercises/reverse_barbell_curl/demo.svg",
+    "thumbnail": "/static/exercises/reverse_barbell_curl/thumbnail.png",
+    "aliases": [
+      "reverse barbell curl"
+    ]
+  },
+  {
+    "id": 70,
+    "name": "Diamond Push-Up",
+    "slug": "diamond_push_up",
+    "category": "Triceps",
+    "primary_muscles": [
+      "Triceps",
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Front Delts",
+      "Core"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "Strength",
+    "instructions": [
+      "Place hands close together on floor under chest forming a diamond with thumbs and index fingers",
+      "Lower chest to hands",
+      "Press back up."
+    ],
+    "start_pos": "Plank with diamond hand position under sternum.",
+    "movement": "Lower chest towards hands.",
+    "end_pos": "Full press extension.",
+    "common_mistakes": [
+      "Hips sagging"
+    ],
+    "safety_notes": "Excellent tricep bodyweight builder.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/diamond_push_up/demo.svg",
+    "demonstration_asset": "/static/exercises/diamond_push_up/demo.svg",
+    "thumbnail": "/static/exercises/diamond_push_up/thumbnail.png",
+    "aliases": [
+      "diamond push-up"
+    ]
+  },
+  {
+    "id": 71,
+    "name": "Dumbbell Tricep Kickback",
+    "slug": "dumbbell_tricep_kickback",
+    "category": "Triceps",
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "secondary_muscles": [
+      "Rear Delts"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Hinge forward at hips, upper arm parallel to torso",
+      "Extend forearm backward until arm is straight",
+      "Squeeze tricep, return to 90 deg."
+    ],
+    "start_pos": "Bent over, elbow pinned at side at 90 degrees.",
+    "movement": "Extend dumbbell backward.",
+    "end_pos": "Arm fully straight behind torso.",
+    "common_mistakes": [
+      "Dropping upper arm"
+    ],
+    "safety_notes": "Keep upper arm locked horizontally.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_tricep_kickback/demo.svg",
+    "demonstration_asset": "/static/exercises/dumbbell_tricep_kickback/demo.svg",
+    "thumbnail": "/static/exercises/dumbbell_tricep_kickback/thumbnail.png",
+    "aliases": [
+      "dumbbell tricep kickback"
+    ]
+  },
+  {
+    "id": 72,
+    "name": "Cable Overhead Tricep Extension",
+    "slug": "cable_overhead_tricep_extension",
+    "category": "Triceps",
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "secondary_muscles": [
+      "Core"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Attach rope to high pulley, face away in lunge stance",
+      "Extend rope forward and overhead until arms lock out",
+      "Bend elbows back slowly."
+    ],
+    "start_pos": "Lunge stance facing away from cable, rope behind head.",
+    "movement": "Extend arms forward overhead.",
+    "end_pos": "Arms locked out overhead, ropes spread.",
+    "common_mistakes": [
+      "Losing balance"
+    ],
+    "safety_notes": "Brace core to keep posture steady.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_overhead_tricep_extension/demo.svg",
+    "demonstration_asset": "/static/exercises/cable_overhead_tricep_extension/demo.svg",
+    "thumbnail": "/static/exercises/cable_overhead_tricep_extension/thumbnail.png",
+    "aliases": [
+      "cable overhead tricep extension"
+    ]
+  },
+  {
+    "id": 73,
+    "name": "Reverse Wrist Curls",
+    "slug": "reverse_wrist_curls",
+    "category": "Forearms",
+    "primary_muscles": [
+      "Forearms"
+    ],
+    "secondary_muscles": [
+      "Brachioradialis"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Rest forearms on bench with palms down",
+      "Extend wrists upward",
+      "Lower slowly."
+    ],
+    "start_pos": "Forearms on bench, palms facing floor holding dumbbells.",
+    "movement": "Extend wrists upwards.",
+    "end_pos": "Top of wrist extension.",
+    "common_mistakes": [
+      "Using too much weight"
+    ],
+    "safety_notes": "Use light weights for wrist health.",
+    "default_sets": 3,
+    "default_reps": "15",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/reverse_wrist_curls/demo.svg",
+    "demonstration_asset": "/static/exercises/reverse_wrist_curls/demo.svg",
+    "thumbnail": "/static/exercises/reverse_wrist_curls/thumbnail.png",
+    "aliases": [
+      "reverse wrist curls"
+    ]
+  },
+  {
+    "id": 74,
+    "name": "Dead Hang",
+    "slug": "dead_hang",
+    "category": "Forearms",
+    "primary_muscles": [
+      "Forearms",
+      "Grip"
+    ],
+    "secondary_muscles": [
+      "Lats",
+      "Shoulders"
+    ],
+    "equipment": "Pull-up Bar",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Endurance",
+    "instructions": [
+      "Grip pull-up bar with both hands",
+      "Hang freely with feet off floor, breathing deeply",
+      "Hold for max duration."
+    ],
+    "start_pos": "Full hanging position from bar.",
+    "movement": "Hold grip isometric contraction.",
+    "end_pos": "Step down safely.",
+    "common_mistakes": [
+      "Holding breath"
+    ],
+    "safety_notes": "Great for grip strength and spinal decompression.",
+    "default_sets": 3,
+    "default_reps": "45-60 sec",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/dead_hang/demo.svg",
+    "demonstration_asset": "/static/exercises/dead_hang/demo.svg",
+    "thumbnail": "/static/exercises/dead_hang/thumbnail.png",
+    "aliases": [
+      "dead hang"
+    ]
+  },
+  {
+    "id": 75,
+    "name": "Hanging Leg Raise",
+    "slug": "hanging_leg_raise",
+    "category": "Core",
+    "primary_muscles": [
+      "Abs",
+      "Core"
+    ],
+    "secondary_muscles": [
+      "Hip Flexors",
+      "Forearms"
+    ],
+    "equipment": "Pull-up Bar",
+    "difficulty": "Advanced",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Hang from pull-up bar",
+      "Keeping legs straight, raise feet up to bar level",
+      "Lower under control without swinging."
+    ],
+    "start_pos": "Dead hang from bar.",
+    "movement": "Raise toes to bar level.",
+    "end_pos": "Feet parallel or touching bar.",
+    "common_mistakes": [
+      "Swinging body"
+    ],
+    "safety_notes": "Bend knees for an easier intermediate progression.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/hanging_leg_raise/demo.svg",
+    "demonstration_asset": "/static/exercises/hanging_leg_raise/demo.svg",
+    "thumbnail": "/static/exercises/hanging_leg_raise/thumbnail.png",
+    "aliases": [
+      "hanging leg raise"
+    ]
+  },
+  {
+    "id": 76,
+    "name": "Bicycle Crunches",
+    "slug": "bicycle_crunches",
+    "category": "Core",
+    "primary_muscles": [
+      "Obliques",
+      "Abs",
+      "Core"
+    ],
+    "secondary_muscles": [
+      "Hip Flexors"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Lie on back with hands behind head, knees bent",
+      "Touch right elbow to left knee while extending right leg",
+      "Alternate sides smoothly."
+    ],
+    "start_pos": "Supine, shoulders elevated, knees at 90 deg.",
+    "movement": "Pedal legs while rotating torso across.",
+    "end_pos": "Opposite elbow and knee meet.",
+    "common_mistakes": [
+      "Pulling neck"
+    ],
+    "safety_notes": "Keep steady rhythmic tempo.",
+    "default_sets": 3,
+    "default_reps": "20 total",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/bicycle_crunches/demo.svg",
+    "demonstration_asset": "/static/exercises/bicycle_crunches/demo.svg",
+    "thumbnail": "/static/exercises/bicycle_crunches/thumbnail.png",
+    "aliases": [
+      "bicycle crunches"
+    ]
+  },
+  {
+    "id": 77,
+    "name": "Cable Woodchopper",
+    "slug": "cable_woodchopper",
+    "category": "Core",
+    "primary_muscles": [
+      "Obliques",
+      "Core"
+    ],
+    "secondary_muscles": [
+      "Shoulders",
+      "Abs"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Muscle Gain",
+    "instructions": [
+      "Set high pulley on cable",
+      "Stand sideways, grip handle with both hands",
+      "Pull diagonally down across body to opposite hip",
+      "Return smoothly."
+    ],
+    "start_pos": "Standing sideways to high pulley, arms extended.",
+    "movement": "Rotate torso and pull handle diagonally down.",
+    "end_pos": "Handle at opposite knee/hip.",
+    "common_mistakes": [
+      "Bending arms"
+    ],
+    "safety_notes": "Pivot back foot as you rotate.",
+    "default_sets": 3,
+    "default_reps": "12 each side",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_woodchopper/demo.svg",
+    "demonstration_asset": "/static/exercises/cable_woodchopper/demo.svg",
+    "thumbnail": "/static/exercises/cable_woodchopper/thumbnail.png",
+    "aliases": [
+      "cable woodchopper"
+    ]
+  },
+  {
+    "id": 78,
+    "name": "Mountain Climbers",
+    "slug": "mountain_climbers",
+    "category": "Core",
+    "primary_muscles": [
+      "Core",
+      "Abs"
+    ],
+    "secondary_muscles": [
+      "Shoulders",
+      "Cardio"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Conditioning",
+    "instructions": [
+      "Start in high plank position",
+      "Drive one knee into chest, then switch quickly in a running motion",
+      "Maintain flat back."
+    ],
+    "start_pos": "High plank posture.",
+    "movement": "Rapid alternating knee drives.",
+    "end_pos": "Continuous steady rhythm.",
+    "common_mistakes": [
+      "Bouncing hips in air"
+    ],
+    "safety_notes": "Keep shoulders stacked over wrists.",
+    "default_sets": 3,
+    "default_reps": "30 sec",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/mountain_climbers/demo.svg",
+    "demonstration_asset": "/static/exercises/mountain_climbers/demo.svg",
+    "thumbnail": "/static/exercises/mountain_climbers/thumbnail.png",
+    "aliases": [
+      "mountain climbers"
+    ]
+  },
+  {
+    "id": 79,
+    "name": "Barbell Front Squat",
+    "slug": "barbell_front_squat",
+    "category": "Legs",
+    "primary_muscles": [
+      "Quadriceps",
+      "Core",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Glutes",
+      "Upper Back"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Advanced",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Rest barbell on front delts in clean rack position with elbows high",
+      "Squat upright until hip crease passes knees",
+      "Drive up keeping elbows pointed forward."
+    ],
+    "start_pos": "Bar racked on front shoulders, elbows held high.",
+    "movement": "Descend with completely upright torso.",
+    "end_pos": "Drive back up to lockout.",
+    "common_mistakes": [
+      "Elbows dropping"
+    ],
+    "safety_notes": "Demands strong core and thoracic extension.",
+    "default_sets": 4,
+    "default_reps": "6-8",
+    "default_rest": 120,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/barbell_front_squat/demo.svg",
+    "demonstration_asset": "/static/exercises/barbell_front_squat/demo.svg",
+    "thumbnail": "/static/exercises/barbell_front_squat/thumbnail.png",
+    "aliases": [
+      "barbell front squat"
+    ]
+  },
+  {
+    "id": 80,
+    "name": "Hack Squat",
+    "slug": "hack_squat",
+    "category": "Legs",
+    "primary_muscles": [
+      "Quadriceps",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Glutes"
+    ],
+    "equipment": "Machines",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Position shoulders and back against hack squat sled",
+      "Lower sled until knees reach 90 degrees",
+      "Press back up through midfoot and heels."
+    ],
+    "start_pos": "Shoulders against pads, feet on platform.",
+    "movement": "Descend into deep machine squat.",
+    "end_pos": "Press back up.",
+    "common_mistakes": [
+      "Heels peeling off platform"
+    ],
+    "safety_notes": "Great isolated quad builder with back support.",
+    "default_sets": 3,
+    "default_reps": "8-10",
+    "default_rest": 90,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/hack_squat/demo.svg",
+    "demonstration_asset": "/static/exercises/hack_squat/demo.svg",
+    "thumbnail": "/static/exercises/hack_squat/thumbnail.png",
+    "aliases": [
+      "hack squat"
+    ]
+  },
+  {
+    "id": 81,
+    "name": "Walking Lunges",
+    "slug": "walking_lunges",
+    "category": "Legs",
+    "primary_muscles": [
+      "Quadriceps",
+      "Glutes",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Hamstrings",
+      "Calves",
+      "Core"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "Conditioning",
+    "instructions": [
+      "Hold dumbbells at sides",
+      "Step forward into a lunge, lower back knee to ground",
+      "Push off back leg to step directly into next forward lunge."
+    ],
+    "start_pos": "Standing tall holding dumbbells.",
+    "movement": "Continuous walking forward lunges.",
+    "end_pos": "Finish target distance.",
+    "common_mistakes": [
+      "Short steps jamming front knee"
+    ],
+    "safety_notes": "Step in train tracks rather than a tightrope.",
+    "default_sets": 3,
+    "default_reps": "20 total steps",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/walking_lunges/demo.svg",
+    "demonstration_asset": "/static/exercises/walking_lunges/demo.svg",
+    "thumbnail": "/static/exercises/walking_lunges/thumbnail.png",
+    "aliases": [
+      "walking lunges"
+    ]
+  },
+  {
+    "id": 82,
+    "name": "Dumbbell Romanian Deadlift",
+    "slug": "dumbbell_romanian_deadlift",
+    "category": "Hamstrings",
+    "primary_muscles": [
+      "Hamstrings",
+      "Glutes",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Lower Back"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Muscle Gain",
+    "instructions": [
+      "Hold dumbbells in front of thighs",
+      "Hinge at hips, pushing glutes back until you feel deep stretch in hamstrings",
+      "Return to standing."
+    ],
+    "start_pos": "Standing holding dumbbells at thighs.",
+    "movement": "Hip hinge down along shins.",
+    "end_pos": "Hips back, dumbbells at mid-shin.",
+    "common_mistakes": [
+      "Bending knees too much"
+    ],
+    "safety_notes": "Keep weights close to legs.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_romanian_deadlift/demo.svg",
+    "demonstration_asset": "/static/exercises/dumbbell_romanian_deadlift/demo.svg",
+    "thumbnail": "/static/exercises/dumbbell_romanian_deadlift/thumbnail.png",
+    "aliases": [
+      "dumbbell romanian deadlift"
+    ]
+  },
+  {
+    "id": 83,
+    "name": "Glute Bridge",
+    "slug": "glute_bridge",
+    "category": "Glutes",
+    "primary_muscles": [
+      "Glutes"
+    ],
+    "secondary_muscles": [
+      "Hamstrings",
+      "Core"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "Lie on back with knees bent, feet flat on floor hip-width",
+      "Drive through heels to raise hips off floor until aligned with knees",
+      "Squeeze glutes at top."
+    ],
+    "start_pos": "Supine with knees bent and feet flat.",
+    "movement": "Bridge hips upward.",
+    "end_pos": "Hips fully extended.",
+    "common_mistakes": [
+      "Arching lower back excessively"
+    ],
+    "safety_notes": "Great warmup or glute hypertrophy exercise.",
+    "default_sets": 3,
+    "default_reps": "15-20",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/glute_bridge/demo.svg",
+    "demonstration_asset": "/static/exercises/glute_bridge/demo.svg",
+    "thumbnail": "/static/exercises/glute_bridge/thumbnail.png",
+    "aliases": [
+      "glute bridge"
+    ]
+  },
+  {
+    "id": 84,
+    "name": "Cable Glute Kickback",
+    "slug": "cable_glute_kickback",
+    "category": "Glutes",
+    "primary_muscles": [
+      "Glutes"
+    ],
+    "secondary_muscles": [
+      "Hamstrings"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Attach ankle cuff to low cable",
+      "Kick leg directly backward and slightly out, squeezing glute at peak",
+      "Return with control."
+    ],
+    "start_pos": "Facing machine with cuff around ankle.",
+    "movement": "Extend leg backward against cable.",
+    "end_pos": "Peak glute contraction.",
+    "common_mistakes": [
+      "Swinging lower back"
+    ],
+    "safety_notes": "Keep torso stationary.",
+    "default_sets": 3,
+    "default_reps": "12-15 each leg",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_glute_kickback/demo.svg",
+    "demonstration_asset": "/static/exercises/cable_glute_kickback/demo.svg",
+    "thumbnail": "/static/exercises/cable_glute_kickback/thumbnail.png",
+    "aliases": [
+      "cable glute kickback"
+    ]
+  },
+  {
+    "id": 85,
+    "name": "Seated Leg Curl",
+    "slug": "seated_leg_curl",
+    "category": "Hamstrings",
+    "primary_muscles": [
+      "Hamstrings",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Calves"
+    ],
+    "equipment": "Machines",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Sit in machine, secure thigh pad firmly above knees",
+      "Curl legs down and back underneath seat",
+      "Hold contraction 1 sec, return slowly."
+    ],
+    "start_pos": "Seated with legs extended straight on roller pad.",
+    "movement": "Curl heels underneath seat.",
+    "end_pos": "Full knee flexion.",
+    "common_mistakes": [
+      "Thigh pad too loose"
+    ],
+    "safety_notes": "Places hamstrings under loaded stretch.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/seated_leg_curl/demo.svg",
+    "demonstration_asset": "/static/exercises/seated_leg_curl/demo.svg",
+    "thumbnail": "/static/exercises/seated_leg_curl/thumbnail.png",
+    "aliases": [
+      "seated leg curl"
+    ]
+  },
+  {
+    "id": 86,
+    "name": "Standing Barbell Calf Raise",
+    "slug": "standing_barbell_calf_raise",
+    "category": "Calves",
+    "primary_muscles": [
+      "Calves",
+      "Gastrocnemius"
+    ],
+    "secondary_muscles": [
+      "Soleus"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Place barbell across upper back, stand with balls of feet on calf block",
+      "Lower heels into deep stretch",
+      "Drive up onto toes, squeeze calves."
+    ],
+    "start_pos": "Bar on traps, balls of feet on block.",
+    "movement": "Rise up onto toes.",
+    "end_pos": "Peak calf contraction.",
+    "common_mistakes": [
+      "Bending knees"
+    ],
+    "safety_notes": "Keep knees locked straight to target gastrocnemius.",
+    "default_sets": 4,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/standing_barbell_calf_raise/demo.svg",
+    "demonstration_asset": "/static/exercises/standing_barbell_calf_raise/demo.svg",
+    "thumbnail": "/static/exercises/standing_barbell_calf_raise/thumbnail.png",
+    "aliases": [
+      "standing barbell calf raise"
+    ]
+  },
+  {
+    "id": 87,
+    "name": "Seated Calf Raise",
+    "slug": "seated_calf_raise",
+    "category": "Calves",
+    "primary_muscles": [
+      "Soleus",
+      "Calves"
+    ],
+    "secondary_muscles": [
+      "Gastrocnemius"
+    ],
+    "equipment": "Machines",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Sit at machine with knees bent at 90 deg under pad",
+      "Lower heels into full stretch",
+      "Press up onto toes, hold 1 sec."
+    ],
+    "start_pos": "Seated with pad over thighs, heels dropped.",
+    "movement": "Raise heels against resistance.",
+    "end_pos": "Peak soleus contraction.",
+    "common_mistakes": [
+      "Bouncing weights"
+    ],
+    "safety_notes": "Directly targets the deeper soleus muscle.",
+    "default_sets": 3,
+    "default_reps": "15",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/seated_calf_raise/demo.svg",
+    "demonstration_asset": "/static/exercises/seated_calf_raise/demo.svg",
+    "thumbnail": "/static/exercises/seated_calf_raise/thumbnail.png",
+    "aliases": [
+      "seated calf raise"
+    ]
+  },
+  {
+    "id": 88,
+    "name": "Single-Leg Dumbbell Calf Raise",
+    "slug": "single_leg_dumbbell_calf_raise",
+    "category": "Calves",
+    "primary_muscles": [
+      "Calves"
+    ],
+    "secondary_muscles": [
+      "Soleus"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Hold dumbbell in one hand, balance on one foot on a step edge",
+      "Lower heel for deep stretch, press up onto big toe",
+      "Repeat and switch legs."
+    ],
+    "start_pos": "Standing on single foot on step.",
+    "movement": "Raise heel up on single leg.",
+    "end_pos": "Full extension.",
+    "common_mistakes": [
+      "Rolling ankle outward"
+    ],
+    "safety_notes": "Hold a wall lightly with other hand for balance.",
+    "default_sets": 3,
+    "default_reps": "12-15 each leg",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/single_leg_dumbbell_calf_raise/demo.svg",
+    "demonstration_asset": "/static/exercises/single_leg_dumbbell_calf_raise/demo.svg",
+    "thumbnail": "/static/exercises/single_leg_dumbbell_calf_raise/thumbnail.png",
+    "aliases": [
+      "single-leg dumbbell calf raise"
+    ]
+  },
+  {
+    "id": 89,
+    "name": "Burpees",
+    "slug": "burpees",
+    "category": "Full Body",
+    "primary_muscles": [
+      "Full Body",
+      "Chest",
+      "Quadriceps"
+    ],
+    "secondary_muscles": [
+      "Shoulders",
+      "Core",
+      "Cardio"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "Conditioning",
+    "instructions": [
+      "From standing, drop into squat and kick feet back into pushup",
+      "Perform a pushup, jump feet back to hands, jump explosively with hands overhead."
+    ],
+    "start_pos": "Standing tall.",
+    "movement": "Drop to pushup, snap feet forward, jump up.",
+    "end_pos": "Vertical jump overhead.",
+    "common_mistakes": [
+      "Sagging spine in plank"
+    ],
+    "safety_notes": "Pace your breathing rhythm.",
+    "default_sets": 3,
+    "default_reps": "10-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/burpees/demo.svg",
+    "demonstration_asset": "/static/exercises/burpees/demo.svg",
+    "thumbnail": "/static/exercises/burpees/thumbnail.png",
+    "aliases": [
+      "burpees"
+    ]
+  },
+  {
+    "id": 90,
+    "name": "Kettlebell Swing",
+    "slug": "kettlebell_swing",
+    "category": "Full Body",
+    "primary_muscles": [
+      "Glutes",
+      "Hamstrings",
+      "Full Body"
+    ],
+    "secondary_muscles": [
+      "Core",
+      "Shoulders",
+      "Forearms"
+    ],
+    "equipment": "Kettlebell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Hinge back with kettlebell between thighs",
+      "Snap hips forward explosively to swing kettlebell to chest height",
+      "Guide bell back smoothly."
+    ],
+    "start_pos": "Hinged stance holding kettlebell.",
+    "movement": "Explosive hip extension swings bell forward.",
+    "end_pos": "Bell at chest height, glutes squeezed.",
+    "common_mistakes": [
+      "Squatting instead of hinging"
+    ],
+    "safety_notes": "Power comes exclusively from hips.",
+    "default_sets": 4,
+    "default_reps": "15-20",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/kettlebell_swing/demo.svg",
+    "demonstration_asset": "/static/exercises/kettlebell_swing/demo.svg",
+    "thumbnail": "/static/exercises/kettlebell_swing/thumbnail.png",
+    "aliases": [
+      "kettlebell swing"
+    ]
+  },
+  {
+    "id": 91,
+    "name": "Dumbbell Thrusters",
+    "slug": "dumbbell_thrusters",
+    "category": "Full Body",
+    "primary_muscles": [
+      "Quadriceps",
+      "Shoulders",
+      "Full Body"
+    ],
+    "secondary_muscles": [
+      "Glutes",
+      "Triceps",
+      "Core"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "Conditioning",
+    "instructions": [
+      "Hold dumbbells at shoulders in a front rack",
+      "Perform a full squat, then drive up explosively and press dumbbells overhead",
+      "Lower weights back to shoulders as you descend into next squat."
+    ],
+    "start_pos": "Standing with dumbbells at shoulders.",
+    "movement": "Squat down, then drive up into overhead press.",
+    "end_pos": "Arms locked overhead in full standing extension.",
+    "common_mistakes": [
+      "Pausing between squat and press"
+    ],
+    "safety_notes": "Seamless fluid momentum transfer from legs to shoulders.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 75,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/dumbbell_thrusters/demo.svg",
+    "demonstration_asset": "/static/exercises/dumbbell_thrusters/demo.svg",
+    "thumbnail": "/static/exercises/dumbbell_thrusters/thumbnail.png",
+    "aliases": [
+      "dumbbell thrusters"
+    ]
+  },
+  {
+    "id": 92,
+    "name": "Barbell Clean and Press",
+    "slug": "barbell_clean_and_press",
+    "category": "Full Body",
+    "primary_muscles": [
+      "Full Body",
+      "Shoulders",
+      "Traps",
+      "Quadriceps"
+    ],
+    "secondary_muscles": [
+      "Glutes",
+      "Triceps",
+      "Core"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Advanced",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Pull barbell from floor, explosively clean it onto front deltoids, then press bar overhead",
+      "Lower with control to floor."
+    ],
+    "start_pos": "Barbell over midfoot in deadlift setup.",
+    "movement": "Explosive triple extension into clean rack, then overhead press.",
+    "end_pos": "Barbell locked overhead.",
+    "common_mistakes": [
+      "Arm pulling instead of hip drive"
+    ],
+    "safety_notes": "Master clean technique with light weight first.",
+    "default_sets": 4,
+    "default_reps": "5",
+    "default_rest": 120,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/barbell_clean_and_press/demo.svg",
+    "demonstration_asset": "/static/exercises/barbell_clean_and_press/demo.svg",
+    "thumbnail": "/static/exercises/barbell_clean_and_press/thumbnail.png",
+    "aliases": [
+      "barbell clean and press"
+    ]
+  },
+  {
+    "id": 93,
+    "name": "Box Jumps",
+    "slug": "box_jumps",
+    "category": "Full Body",
+    "primary_muscles": [
+      "Quadriceps",
+      "Glutes",
+      "Calves"
+    ],
+    "secondary_muscles": [
+      "Hamstrings",
+      "Cardio"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Conditioning",
+    "instructions": [
+      "Stand in front of sturdy plyo box",
+      "Swing arms, hinge hips, and jump onto box landing softly in partial squat",
+      "Step down safely."
+    ],
+    "start_pos": "Standing 1-2 feet in front of box.",
+    "movement": "Explosive jump onto top of box.",
+    "end_pos": "Soft landing on box, stand tall.",
+    "common_mistakes": [
+      "Landing stiff-legged"
+    ],
+    "safety_notes": "Step down one foot at a time.",
+    "default_sets": 3,
+    "default_reps": "8-10",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/box_jumps/demo.svg",
+    "demonstration_asset": "/static/exercises/box_jumps/demo.svg",
+    "thumbnail": "/static/exercises/box_jumps/thumbnail.png",
+    "aliases": [
+      "box jumps"
+    ]
+  },
+  {
+    "id": 94,
+    "name": "Battle Ropes",
+    "slug": "battle_ropes",
+    "category": "Full Body",
+    "primary_muscles": [
+      "Shoulders",
+      "Core",
+      "Full Body"
+    ],
+    "secondary_muscles": [
+      "Forearms",
+      "Cardio"
+    ],
+    "equipment": "Resistance Bands",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Conditioning",
+    "instructions": [
+      "Hold rope ends in half-squat athletic stance",
+      "Whip ropes up and down in alternating waves as fast as possible for target time."
+    ],
+    "start_pos": "Athletic quarter squat, holding ropes.",
+    "movement": "Alternating rhythmic wave slams.",
+    "end_pos": "Complete interval duration.",
+    "common_mistakes": [
+      "Standing upright"
+    ],
+    "safety_notes": "Maintain rooted stance throughout.",
+    "default_sets": 4,
+    "default_reps": "30 sec",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/battle_ropes/demo.svg",
+    "demonstration_asset": "/static/exercises/battle_ropes/demo.svg",
+    "thumbnail": "/static/exercises/battle_ropes/thumbnail.png",
+    "aliases": [
+      "battle ropes"
+    ]
+  },
+  {
+    "id": 95,
+    "name": "Rowing Machine Intervals",
+    "slug": "rowing_machine_intervals",
+    "category": "Cardio",
+    "primary_muscles": [
+      "Back",
+      "Legs",
+      "Cardio"
+    ],
+    "secondary_muscles": [
+      "Biceps",
+      "Core",
+      "Forearms"
+    ],
+    "equipment": "Machines",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Endurance",
+    "instructions": [
+      "Sit on rower, strap feet",
+      "Drive with legs, lean back slightly, pull handle to lower ribs",
+      "Extend arms, hinge forward, bend knees back to catch."
+    ],
+    "start_pos": "Catch position: knees bent, arms straight forward.",
+    "movement": "Leg drive -> hip hinge -> arm pull.",
+    "end_pos": "Legs extended, handle at sternum.",
+    "common_mistakes": [
+      "Pulling with arms before legs push"
+    ],
+    "safety_notes": "60% leg power, 20% core, 20% arm pull.",
+    "default_sets": 4,
+    "default_reps": "500m",
+    "default_rest": 90,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/rowing_machine_intervals/demo.svg",
+    "demonstration_asset": "/static/exercises/rowing_machine_intervals/demo.svg",
+    "thumbnail": "/static/exercises/rowing_machine_intervals/thumbnail.png",
+    "aliases": [
+      "rowing machine intervals"
+    ]
+  },
+  {
+    "id": 96,
+    "name": "Jump Rope",
+    "slug": "jump_rope",
+    "category": "Cardio",
+    "primary_muscles": [
+      "Calves",
+      "Cardio"
+    ],
+    "secondary_muscles": [
+      "Forearms",
+      "Shoulders"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Endurance",
+    "instructions": [
+      "Hold rope handles at hip height",
+      "Turn rope with wrists, jumping 1-2 inches off floor on balls of feet",
+      "Maintain light steady rhythm."
+    ],
+    "start_pos": "Standing holding jump rope behind heels.",
+    "movement": "Rhythmic jumping on balls of feet.",
+    "end_pos": "Complete time interval.",
+    "common_mistakes": [
+      "Jumping too high"
+    ],
+    "safety_notes": "Land softly with knees slightly bent.",
+    "default_sets": 4,
+    "default_reps": "60 sec",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/jump_rope/demo.svg",
+    "demonstration_asset": "/static/exercises/jump_rope/demo.svg",
+    "thumbnail": "/static/exercises/jump_rope/thumbnail.png",
+    "aliases": [
+      "jump rope"
+    ]
+  },
+  {
+    "id": 97,
+    "name": "Dynamic Chest Stretch",
+    "slug": "dynamic_chest_stretch",
+    "category": "Mobility",
+    "primary_muscles": [
+      "Chest",
+      "Shoulders"
+    ],
+    "secondary_muscles": [
+      "Biceps"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "Stand tall with arms outstretched",
+      "Cross arms over chest in hug, then swing them wide open to stretch pectorals dynamically."
+    ],
+    "start_pos": "Standing with arms open wide.",
+    "movement": "Dynamic arm hugs and swings.",
+    "end_pos": "Deep open chest stretch.",
+    "common_mistakes": [
+      "Jerking violently"
+    ],
+    "safety_notes": "Perform before upper body workouts.",
+    "default_sets": 2,
+    "default_reps": "15 swings",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/dynamic_chest_stretch/demo.svg",
+    "demonstration_asset": "/static/exercises/dynamic_chest_stretch/demo.svg",
+    "thumbnail": "/static/exercises/dynamic_chest_stretch/thumbnail.png",
+    "aliases": [
+      "dynamic chest stretch"
+    ]
+  },
+  {
+    "id": 98,
+    "name": "Cat-Cow Stretch",
+    "slug": "cat_cow_stretch",
+    "category": "Mobility",
+    "primary_muscles": [
+      "Back",
+      "Core",
+      "Mobility"
+    ],
+    "secondary_muscles": [
+      "Spine"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "On all fours, inhale and arch back down, looking up (Cow)",
+      "Exhale, round spine up towards ceiling and tuck chin (Cat)",
+      "Flow smoothly between postures."
+    ],
+    "start_pos": "Quadruped on hands and knees.",
+    "movement": "Spinal flexion and extension flow.",
+    "end_pos": "Mobilized thoracic and lumbar spine.",
+    "common_mistakes": [
+      "Rushing through without breathing"
+    ],
+    "safety_notes": "Excellent for spinal decompression.",
+    "default_sets": 2,
+    "default_reps": "10 cycles",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/cat_cow_stretch/demo.svg",
+    "demonstration_asset": "/static/exercises/cat_cow_stretch/demo.svg",
+    "thumbnail": "/static/exercises/cat_cow_stretch/thumbnail.png",
+    "aliases": [
+      "cat-cow stretch"
+    ]
+  },
+  {
+    "id": 99,
+    "name": "Worlds Greatest Stretch",
+    "slug": "worlds_greatest_stretch",
+    "category": "Mobility",
+    "primary_muscles": [
+      "Hip Flexors",
+      "Hamstrings",
+      "Thoracic Spine"
+    ],
+    "secondary_muscles": [
+      "Glutes",
+      "Shoulders"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "Step into long lunge with hands on floor inside front foot",
+      "Drop inside elbow towards floor, then rotate arm up towards ceiling opening chest",
+      "Repeat on both sides."
+    ],
+    "start_pos": "Deep lunge with hands inside front foot.",
+    "movement": "Elbow drops to instep, then rotates high to sky.",
+    "end_pos": "Full thoracic rotation.",
+    "common_mistakes": [
+      "Collapsing back knee"
+    ],
+    "safety_notes": "Unbeatable comprehensive pre-workout warmup.",
+    "default_sets": 2,
+    "default_reps": "6 each side",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/worlds_greatest_stretch/demo.svg",
+    "demonstration_asset": "/static/exercises/worlds_greatest_stretch/demo.svg",
+    "thumbnail": "/static/exercises/worlds_greatest_stretch/thumbnail.png",
+    "aliases": [
+      "worlds greatest stretch"
+    ]
+  },
+  {
+    "id": 100,
+    "name": "Hamstring Dynamic Sweep",
+    "slug": "hamstring_dynamic_sweep",
+    "category": "Mobility",
+    "primary_muscles": [
+      "Hamstrings",
+      "Mobility"
+    ],
+    "secondary_muscles": [
+      "Calves",
+      "Lower Back"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "Step one heel forward with toes up",
+      "Hinge hips back, sweep hands down past foot in a smooth arc, and stand up",
+      "Alternate steps."
+    ],
+    "start_pos": "Standing feet hip-width.",
+    "movement": "Heel tap with sweeping arm hinge.",
+    "end_pos": "Stand tall, step forward with other foot.",
+    "common_mistakes": [
+      "Bending back instead of hinging hips"
+    ],
+    "safety_notes": "Warm up posterior chain prior to leg training.",
+    "default_sets": 2,
+    "default_reps": "10 each leg",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/hamstring_dynamic_sweep/demo.svg",
+    "demonstration_asset": "/static/exercises/hamstring_dynamic_sweep/demo.svg",
+    "thumbnail": "/static/exercises/hamstring_dynamic_sweep/thumbnail.png",
+    "aliases": [
+      "hamstring dynamic sweep"
+    ]
+  },
+  {
+    "id": 101,
+    "name": "Thoracic Spine Rotations",
+    "slug": "thoracic_spine_rotations",
+    "category": "Mobility",
+    "primary_muscles": [
+      "Thoracic Spine",
+      "Back",
+      "Mobility"
+    ],
+    "secondary_muscles": [
+      "Shoulders"
+    ],
+    "equipment": "No Equipment",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "Kneel on all fours with one hand behind head",
+      "Rotate elbow down towards supporting arm, then flare elbow high towards ceiling",
+      "Switch sides."
+    ],
+    "start_pos": "Quadruped with one hand behind ear.",
+    "movement": "Rotate elbow from under torso high to ceiling.",
+    "end_pos": "Full mid-back rotation.",
+    "common_mistakes": [
+      "Shifting hips side to side"
+    ],
+    "safety_notes": "Improves posture and overhead pressing mobility.",
+    "default_sets": 2,
+    "default_reps": "10 each side",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/thoracic_spine_rotations/demo.svg",
+    "demonstration_asset": "/static/exercises/thoracic_spine_rotations/demo.svg",
+    "thumbnail": "/static/exercises/thoracic_spine_rotations/thumbnail.png",
+    "aliases": [
+      "thoracic spine rotations"
+    ]
+  },
+  {
+    "id": 102,
+    "name": "Svend Press",
+    "slug": "svend_press",
+    "category": "Chest",
+    "primary_muscles": [
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Front Delts"
+    ],
+    "equipment": "Dumbbells",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Squeeze weight plates or dumbbell between flat palms in front of chest",
+      "Press hands straight forward while maintaining maximal inward squeeze",
+      "Pull back to chest."
+    ],
+    "start_pos": "Standing tall, pressing weight between palms at sternum.",
+    "movement": "Extend arms forward horizontally under continuous inward pressure.",
+    "end_pos": "Arms extended, chest contracted peak.",
+    "common_mistakes": [
+      "Gripping edges instead of pressing flat palms"
+    ],
+    "safety_notes": "Constant isometric chest adduction.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/svend_press/demo.svg",
+    "demonstration_asset": "/static/exercises/svend_press/demo.svg",
+    "thumbnail": "/static/exercises/svend_press/thumbnail.png",
+    "aliases": [
+      "svend press"
+    ]
+  },
+  {
+    "id": 103,
+    "name": "Landmine Press",
+    "slug": "landmine_press",
+    "category": "Shoulders",
+    "primary_muscles": [
+      "Front Delts",
+      "Upper Chest",
+      "Shoulders"
+    ],
+    "secondary_muscles": [
+      "Triceps",
+      "Core"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Stand in staggered stance holding end of landmine barbell at shoulder",
+      "Press barbell diagonally upward until arm is straight",
+      "Lower back to shoulder under control."
+    ],
+    "start_pos": "Staggered stance holding end of barbell at collarbone.",
+    "movement": "Press diagonally upward along natural bar arc.",
+    "end_pos": "Arm extended overhead forward.",
+    "common_mistakes": [
+      "Arching back excessively"
+    ],
+    "safety_notes": "Extremely shoulder-friendly pressing angle.",
+    "default_sets": 3,
+    "default_reps": "10 each arm",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/landmine_press/demo.svg",
+    "demonstration_asset": "/static/exercises/landmine_press/demo.svg",
+    "thumbnail": "/static/exercises/landmine_press/thumbnail.png",
+    "aliases": [
+      "landmine press"
+    ]
+  },
+  {
+    "id": 104,
+    "name": "Sissy Squat",
+    "slug": "sissy_squat",
+    "category": "Legs",
+    "primary_muscles": [
+      "Quadriceps",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Core",
+      "Calves"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Advanced",
+    "environment": "Home",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Stand holding a sturdy pole or wall for balance",
+      "Rise onto toes and lean torso back in a straight line while driving knees forward",
+      "Lower until knees are in deep flexion, drive quads to stand."
+    ],
+    "start_pos": "Standing tall on toes, holding support.",
+    "movement": "Torso leans back as knees push forward.",
+    "end_pos": "Deep quad stretch, return to top.",
+    "common_mistakes": [
+      "Bending at hips instead of knees"
+    ],
+    "safety_notes": "Intense direct quad overload.",
+    "default_sets": 3,
+    "default_reps": "8-10",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/sissy_squat/demo.svg",
+    "demonstration_asset": "/static/exercises/sissy_squat/demo.svg",
+    "thumbnail": "/static/exercises/sissy_squat/thumbnail.png",
+    "aliases": [
+      "sissy squat"
+    ]
+  },
+  {
+    "id": 105,
+    "name": "Cable Rope Overhead Tricep Extension",
+    "slug": "cable_rope_overhead_tricep_extension",
+    "category": "Triceps",
+    "primary_muscles": [
+      "Triceps"
+    ],
+    "secondary_muscles": [
+      "Core"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Set low or mid cable with rope",
+      "Turn away, hold rope behind head, extend arms forward/upward",
+      "Spread rope apart at full extension."
+    ],
+    "start_pos": "Staggered stance facing away, rope behind neck.",
+    "movement": "Extend forearms forward.",
+    "end_pos": "Arms straight overhead, rope ends apart.",
+    "common_mistakes": [
+      "Elbows moving forward and back"
+    ],
+    "safety_notes": "Long head tricep builder with continuous tension.",
+    "default_sets": 3,
+    "default_reps": "12-15",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/cable_rope_overhead_tricep_extension/demo.svg",
+    "demonstration_asset": "/static/exercises/cable_rope_overhead_tricep_extension/demo.svg",
+    "thumbnail": "/static/exercises/cable_rope_overhead_tricep_extension/thumbnail.png",
+    "aliases": [
+      "cable rope overhead tricep extension"
+    ]
+  },
+  {
+    "id": 106,
+    "name": "Kettlebell Goblet Squat",
+    "slug": "kettlebell_goblet_squat",
+    "category": "Legs",
+    "primary_muscles": [
+      "Quadriceps",
+      "Glutes",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Core"
+    ],
+    "equipment": "Kettlebell",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "General Fitness",
+    "instructions": [
+      "Hold kettlebell by horns against chest",
+      "Squat deep, keeping chest tall",
+      "Drive up through feet."
+    ],
+    "start_pos": "Standing holding kettlebell at chest.",
+    "movement": "Squat down between legs.",
+    "end_pos": "Stand back to vertical.",
+    "common_mistakes": [
+      "Knees collapsing"
+    ],
+    "safety_notes": "Keep kettlebell in contact with sternum.",
+    "default_sets": 3,
+    "default_reps": "12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/kettlebell_goblet_squat/demo.svg",
+    "demonstration_asset": "/static/exercises/kettlebell_goblet_squat/demo.svg",
+    "thumbnail": "/static/exercises/kettlebell_goblet_squat/thumbnail.png",
+    "aliases": [
+      "kettlebell goblet squat"
+    ]
+  },
+  {
+    "id": 107,
+    "name": "Barbell Glute Bridge",
+    "slug": "barbell_glute_bridge",
+    "category": "Glutes",
+    "primary_muscles": [
+      "Glutes"
+    ],
+    "secondary_muscles": [
+      "Hamstrings"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Lie on floor with knees bent and barbell across hips",
+      "Drive through heels to bridge hips upward",
+      "Squeeze glutes 2 sec at top, lower slowly."
+    ],
+    "start_pos": "Supine with loaded bar on hips.",
+    "movement": "Bridge pelvis upward.",
+    "end_pos": "Peak glute contraction.",
+    "common_mistakes": [
+      "Over-arching lower spine"
+    ],
+    "safety_notes": "Use bar pad for comfort.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 75,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/barbell_glute_bridge/demo.svg",
+    "demonstration_asset": "/static/exercises/barbell_glute_bridge/demo.svg",
+    "thumbnail": "/static/exercises/barbell_glute_bridge/thumbnail.png",
+    "aliases": [
+      "barbell glute bridge"
+    ]
+  },
+  {
+    "id": 108,
+    "name": "Plate Pinch Hold",
+    "slug": "plate_pinch_hold",
+    "category": "Forearms",
+    "primary_muscles": [
+      "Forearms",
+      "Grip"
+    ],
+    "secondary_muscles": [
+      "Fingers"
+    ],
+    "equipment": "Barbell",
+    "difficulty": "Intermediate",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Pinch two smooth weight plates together with fingers and thumb",
+      "Stand tall and hold for time without letting plates slip."
+    ],
+    "start_pos": "Standing holding weight plates pinched in fingers.",
+    "movement": "Hold static pinch grip.",
+    "end_pos": "Set plates down safely.",
+    "common_mistakes": [
+      "Resting plates against thighs"
+    ],
+    "safety_notes": "Increases thumb pinch strength and grip tenacity.",
+    "default_sets": 3,
+    "default_reps": "30 sec",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/plate_pinch_hold/demo.svg",
+    "demonstration_asset": "/static/exercises/plate_pinch_hold/demo.svg",
+    "thumbnail": "/static/exercises/plate_pinch_hold/thumbnail.png",
+    "aliases": [
+      "plate pinch hold"
+    ]
+  },
+  {
+    "id": 109,
+    "name": "Wall Sit",
+    "slug": "wall_sit",
+    "category": "Legs",
+    "primary_muscles": [
+      "Quadriceps",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Glutes",
+      "Calves"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Beginner",
+    "environment": "Home",
+    "goal": "Endurance",
+    "instructions": [
+      "Lean back flat against wall, slide down until thighs are parallel to ground",
+      "Hold static 90-degree knee angle for target duration."
+    ],
+    "start_pos": "Back against wall, knees bent at 90 degrees.",
+    "movement": "Hold isometric wall sit.",
+    "end_pos": "Push off wall to stand.",
+    "common_mistakes": [
+      "Hands resting on knees"
+    ],
+    "safety_notes": "Keep knees stacked directly above ankles.",
+    "default_sets": 3,
+    "default_reps": "45-60 sec",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/wall_sit/demo.svg",
+    "demonstration_asset": "/static/exercises/wall_sit/demo.svg",
+    "thumbnail": "/static/exercises/wall_sit/thumbnail.png",
+    "aliases": [
+      "wall sit"
+    ]
+  },
+  {
+    "id": 110,
+    "name": "Hollow Body Hold",
+    "slug": "hollow_body_hold",
+    "category": "Core",
+    "primary_muscles": [
+      "Abs",
+      "Core"
+    ],
+    "secondary_muscles": [
+      "Hip Flexors"
+    ],
+    "equipment": "Bodyweight",
+    "difficulty": "Intermediate",
+    "environment": "Home",
+    "goal": "Endurance",
+    "instructions": [
+      "Lie on back, press lower spine into floor",
+      "Raise arms overhead and legs 6 inches off floor, creating a shallow banana curve",
+      "Hold position."
+    ],
+    "start_pos": "Supine with lower back sealed to ground.",
+    "movement": "Elevate arms and legs into hollow shape.",
+    "end_pos": "Hold hollow isometric contraction.",
+    "common_mistakes": [
+      "Lower back lifting off floor"
+    ],
+    "safety_notes": "Foundation for gymnastic core stability.",
+    "default_sets": 3,
+    "default_reps": "30-45 sec",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/hollow_body_hold/demo.svg",
+    "demonstration_asset": "/static/exercises/hollow_body_hold/demo.svg",
+    "thumbnail": "/static/exercises/hollow_body_hold/thumbnail.png",
+    "aliases": [
+      "hollow body hold"
+    ]
+  },
+  {
+    "id": 111,
+    "name": "Kettlebell Sumo Deadlift",
+    "slug": "kettlebell_sumo_deadlift",
+    "category": "Legs",
+    "primary_muscles": [
+      "Glutes",
+      "Hamstrings",
+      "Legs"
+    ],
+    "secondary_muscles": [
+      "Adductors",
+      "Lower Back"
+    ],
+    "equipment": "Kettlebell",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Strength",
+    "instructions": [
+      "Stand with wide stance, toes flared 45 degrees",
+      "Hinge hips back and grip kettlebell handle with both hands",
+      "Drive through heels to stand."
+    ],
+    "start_pos": "Wide sumo stance over kettlebell.",
+    "movement": "Drive hips forward to stand tall.",
+    "end_pos": "Standing erect with glutes contracted.",
+    "common_mistakes": [
+      "Knees collapsing inward"
+    ],
+    "safety_notes": "Keep shins perpendicular to floor.",
+    "default_sets": 3,
+    "default_reps": "10-12",
+    "default_rest": 60,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/kettlebell_sumo_deadlift/demo.svg",
+    "demonstration_asset": "/static/exercises/kettlebell_sumo_deadlift/demo.svg",
+    "thumbnail": "/static/exercises/kettlebell_sumo_deadlift/thumbnail.png",
+    "aliases": [
+      "kettlebell sumo deadlift"
+    ]
+  },
+  {
+    "id": 112,
+    "name": "Single-Arm Cable Row",
+    "slug": "single_arm_cable_row",
+    "category": "Back",
+    "primary_muscles": [
+      "Lats",
+      "Back"
+    ],
+    "secondary_muscles": [
+      "Biceps",
+      "Core"
+    ],
+    "equipment": "Cable Machine",
+    "difficulty": "Beginner",
+    "environment": "Gym",
+    "goal": "Hypertrophy",
+    "instructions": [
+      "Grip single handle on cable machine in athletic stance",
+      "Pull elbow back past torso, rotating slightly for deep lat contraction."
+    ],
+    "start_pos": "Standing facing cable with arm extended.",
+    "movement": "Drive elbow back into hip.",
+    "end_pos": "Handle at ribs with lat fully contracted.",
+    "common_mistakes": [
+      "Excessive twisting"
+    ],
+    "safety_notes": "Isolates each lat individually.",
+    "default_sets": 3,
+    "default_reps": "10-12 each side",
+    "default_rest": 45,
+    "supported_demo": true,
+    "media_type": "animation",
+    "media_path": "/static/exercises/single_arm_cable_row/demo.svg",
+    "demonstration_asset": "/static/exercises/single_arm_cable_row/demo.svg",
+    "thumbnail": "/static/exercises/single_arm_cable_row/thumbnail.png",
+    "aliases": [
+      "single-arm cable row"
+    ]
   }
 ]

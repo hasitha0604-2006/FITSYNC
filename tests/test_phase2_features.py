@@ -43,6 +43,8 @@ class Phase2FeaturesTestCase(unittest.TestCase):
             db.session.rollback()
         db.session.remove()
         self.ctx.pop()
+        if hasattr(self, 'orig_uri') and self.orig_uri:
+            self.app.config['SQLALCHEMY_DATABASE_URI'] = self.orig_uri
 
     def _create_and_onboard_user(self, email, name, goal="Muscle Gain", budget=150):
         self.client.post('/register', data={'email': email, 'password': 'Password123!'}, follow_redirects=True)

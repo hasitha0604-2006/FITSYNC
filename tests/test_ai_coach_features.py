@@ -1,5 +1,6 @@
 import json
 import unittest
+from pathlib import Path
 from app import app, db, User, UserProfile, NutritionTarget, WorkoutPlan, WorkoutDay, WorkoutExercise, MealPlan, Meal, ChatConversation, ChatMessage, seed_database
 
 class FitSyncAICoachTestCase(unittest.TestCase):
@@ -27,6 +28,8 @@ class FitSyncAICoachTestCase(unittest.TestCase):
             db.session.rollback()
         db.session.remove()
         self.ctx.pop()
+        if hasattr(self, 'orig_uri') and self.orig_uri:
+            app.config['SQLALCHEMY_DATABASE_URI'] = self.orig_uri
 
     def _create_user(self, email, name="Test User"):
         user = User.query.filter_by(email=email).first()

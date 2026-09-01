@@ -133,9 +133,11 @@ class TestCustomWorkoutAndNutritionSelection(unittest.TestCase):
                 db.session.delete(u)
                 db.session.commit()
 
+        db.session.remove()
         self.ctx.pop()
 
     def _login(self):
+        self.client = self.app.test_client()
         with self.client.session_transaction() as sess:
             sess['user_id'] = self.user.id
             sess['_fresh'] = True
@@ -186,6 +188,7 @@ class TestCustomWorkoutAndNutritionSelection(unittest.TestCase):
 
         # Verify DB updated
         today_name = datetime.now().strftime('%A')
+        db.session.expire_all()
         w_day = WorkoutDay.query.filter_by(workout_plan_id=self.plan.id, day_name=today_name).first()
         self.assertEqual(w_day.focus, 'Biceps')
         self.assertFalse(w_day.is_rest_day)

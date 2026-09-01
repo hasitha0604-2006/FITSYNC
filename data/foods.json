@@ -13,7 +13,11 @@
     "is_vegan": true,
     "cost_approx": 10,
     "common_unit": "1 plate/bowl",
-    "alternatives": ["Brown Rice", "Chapati", "Oats"]
+    "alternatives": [
+      "Brown Rice",
+      "Chapati",
+      "Oats"
+    ]
   },
   {
     "id": 2,
@@ -29,7 +33,11 @@
     "is_vegan": true,
     "cost_approx": 5,
     "common_unit": "1 roti",
-    "alternatives": ["White Rice", "Bread", "Oats"]
+    "alternatives": [
+      "White Rice",
+      "Bread",
+      "Oats"
+    ]
   },
   {
     "id": 3,
@@ -45,7 +53,11 @@
     "is_vegan": true,
     "cost_approx": 15,
     "common_unit": "1 katori/bowl",
-    "alternatives": ["Rajma", "Chana Masala", "Paneer"]
+    "alternatives": [
+      "Rajma",
+      "Chana Masala",
+      "Paneer"
+    ]
   },
   {
     "id": 4,
@@ -61,7 +73,11 @@
     "is_vegan": true,
     "cost_approx": 20,
     "common_unit": "1 bowl",
-    "alternatives": ["Yellow Dal", "Chana Masala", "Soya Chunks"]
+    "alternatives": [
+      "Yellow Dal",
+      "Chana Masala",
+      "Soya Chunks"
+    ]
   },
   {
     "id": 5,
@@ -77,7 +93,11 @@
     "is_vegan": true,
     "cost_approx": 18,
     "common_unit": "1 bowl",
-    "alternatives": ["Rajma", "Roasted Chana", "Dal"]
+    "alternatives": [
+      "Rajma",
+      "Roasted Chana",
+      "Dal"
+    ]
   },
   {
     "id": 6,
@@ -93,7 +113,11 @@
     "is_vegan": true,
     "cost_approx": 8,
     "common_unit": "1 small bowl (30g)",
-    "alternatives": ["Peanuts", "Roasted Almonds", "Roasted Soybeans"]
+    "alternatives": [
+      "Peanuts",
+      "Roasted Almonds",
+      "Roasted Soybeans"
+    ]
   },
   {
     "id": 7,
@@ -109,7 +133,11 @@
     "is_vegan": true,
     "cost_approx": 10,
     "common_unit": "1 handful (30g)",
-    "alternatives": ["Roasted Chana", "Peanut Butter", "Paneer"]
+    "alternatives": [
+      "Roasted Chana",
+      "Peanut Butter",
+      "Paneer"
+    ]
   },
   {
     "id": 8,
@@ -125,7 +153,12 @@
     "is_vegan": false,
     "cost_approx": 15,
     "common_unit": "2 medium eggs",
-    "alternatives": ["Paneer", "Soya Chunks", "Greek Yogurt", "Milk"]
+    "alternatives": [
+      "Paneer",
+      "Soya Chunks",
+      "Greek Yogurt",
+      "Milk"
+    ]
   },
   {
     "id": 9,
@@ -141,7 +174,11 @@
     "is_vegan": false,
     "cost_approx": 15,
     "common_unit": "1 glass (250ml)",
-    "alternatives": ["Curd", "Soya Milk", "Paneer"]
+    "alternatives": [
+      "Curd",
+      "Soya Milk",
+      "Paneer"
+    ]
   },
   {
     "id": 10,
@@ -157,7 +194,12 @@
     "is_vegan": false,
     "cost_approx": 40,
     "common_unit": "100g",
-    "alternatives": ["Tofu", "Soya Chunks", "Boiled Eggs", "Milk"]
+    "alternatives": [
+      "Tofu",
+      "Soya Chunks",
+      "Boiled Eggs",
+      "Milk"
+    ]
   },
   {
     "id": 11,
@@ -173,7 +215,11 @@
     "is_vegan": false,
     "cost_approx": 12,
     "common_unit": "1 cup (150g)",
-    "alternatives": ["Milk", "Buttermilk", "Greek Yogurt"]
+    "alternatives": [
+      "Milk",
+      "Buttermilk",
+      "Greek Yogurt"
+    ]
   },
   {
     "id": 12,
@@ -189,7 +235,12 @@
     "is_vegan": true,
     "cost_approx": 15,
     "common_unit": "1 bowl cooked (50g dry)",
-    "alternatives": ["Dosa", "Idli", "Upma", "Chapati"]
+    "alternatives": [
+      "Dosa",
+      "Idli",
+      "Upma",
+      "Chapati"
+    ]
   },
   {
     "id": 13,
@@ -205,7 +256,12 @@
     "is_vegan": true,
     "cost_approx": 15,
     "common_unit": "2 pieces",
-    "alternatives": ["Dosa", "Oats", "Upma", "Chapati"]
+    "alternatives": [
+      "Dosa",
+      "Oats",
+      "Upma",
+      "Chapati"
+    ]
   },
   {
     "id": 14,
@@ -221,7 +277,12 @@
     "is_vegan": true,
     "cost_approx": 35,
     "common_unit": "1 medium dosa",
-    "alternatives": ["Idli", "Oats", "Upma", "Bread"]
+    "alternatives": [
+      "Idli",
+      "Oats",
+      "Upma",
+      "Bread"
+    ]
   },
   {
     "id": 15,
@@ -237,7 +298,12 @@
     "is_vegan": true,
     "cost_approx": 15,
     "common_unit": "1 plate",
-    "alternatives": ["Idli", "Oats", "Dosa", "Poha"]
+    "alternatives": [
+      "Idli",
+      "Oats",
+      "Dosa",
+      "Poha"
+    ]
   },
   {
     "id": 16,
@@ -253,7 +319,11 @@
     "is_vegan": true,
     "cost_approx": 15,
     "common_unit": "1 bowl",
-    "alternatives": ["Green Salad", "Boiled Broccoli", "Spinach"]
+    "alternatives": [
+      "Green Salad",
+      "Boiled Broccoli",
+      "Spinach"
+    ]
   },
   {
     "id": 17,
@@ -269,7 +339,11 @@
     "is_vegan": true,
     "cost_approx": 6,
     "common_unit": "1 medium banana",
-    "alternatives": ["Apple", "Orange", "Papaya"]
+    "alternatives": [
+      "Apple",
+      "Orange",
+      "Papaya"
+    ]
   },
   {
     "id": 18,
@@ -285,7 +359,12 @@
     "is_vegan": false,
     "cost_approx": 50,
     "common_unit": "100g cooked",
-    "alternatives": ["Fish", "Boiled Eggs", "Paneer", "Soya Chunks"]
+    "alternatives": [
+      "Fish",
+      "Boiled Eggs",
+      "Paneer",
+      "Soya Chunks"
+    ]
   },
   {
     "id": 19,
@@ -301,7 +380,12 @@
     "is_vegan": false,
     "cost_approx": 60,
     "common_unit": "1 bowl (2 pieces)",
-    "alternatives": ["Chicken Breast", "Boiled Eggs", "Paneer", "Tofu"]
+    "alternatives": [
+      "Chicken Breast",
+      "Boiled Eggs",
+      "Paneer",
+      "Tofu"
+    ]
   },
   {
     "id": 20,
@@ -317,7 +401,12 @@
     "is_vegan": true,
     "cost_approx": 12,
     "common_unit": "1 bowl cooked (50g dry)",
-    "alternatives": ["Paneer", "Boiled Eggs", "Tofu", "Rajma"]
+    "alternatives": [
+      "Paneer",
+      "Boiled Eggs",
+      "Tofu",
+      "Rajma"
+    ]
   },
   {
     "id": 21,
@@ -333,7 +422,11 @@
     "is_vegan": true,
     "cost_approx": 15,
     "common_unit": "1 medium apple",
-    "alternatives": ["Banana", "Papaya", "Orange"]
+    "alternatives": [
+      "Banana",
+      "Papaya",
+      "Orange"
+    ]
   },
   {
     "id": 22,
@@ -349,6 +442,955 @@
     "is_vegan": true,
     "cost_approx": 30,
     "common_unit": "100g",
-    "alternatives": ["Paneer", "Soya Chunks", "Boiled Eggs"]
+    "alternatives": [
+      "Paneer",
+      "Soya Chunks",
+      "Boiled Eggs"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Brown Rice",
+    "category": "Grains",
+    "serving_size_g": 100,
+    "calories": 111,
+    "protein": 2.6,
+    "carbs": 23.0,
+    "fat": 0.9,
+    "fiber": 1.8,
+    "cost_approx": 15,
+    "common_unit": "1 cup cooked (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 24,
+    "name": "Poha",
+    "category": "Breakfast",
+    "serving_size_g": 150,
+    "calories": 220,
+    "protein": 4.0,
+    "carbs": 40.0,
+    "fat": 5.0,
+    "fiber": 2.5,
+    "cost_approx": 15,
+    "common_unit": "1 plate (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 25,
+    "name": "Whole Wheat Bread",
+    "category": "Grains",
+    "serving_size_g": 60,
+    "calories": 140,
+    "protein": 6.0,
+    "carbs": 24.0,
+    "fat": 2.0,
+    "fiber": 3.5,
+    "cost_approx": 10,
+    "common_unit": "2 slices (60g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 26,
+    "name": "Besan Cheela",
+    "category": "Breakfast",
+    "serving_size_g": 100,
+    "calories": 180,
+    "protein": 9.0,
+    "carbs": 22.0,
+    "fat": 6.0,
+    "fiber": 4.0,
+    "cost_approx": 20,
+    "common_unit": "2 cheelas (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 27,
+    "name": "Khichdi (Rice & Moong Dal)",
+    "category": "Grains",
+    "serving_size_g": 200,
+    "calories": 240,
+    "protein": 8.0,
+    "carbs": 42.0,
+    "fat": 4.5,
+    "fiber": 4.0,
+    "cost_approx": 25,
+    "common_unit": "1 bowl (200g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 28,
+    "name": "Sweet Potato (Boiled)",
+    "category": "Vegetables",
+    "serving_size_g": 150,
+    "calories": 130,
+    "protein": 2.0,
+    "carbs": 30.0,
+    "fat": 0.2,
+    "fiber": 4.0,
+    "cost_approx": 15,
+    "common_unit": "1 medium (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 29,
+    "name": "Boiled Potato",
+    "category": "Vegetables",
+    "serving_size_g": 150,
+    "calories": 130,
+    "protein": 3.0,
+    "carbs": 30.0,
+    "fat": 0.2,
+    "fiber": 3.0,
+    "cost_approx": 10,
+    "common_unit": "1 medium (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 30,
+    "name": "Quinoa (Cooked)",
+    "category": "Grains",
+    "serving_size_g": 100,
+    "calories": 120,
+    "protein": 4.4,
+    "carbs": 21.3,
+    "fat": 1.9,
+    "fiber": 2.8,
+    "cost_approx": 35,
+    "common_unit": "1 cup cooked (185g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 31,
+    "name": "Cornflakes with Milk",
+    "category": "Breakfast",
+    "serving_size_g": 200,
+    "calories": 210,
+    "protein": 8.0,
+    "carbs": 36.0,
+    "fat": 3.5,
+    "fiber": 1.5,
+    "cost_approx": 25,
+    "common_unit": "1 bowl (200ml)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 32,
+    "name": "Plain Paratha",
+    "category": "Grains",
+    "serving_size_g": 70,
+    "calories": 210,
+    "protein": 4.5,
+    "carbs": 28.0,
+    "fat": 9.0,
+    "fiber": 3.0,
+    "cost_approx": 10,
+    "common_unit": "1 paratha (70g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 33,
+    "name": "Moong Dal (Cooked)",
+    "category": "Legumes",
+    "serving_size_g": 150,
+    "calories": 130,
+    "protein": 9.0,
+    "carbs": 19.0,
+    "fat": 1.5,
+    "fiber": 5.0,
+    "cost_approx": 15,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 34,
+    "name": "Masoor Dal (Red Lentils)",
+    "category": "Legumes",
+    "serving_size_g": 150,
+    "calories": 140,
+    "protein": 9.5,
+    "carbs": 20.0,
+    "fat": 2.0,
+    "fiber": 5.5,
+    "cost_approx": 15,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 35,
+    "name": "Black Eyed Peas (Lobia Curry)",
+    "category": "Legumes",
+    "serving_size_g": 150,
+    "calories": 150,
+    "protein": 8.0,
+    "carbs": 23.0,
+    "fat": 2.5,
+    "fiber": 5.0,
+    "cost_approx": 20,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 36,
+    "name": "Sprouted Moong Salad",
+    "category": "Legumes",
+    "serving_size_g": 100,
+    "calories": 105,
+    "protein": 8.0,
+    "carbs": 18.0,
+    "fat": 0.5,
+    "fiber": 4.5,
+    "cost_approx": 15,
+    "common_unit": "1 bowl (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 37,
+    "name": "Kala Chana (Boiled Black Chickpeas)",
+    "category": "Legumes",
+    "serving_size_g": 100,
+    "calories": 164,
+    "protein": 9.0,
+    "carbs": 27.0,
+    "fat": 2.5,
+    "fiber": 7.5,
+    "cost_approx": 15,
+    "common_unit": "1 bowl (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 38,
+    "name": "Egg Whites (Boiled)",
+    "category": "Poultry/Eggs",
+    "serving_size_g": 100,
+    "calories": 52,
+    "protein": 11.0,
+    "carbs": 0.7,
+    "fat": 0.2,
+    "fiber": 0.0,
+    "cost_approx": 18,
+    "common_unit": "3 egg whites (100g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 39,
+    "name": "Egg Omelette (2 Eggs)",
+    "category": "Poultry/Eggs",
+    "serving_size_g": 120,
+    "calories": 190,
+    "protein": 13.0,
+    "carbs": 2.0,
+    "fat": 14.5,
+    "fiber": 0.5,
+    "cost_approx": 20,
+    "common_unit": "2 egg omelette (120g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 40,
+    "name": "Toned Milk",
+    "category": "Dairy",
+    "serving_size_g": 200,
+    "calories": 116,
+    "protein": 6.2,
+    "carbs": 9.4,
+    "fat": 6.0,
+    "fiber": 0.0,
+    "cost_approx": 12,
+    "common_unit": "1 glass (200ml)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 41,
+    "name": "Greek Yogurt (Hung Curd)",
+    "category": "Dairy",
+    "serving_size_g": 100,
+    "calories": 95,
+    "protein": 10.0,
+    "carbs": 3.8,
+    "fat": 4.5,
+    "fiber": 0.0,
+    "cost_approx": 35,
+    "common_unit": "1 cup (100g)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 42,
+    "name": "Whey Protein Shake",
+    "category": "Dairy",
+    "serving_size_g": 30,
+    "calories": 120,
+    "protein": 24.0,
+    "carbs": 2.0,
+    "fat": 1.5,
+    "fiber": 0.5,
+    "cost_approx": 65,
+    "common_unit": "1 scoop (30g)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 43,
+    "name": "Buttermilk (Chaas)",
+    "category": "Dairy",
+    "serving_size_g": 200,
+    "calories": 45,
+    "protein": 3.0,
+    "carbs": 4.5,
+    "fat": 1.5,
+    "fiber": 0.0,
+    "cost_approx": 10,
+    "common_unit": "1 glass (200ml)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 44,
+    "name": "Chicken Curry (Home Style)",
+    "category": "Meat",
+    "serving_size_g": 150,
+    "calories": 220,
+    "protein": 24.0,
+    "carbs": 5.0,
+    "fat": 11.5,
+    "fiber": 1.0,
+    "cost_approx": 50,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 45,
+    "name": "Grilled Chicken Thigh",
+    "category": "Meat",
+    "serving_size_g": 100,
+    "calories": 209,
+    "protein": 26.0,
+    "carbs": 0.0,
+    "fat": 10.9,
+    "fiber": 0.0,
+    "cost_approx": 40,
+    "common_unit": "1 thigh (100g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 46,
+    "name": "Salmon / Rawas Fillet",
+    "category": "Meat",
+    "serving_size_g": 100,
+    "calories": 208,
+    "protein": 22.0,
+    "carbs": 0.0,
+    "fat": 13.0,
+    "fiber": 0.0,
+    "cost_approx": 110,
+    "common_unit": "1 fillet (100g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 47,
+    "name": "Canned Tuna in Water",
+    "category": "Meat",
+    "serving_size_g": 100,
+    "calories": 116,
+    "protein": 26.0,
+    "carbs": 0.0,
+    "fat": 1.0,
+    "fiber": 0.0,
+    "cost_approx": 85,
+    "common_unit": "1/2 can (100g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 48,
+    "name": "Prawns (Cooked)",
+    "category": "Meat",
+    "serving_size_g": 100,
+    "calories": 99,
+    "protein": 21.0,
+    "carbs": 0.2,
+    "fat": 1.1,
+    "fiber": 0.0,
+    "cost_approx": 90,
+    "common_unit": "6-8 prawns (100g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 49,
+    "name": "Mutton / Lamb Curry",
+    "category": "Meat",
+    "serving_size_g": 150,
+    "calories": 290,
+    "protein": 23.0,
+    "carbs": 4.0,
+    "fat": 19.0,
+    "fiber": 1.0,
+    "cost_approx": 95,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 50,
+    "name": "Almonds",
+    "category": "Nuts/Seeds",
+    "serving_size_g": 30,
+    "calories": 175,
+    "protein": 6.0,
+    "carbs": 6.0,
+    "fat": 15.0,
+    "fiber": 3.5,
+    "cost_approx": 25,
+    "common_unit": "15-20 almonds (30g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 51,
+    "name": "Walnuts",
+    "category": "Nuts/Seeds",
+    "serving_size_g": 30,
+    "calories": 195,
+    "protein": 4.5,
+    "carbs": 4.0,
+    "fat": 20.0,
+    "fiber": 2.0,
+    "cost_approx": 35,
+    "common_unit": "7-8 halves (30g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 52,
+    "name": "Peanut Butter",
+    "category": "Snacks",
+    "serving_size_g": 32,
+    "calories": 190,
+    "protein": 8.0,
+    "carbs": 7.0,
+    "fat": 16.0,
+    "fiber": 2.0,
+    "cost_approx": 20,
+    "common_unit": "2 tbsp (32g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 53,
+    "name": "Makhana (Fox Nuts)",
+    "category": "Snacks",
+    "serving_size_g": 30,
+    "calories": 105,
+    "protein": 3.0,
+    "carbs": 23.0,
+    "fat": 0.3,
+    "fiber": 2.5,
+    "cost_approx": 25,
+    "common_unit": "1 bowl roasted (30g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 54,
+    "name": "Chia Seeds",
+    "category": "Nuts/Seeds",
+    "serving_size_g": 15,
+    "calories": 73,
+    "protein": 2.5,
+    "carbs": 6.3,
+    "fat": 4.6,
+    "fiber": 5.1,
+    "cost_approx": 15,
+    "common_unit": "1 tbsp (15g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 55,
+    "name": "Flax Seeds",
+    "category": "Nuts/Seeds",
+    "serving_size_g": 15,
+    "calories": 80,
+    "protein": 2.7,
+    "carbs": 4.3,
+    "fat": 6.3,
+    "fiber": 4.1,
+    "cost_approx": 10,
+    "common_unit": "1 tbsp ground (15g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 56,
+    "name": "Pumpkin Seeds",
+    "category": "Nuts/Seeds",
+    "serving_size_g": 30,
+    "calories": 170,
+    "protein": 9.0,
+    "carbs": 4.0,
+    "fat": 14.0,
+    "fiber": 2.0,
+    "cost_approx": 30,
+    "common_unit": "2 tbsp (30g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 57,
+    "name": "Sattu Drink (Roasted Gram Flour)",
+    "category": "Beverages",
+    "serving_size_g": 40,
+    "calories": 160,
+    "protein": 10.0,
+    "carbs": 26.0,
+    "fat": 2.0,
+    "fiber": 6.5,
+    "cost_approx": 15,
+    "common_unit": "1 glass (40g powder in water)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 58,
+    "name": "Dates (Khajoor)",
+    "category": "Fruits",
+    "serving_size_g": 50,
+    "calories": 140,
+    "protein": 1.2,
+    "carbs": 37.0,
+    "fat": 0.2,
+    "fiber": 4.0,
+    "cost_approx": 20,
+    "common_unit": "4-5 dates (50g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 59,
+    "name": "Papaya",
+    "category": "Fruits",
+    "serving_size_g": 150,
+    "calories": 65,
+    "protein": 0.8,
+    "carbs": 16.0,
+    "fat": 0.4,
+    "fiber": 2.6,
+    "cost_approx": 15,
+    "common_unit": "1 bowl cubed (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 60,
+    "name": "Guava",
+    "category": "Fruits",
+    "serving_size_g": 100,
+    "calories": 68,
+    "protein": 2.6,
+    "carbs": 14.0,
+    "fat": 1.0,
+    "fiber": 5.4,
+    "cost_approx": 10,
+    "common_unit": "1 medium (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 61,
+    "name": "Orange",
+    "category": "Fruits",
+    "serving_size_g": 130,
+    "calories": 62,
+    "protein": 1.2,
+    "carbs": 15.0,
+    "fat": 0.2,
+    "fiber": 3.1,
+    "cost_approx": 15,
+    "common_unit": "1 medium (130g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 62,
+    "name": "Watermelon",
+    "category": "Fruits",
+    "serving_size_g": 200,
+    "calories": 60,
+    "protein": 1.2,
+    "carbs": 15.0,
+    "fat": 0.3,
+    "fiber": 0.8,
+    "cost_approx": 15,
+    "common_unit": "1 large slice (200g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 63,
+    "name": "Pomegranate",
+    "category": "Fruits",
+    "serving_size_g": 100,
+    "calories": 83,
+    "protein": 1.7,
+    "carbs": 19.0,
+    "fat": 1.2,
+    "fiber": 4.0,
+    "cost_approx": 35,
+    "common_unit": "1/2 cup arils (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 64,
+    "name": "Mango",
+    "category": "Fruits",
+    "serving_size_g": 150,
+    "calories": 90,
+    "protein": 1.2,
+    "carbs": 22.0,
+    "fat": 0.6,
+    "fiber": 2.4,
+    "cost_approx": 30,
+    "common_unit": "1 cup cubed (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 65,
+    "name": "Spinach (Palak Sabzi)",
+    "category": "Vegetables",
+    "serving_size_g": 150,
+    "calories": 75,
+    "protein": 4.0,
+    "carbs": 6.0,
+    "fat": 3.5,
+    "fiber": 3.5,
+    "cost_approx": 20,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 66,
+    "name": "Broccoli (Steamed)",
+    "category": "Vegetables",
+    "serving_size_g": 100,
+    "calories": 35,
+    "protein": 2.8,
+    "carbs": 7.0,
+    "fat": 0.4,
+    "fiber": 2.6,
+    "cost_approx": 30,
+    "common_unit": "1 cup (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 67,
+    "name": "Cucumber (Salad)",
+    "category": "Vegetables",
+    "serving_size_g": 100,
+    "calories": 15,
+    "protein": 0.7,
+    "carbs": 3.6,
+    "fat": 0.1,
+    "fiber": 0.5,
+    "cost_approx": 8,
+    "common_unit": "1 medium cucumber (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 68,
+    "name": "Tomatoes",
+    "category": "Vegetables",
+    "serving_size_g": 100,
+    "calories": 18,
+    "protein": 0.9,
+    "carbs": 3.9,
+    "fat": 0.2,
+    "fiber": 1.2,
+    "cost_approx": 6,
+    "common_unit": "1 medium tomato (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 69,
+    "name": "Bhindi (Okra Masala)",
+    "category": "Vegetables",
+    "serving_size_g": 150,
+    "calories": 120,
+    "protein": 3.0,
+    "carbs": 12.0,
+    "fat": 6.5,
+    "fiber": 4.5,
+    "cost_approx": 25,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 70,
+    "name": "Cauliflower (Gobi Curry)",
+    "category": "Vegetables",
+    "serving_size_g": 150,
+    "calories": 110,
+    "protein": 3.5,
+    "carbs": 11.0,
+    "fat": 5.5,
+    "fiber": 3.5,
+    "cost_approx": 20,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 71,
+    "name": "Green Peas (Matar)",
+    "category": "Vegetables",
+    "serving_size_g": 100,
+    "calories": 81,
+    "protein": 5.4,
+    "carbs": 14.5,
+    "fat": 0.4,
+    "fiber": 5.7,
+    "cost_approx": 15,
+    "common_unit": "1/2 cup (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 72,
+    "name": "Button Mushrooms",
+    "category": "Vegetables",
+    "serving_size_g": 100,
+    "calories": 22,
+    "protein": 3.1,
+    "carbs": 3.3,
+    "fat": 0.3,
+    "fiber": 1.0,
+    "cost_approx": 35,
+    "common_unit": "1 cup sliced (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 73,
+    "name": "Capsicum / Bell Pepper",
+    "category": "Vegetables",
+    "serving_size_g": 100,
+    "calories": 26,
+    "protein": 1.0,
+    "carbs": 6.0,
+    "fat": 0.3,
+    "fiber": 2.1,
+    "cost_approx": 15,
+    "common_unit": "1 medium pepper (100g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 74,
+    "name": "Ghee",
+    "category": "Dairy",
+    "serving_size_g": 10,
+    "calories": 90,
+    "protein": 0.0,
+    "carbs": 0.0,
+    "fat": 10.0,
+    "fiber": 0.0,
+    "cost_approx": 8,
+    "common_unit": "1 tsp (5g) or 2 tsp (10g)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 75,
+    "name": "Green Tea",
+    "category": "Beverages",
+    "serving_size_g": 200,
+    "calories": 2,
+    "protein": 0.2,
+    "carbs": 0.0,
+    "fat": 0.0,
+    "fiber": 0.0,
+    "cost_approx": 5,
+    "common_unit": "1 cup (200ml)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 76,
+    "name": "Black Coffee",
+    "category": "Beverages",
+    "serving_size_g": 200,
+    "calories": 2,
+    "protein": 0.3,
+    "carbs": 0.0,
+    "fat": 0.0,
+    "fiber": 0.0,
+    "cost_approx": 5,
+    "common_unit": "1 mug (200ml)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 77,
+    "name": "Coconut Water",
+    "category": "Beverages",
+    "serving_size_g": 250,
+    "calories": 45,
+    "protein": 1.7,
+    "carbs": 8.9,
+    "fat": 0.5,
+    "fiber": 2.6,
+    "cost_approx": 40,
+    "common_unit": "1 fresh coconut (250ml)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 78,
+    "name": "Soy Milk (Unsweetened)",
+    "category": "Dairy",
+    "serving_size_g": 200,
+    "calories": 80,
+    "protein": 7.0,
+    "carbs": 4.0,
+    "fat": 4.0,
+    "fiber": 1.0,
+    "cost_approx": 25,
+    "common_unit": "1 glass (200ml)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 79,
+    "name": "Paneer Bhurji (Scrambled Cottage Cheese)",
+    "category": "Dairy",
+    "serving_size_g": 150,
+    "calories": 240,
+    "protein": 16.0,
+    "carbs": 6.0,
+    "fat": 17.0,
+    "fiber": 1.5,
+    "cost_approx": 45,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 80,
+    "name": "Chicken Biryani (Home Cooked Lean)",
+    "category": "Meat",
+    "serving_size_g": 200,
+    "calories": 310,
+    "protein": 22.0,
+    "carbs": 38.0,
+    "fat": 7.5,
+    "fiber": 2.0,
+    "cost_approx": 60,
+    "common_unit": "1 plate (200g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 81,
+    "name": "Boiled Chana Chaat (Spiced)",
+    "category": "Snacks",
+    "serving_size_g": 120,
+    "calories": 160,
+    "protein": 9.0,
+    "carbs": 26.0,
+    "fat": 2.5,
+    "fiber": 7.0,
+    "cost_approx": 15,
+    "common_unit": "1 bowl (120g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 82,
+    "name": "Curd Rice (Thayir Sadam)",
+    "category": "Grains",
+    "serving_size_g": 200,
+    "calories": 220,
+    "protein": 6.0,
+    "carbs": 34.0,
+    "fat": 6.5,
+    "fiber": 1.0,
+    "cost_approx": 20,
+    "common_unit": "1 bowl (200g)",
+    "is_vegetarian": true,
+    "is_vegan": false
+  },
+  {
+    "id": 83,
+    "name": "Rajma Rice (Combo)",
+    "category": "Grains",
+    "serving_size_g": 250,
+    "calories": 320,
+    "protein": 12.0,
+    "carbs": 56.0,
+    "fat": 4.5,
+    "fiber": 7.0,
+    "cost_approx": 30,
+    "common_unit": "1 plate (250g)",
+    "is_vegetarian": true,
+    "is_vegan": true
+  },
+  {
+    "id": 84,
+    "name": "Egg Bhurji (Scrambled 2 Eggs with Onions/Tomatoes)",
+    "category": "Poultry/Eggs",
+    "serving_size_g": 120,
+    "calories": 180,
+    "protein": 13.0,
+    "carbs": 4.0,
+    "fat": 12.0,
+    "fiber": 1.0,
+    "cost_approx": 20,
+    "common_unit": "1 plate (120g)",
+    "is_vegetarian": false,
+    "is_vegan": false
+  },
+  {
+    "id": 85,
+    "name": "Dal Makhani (Light Home Style)",
+    "category": "Legumes",
+    "serving_size_g": 150,
+    "calories": 190,
+    "protein": 8.5,
+    "carbs": 24.0,
+    "fat": 7.0,
+    "fiber": 6.0,
+    "cost_approx": 25,
+    "common_unit": "1 bowl (150g)",
+    "is_vegetarian": true,
+    "is_vegan": false
   }
 ]

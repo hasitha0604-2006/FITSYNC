@@ -632,15 +632,22 @@ with app.app_context():
 
 def seed_exercises_table():
     try:
-        if Exercise.query.first():
-            return
         p = BASE_DIR / "data" / "exercises.json"
         if not p.exists():
             return
         with open(p, 'r', encoding='utf-8') as f:
             ex_list = json.load(f)
-        print(f"[SEED] Seeding {len(ex_list)} exercises into SQLite database...")
+
+        existing_ex = {e.id: e for e in Exercise.query.all()}
+        existing_names = {e.name.lower(): e for e in existing_ex.values()}
+
+        added_count = 0
         for item in ex_list:
+            ex_id = item.get("id")
+            name_val = item.get("name", "").strip()
+            if not name_val:
+                continue
+
             inst_val = item.get("instructions", "")
             if isinstance(inst_val, list):
                 inst_val = "\n".join(inst_val)
@@ -653,62 +660,105 @@ def seed_exercises_table():
             if isinstance(sn_val, list):
                 sn_val = "\n".join(sn_val)
 
-            e = Exercise(
-                id=item.get("id"),
-                name=item.get("name"),
-                aliases=json.dumps(item.get("aliases", [])),
-                category=item.get("category", "General"),
-                primary_muscles=json.dumps(item.get("primary_muscles", [])),
-                secondary_muscles=json.dumps(item.get("secondary_muscles", [])),
-                equipment=item.get("equipment", "No Equipment"),
-                difficulty=item.get("difficulty", "Beginner"),
-                environment=item.get("environment", "Gym"),
-                goal=item.get("goal", "General Fitness"),
-                instructions=inst_val,
-                common_mistakes=cm_val,
-                safety_notes=sn_val,
-                default_sets=item.get("sets", 3),
-                default_reps_min=item.get("reps_min", 8),
-                default_reps_max=item.get("reps_max", 12),
-                default_rest_seconds=item.get("rest_seconds", 60),
-                demonstration_available=item.get("demonstration_available", True),
-                demonstration_asset=item.get("demonstration_asset", f"/static/exercises/{item.get('name', '').lower().replace(' ', '_')}/demo.svg"),
-                thumbnail=item.get("thumbnail", f"/static/exercises/{item.get('name', '').lower().replace(' ', '_')}/thumbnail.png")
-            )
-            db.session.add(e)
+            existing_record = existing_ex.get(ex_id) or existing_names.get(name_val.lower())
+            if existing_record:
+                # Update existing exercise metadata safely
+                existing_record.category = item.get("category", existing_record.category or "General")
+                existing_record.primary_muscles = json.dumps(item.get("primary_muscles", [])) if isinstance(item.get("primary_muscles"), list) else (item.get("primary_muscles") or existing_record.primary_muscles)
+                existing_record.secondary_muscles = json.dumps(item.get("secondary_muscles", [])) if isinstance(item.get("secondary_muscles"), list) else (item.get("secondary_muscles") or existing_record.secondary_muscles)
+                existing_record.equipment = item.get("equipment", existing_record.equipment)
+                existing_record.difficulty = item.get("difficulty", existing_record.difficulty)
+                existing_record.environment = item.get("environment", existing_record.environment)
+                existing_record.goal = item.get("goal", existing_record.goal)
+                existing_record.instructions = inst_val or existing_record.instructions
+                existing_record.common_mistakes = cm_val or existing_record.common_mistakes
+                existing_record.safety_notes = sn_val or existing_record.safety_notes
+            else:
+                slug_name = name_val.lower().replace(' ', '_').replace('-', '_')
+                e = Exercise(
+                    id=ex_id,
+                    name=name_val,
+                    aliases=json.dumps(item.get("aliases", [name_val.lower()])),
+                    category=item.get("category", "General"),
+                    primary_muscles=json.dumps(item.get("primary_muscles", [item.get("category", "General")])),
+                    secondary_muscles=json.dumps(item.get("secondary_muscles", [])),
+                    equipment=item.get("equipment", "No Equipment"),
+                    difficulty=item.get("difficulty", "Beginner"),
+                    environment=item.get("environment", "Gym"),
+                    goal=item.get("goal", "General Fitness"),
+                    instructions=inst_val,
+                    common_mistakes=cm_val,
+                    safety_notes=sn_val,
+                    default_sets=item.get("default_sets", item.get("sets", 3)),
+                    default_reps_min=item.get("reps_min", 8),
+                    default_reps_max=item.get("reps_max", 12),
+                    default_rest_seconds=item.get("default_rest", item.get("rest_seconds", 60)),
+                    demonstration_available=item.get("demonstration_available", True),
+                    demonstration_asset=item.get("demonstration_asset", f"/static/exercises/{slug_name}/demo.svg"),
+                    thumbnail=item.get("thumbnail", f"/static/exercises/{slug_name}/thumbnail.png")
+                )
+                db.session.add(e)
+                added_count += 1
         db.session.commit()
+        if added_count > 0:
+            print(f"[SEED] Added {added_count} new exercises to SQLite database.")
     except Exception as err:
         db.session.rollback()
         print(f"[SEED WARNING] Exercise table seed error: {err}")
 
 def seed_foods_table():
     try:
-        if Food.query.first():
-            return
         p = BASE_DIR / "data" / "foods.json"
         if not p.exists():
             return
         with open(p, 'r', encoding='utf-8') as f:
             food_list = json.load(f)
-        print(f"[SEED] Seeding {len(food_list)} foods into SQLite database...")
+
+        existing_foods = {f.id: f for f in Food.query.all()}
+        existing_names = {f.name.lower(): f for f in existing_foods.values()}
+
+        added_count = 0
         for item in food_list:
-            fd = Food(
-                id=item.get("id"),
-                name=item.get("name"),
-                category=item.get("category", "General"),
-                serving_size_g=item.get("serving_size_g", 100),
-                calories=item.get("calories", 0),
-                protein=item.get("protein", 0.0),
-                carbs=item.get("carbs", 0.0),
-                fat=item.get("fat", 0.0),
-                fiber=item.get("fiber", 0.0),
-                cost_approx=item.get("cost_approx", 0),
-                common_unit=item.get("common_unit", ""),
-                is_vegetarian=item.get("is_vegetarian", True),
-                is_vegan=item.get("is_vegan", False)
-            )
-            db.session.add(fd)
+            fd_id = item.get("id")
+            name_val = item.get("name", "").strip()
+            if not name_val:
+                continue
+
+            existing_record = existing_foods.get(fd_id) or existing_names.get(name_val.lower())
+            if existing_record:
+                # Keep food macros updated
+                existing_record.category = item.get("category", existing_record.category)
+                existing_record.serving_size_g = item.get("serving_size_g", existing_record.serving_size_g)
+                existing_record.calories = item.get("calories", existing_record.calories)
+                existing_record.protein = item.get("protein", existing_record.protein)
+                existing_record.carbs = item.get("carbs", existing_record.carbs)
+                existing_record.fat = item.get("fat", existing_record.fat)
+                existing_record.fiber = item.get("fiber", existing_record.fiber)
+                existing_record.cost_approx = item.get("cost_approx", existing_record.cost_approx)
+                existing_record.common_unit = item.get("common_unit", existing_record.common_unit)
+                existing_record.is_vegetarian = item.get("is_vegetarian", existing_record.is_vegetarian)
+                existing_record.is_vegan = item.get("is_vegan", existing_record.is_vegan)
+            else:
+                fd = Food(
+                    id=fd_id,
+                    name=name_val,
+                    category=item.get("category", "General"),
+                    serving_size_g=item.get("serving_size_g", 100),
+                    calories=item.get("calories", 0),
+                    protein=item.get("protein", 0.0),
+                    carbs=item.get("carbs", 0.0),
+                    fat=item.get("fat", 0.0),
+                    fiber=item.get("fiber", 0.0),
+                    cost_approx=item.get("cost_approx", 0),
+                    common_unit=item.get("common_unit", ""),
+                    is_vegetarian=item.get("is_vegetarian", True),
+                    is_vegan=item.get("is_vegan", False)
+                )
+                db.session.add(fd)
+                added_count += 1
         db.session.commit()
+        if added_count > 0:
+            print(f"[SEED] Added {added_count} new foods to SQLite database.")
     except Exception as err:
         db.session.rollback()
         print(f"[SEED WARNING] Food table seed error: {err}")
@@ -1830,7 +1880,7 @@ def api_generate_custom_today():
     duration_mins = int(data.get("duration_mins") or data.get("duration_minutes") or data.get("duration") or 45)
     env_override = data.get("environment") or user.profile.workout_environment or "Gym"
 
-    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).order_by(WorkoutPlan.id.desc()).first()
     if not plan:
         # Create a new workout plan if not present
         plan = WorkoutPlan(user_id=user.id, is_active=True)
@@ -1838,7 +1888,7 @@ def api_generate_custom_today():
         db.session.commit()
 
     today_name = datetime.now().strftime("%A")
-    today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+    today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).order_by(WorkoutDay.id.desc()).first()
     if not today_w:
         today_w = WorkoutDay(workout_plan_id=plan.id, day_name=today_name, day_number=1, focus=focus, is_rest_day=False, status="upcoming")
         db.session.add(today_w)
