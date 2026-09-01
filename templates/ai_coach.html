@@ -416,11 +416,41 @@
 
   function formatMarkdown(txt) {
     if (!txt) return "";
-    let html = escapeHTML(txt);
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
-    html = html.replace(/\n/g, '<br/>');
-    return html;
+    let lines = txt.split('\n');
+    let formattedLines = [];
+    let inList = false;
+
+    for (let line of lines) {
+      let trimmed = line.trim();
+      let escaped = escapeHTML(trimmed);
+
+      // Bold & Italic
+      escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-emerald-400">$1</strong>');
+      escaped = escaped.replace(/\*(.*?)\*/g, '<em class="italic text-slate-300">$1</em>');
+
+      // Unordered list (- or *)
+      if (/^[-*]\s+/.test(trimmed)) {
+        let content = escaped.replace(/^[-*]\s+/, '');
+        formattedLines.push(`<li class="flex items-start gap-2 ml-1 my-1"><span class="text-emerald-400 mt-0.5">•</span><span>${content}</span></li>`);
+        inList = true;
+      }
+      // Ordered list (1. 2. etc.)
+      else if (/^\d+\.\s+/.test(trimmed)) {
+        let num = trimmed.match(/^(\d+)\.\s+/)[1];
+        let content = escaped.replace(/^\d+\.\s+/, '');
+        formattedLines.push(`<li class="flex items-start gap-2 ml-1 my-1"><span class="font-bold text-emerald-400">${num}.</span><span>${content}</span></li>`);
+        inList = true;
+      }
+      else {
+        if (trimmed.length > 0) {
+          formattedLines.push(`<p class="my-1.5 leading-relaxed">${escaped}</p>`);
+        } else {
+          formattedLines.push('<div class="h-1.5"></div>');
+        }
+      }
+    }
+
+    return formattedLines.join('');
   }
 </script>
 {% endblock %}

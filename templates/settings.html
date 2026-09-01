@@ -161,6 +161,63 @@
       </div>
     </div>
 
+    <!-- Theme & Appearance Card -->
+    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+      <div class="flex items-start gap-4">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20 shrink-0">
+          <i data-lucide="palette" class="h-6 w-6"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-bold text-white text-base">Appearance & Interface Theme</h3>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Choose your preferred color theme. Changes take effect instantly and stay synced across your pages.
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-slate-800" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Dark Theme Button -->
+        <button 
+          type="button"
+          onclick="selectSettingsTheme('dark')"
+          id="theme-opt-dark"
+          class="p-4 rounded-xl border border-slate-800 bg-slate-950 hover:border-emerald-500/50 flex items-center gap-3.5 transition-all text-left group"
+        >
+          <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-emerald-400 text-lg shadow-inner">
+            🌙
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-xs text-white">Dark Obsidian</h4>
+              <span id="theme-badge-dark" class="hidden text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Active</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Deep slate & emerald glowing accents</p>
+          </div>
+        </button>
+
+        <!-- Light Theme Button -->
+        <button 
+          type="button"
+          onclick="selectSettingsTheme('light')"
+          id="theme-opt-light"
+          class="p-4 rounded-xl border border-slate-800 bg-slate-950 hover:border-emerald-500/50 flex items-center gap-3.5 transition-all text-left group"
+        >
+          <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-amber-500 text-lg shadow-inner">
+            ☀️
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h4 class="font-bold text-xs text-white">Light Mint</h4>
+              <span id="theme-badge-light" class="hidden text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Active</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Clean white surface & crisp contrast</p>
+          </div>
+        </button>
+      </div>
+    </div>
+
     <!-- Onboarding wizard card -->
     <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
       <div class="flex items-start gap-4">
@@ -437,7 +494,38 @@
     }
   }
 
+  function selectSettingsTheme(t) {
+    if (typeof applyTheme === 'function') {
+      applyTheme(t);
+    }
+  }
+
+  function syncSettingsThemeUI(t) {
+    const darkBtn = document.getElementById('theme-opt-dark');
+    const lightBtn = document.getElementById('theme-opt-light');
+    const darkBadge = document.getElementById('theme-badge-dark');
+    const lightBadge = document.getElementById('theme-badge-light');
+
+    if (!darkBtn || !lightBtn) return;
+
+    if (t === 'light') {
+      lightBtn.className = "p-4 rounded-xl border border-emerald-500 bg-emerald-500/10 shadow-md shadow-emerald-500/10 flex items-center gap-3.5 transition-all text-left";
+      darkBtn.className = "p-4 rounded-xl border border-slate-800 bg-slate-950 hover:border-slate-700 flex items-center gap-3.5 transition-all text-left";
+      if (lightBadge) lightBadge.classList.remove('hidden');
+      if (darkBadge) darkBadge.classList.add('hidden');
+    } else {
+      darkBtn.className = "p-4 rounded-xl border border-emerald-500 bg-emerald-500/10 shadow-md shadow-emerald-500/10 flex items-center gap-3.5 transition-all text-left";
+      lightBtn.className = "p-4 rounded-xl border border-slate-800 bg-slate-950 hover:border-slate-700 flex items-center gap-3.5 transition-all text-left";
+      if (darkBadge) darkBadge.classList.remove('hidden');
+      if (lightBadge) lightBadge.classList.add('hidden');
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
+    // Sync current theme
+    const currentTheme = localStorage.getItem('fitsync_theme') || 'dark';
+    syncSettingsThemeUI(currentTheme);
+
     // Select correct budget button on startup
     if (defaultBudgetOptions.includes(settingsBudget)) {
       selectSettingsBudget(settingsBudget);

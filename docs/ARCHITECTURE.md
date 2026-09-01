@@ -1,61 +1,147 @@
-# FitSync AI — Software Architecture
+# FitSync AI — Software Architecture & Algorithmic Specification
 
-FitSync AI is structured as a unified, single-command Python web application designed for simplicity, ease of deployment, and high reliability during platform demonstrations.
+FitSync AI is an engineering-first, adaptive fitness and nutrition platform built with Python (Flask, Flask-SQLAlchemy, Jinja2, Chart.js, SQLite). The platform pairs deterministic mathematical modeling with controlled natural language assistance.
 
 ---
 
-## 1. Monolithic Component Design
-
-The application consolidates all front-end presentation logic, back-end REST APIs, database schemas, and AI calculation engines into a single, cohesive codebase.
+## 1. System Architecture Overview
 
 ```mermaid
 graph TD
-    Client[Browser Interface: HTML5/JS/Tailwind/Chart.js]
-    Flask[Flask App Server: app.py]
-    SQLite[(SQLite Database: instance/fitsync.db)]
-    Engines[Adaptive Logic: services/]
+    subgraph Client Layer
+        Browser[Client Browser: HTML5 / Tailwind / Chart.js]
+    end
 
-    Client -- HTTP GET/POST (AJAX) --> Flask
-    Flask -- SQLAlchemy ORM --> SQLite
-    Flask -- Logic Calls --> Engines
+    subgraph Application Server [Flask 3.x / Python]
+        Router[Route & Session Controller: app.py]
+        Auth[Authentication & Isolation Layer]
+        ORM[Flask-SQLAlchemy ORM Layer]
+    end
+
+    subgraph Deterministic Engine Core [services/]
+        NutritionEngine[Nutrition & Macro Engine: services/nutrition_engine.py]
+        FitnessEngine[Biomechanics & Split Generator: services/fitness_engine.py]
+        AdaptEngine[Schedule Adaptation Engine: services/adaptation_engine.py]
+        FormEngine[Vector Trigonometry Pose Analyzer: services/form_analysis.py]
+        SearchEngine[Knowledge Retrieval & Safety Classifier: services/ai_search_engine.py]
+    end
+
+    subgraph Persistence Layer
+        DB[(SQLite Relational DB: instance/fitsync.db)]
+        Datasets[(Structured Datasets: data/)]
+    end
+
+    subgraph Contextual AI Layer
+        CoachEngine[Context Telemetry Builder: services/ai_coach_engine.py]
+        LLM[Google Gemini API / Offline Fallback Rule Engine]
+    end
+
+    Browser <-->|HTTP / JSON REST API| Router
+    Router --> Auth
+    Auth --> ORM
+    ORM <--> DB
+    Router --> NutritionEngine
+    Router --> FitnessEngine
+    Router --> AdaptEngine
+    Router --> FormEngine
+    Router --> CoachEngine
+    CoachEngine --> SearchEngine
+    CoachEngine <--> LLM
+    NutritionEngine <--> Datasets
+    FitnessEngine <--> Datasets
 ```
-
-### Components
-
-* **Frontend Presentation (`templates/`, `static/`)**: Driven by Jinja2 HTML templates, styled with Tailwind CSS, and animated with vanilla JavaScript. Interactive metrics and charts are rendered dynamically in the browser using Chart.js.
-* **Server Application Routing (`app.py`)**: A standard Flask application handling page requests, managing session-based user authentication, and serving JSON response endpoints for AJAX actions.
-* **Adaptive Calculation Layer (`services/`)**: Custom rule engines that calculate BMR/TDEE targets, generate workout PPL splits, execute missed workout reschedules, and replace food macros.
-* **Database Layer (`instance/fitsync.db`)**: SQLite managed via Flask-SQLAlchemy. Tables are auto-initialized and seeded on startup.
 
 ---
 
-## 2. SQLite Database Schema
+## 2. Core Mathematical Formulations
 
-The database utilizes SQLite, mapping the following unified tables:
+### 2.1 Basal Metabolic Rate (BMR) & Total Daily Energy Expenditure (TDEE)
 
-* `users`: Stores user emails and secure Werkzeug-hashed credentials.
-* `user_profiles`: Physical statistics (weight, height, age, gender) and target goals.
-* `user_equipments`: List of available workout tools.
-* `user_food_preferences`: Preferred, available, or avoided food tags.
-* `nutrition_targets`: Daily target calories, protein, carbs, and fats.
-* `workout_plans` / `workout_days` / `workout_exercises`: Training splits, instruction sets, and checkboxes.
-* `meal_plans` / `meals`: Calculated portion weights and macro balances.
-* `progress_records`: Log history containing daily weights and consumed calories for Chart.js graphing.
+Caloric targets are computed deterministically using the **Mifflin-St Jeor** formulation:
+
+$$\text{BMR}_{\text{male}} = 10 \times W_{\text{kg}} + 6.25 \times H_{\text{cm}} - 5 \times A_{\text{years}} + 5$$
+
+$$\text{BMR}_{\text{female}} = 10 \times W_{\text{kg}} + 6.25 \times H_{\text{cm}} - 5 \times A_{\text{years}} - 161$$
+
+$$\text{TDEE} = \text{BMR} \times \alpha_{\text{activity}}$$
+
+Where the activity multiplier $\alpha_{\text{activity}}$ is dynamically evaluated from weekly workout frequency:
+* $1\text{–}2\text{ days/week}: \alpha = 1.375$ (Lightly active)
+* $3\text{–}4\text{ days/week}: \alpha = 1.550$ (Moderately active)
+* $5\text{–}7\text{ days/week}: \alpha = 1.725$ (Very active)
+
+### 2.2 Goal-Based Caloric & Macronutrient Partitioning
+
+$$\text{Target Calories} = \begin{cases} 
+\text{TDEE} + 300 & \text{for Muscle Gain} \\
+\text{TDEE} - 400 & \text{for Fat Loss} \\
+\text{TDEE} & \text{for Maintenance / General Fitness}
+\end{cases}$$
+
+Macronutrients are allocated through protein-first constraint solving:
+* **Protein Target**: $1.8\text{ g/kg}$ for Muscle Gain; $1.6\text{ g/kg}$ for Fat Loss; $1.2\text{ g/kg}$ for General Fitness ($4\text{ kcal/g}$).
+* **Fat Target**: $25\%$ of total caloric budget ($9\text{ kcal/g}$).
+* **Carbohydrate Target**: Remaining caloric balance ($4\text{ kcal/g}$):
+  $$\text{Carbs}_{\text{grams}} = \frac{\text{Target Calories} - (\text{Protein}_{\text{grams}} \times 4) - (\text{Fat}_{\text{grams}} \times 9)}{4}$$
 
 ---
 
-## 3. Browser-Opening Thread
+## 3. Algorithmic Engine Specifications
 
-To deliver a zero-configuration experience, `app.py` boots a daemon thread that waits 1.5 seconds for the socket server to bind, then invokes Python's standard `webbrowser.open()` library:
+### 3.1 Adaptive Split Generator (`services/fitness_engine.py`)
+* **Time Complexity**: $\mathcal{O}(E)$ where $E$ is the exercise catalog size ($|E| = 47$).
+* **Constraint Filtering**: Filters exercises by available equipment ($E_{\text{user}} \subseteq E_{\text{available}}$), user fitness level, and primary/secondary muscle targets.
+* **Compound Exercise Scoring**: Ranks exercises using a deterministic relevance metric based on compound keyword weighting and target rep-ranges.
 
-```python
-import webbrowser
-import threading
-import time
+### 3.2 Schedule Adaptation & Shift Engine (`services/adaptation_engine.py`)
+* **Time Complexity**: $\mathcal{O}(D)$ where $D = 7$ (days in training week).
+* **Graph Shifting**: When an active workout is missed, the adaptation engine shifts the incomplete workout forward to the nearest chronological rest day ($D_{\text{rest}}$), rebalancing remaining weekly volume and preventing consecutive-day overtraining.
 
-def open_browser():
-    time.sleep(1.5)
-    webbrowser.open("http://127.0.0.1:5000")
+### 3.3 Food Macro Substitution Solver (`services/nutrition_engine.py`)
+* **Time Complexity**: $\mathcal{O}(F \log F)$ where $F$ is the food item pool.
+* **Constraint Satisfaction**: Identifies alternatives matching dietary preference (Vegetarian, Vegan, Eggetarian), budget threshold ($\text{Cost} \le \text{Budget}$), and macro equivalence:
+  $$\Delta_{\text{macro}} = w_p |\Delta P| + w_c |\Delta C| + w_f |\Delta F|$$
+  Minimizing $\Delta_{\text{macro}}$ ensures replacement items preserve the meal's nutritional target.
+
+### 3.4 Vector Trigonometry Joint Angle Analyzer (`services/form_analysis.py`)
+* Computes joint angle $\theta$ from 2D coordinate vectors $\vec{u} = A - B$ and $\vec{v} = C - B$:
+  $$\cos \theta = \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\| \|\vec{v}\|} = \frac{u_x v_x + u_y v_y}{\sqrt{u_x^2 + u_y^2} \sqrt{v_x^2 + v_y^2}}$$
+  $$\theta = \arccos\left(\text{clamp}(\cos \theta, -1.0, 1.0)\right) \times \frac{180^\circ}{\pi}$$
+* Evaluates biomechanical ranges in real time (e.g. Squat knee angle: $<100^\circ$ parallel vs $>160^\circ$ standing).
+
+---
+
+## 4. Relational Database Architecture (17 Tables)
+
+```mermaid
+erDiagram
+    users ||--o| user_profiles : "1-to-1 Profile"
+    users ||--o{ user_equipments : "Available Tools"
+    users ||--o{ user_food_preferences : "Diet Rules"
+    users ||--o| nutrition_targets : "Daily Macros"
+    users ||--o{ custom_foods : "User Food Library"
+    users ||--o{ workout_plans : "Weekly Splits"
+    users ||--o{ meal_plans : "Daily Diets"
+    users ||--o{ progress_records : "Weight & Calorie Logs"
+    users ||--o{ completed_workouts : "Workout History"
+    users ||--o{ chat_conversations : "Coach Threads"
+    
+    workout_plans ||--o{ workout_days : "7 Days"
+    workout_days ||--o{ workout_exercises : "Prescribed Sets"
+    workout_exercises }o--|| exercises : "Master Biomechanics"
+    
+    meal_plans ||--o{ meals : "5 Daily Meals"
+    meals }o--|| foods : "Master Food Database"
+    
+    chat_conversations ||--o{ chat_messages : "Messages"
 ```
 
-Setting `app.run(debug=True, use_reloader=False)` ensures that Flask's developmental reloader does not duplicate this background thread or open redundant browser tabs.
+---
+
+## 5. Security, Safety, and Verification Standards
+
+1. **Authentication & Password Security**: Passwords hashed using PBKDF2:SHA256 via Werkzeug (`generate_password_hash`).
+2. **Multi-Tenant Data Isolation**: Database queries strictly filter by `user_id == session['user_id']`. Validated across multi-user test suites.
+3. **Safety & Medical Scope Enforcement**: Rule-based safety classifier rejects medical diagnosis, prescription drug recommendations, and anabolic steroids, redirecting to certified professionals.
+4. **Privacy-Preserving Vision**: Computer vision frames are processed in-memory as ephemeral byte buffers and immediately freed. No biometric or video data is ever stored.
+5. **Comprehensive Test Coverage**: 125 automated unit and integration test assertions verifying mathematical accuracy, database consistency, and fail-safe operation.

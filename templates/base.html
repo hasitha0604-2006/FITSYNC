@@ -7,10 +7,27 @@
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#10b981">
   <title>FitSync AI — Your lifestyle. Your fitness plan.</title>
+  
+  <!-- Immediate Theme Loader to prevent FOUC -->
+  <script>
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('fitsync_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedTheme === 'light') {
+          document.documentElement.classList.add('light');
+        } else {
+          document.documentElement.classList.remove('light');
+        }
+      } catch(e) {}
+    })();
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -84,7 +101,22 @@
       </a>
     </nav>
 
-    <div class="p-4 border-t border-slate-800">
+    <!-- Sidebar Theme Toggle & Logout -->
+    <div class="p-4 border-t border-slate-800 space-y-2">
+      <button 
+        type="button"
+        onclick="toggleGlobalTheme()" 
+        id="sidebar-theme-toggle" 
+        class="flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white transition-all border border-slate-800/80 bg-slate-950/40"
+        title="Toggle Light / Dark Theme"
+      >
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="moon" id="sidebar-theme-icon" class="h-4 w-4 text-emerald-400"></i>
+          <span id="sidebar-theme-text">Dark Theme</span>
+        </div>
+        <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700" id="sidebar-theme-badge">🌙</span>
+      </button>
+
       <a href="{{ url_for('logout') }}" class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-xs font-semibold text-red-400 hover:bg-red-500/10 transition-colors">
         <i data-lucide="log-out" class="h-4.5 w-4.5"></i>
         Logout
@@ -118,10 +150,10 @@
       <i data-lucide="user" class="h-4.5 w-4.5 mb-0.5"></i>
       Profile
     </a>
-    <a href="{{ url_for('settings') }}" class="flex flex-col items-center justify-center p-1.5 text-[9px] font-semibold {{ 'text-primary-400 font-bold' if request.path == '/settings' else 'text-slate-400' }}">
-      <i data-lucide="settings" class="h-4.5 w-4.5 mb-0.5"></i>
-      Settings
-    </a>
+    <button type="button" onclick="toggleGlobalTheme()" class="flex flex-col items-center justify-center p-1.5 text-[9px] font-semibold text-slate-400 hover:text-white">
+      <i data-lucide="sun-moon" class="h-4.5 w-4.5 mb-0.5 text-emerald-400"></i>
+      Theme
+    </button>
   </nav>
   {% endif %}
 
@@ -250,6 +282,60 @@
       alerts.forEach(a => a.remove());
     }, 4000);
 
+    /* ==========================================
+       Global Theme Management (Dark & Light)
+       ========================================== */
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.classList.add('light');
+        if (document.body) document.body.classList.add('theme-light');
+        try { localStorage.setItem('fitsync_theme', 'light'); } catch(e) {}
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.classList.remove('light');
+        if (document.body) document.body.classList.remove('theme-light');
+        try { localStorage.setItem('fitsync_theme', 'dark'); } catch(e) {}
+      }
+      updateThemeUI(theme);
+    }
+
+    function toggleGlobalTheme() {
+      const current = (document.documentElement.getAttribute('data-theme') || localStorage.getItem('fitsync_theme') || 'dark');
+      const nextTheme = current === 'light' ? 'dark' : 'light';
+      applyTheme(nextTheme);
+    }
+
+    function updateThemeUI(theme) {
+      const icon = document.getElementById('sidebar-theme-icon');
+      const text = document.getElementById('sidebar-theme-text');
+      const badge = document.getElementById('sidebar-theme-badge');
+      if (icon && text && badge) {
+        if (theme === 'light') {
+          icon.setAttribute('data-lucide', 'sun');
+          icon.className = 'h-4 w-4 text-amber-500';
+          text.textContent = 'Light Theme';
+          badge.textContent = '☀️';
+        } else {
+          icon.setAttribute('data-lucide', 'moon');
+          icon.className = 'h-4 w-4 text-emerald-400';
+          text.textContent = 'Dark Theme';
+          badge.textContent = '🌙';
+        }
+        if (window.lucide) lucide.createIcons();
+      }
+
+      // Also notify settings page if active
+      if (typeof syncSettingsThemeUI === 'function') {
+        syncSettingsThemeUI(theme);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('fitsync_theme') || 'dark';
+      applyTheme(savedTheme);
+    });
+
     function toggleCoachDrawer() {
       const drawer = document.getElementById('ai-coach-drawer');
       if (drawer) {
@@ -266,6 +352,21 @@
       }
     }
 
+    function escapeDrawerHTML(str) {
+      return (str || '').replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+
+    function formatDrawerMarkdown(txt) {
+      if (!txt) return "";
+      let html = escapeDrawerHTML(txt);
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-emerald-400">$1</strong>');
+      html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+      html = html.replace(/\n/g, '<br/>');
+      return html;
+    }
+
     async function handleCoachSubmit(e) {
       if (e) e.preventDefault();
       const input = document.getElementById('coach-prompt-input');
@@ -277,7 +378,7 @@
         // Append user message
         const uMsg = document.createElement('div');
         uMsg.className = 'flex items-start justify-end gap-2.5';
-        uMsg.innerHTML = `<div class="bg-emerald-500 text-white p-3 rounded-2xl text-xs font-medium max-w-[80%]">${text}</div>`;
+        uMsg.innerHTML = `<div class="bg-emerald-500 text-white p-3 rounded-2xl text-xs font-medium max-w-[80%] shadow-sm">${escapeDrawerHTML(text)}</div>`;
         container.appendChild(uMsg);
         container.scrollTop = container.scrollHeight;
       }
@@ -293,7 +394,7 @@
         if (res.status === 401) {
           if (container) {
             const eMsg = document.createElement('div');
-            eMsg.className = 'text-[11px] text-amber-400 p-2 bg-amber-500/10 rounded-xl font-medium';
+            eMsg.className = 'text-[11px] text-amber-400 p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl font-medium';
             eMsg.textContent = 'Please log in again to use your AI Coach.';
             container.appendChild(eMsg);
           }
@@ -302,7 +403,7 @@
         if (!res.ok) {
           if (container) {
             const eMsg = document.createElement('div');
-            eMsg.className = 'text-[11px] text-red-400 p-2 bg-red-500/10 rounded-xl font-medium';
+            eMsg.className = 'text-[11px] text-red-400 p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl font-medium';
             eMsg.textContent = 'Something went wrong while processing your request.';
             container.appendChild(eMsg);
           }
@@ -313,13 +414,14 @@
         if (container) {
           const cMsg = document.createElement('div');
           cMsg.className = 'flex items-start gap-2.5';
+          const replyBody = formatDrawerMarkdown(data.coach_reply || data.message || 'Got it!');
           cMsg.innerHTML = `
-            <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl shrink-0">
+            <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl shrink-0 border border-emerald-500/20">
               <i data-lucide="bot" class="h-4 w-4"></i>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl text-slate-200 shadow-sm leading-relaxed max-w-[85%] space-y-2">
-              <p>${data.coach_reply || data.message || 'Got it!'}</p>
-              ${data.redirect_url ? `<a href="${data.redirect_url}" class="inline-block mt-2 text-[10px] bg-emerald-500 text-white font-bold px-3 py-1 rounded-lg">View Changes &rarr;</a>` : ''}
+              <p>${replyBody}</p>
+              ${data.redirect_url ? `<a href="${data.redirect_url}" class="inline-flex items-center gap-1 mt-2 text-[10px] bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-3 py-1 rounded-lg shadow-sm transition-all">View Changes &rarr;</a>` : ''}
             </div>
           `;
           container.appendChild(cMsg);
@@ -333,7 +435,7 @@
       } catch (err) {
         if (container) {
           const eMsg = document.createElement('div');
-          eMsg.className = 'text-[11px] text-red-400 p-2 bg-red-500/10 rounded-xl font-medium';
+          eMsg.className = 'text-[11px] text-red-400 p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl font-medium';
           eMsg.textContent = 'Coach connection interrupted. Please ensure backend is running.';
           container.appendChild(eMsg);
         }
