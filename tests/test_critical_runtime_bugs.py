@@ -25,7 +25,11 @@ class CriticalRuntimeBugsTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            User.query.filter(User.email != 'demo@fitsync.ai').delete()
+            User.query.filter(User.email.in_([
+                'demo_meta@fitsync.ai', 'ai_auth@fitsync.ai', 'ai_struct@fitsync.ai',
+                'ai_off@fitsync.ai', 'ai_inv@fitsync.ai', 'ai_persist@fitsync.ai',
+                'ai_roll@fitsync.ai', 'ai_act@fitsync.ai', 'usera_iso@fitsync.ai', 'userb_iso@fitsync.ai'
+            ])).delete()
             db.session.commit()
         except Exception:
             db.session.rollback()

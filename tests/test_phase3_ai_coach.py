@@ -29,7 +29,7 @@ class Phase3AICoachTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            User.query.filter(User.email != 'demo@fitsync.ai').delete()
+            User.query.filter(User.email.in_(['coach_test@fitsync.ai', 'user_b@fitsync.ai'])).delete()
             db.session.commit()
         except Exception:
             db.session.rollback()

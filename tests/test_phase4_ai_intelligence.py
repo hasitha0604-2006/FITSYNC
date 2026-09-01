@@ -28,7 +28,7 @@ class Phase4AIIntelligenceTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            User.query.filter(User.email != 'demo@fitsync.ai').delete()
+            User.query.filter(User.email.in_(['p4_user@fitsync.ai'])).delete()
             db.session.commit()
         except Exception:
             db.session.rollback()

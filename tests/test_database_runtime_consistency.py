@@ -24,11 +24,6 @@ class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
         init_app_database(self.app)
 
     def tearDown(self):
-        try:
-            User.query.filter(User.email != 'demo@fitsync.ai').delete()
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
         db.session.remove()
         self.ctx.pop()
 

@@ -21,8 +21,17 @@ class FitSyncTestCase(unittest.TestCase):
         seed_database()
 
     def tearDown(self):
+        try:
+            User.query.filter(User.email.in_([
+                'newstudent@fitsync.ai', 'persistent_user@fitsync.ai', 'scheduler@fitsync.ai',
+                'budgettest@fitsync.ai', 'customfood@fitsync.ai', 'aidiet@fitsync.ai',
+                'workout_test_user@fitsync.ai', 'coach_user@fitsync.ai', 'casetest@fitsync.ai',
+                'dup@fitsync.ai', 'usera@fitsync.ai', 'userb@fitsync.ai'
+            ])).delete()
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
         db.session.remove()
-        db.drop_all()
         self.ctx.pop()
 
     def test_auth_flow(self):

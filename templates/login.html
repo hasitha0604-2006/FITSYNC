@@ -17,7 +17,31 @@
       <p class="text-slate-400 text-xs mt-1">Log in to your FitSync AI dashboard</p>
     </div>
 
-
+    <!-- Flashed Notification Alerts -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-5 space-y-2 select-none">
+          {% for category, message in messages %}
+            {% if category in ['error', 'danger'] %}
+              <div class="p-3.5 bg-rose-500/10 border border-rose-500/30 text-rose-300 rounded-2xl text-xs flex items-start gap-2.5 shadow-sm">
+                <i data-lucide="alert-circle" class="h-4.5 w-4.5 shrink-0 mt-0.5 text-rose-400"></i>
+                <p class="font-bold leading-relaxed">{{ message }}</p>
+              </div>
+            {% elif category == 'warning' %}
+              <div class="p-3.5 bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded-2xl text-xs flex items-start gap-2.5 shadow-sm">
+                <i data-lucide="alert-triangle" class="h-4.5 w-4.5 shrink-0 mt-0.5 text-amber-400"></i>
+                <p class="font-bold leading-relaxed">{{ message }}</p>
+              </div>
+            {% else %}
+              <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 rounded-2xl text-xs flex items-start gap-2.5 shadow-sm">
+                <i data-lucide="check-circle" class="h-4.5 w-4.5 shrink-0 mt-0.5 text-emerald-400"></i>
+                <p class="font-bold leading-relaxed">{{ message }}</p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
     <form method="POST" action="{{ url_for('login') }}" class="space-y-4">
       <div>

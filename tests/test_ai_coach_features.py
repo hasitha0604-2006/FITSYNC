@@ -17,8 +17,15 @@ class FitSyncAICoachTestCase(unittest.TestCase):
         seed_database()
 
     def tearDown(self):
+        try:
+            User.query.filter(User.email.in_([
+                'usera@fitsync.ai', 'userb@fitsync.ai', 'student@fitsync.ai',
+                'safety_user@fitsync.ai', 'sports_user@fitsync.ai', 'persistence_test@fitsync.ai'
+            ])).delete()
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
         db.session.remove()
-        db.drop_all()
         self.ctx.pop()
 
     def _create_user(self, email, name="Test User"):

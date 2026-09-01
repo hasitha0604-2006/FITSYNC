@@ -28,7 +28,16 @@ class Phase6HardeningTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            User.query.filter(User.email != 'demo@fitsync.ai').delete()
+            User.query.filter(User.email.in_([
+                'auth_p6@fitsync.ai', 'usera_p6@fitsync.ai', 'userb_p6@fitsync.ai',
+                'usera_idor@fitsync.ai', 'userb_idor@fitsync.ai', 'usera_cf@fitsync.ai',
+                'userb_cf@fitsync.ai', 'ai_val@fitsync.ai', 'conf_req@fitsync.ai',
+                'inj@fitsync.ai', 'scope@fitsync.ai', 'safety@fitsync.ai',
+                'fallback@fitsync.ai', 'usera_chat@fitsync.ai', 'userb_chat@fitsync.ai',
+                'wk_int@fitsync.ai', 'nut_int@fitsync.ai', 'budget@fitsync.ai',
+                'cf_iso_a@fitsync.ai', 'cf_iso_b@fitsync.ai', 'prog_int@fitsync.ai',
+                'input_val@fitsync.ai', 'err_hndl@fitsync.ai', 'persist@fitsync.ai'
+            ])).delete()
             db.session.commit()
         except Exception:
             db.session.rollback()

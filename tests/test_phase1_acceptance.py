@@ -12,17 +12,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
 from app import app, db, User, UserProfile, WorkoutPlan, MealPlan, CustomFood, seed_database, run_migrations
-from reset_database import reset_database
 
 class Phase1AcceptanceTestCase(unittest.TestCase):
 
     def setUp(self):
-        # Perform explicit developer database reset before test run
-        reset_database()
         self.app = app
         self.app.config['TESTING'] = True
         self.app.config['WTF_CSRF_ENABLED'] = False
         self.client = self.app.test_client()
+        with self.app.app_context():
+            db.create_all()
+            seed_database()
+            # Clean only test users from previous runs
+            try:
+                User.query.filter(User.email.in_(['user_alpha_p1@fitsync.ai', 'user_beta_p1@fitsync.ai'])).delete()
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+
+    def tearDown(self):
+        with self.app.app_context():
+            try:
+                User.query.filter(User.email.in_(['user_alpha_p1@fitsync.ai', 'user_beta_p1@fitsync.ai'])).delete()
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
 
     def test_full_phase1_persistence_and_isolation_lifecycle(self):
         print("\n==================================================")

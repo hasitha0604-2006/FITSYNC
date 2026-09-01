@@ -22,7 +22,11 @@ class AuthenticationConsistencyTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            User.query.filter(User.email != 'demo@fitsync.ai').delete()
+            User.query.filter(User.email.in_([
+                'new_athlete@fitsync.ai',
+                'normalized_user@fitsync.ai',
+                'pass_test@fitsync.ai'
+            ])).delete()
             db.session.commit()
         except Exception:
             db.session.rollback()

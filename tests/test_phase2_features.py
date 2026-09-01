@@ -31,6 +31,16 @@ class Phase2FeaturesTestCase(unittest.TestCase):
         seed_database()
 
     def tearDown(self):
+        try:
+            User.query.filter(User.email.in_([
+                'dash_user@fitsync.ai', 'prof_user@fitsync.ai', 'ex_lib@fitsync.ai',
+                'workout_exec@fitsync.ai', 'sub_user@fitsync.ai', 'cf_user@fitsync.ai',
+                'meal_sub@fitsync.ai', 'prog_user@fitsync.ai', 'sec_usera@fitsync.ai',
+                'sec_userb@fitsync.ai', 'metrics_test@fitsync.ai', 'bounds_test@fitsync.ai'
+            ])).delete()
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
         db.session.remove()
         self.ctx.pop()
 
