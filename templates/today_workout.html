@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-900 text-slate-100 w-full font-sans">
+<div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-950 text-slate-100 w-full font-sans">
   
   <!-- Header controls -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
     <div>
       <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Today's Workout Plan</h1>
       <p class="text-xs text-slate-400 mt-1">Check off exercise sets, view graphical demonstrations, or swap movements to match available equipment.</p>
     </div>
     
     <!-- Weekday Selection Tabs -->
-    <div class="flex flex-wrap gap-1 bg-slate-800 p-1.5 rounded-xl border border-slate-700 w-fit">
+    <div class="flex flex-wrap gap-1 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 w-fit shadow-md">
       {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
       <a
         href="{{ url_for('today_workout', day=day) }}"
-        class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all {{ 'bg-primary-500 text-white shadow' if day_name == day else 'text-slate-400 hover:text-white' }}"
+        class="px-3.5 py-1.5 rounded-xl text-xs font-black transition-all {{ 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20' if day_name == day else 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}"
       >
         {{ day[:3] }}
       </a>
@@ -24,16 +24,19 @@
   </div>
 
   <!-- Rebuild Week Adaptive Banner -->
-  <section class="bg-gradient-to-r from-slate-950 to-slate-900 text-white p-5 rounded-2xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+  <section class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white p-6 rounded-3xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
     <div class="space-y-1">
-      <h3 class="font-bold text-sm text-primary-400 uppercase tracking-wider">Missed Workouts?</h3>
+      <div class="flex items-center gap-2">
+        <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Adaptive Engine</span>
+        <h3 class="font-black text-sm text-white uppercase tracking-wider">Missed Past Workouts?</h3>
+      </div>
       <p class="text-xs text-slate-400 max-w-xl leading-relaxed">
-        Fitting exams, lab sessions, and gym time is hard. If you missed your previous routine, FitSync AI can rearrange the schedule. We'll shift exercises to your upcoming Rest Days so you don't fall behind.
+        Fitting classes, exams, and gym time is hard. If you missed routines earlier this week, click Rebuild to shift exercises into upcoming Rest Days so you hit your targets.
       </p>
     </div>
     <button
       onclick="rebuildRemainingWeek()"
-      class="shrink-0 flex items-center justify-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold px-4 py-3 rounded-xl transition-colors shadow-lg"
+      class="shrink-0 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-black px-5 py-3 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
     >
       <i data-lucide="refresh-cw" class="h-4 w-4"></i>
       Rebuild Remaining Week
@@ -42,11 +45,13 @@
 
   <!-- Workout details -->
   {% if not workout_day or workout_day.is_rest_day %}
-    <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-10 text-center shadow-lg select-none">
-      <i data-lucide="award" class="h-10 w-10 text-primary-400 mx-auto mb-3"></i>
-      <h2 class="text-lg font-bold text-white">Active Rest & Recovery Day</h2>
+    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-12 text-center shadow-xl select-none">
+      <div class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center mx-auto mb-4 text-emerald-400 shadow-sm">
+        <i data-lucide="sparkles" class="h-7 w-7"></i>
+      </div>
+      <h2 class="text-xl font-black text-white">Active Rest & Recovery Day</h2>
       <p class="text-xs text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
-        Muscles grow during rest! Today has no scheduled resistance training. Focus on stretching, walking, eating to hit your calorie budget, and staying hydrated.
+        Muscles repair and grow during rest! Today has no scheduled resistance training. Focus on mobility, light walking, and meeting your daily protein goals.
       </p>
     </div>
   {% else %}
@@ -56,11 +61,11 @@
 
     <div class="space-y-6">
       <!-- Progress Bar & Actions Bar -->
-      <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 shadow-lg space-y-4 select-none">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs border-b border-slate-700 pb-3">
+      <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 select-none">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs border-b border-slate-800 pb-4">
           <div>
-            <span class="font-bold text-white text-sm">
-              Workout Focus: <span class="text-primary-400 font-black uppercase">{{ workout_day.focus }}</span>
+            <span class="font-bold text-white text-base">
+              Focus: <span class="text-emerald-400 font-black uppercase">{{ workout_day.focus }}</span>
             </span>
             {% if workout_day.duration_minutes %}
             <span class="text-slate-400 text-xs ml-2"> (~{{ workout_day.duration_minutes }} min)</span>
@@ -69,51 +74,51 @@
           <div class="flex flex-wrap items-center gap-2">
             <button
               onclick="openChangeFocusModal()"
-              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
+              class="flex items-center gap-1.5 bg-slate-950/80 hover:bg-slate-800 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-xl transition-all border border-slate-800 shadow-sm"
             >
               <i data-lucide="repeat" class="h-3.5 w-3.5 text-emerald-400"></i>
               Change Focus
             </button>
             <button
               onclick="adjustDurationModal()"
-              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
+              class="flex items-center gap-1.5 bg-slate-950/80 hover:bg-slate-800 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-xl transition-all border border-slate-800 shadow-sm"
             >
               <i data-lucide="clock" class="h-3.5 w-3.5 text-amber-400"></i>
-              30/45/60m
+              Duration
             </button>
             <button
               onclick="adjustDifficultyModal('easier')"
-              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
+              class="flex items-center gap-1.5 bg-slate-950/80 hover:bg-slate-800 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-xl transition-all border border-slate-800 shadow-sm"
             >
               <i data-lucide="shield-check" class="h-3.5 w-3.5 text-cyan-400"></i>
               Easier
             </button>
             <button
               onclick="adjustDifficultyModal('harder')"
-              class="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs px-3 py-1.5 rounded-xl transition-all border border-slate-600"
+              class="flex items-center gap-1.5 bg-slate-950/80 hover:bg-slate-800 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-xl transition-all border border-slate-800 shadow-sm"
             >
               <i data-lucide="zap" class="h-3.5 w-3.5 text-rose-400"></i>
               Harder
             </button>
             <button
               onclick="startWorkoutRunner()"
-              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow"
+              class="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-xs px-4 py-2 rounded-xl transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
             >
               <i data-lucide="play" class="h-3.5 w-3.5 fill-white"></i>
-              Start Workout
+              Start Session
             </button>
           </div>
         </div>
 
-        <div class="space-y-1">
+        <div class="space-y-1.5">
           <div class="flex items-center justify-between text-xs text-slate-400 font-semibold">
-            <span>Overall Progress: <strong class="text-white">{{ completed }}</strong> of {{ total }} exercises ({{ progress }}%)</span>
+            <span>Overall Session Progress: <strong class="text-white font-extrabold">{{ completed }}</strong> of {{ total }} exercises ({{ progress }}%)</span>
             {% if completed == total and total > 0 %}
-            <span class="text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle" class="h-3.5 w-3.5"></i> Complete!</span>
+            <span class="text-emerald-400 font-black flex items-center gap-1"><i data-lucide="check-circle" class="h-3.5 w-3.5"></i> Session Complete!</span>
             {% endif %}
           </div>
-          <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-700">
-            <div class="h-full bg-primary-500 rounded-full transition-all duration-500" style="width: {{ progress }}%"></div>
+          <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+            <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]" style="width: {{ progress }}%"></div>
           </div>
         </div>
 

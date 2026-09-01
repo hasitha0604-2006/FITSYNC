@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-1 flex flex-col h-[calc(100vh-4rem)] md:h-screen bg-slate-900 text-slate-100 overflow-hidden">
+<div class="flex-1 flex flex-col h-[calc(100vh-4rem)] md:h-screen bg-slate-950 text-slate-100 overflow-hidden">
   
   <!-- AI Coach Top Header -->
-  <header class="p-4 md:px-6 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between shrink-0 backdrop-blur-md">
+  <header class="p-4 md:px-6 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between shrink-0 backdrop-blur-xl">
     <div class="flex items-center gap-3.5">
       <div class="relative">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-lg shadow-emerald-500/20">
-          <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-emerald-400">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 shadow-lg shadow-emerald-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-emerald-400">
             <i data-lucide="bot" class="h-6 w-6"></i>
           </div>
         </div>
-        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-950 rounded-full shadow-[0_0_8px_#10b981]"></span>
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="font-bold text-base md:text-lg text-white tracking-tight">FitSync AI Coach</h1>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+          <h1 class="font-black text-base md:text-lg text-white tracking-tight">FitSync AI Coach</h1>
+          <span class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Online</span>
         </div>
         <p class="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
           <i data-lucide="sparkles" class="h-3.5 w-3.5 text-emerald-400"></i>
@@ -26,41 +26,41 @@
       </div>
     </div>
 
-    <button id="clearChatBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors border border-slate-700">
+    <button id="clearChatBtn" class="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1.5 transition-all border border-slate-800 hover:border-slate-700 shadow-sm">
       <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
       Clear Chat
     </button>
   </header>
 
   <!-- Quick Actions Bar -->
-  <div class="px-4 py-2.5 bg-slate-950/40 border-b border-slate-800/60 overflow-x-auto flex items-center gap-2 shrink-0 scrollbar-none">
-    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 shrink-0 mr-1">Quick Actions:</span>
+  <div class="px-4 py-2.5 bg-slate-950/60 border-b border-slate-800/80 overflow-x-auto flex items-center gap-2 shrink-0 scrollbar-none">
+    <span class="text-[11px] font-black uppercase tracking-wider text-slate-500 shrink-0 mr-1">Quick Actions:</span>
     
-    <button onclick="sendQuickAction('Explain today workout')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('Explain today workout')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="dumbbell" class="h-3.5 w-3.5 text-emerald-400"></i>
       Today's Workout
     </button>
-    <button onclick="sendQuickAction('How do I perform a bicep curl?')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('How do I perform a bicep curl?')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="help-circle" class="h-3.5 w-3.5 text-emerald-400"></i>
       Exercise Help
     </button>
-    <button onclick="sendQuickAction('I only have 30 minutes today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('I only have 30 minutes today')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="clock" class="h-3.5 w-3.5 text-emerald-400"></i>
       30-Min Express
     </button>
-    <button onclick="sendQuickAction('I only have dumbbells today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('I only have dumbbells today')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="shield-alert" class="h-3.5 w-3.5 text-emerald-400"></i>
       Dumbbells Only
     </button>
-    <button onclick="sendQuickAction('Suggest a high-protein dinner')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('Suggest a high-protein dinner')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="apple" class="h-3.5 w-3.5 text-emerald-400"></i>
       High-Protein Meal
     </button>
-    <button onclick="sendQuickAction('How am I progressing?')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('How am I progressing?')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="trending-up" class="h-3.5 w-3.5 text-emerald-400"></i>
       Progress Check
     </button>
-    <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="activity" class="h-3.5 w-3.5 text-emerald-400"></i>
       Sports Warm-Up
     </button>
@@ -70,20 +70,20 @@
   <div id="chatMessages" class="flex-1 p-4 md:p-6 overflow-y-auto space-y-4 scroll-smooth">
     
     <!-- Welcome Greeting Message -->
-    <div class="flex gap-3 max-w-3xl">
-      <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-        <i data-lucide="bot" class="h-4.5 w-4.5"></i>
+    <div class="flex gap-3.5 max-w-3xl">
+      <div class="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+        <i data-lucide="bot" class="h-5 w-5"></i>
       </div>
-      <div class="bg-slate-800/90 border border-slate-700/80 p-4 rounded-2xl rounded-tl-sm text-sm text-slate-200 leading-relaxed shadow-sm">
-        <p class="font-semibold text-white mb-1.5">👋 Hi {{ profile.name if profile and profile.name else 'there' }}!</p>
-        <p>I'm your <strong>FitSync AI Coach</strong>. I'm connected directly to your profile, equipment setup, nutrition targets, and workout split.</p>
-        <div class="mt-3 p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 flex flex-wrap gap-2 text-xs text-slate-300">
-          <span class="px-2 py-1 bg-slate-800 rounded-md">🎯 Goal: {{ profile.fitness_goal if profile else 'Fitness' }}</span>
-          <span class="px-2 py-1 bg-slate-800 rounded-md">🏋️ Env: {{ profile.workout_environment if profile else 'Gym' }}</span>
-          <span class="px-2 py-1 bg-slate-800 rounded-md">🥗 Diet: {{ profile.dietary_preference if profile else 'Eggetarian' }}</span>
-          <span class="px-2 py-1 bg-slate-800 rounded-md">💰 Budget: ₹{{ profile.daily_food_budget if profile else 150 }}/day</span>
+      <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 p-5 rounded-3xl rounded-tl-sm text-sm text-slate-100 leading-relaxed shadow-xl space-y-3">
+        <p class="font-extrabold text-white text-base">👋 Hi {{ profile.name if profile and profile.name else 'there' }}!</p>
+        <p class="text-slate-300">I'm your <strong>FitSync AI Coach</strong>. I'm connected directly to your SQLite profile, available equipment setup, nutrition targets, and workout split.</p>
+        <div class="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800 flex flex-wrap gap-2 text-xs text-slate-300">
+          <span class="px-2.5 py-1 bg-slate-900 rounded-xl border border-slate-800 font-semibold">🎯 Goal: {{ profile.fitness_goal if profile else 'Fitness' }}</span>
+          <span class="px-2.5 py-1 bg-slate-900 rounded-xl border border-slate-800 font-semibold">🏋️ Env: {{ profile.workout_environment if profile else 'Gym' }}</span>
+          <span class="px-2.5 py-1 bg-slate-900 rounded-xl border border-slate-800 font-semibold">🥗 Diet: {{ profile.dietary_preference if profile else 'Eggetarian' }}</span>
+          <span class="px-2.5 py-1 bg-slate-900 rounded-xl border border-slate-800 font-semibold text-emerald-400">💰 Budget: ₹{{ profile.daily_food_budget if profile else 150 }}/day</span>
         </div>
-        <p class="mt-3 text-slate-400">Ask me anything about workouts, exercise form, meal swaps, or sports conditioning!</p>
+        <p class="text-slate-400 text-xs">Ask me anything about workouts, exercise form, meal swaps, or sports conditioning!</p>
       </div>
     </div>
 
@@ -91,10 +91,10 @@
 
   <!-- Typing Indicator -->
   <div id="typingIndicator" class="hidden px-4 md:px-6 py-2 flex items-center gap-3">
-    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+    <div class="w-8 h-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
       <i data-lucide="bot" class="h-4.5 w-4.5"></i>
     </div>
-    <div class="bg-slate-800/90 border border-slate-700/80 px-4 py-2.5 rounded-2xl flex items-center gap-1.5">
+    <div class="bg-slate-900/90 border border-slate-800 px-4 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-sm">
       <span class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce"></span>
       <span class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
       <span class="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
@@ -103,13 +103,13 @@
   </div>
 
   <!-- Chat Input Form -->
-  <div class="p-4 bg-slate-900 border-t border-slate-800 shrink-0">
-    <form id="chatForm" class="max-w-4xl mx-auto flex items-center gap-2">
+  <div class="p-4 bg-slate-900/80 backdrop-blur-xl border-t border-slate-800 shrink-0">
+    <form id="chatForm" class="max-w-4xl mx-auto flex items-center gap-2.5">
       <input type="text" id="userInput" placeholder="Ask your FitSync coach anything (e.g. 'Explain today\'s workout' or 'Swap my lunch')..." 
-        class="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner"
+        class="flex-1 bg-slate-950/80 border border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner font-medium"
         autocomplete="off" required />
       
-      <button type="submit" id="sendBtn" class="px-5 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-600/20 disabled:opacity-50">
+      <button type="submit" id="sendBtn" class="px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 hover:scale-[1.02]">
         <span>Send</span>
         <i data-lucide="send" class="h-4 w-4"></i>
       </button>
@@ -240,14 +240,16 @@
     }
 
     const msgHTML = `
-      <div class="flex gap-3 max-w-3xl">
-        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-          <i data-lucide="bot" class="h-4.5 w-4.5"></i>
+      <div class="flex gap-3.5 max-w-3xl">
+        <div class="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+          <i data-lucide="bot" class="h-5 w-5"></i>
         </div>
-        <div class="bg-slate-800/90 border border-slate-700/80 p-4 rounded-2xl rounded-tl-sm text-sm text-slate-200 leading-relaxed shadow-sm">
+        <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 p-5 rounded-3xl rounded-tl-sm text-sm text-slate-100 leading-relaxed shadow-xl space-y-2">
           <div>${formatMarkdown(text)}</div>
           ${extraHTML}
-          <span class="text-[10px] text-slate-400 mt-2 block font-medium">${timeStr}</span>
+          <span class="text-[10px] text-slate-400 mt-2 block font-medium flex items-center gap-1">
+            <i data-lucide="clock" class="h-3 w-3 text-slate-500"></i> ${timeStr}
+          </span>
         </div>
       </div>
     `;

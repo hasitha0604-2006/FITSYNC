@@ -13,20 +13,25 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     
     <!-- Log Weight Form -->
-    <section class="bg-white border rounded-2xl p-5 shadow-sm lg:col-span-1 flex flex-col justify-between">
+    <section class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl lg:col-span-1 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-300">
       <div class="space-y-3 select-none">
-        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5 uppercase tracking-wide">
-          <i data-lucide="scale" class="h-4.5 w-4.5 text-primary-500"></i>
-          Weight Tracker
-        </h3>
-        <p class="text-xs text-slate-450 leading-relaxed">
-          Log your weight regularly. Fitsync AI automatically scales macro recommendations if your base metabolic weight shifts.
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl shadow-sm">
+            <i data-lucide="scale" class="h-5 w-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-white text-base">Weight Tracker</h3>
+            <p class="text-xs text-slate-400">Log body weight shifts</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Log your weight regularly. FitSync AI automatically recalibrates your BMR, TDEE, and macro targets as your metrics change.
         </p>
       </div>
 
-      <form id="weight-log-form" onsubmit="logWeight(event)" class="mt-4 space-y-3 text-xs">
+      <form id="weight-log-form" onsubmit="logWeight(event)" class="mt-5 space-y-3 text-xs">
         <div>
-          <label class="block text-[10px] text-slate-450 uppercase font-bold tracking-wide mb-1">Body Weight (kg)</label>
+          <label class="block text-[10px] text-slate-400 uppercase font-black tracking-wider mb-1.5">Current Weight (kg)</label>
           <div class="flex gap-2">
             <input
               type="number"
@@ -34,13 +39,13 @@
               id="log-weight-input"
               required
               value="{{ profile.weight }}"
-              class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-850 focus:outline-none focus:border-primary-500 font-semibold"
+              class="flex-1 bg-slate-950/80 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-emerald-500 font-bold"
             />
             <button
               type="submit"
-              class="bg-primary-500 hover:bg-primary-600 text-white font-bold px-4 py-2 rounded-lg transition-colors shrink-0"
+              class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 shrink-0 hover:scale-[1.02]"
             >
-              Log Weight
+              Log Entry
             </button>
           </div>
         </div>
@@ -48,61 +53,77 @@
     </section>
 
     <!-- Historical Telemetry Overview -->
-    <section class="bg-slate-900 text-white border rounded-2xl p-5 shadow-sm lg:col-span-2 flex flex-col justify-between">
+    <section class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 text-white rounded-3xl p-6 shadow-xl lg:col-span-2 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-300">
       <div class="space-y-1 select-none">
-        <h3 class="font-bold text-primary-400 text-xs uppercase tracking-wider">Historical Telemetry</h3>
-        <p class="text-slate-400 text-xs">Adherence patterns based on SQLite database queries.</p>
+        <div class="flex items-center justify-between">
+          <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">Historical Analytics</span>
+          <span class="text-xs text-slate-400 font-mono">SQLite Data Driven</span>
+        </div>
+        <h3 class="font-extrabold text-lg text-white mt-1">Biometric Trend Telemetry</h3>
+        <p class="text-slate-400 text-xs">Adherence patterns, progression curves, and body composition velocity.</p>
       </div>
 
-      <div class="grid grid-cols-3 gap-4 text-center my-4">
-        <div class="p-3 bg-slate-800 border border-slate-700/50 rounded-xl">
-          <span class="block text-[9px] text-slate-450 uppercase font-bold">Starting Weight</span>
-          <span id="start-weight-span" class="block text-lg font-black text-white mt-1">--</span>
+      <div class="grid grid-cols-3 gap-3.5 text-center my-5">
+        <div class="p-3.5 bg-slate-950/60 border border-slate-800/80 rounded-2xl">
+          <span class="block text-[9px] text-slate-400 uppercase font-black tracking-wider">Starting Weight</span>
+          <span id="start-weight-span" class="block text-xl font-black text-white mt-1">--</span>
         </div>
         
-        <div class="p-3 bg-slate-800 border border-slate-700/50 rounded-xl">
-          <span class="block text-[9px] text-slate-450 uppercase font-bold">Latest Weight</span>
-          <span id="latest-weight-span" class="block text-lg font-black text-white mt-1">--</span>
+        <div class="p-3.5 bg-slate-950/60 border border-slate-800/80 rounded-2xl">
+          <span class="block text-[9px] text-slate-400 uppercase font-black tracking-wider">Latest Weight</span>
+          <span id="latest-weight-span" class="block text-xl font-black text-emerald-400 mt-1">--</span>
         </div>
 
-        <div class="p-3 bg-slate-800 border border-slate-700/50 rounded-xl">
-          <span class="block text-[9px] text-slate-450 uppercase font-bold">Goal State</span>
-          <span class="block text-xs font-black text-primary-400 capitalize mt-1.5 truncate">
+        <div class="p-3.5 bg-slate-950/60 border border-slate-800/80 rounded-2xl">
+          <span class="block text-[9px] text-slate-400 uppercase font-black tracking-wider">Target Goal</span>
+          <span class="block text-xs font-black text-teal-400 capitalize mt-2 truncate">
             {{ profile.fitness_goal }}
           </span>
         </div>
       </div>
 
-      <p class="text-[10px] text-slate-450 leading-relaxed select-none">
-        💡 <strong class="text-slate-300">Coach Insight:</strong> Calorie and macronutrient compliance percentages are calculated using actual foods loaded from the database versus custom targets.
+      <p class="text-xs text-slate-400 leading-relaxed select-none bg-slate-950/40 p-3 rounded-xl border border-slate-800/80">
+        💡 <strong class="text-white">Coach Insight:</strong> Calorie and macronutrient compliance percentages are computed directly against your daily recorded logs.
       </p>
     </section>
 
   </div>
 
   <!-- Empty State Container -->
-  <div id="progress-empty-state" class="hidden bg-white border rounded-2xl p-10 text-center text-slate-450 shadow-sm select-none">
-    <div class="p-3 bg-slate-50 text-slate-400 rounded-2xl w-fit mx-auto mb-3">
-      <i data-lucide="line-chart" class="h-7 w-7"></i>
+  <div id="progress-empty-state" class="hidden bg-slate-900/80 backdrop-blur-xl border border-dashed border-slate-800 rounded-3xl p-12 text-center text-slate-400 shadow-xl select-none">
+    <div class="p-3 bg-slate-950 text-emerald-400 rounded-2xl w-fit mx-auto mb-3 border border-slate-800">
+      <i data-lucide="line-chart" class="h-8 w-8"></i>
     </div>
-    <h3 class="font-bold text-slate-800 text-sm">Start logging your progress</h3>
-    <p class="text-xs mt-1 text-slate-500">Log your first weight entry above to unlock history and analytics charts here.</p>
+    <h3 class="font-extrabold text-white text-base">Start Logging Your Progress</h3>
+    <p class="text-xs mt-1.5 text-slate-400 max-w-sm mx-auto">Log your first weight entry above to unlock history charts, progression curves, and trend analytics.</p>
   </div>
 
   <!-- Chart.js Graphical Visualizer Grid -->
   <div id="progress-charts-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     
     <!-- Weight Trend -->
-    <div class="bg-white border rounded-2xl p-5 shadow-sm space-y-4">
-      <h4 class="font-bold text-xs uppercase tracking-wider text-slate-450">Weight Trend Line (7 Days)</h4>
+    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 hover:border-emerald-500/30 transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <h4 class="font-extrabold text-xs uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+          <i data-lucide="trending-up" class="h-4 w-4"></i>
+          Weight Trend Curve (7 Days)
+        </h4>
+        <span class="text-[10px] text-slate-400 font-mono">kg vs time</span>
+      </div>
       <div class="h-64 relative">
         <canvas id="weight-chart"></canvas>
       </div>
     </div>
 
     <!-- Calories compliance -->
-    <div class="bg-white border rounded-2xl p-5 shadow-sm space-y-4">
-      <h4 class="font-bold text-xs uppercase tracking-wider text-slate-450">Calorie Adherence History</h4>
+    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 hover:border-emerald-500/30 transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <h4 class="font-extrabold text-xs uppercase tracking-wider text-teal-400 flex items-center gap-2">
+          <i data-lucide="zap" class="h-4 w-4"></i>
+          Calorie Adherence History
+        </h4>
+        <span class="text-[10px] text-slate-400 font-mono">kcal vs target</span>
+      </div>
       <div class="h-64 relative">
         <canvas id="calorie-chart"></canvas>
       </div>

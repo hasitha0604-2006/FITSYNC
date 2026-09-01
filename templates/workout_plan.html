@@ -82,24 +82,27 @@
 
   {# ── Weekly Progress Bar ── #}
   {% if total_workout_days > 0 %}
-  <div class="bg-white border rounded-xl px-5 py-4 mb-6 shadow-sm">
-    <div class="flex items-center justify-between mb-2">
-      <span class="text-xs font-bold text-slate-700">Weekly Progress</span>
-      <span class="text-xs font-semibold text-slate-500">{{ completed_days }}/{{ total_workout_days }} workouts</span>
+  <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl px-6 py-5 mb-6 shadow-xl">
+    <div class="flex items-center justify-between mb-2.5">
+      <span class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+        <i data-lucide="trending-up" class="h-4 w-4 text-emerald-400"></i>
+        Weekly Split Adherence
+      </span>
+      <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">{{ completed_days }}/{{ total_workout_days }} workouts completed</span>
     </div>
-    <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+    <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
       {% set pct = ((completed_days / total_workout_days * 100)|round|int) if total_workout_days > 0 else 0 %}
-      <div class="h-full bg-primary-500 rounded-full transition-all duration-700" style="width: {{ pct }}%"></div>
+      <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(16,185,129,0.4)]" style="width: {{ pct }}%"></div>
     </div>
-    <div class="flex justify-between mt-1.5">
+    <div class="flex justify-between mt-2">
       {% for d in plan.days | sort(attribute='day_number') %}
         {% if not d.is_rest_day %}
           {% if d.is_completed %}
-            <div class="w-4 h-4 rounded-full bg-primary-500 flex items-center justify-center" title="{{ d.day_name }}: {{ d.focus }}">
-              <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+            <div class="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_8px_#10b981]" title="{{ d.day_name }}: {{ d.focus }}">
+              <svg class="w-2.5 h-2.5 text-slate-950 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
             </div>
           {% else %}
-            <div class="w-4 h-4 rounded-full bg-slate-200 border-2 border-slate-300" title="{{ d.day_name }}: Upcoming"></div>
+            <div class="w-4 h-4 rounded-full bg-slate-900 border border-slate-700" title="{{ d.day_name }}: Upcoming"></div>
           {% endif %}
         {% endif %}
       {% endfor %}
@@ -132,80 +135,81 @@
 
       {# ── Card border & bg by state ── #}
       {% if state == "today" %}
-        {% set card_cls = "border-primary-400 ring-2 ring-primary-400/30 bg-white shadow-md" %}
+        {% set card_cls = "border-emerald-500/80 ring-2 ring-emerald-500/30 bg-slate-900/90 shadow-lg shadow-emerald-500/10" %}
       {% elif state == "completed" %}
-        {% set card_cls = "border-emerald-400/60 bg-emerald-50/40 shadow-sm" %}
+        {% set card_cls = "border-emerald-500/40 bg-emerald-950/20 shadow-sm" %}
       {% elif state == "missed" %}
-        {% set card_cls = "border-amber-400/50 bg-amber-50/30 shadow-sm" %}
+        {% set card_cls = "border-amber-500/40 bg-amber-950/20 shadow-sm" %}
       {% elif state == "skipped" %}
-        {% set card_cls = "border-slate-300 bg-slate-50 shadow-sm opacity-70" %}
+        {% set card_cls = "border-slate-800 bg-slate-950/40 shadow-sm opacity-60" %}
       {% elif state == "rest" %}
-        {% set card_cls = "border-slate-200 bg-slate-50/60 shadow-sm" %}
+        {% set card_cls = "border-slate-800/80 bg-slate-950/40 shadow-sm" %}
       {% else %}
-        {% set card_cls = "border-slate-200 bg-white shadow-sm" %}
+        {% set card_cls = "border-slate-800 bg-slate-900/80 shadow-sm" %}
       {% endif %}
 
-      <div class="border rounded-2xl p-4 flex flex-col justify-between {{ card_cls }} hover:shadow-md transition-all relative">
+      <div class="border rounded-3xl p-5 flex flex-col justify-between {{ card_cls }} hover:border-slate-700 hover:shadow-xl transition-all relative">
 
         {# TODAY glow accent #}
         {% if state == "today" %}
-        <div class="absolute top-0 left-0 right-0 h-1 bg-primary-500 rounded-t-2xl"></div>
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-t-3xl shadow-[0_0_8px_#10b981]"></div>
         {% endif %}
 
         <div>
           {# Day header #}
           <div class="flex items-center justify-between mb-3">
             <div>
-              <span class="text-sm font-black text-slate-800">{{ day.day_name }}</span>
+              <span class="text-sm font-extrabold text-white">{{ day.day_name }}</span>
               {% if is_today %}
-                <span class="ml-1.5 inline-block text-[9px] font-black uppercase tracking-wider bg-primary-500 text-white px-1.5 py-0.5 rounded">TODAY</span>
+                <span class="ml-1.5 inline-block text-[9px] font-black uppercase tracking-wider bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full shadow-sm">TODAY</span>
               {% endif %}
             </div>
 
             {# State badge #}
             {% if state == "completed" %}
-              <span class="flex items-center gap-0.5 text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+              <span class="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                 Done
               </span>
             {% elif state == "missed" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">Missed</span>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-0.5 rounded-full">Missed</span>
             {% elif state == "skipped" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">Skipped</span>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Skipped</span>
             {% elif state == "rest" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full">Rest</span>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800/80 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Rest</span>
             {% elif state == "today" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">Active</span>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2.5 py-0.5 rounded-full">Active</span>
             {% else %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Upcoming</span>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Upcoming</span>
             {% endif %}
           </div>
 
           {# Focus #}
           <div class="mb-3">
             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Focus</p>
-            <p class="text-xs font-bold text-slate-800 mt-0.5">{{ day.focus }}</p>
+            <p class="text-xs font-black text-white mt-0.5">{{ day.focus }}</p>
           </div>
 
           {# Rest day content #}
           {% if state == "rest" %}
-            <div class="py-4 text-center">
-              <i data-lucide="moon" class="h-8 w-8 text-slate-300 mx-auto mb-1.5"></i>
-              <p class="text-[10px] text-slate-400 font-semibold">Recovery & Rest</p>
-              <p class="text-[9px] text-slate-400 mt-0.5">Muscles grow during rest. Stay hydrated and sleep well.</p>
+            <div class="py-5 text-center">
+              <i data-lucide="moon" class="h-8 w-8 text-slate-500 mx-auto mb-2"></i>
+              <p class="text-[11px] text-slate-300 font-bold">Recovery & Rest</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">Muscles grow during rest. Stay hydrated and hit daily protein.</p>
             </div>
 
           {# Workout day content #}
           {% else %}
             {# Duration + exercise count #}
-            <div class="flex items-center gap-3 text-[10px] text-slate-500 mb-2.5">
-              <span class="flex items-center gap-0.5">
-                <i data-lucide="dumbbell" class="h-3 w-3 text-slate-400"></i>
+            {# Duration + exercise count #}
+            <div class="flex items-center gap-3 text-[10px] text-slate-400 mb-3">
+              <span class="flex items-center gap-1 font-semibold">
+                <i data-lucide="dumbbell" class="h-3 w-3 text-emerald-400"></i>
                 {{ day.exercises | length }} exercises
               </span>
               {% if day.duration_minutes and day.duration_minutes > 0 %}
-              <span class="flex items-center gap-0.5">
-                <i data-lucide="clock" class="h-3 w-3 text-slate-400"></i>
+              <span class="flex items-center gap-1 font-semibold">
+                <i data-lucide="clock" class="h-3 w-3 text-teal-400"></i>
                 ~{{ day.duration_minutes }} min
               </span>
               {% endif %}
@@ -215,60 +219,60 @@
             {% set done_cnt = day.exercises | selectattr('is_completed') | list | length %}
             {% set total_cnt = day.exercises | length %}
             {% if total_cnt > 0 and (state == "today" or state == "completed" or state == "missed") %}
-              <div class="w-full h-1.5 bg-slate-100 rounded-full mb-2.5 overflow-hidden">
+              <div class="w-full h-1.5 bg-slate-950 rounded-full mb-2 overflow-hidden border border-slate-800">
                 {% set dpct = ((done_cnt / total_cnt * 100)|round|int) %}
-                <div class="h-full bg-primary-400 rounded-full" style="width: {{ dpct }}%"></div>
+                <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style="width: {{ dpct }}%"></div>
               </div>
-              <p class="text-[9px] text-slate-400 mb-2.5">{{ done_cnt }}/{{ total_cnt }} exercises done</p>
+              <p class="text-[9px] text-slate-400 mb-3 font-semibold">{{ done_cnt }}/{{ total_cnt }} exercises done</p>
             {% endif %}
 
             {# Exercise mini-list #}
-            <ul class="space-y-1">
+            <ul class="space-y-1.5">
               {% for ex in day.exercises[:4] %}
-                <li class="flex items-center justify-between text-[10px] {% if ex.is_completed %}text-slate-400 line-through{% else %}text-slate-600{% endif %}">
-                  <div class="flex items-center gap-1.5 min-w-0">
+                <li class="flex items-center justify-between text-[11px] p-2 rounded-xl bg-slate-950/50 border border-slate-800/80 {% if ex.is_completed %}text-slate-500 line-through{% else %}text-slate-200{% endif %}">
+                  <div class="flex items-center gap-2 min-w-0">
                     <div class="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center
-                                 {% if ex.is_completed %}bg-primary-500 border-primary-500{% else %}border-slate-300{% endif %}">
+                                 {% if ex.is_completed %}bg-emerald-500 border-emerald-500{% else %}border-slate-700 bg-slate-900{% endif %}">
                       {% if ex.is_completed %}
-                        <svg class="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        <svg class="w-2.5 h-2.5 text-slate-950 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                       {% endif %}
                     </div>
-                    <span class="truncate font-medium">{{ ex.name }}</span>
+                    <span class="truncate font-semibold">{{ ex.name }}</span>
                   </div>
-                  <button onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})" class="text-[9px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded transition-colors shrink-0 ml-1">Demo</button>
+                  <button onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})" class="text-[9px] font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg transition-all shrink-0 ml-1">Demo</button>
                 </li>
               {% endfor %}
               {% if day.exercises | length > 4 %}
-                <li class="text-[9px] text-slate-400 pl-5">+{{ day.exercises | length - 4 }} more exercises</li>
+                <li class="text-[10px] text-slate-400 text-center font-bold pt-1">+{{ day.exercises | length - 4 }} more exercises</li>
               {% endif %}
             </ul>
           {% endif %}
         </div>
 
         {# Card footer action #}
-        <div class="pt-3 mt-3 border-t border-slate-100 flex gap-2">
+        <div class="pt-3.5 mt-3.5 border-t border-slate-800/80 flex gap-2">
           {% if state == "rest" %}
-            <span class="text-[10px] text-slate-400 italic">Enjoy your rest day 🙌</span>
+            <span class="text-[10px] text-slate-400 font-semibold italic">Enjoy your rest day 🙌</span>
           {% elif state == "completed" and "Skipped" not in day.focus %}
             <a href="{{ url_for('today_workout', day=day.day_name) }}"
-               class="flex-1 text-center text-xs text-emerald-600 font-bold hover:text-emerald-700 flex items-center justify-center gap-1">
-              <i data-lucide="check-circle" class="h-3.5 w-3.5"></i> View Workout
+               class="flex-1 text-center text-xs text-emerald-400 font-bold hover:text-emerald-300 flex items-center justify-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 py-2 rounded-xl transition-all">
+              <i data-lucide="check-circle" class="h-3.5 w-3.5"></i> View Summary
             </a>
           {% elif state == "today" %}
             <a href="{{ url_for('today_workout', day=day.day_name) }}"
-               class="flex-1 text-center text-xs bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-1">
+               class="flex-1 text-center text-xs bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5 hover:scale-[1.02]">
               <i data-lucide="play" class="h-3.5 w-3.5"></i> Start Workout
             </a>
           {% elif state == "missed" %}
             <a href="{{ url_for('today_workout', day=day.day_name) }}"
-               class="flex-1 text-center text-xs text-amber-600 font-bold hover:text-amber-700 flex items-center justify-center gap-1">
-              <i data-lucide="alert-circle" class="h-3.5 w-3.5"></i> View Missed
+               class="flex-1 text-center text-xs text-amber-400 font-bold hover:text-amber-300 flex items-center justify-center gap-1.5 bg-amber-500/10 border border-amber-500/20 py-2 rounded-xl transition-all">
+              <i data-lucide="alert-circle" class="h-3.5 w-3.5"></i> Catch Up
             </a>
             <button onclick="skipDay({{ day.id }})"
-               class="text-[10px] text-slate-400 hover:text-red-500 font-semibold transition-colors">Skip</button>
+               class="text-[10px] text-slate-400 hover:text-red-400 font-semibold transition-colors px-2">Skip</button>
           {% else %}
             <a href="{{ url_for('today_workout', day=day.day_name) }}"
-               class="flex-1 text-center text-xs text-slate-600 font-bold hover:text-primary-600 flex items-center justify-center gap-1 transition-colors">
+               class="flex-1 text-center text-xs text-slate-300 font-bold hover:text-white flex items-center justify-center gap-1 bg-slate-950/60 border border-slate-800 hover:border-slate-700 py-2 rounded-xl transition-all">
               Open Day <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
             </a>
           {% endif %}
@@ -278,22 +282,27 @@
   </div>
 
   {# ── Workout History ── #}
-  <div class="bg-white border rounded-2xl shadow-sm mb-6">
-    <button onclick="toggleHistory()" class="w-full flex items-center justify-between p-5 text-left">
-      <div class="flex items-center gap-2.5">
-        <i data-lucide="history" class="h-5 w-5 text-primary-500"></i>
-        <h3 class="font-bold text-slate-800">Workout History</h3>
+  <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-xl mb-6 overflow-hidden">
+    <button onclick="toggleHistory()" class="w-full flex items-center justify-between p-6 text-left">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+          <i data-lucide="history" class="h-5 w-5"></i>
+        </div>
+        <div>
+          <h3 class="font-extrabold text-base text-white">Workout History & Completion Log</h3>
+          <p class="text-xs text-slate-400">Review past training sessions and logs</p>
+        </div>
       </div>
       <i data-lucide="chevron-down" class="h-5 w-5 text-slate-400 transition-transform" id="history-chevron"></i>
     </button>
 
-    <div id="history-panel" class="hidden border-t px-5 py-4">
+    <div id="history-panel" class="hidden border-t border-slate-800 px-6 py-5 bg-slate-950/30">
       {% set completed_week_days = plan.days | selectattr('is_completed') | rejectattr('is_rest_day') | list %}
       {% if history or completed_week_days %}
         <div class="space-y-2">
           {% for day in completed_week_days %}
             {% if "Skipped" not in day.focus %}
-            <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
+            <div class="flex items-center justify-between py-3 border-b border-slate-800/80">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
                   <i data-lucide="check" class="h-4 w-4 text-emerald-600"></i>
