@@ -80,16 +80,20 @@ body.theme-light .bg-slate-900\/95,
 body.theme-light .bg-slate-900\/90,
 body.theme-light .bg-slate-900\/80,
 body.theme-light .bg-slate-900\/60 {
-  background-color: rgba(255, 255, 255, 0.92) !important;
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  color: #0f172a;
 }
 
 [data-theme="light"] .bg-slate-950\/95,
+[data-theme="light"] .bg-slate-950\/80,
 [data-theme="light"] .bg-slate-950\/60,
 [data-theme="light"] .bg-slate-950\/40,
 body.theme-light .bg-slate-950\/95,
+body.theme-light .bg-slate-950\/80,
 body.theme-light .bg-slate-950\/60,
 body.theme-light .bg-slate-950\/40 {
-  background-color: rgba(248, 250, 252, 0.92) !important;
+  background-color: rgba(248, 250, 252, 0.96) !important;
+  color: #0f172a;
 }
 
 [data-theme="light"] .bg-slate-850,
@@ -125,17 +129,21 @@ body.theme-light .hover\:bg-slate-700:hover {
 [data-theme="light"] .border-slate-850,
 [data-theme="light"] .border-slate-750,
 [data-theme="light"] .border-slate-700,
+[data-theme="light"] .border-slate-800\/90,
 [data-theme="light"] .border-slate-800\/80,
 [data-theme="light"] .border-slate-800\/60,
 [data-theme="light"] .border-slate-700\/80,
+[data-theme="light"] .border-slate-700\/60,
 [data-theme="light"] .border-slate-700\/50,
 body.theme-light .border-slate-800,
 body.theme-light .border-slate-850,
 body.theme-light .border-slate-750,
 body.theme-light .border-slate-700,
+body.theme-light .border-slate-800\/90,
 body.theme-light .border-slate-800\/80,
 body.theme-light .border-slate-800\/60,
 body.theme-light .border-slate-700\/80,
+body.theme-light .border-slate-700\/60,
 body.theme-light .border-slate-700\/50 {
   border-color: #e2e8f0 !important;
 }
@@ -155,13 +163,15 @@ body.theme-light .divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]) {
 [data-theme="light"] span.text-white,
 [data-theme="light"] p.text-white,
 [data-theme="light"] strong.text-white,
+[data-theme="light"] label.text-white,
 body.theme-light h1.text-white,
 body.theme-light h2.text-white,
 body.theme-light h3.text-white,
 body.theme-light h4.text-white,
 body.theme-light span.text-white,
 body.theme-light p.text-white,
-body.theme-light strong.text-white {
+body.theme-light strong.text-white,
+body.theme-light label.text-white {
   color: #0f172a !important;
 }
 
@@ -184,7 +194,7 @@ body.theme-light .text-slate-500 {
   color: #94a3b8 !important;
 }
 
-/* Maintain White Text on Solid Colored Buttons */
+/* Maintain Crisp White Text on Solid / Gradient Accent Buttons */
 [data-theme="light"] button.bg-emerald-500,
 [data-theme="light"] button.bg-emerald-600,
 [data-theme="light"] button.bg-teal-600,
@@ -197,6 +207,7 @@ body.theme-light .text-slate-500 {
 [data-theme="light"] a.bg-red-600,
 [data-theme="light"] .bg-emerald-500.text-white,
 [data-theme="light"] .bg-emerald-600.text-white,
+[data-theme="light"] .btn-primary-gradient,
 body.theme-light button.bg-emerald-500,
 body.theme-light button.bg-emerald-600,
 body.theme-light button.bg-teal-600,
@@ -208,11 +219,12 @@ body.theme-light a.bg-emerald-600,
 body.theme-light a.bg-rose-500,
 body.theme-light a.bg-red-600,
 body.theme-light .bg-emerald-500.text-white,
-body.theme-light .bg-emerald-600.text-white {
+body.theme-light .bg-emerald-600.text-white,
+body.theme-light .btn-primary-gradient {
   color: #ffffff !important;
 }
 
-/* Light Theme Inputs */
+/* Light Theme Inputs & Form Controls */
 [data-theme="light"] input:not([type="checkbox"]):not([type="radio"]),
 [data-theme="light"] select,
 [data-theme="light"] textarea,
@@ -231,13 +243,27 @@ body.theme-light textarea::placeholder {
   color: #94a3b8 !important;
 }
 
+/* Light Theme HUD Card & Component Overrides */
+[data-theme="light"] .hud-card,
+body.theme-light .hud-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .tab-pill-inactive:hover,
+body.theme-light .tab-pill-inactive:hover {
+  color: #0f172a !important;
+  background: #e2e8f0 !important;
+}
+
 /* Sidebar & Navigation in Light Mode */
 [data-theme="light"] aside,
 body.theme-light aside {
   background-color: #ffffff !important;
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03);
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="light"] aside nav a:not(.bg-emerald-500),

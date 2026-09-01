@@ -541,6 +541,186 @@ def switch_today_focus(plan, today_day_name, new_focus, user_profile, equipments
     return True, f"Successfully switched today's workout to {new_focus}.", orig_focus
 
 
+def filter_exercises_for_focus(all_exercises, focus_str, allowed_equipment=None):
+    """
+    Selects exercises specifically targeting the chosen single muscle, split, or focus area.
+    """
+    focus_lower = (focus_str or "").strip().lower()
+    matching = []
+
+    # Synonyms and mapping table
+    muscle_mappings = {
+        "biceps": ["bicep", "biceps", "curl", "brachii", "chin-up"],
+        "triceps": ["tricep", "triceps", "pushdown", "skull", "dip", "extension"],
+        "chest": ["chest", "pectoral", "bench press", "push-up", "fly", "pec"],
+        "back": ["back", "lat", "latissimus", "row", "pull-up", "pulldown", "rhomboid", "deadlift"],
+        "shoulders": ["shoulder", "deltoid", "overhead press", "lateral raise", "military press"],
+        "abs": ["ab", "abs", "core", "crunch", "plank", "twist", "abdominal"],
+        "core": ["core", "abs", "plank", "twist", "crunch", "oblique"],
+        "quadriceps": ["quad", "quadriceps", "squat", "leg press", "leg extension", "lunge"],
+        "quads": ["quad", "quadriceps", "squat", "leg press", "leg extension", "lunge"],
+        "hamstrings": ["hamstring", "deadlift", "leg curl", "romanian"],
+        "glutes": ["glute", "hip thrust", "squat", "lunge", "deadlift"],
+        "calves": ["calf", "calves", "raise"],
+        "forearms": ["forearm", "wrist", "grip"],
+        "legs": ["leg", "quad", "hamstring", "glute", "calf", "squat", "lunge"],
+        "upper body": ["chest", "back", "shoulder", "bicep", "tricep", "row", "press"],
+        "lower body": ["squat", "lunge", "deadlift", "leg", "calf", "hamstring", "glute"],
+        "full body": ["squat", "deadlift", "bench press", "row", "overhead press", "lunge", "plank"],
+        "push": ["chest", "tricep", "shoulder", "press", "push-up"],
+        "pull": ["back", "bicep", "row", "pull-up", "pulldown", "curl"]
+    }
+
+    # Find relevant search keywords
+    keywords = [focus_lower]
+    for key, key_synonyms in muscle_mappings.items():
+        if key in focus_lower:
+            keywords.extend(key_synonyms)
+
+    for ex in all_exercises:
+        ex_name = ex.get("name", "").lower()
+        ex_cat = ex.get("category", "").lower()
+        ex_eq = ex.get("equipment", "No Equipment")
+        
+        # Equipment filtering if specified
+        if allowed_equipment and ex_eq not in allowed_equipment and "No Equipment" not in allowed_equipment:
+            continue
+
+        primary_list = ex.get("primary_muscles", [])
+        if isinstance(primary_list, str):
+            try:
+                import json
+                primary_list = json.loads(primary_list)
+            except:
+                primary_list = [primary_list]
+        primary_str = " ".join([str(p).lower() for p in primary_list])
+
+        secondary_list = ex.get("secondary_muscles", [])
+        if isinstance(secondary_list, str):
+            try:
+                import json
+                secondary_list = json.loads(secondary_list)
+            except:
+                secondary_list = [secondary_list]
+        secondary_str = " ".join([str(s).lower() for s in secondary_list])
+
+        # Match criteria
+        matches = False
+        for kw in keywords:
+            if kw in ex_name or kw in ex_cat or kw in primary_str or kw in secondary_str:
+                matches = True
+                break
+
+        if matches:
+            matching.append(ex)
+
+    # Fallback if no strict match found
+    if not matching:
+        matching = [ex for ex in all_exercises if not allowed_equipment or ex.get("equipment") in allowed_equipment]
+
+    # Deduplicate while preserving order
+    seen = set()
+    deduped = []
+    for ex in matching:
+        ex_id = ex.get("id") or ex.get("name")
+        if ex_id not in seen:
+            seen.add(ex_id)
+            deduped.append(ex)
+
+    return deduped
+
+
+def generate_custom_today_workout(plan, today_day_name, focus_str, duration_mins, env_override, user_profile, equipments, all_exercises, db_session, WorkoutDayModel, WorkoutExerciseModel):
+    """
+    Dynamically generates and sets today's workout for any specific single muscle group,
+    custom split, or duration chosen on-demand by the user.
+    """
+    today_day = None
+    for d in plan.days:
+        if d.day_name.lower() == today_day_name.lower():
+            today_day = d
+            break
+
+    if not today_day:
+        return False, "Target workout day not found in plan.", []
+
+    target_env = env_override or user_profile.workout_environment or "Gym"
+    allowed_eq = _get_allowed_equipment([eq.equipment_name for eq in equipments] if equipments else [], target_env)
+
+    # Filter matching exercises
+    filtered = filter_exercises_for_focus(all_exercises, focus_str, allowed_eq)
+    
+    # Scale exercise count based on duration (15m -> 3 ex, 30m -> 4 ex, 45m -> 5 ex, 60m -> 6 ex)
+    mins = int(duration_mins) if duration_mins else 45
+    if mins <= 20:
+        count = 3
+        default_sets = 3
+    elif mins <= 35:
+        count = 4
+        default_sets = 3
+    elif mins <= 50:
+        count = 5
+        default_sets = 4
+    else:
+        count = 6
+        default_sets = 4
+
+    selected_exercises = filtered[:count]
+    if len(selected_exercises) < count:
+        # Pad with general compound movements if needed
+        for ex in all_exercises:
+            if ex not in selected_exercises and (not allowed_eq or ex.get("equipment") in allowed_eq):
+                selected_exercises.append(ex)
+                if len(selected_exercises) >= count:
+                    break
+
+    # Update today's WorkoutDay model
+    today_day.focus = focus_str
+    today_day.is_rest_day = False
+    today_day.status = "upcoming"
+    today_day.duration_minutes = mins
+    today_day.exercises.clear()
+    db_session.commit()
+
+    created_exercises_data = []
+
+    for idx, ex in enumerate(selected_exercises):
+        inst_str = ex["instructions"] if isinstance(ex["instructions"], str) else "\n".join(ex.get("instructions", []))
+        reps_min_v, reps_max_v = parse_reps_range(ex.get("default_reps", "10-12"))
+        
+        w_ex = WorkoutExerciseModel(
+            workout_day_id=today_day.id,
+            exercise_id=int(ex["id"]),
+            name=ex["name"],
+            category=ex.get("category", "General"),
+            sets=int(ex.get("default_sets", default_sets)),
+            reps=str(ex.get("default_reps", "10-12")),
+            reps_min=int(reps_min_v),
+            reps_max=int(reps_max_v),
+            rest_seconds=int(ex.get("default_rest", 60)),
+            instructions=inst_str,
+            start_pos=ex.get("start_pos"),
+            movement=ex.get("movement"),
+            end_pos=ex.get("end_pos"),
+            common_mistakes="\n".join(ex.get("common_mistakes", [])) if isinstance(ex.get("common_mistakes"), list) else ex.get("common_mistakes", ""),
+            is_completed=False,
+            order_idx=idx
+        )
+        db_session.add(w_ex)
+        created_exercises_data.append({
+            "exercise_id": int(ex["id"]),
+            "name": ex["name"],
+            "category": ex.get("category", "General"),
+            "sets": int(ex.get("default_sets", default_sets)),
+            "reps": str(ex.get("default_reps", "10-12")),
+            "rest_seconds": int(ex.get("default_rest", 60)),
+            "instructions": inst_str
+        })
+
+    db_session.commit()
+    return True, f"Successfully generated custom {focus_str} workout ({mins} mins).", created_exercises_data
+
+
 def scale_workout_duration(workout_day, target_mins, db_session, WorkoutExerciseModel):
     """Adjusts set counts and exercise list density for 30m, 45m, or 60m targets."""
     workout_day.duration_minutes = target_mins
@@ -580,4 +760,5 @@ def scale_workout_difficulty(workout_day, direction, db_session):
 
     db_session.commit()
     return True
+
 

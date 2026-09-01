@@ -314,3 +314,41 @@ def get_food_alternative(current_meal_food_id, current_meal_calories, current_me
             }
 
     return best_candidate
+
+
+def swap_meal_with_chosen_food(meal, selected_food, custom_serving_g=None):
+    """
+    Updates a meal item with a user-selected food from availability or custom foods,
+    scaling macros and calculating approximate cost accurately.
+    """
+    base_serving = float(selected_food.get("serving_size_g", 100) or 100)
+    target_serving = float(custom_serving_g) if custom_serving_g and float(custom_serving_g) > 0 else base_serving
+    ratio = target_serving / base_serving if base_serving > 0 else 1.0
+
+    cal = int(round(float(selected_food.get("calories", 100)) * ratio))
+    prot = round(float(selected_food.get("protein", 10)) * ratio, 1)
+    carbs = round(float(selected_food.get("carbs", 10)) * ratio, 1)
+    fat = round(float(selected_food.get("fat", 2)) * ratio, 1)
+    cost = int(round(float(selected_food.get("cost_approx", selected_food.get("cost", 15))) * ratio))
+
+    meal.food_name = selected_food.get("name", meal.food_name)
+    meal.serving_size_g = int(target_serving)
+    meal.calories = cal
+    meal.protein = prot
+    meal.carbs = carbs
+    meal.fat = fat
+    meal.cost = cost
+    meal.common_unit = selected_food.get("common_unit", f"{int(target_serving)}g")
+
+    return {
+        "id": meal.id,
+        "food_name": meal.food_name,
+        "serving_size_g": meal.serving_size_g,
+        "calories": meal.calories,
+        "protein": meal.protein,
+        "carbs": meal.carbs,
+        "fat": meal.fat,
+        "cost": meal.cost,
+        "common_unit": meal.common_unit
+    }
+

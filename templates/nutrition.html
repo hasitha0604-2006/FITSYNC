@@ -501,29 +501,73 @@
     </form>
   </div>
 
-  <!-- SWAP FOOD MODAL -->
+  <!-- FOOD SELECTION & AVAILABILITY CATALOG MODAL -->
   <div id="swap-food-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm overflow-hidden p-6 space-y-4 shadow-2xl">
-      <div>
-        <h3 class="font-bold text-base text-white">Swap Meal Item</h3>
-        <p class="text-xs text-slate-400 mt-1">Select a reason to help FitSync AI prioritize alternatives.</p>
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="font-black text-lg text-white flex items-center gap-2">
+            <i data-lucide="utensils" class="h-5 w-5 text-emerald-400"></i>
+            Choose Food from Availability Catalog
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Select any food from available defaults, canteen items, or your custom foods.</p>
+        </div>
+        <button onclick="closeSwapFoodModal()" class="text-slate-400 hover:text-white font-bold text-2xl">×</button>
       </div>
 
-      <div class="space-y-2.5">
-        {% for reason in ['Food unavailable', 'Too expensive', "Don't like this food", 'Vegetarian preference'] %}
-        <button
-          type="button"
-          onclick="selectFoodSwapReason('{{ reason }}')"
-          class="food-swap-btn w-full text-left px-4 py-2.5 rounded-xl border text-xs font-semibold transition-all border-slate-700 text-slate-300 hover:bg-slate-800"
-        >
-          {{ reason }}
+      <!-- Search & Filters -->
+      <div class="space-y-2">
+        <div class="relative">
+          <i data-lucide="search" class="absolute left-3.5 top-3 h-4 w-4 text-slate-500"></i>
+          <input
+            type="text"
+            id="food-search-input"
+            oninput="filterFoodsList()"
+            placeholder="Search by food name or category (e.g. Eggs, Paneer, Oats, Chicken, Rice)..."
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+          />
+        </div>
+
+        <div class="flex flex-wrap gap-1.5 pt-1">
+          {% for cat in ['All', 'High Protein', 'Dairy', 'Grains', 'Snacks', 'Veggies & Fruits', 'Custom'] %}
+          <button
+            type="button"
+            onclick="setFoodCategoryFilter('{{ cat }}')"
+            id="food-cat-btn-{{ cat|replace(' ', '-')|replace('&', '-') }}"
+            class="food-filter-pill px-3 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950 text-slate-400 hover:text-white hover:border-slate-700 transition-all"
+          >
+            {{ cat }}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Foods List Container -->
+      <div id="foods-catalog-container" class="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[50vh] min-h-[220px]">
+        <div class="text-center py-10 text-slate-400 text-xs">
+          <i data-lucide="loader-2" class="h-6 w-6 animate-spin mx-auto mb-2 text-emerald-400"></i>
+          Loading available foods...
+        </div>
+      </div>
+
+      <!-- Quick AI Auto-Alternative Option -->
+      <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shrink-0">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-slate-400 text-[11px]">Or auto-swap by reason:</span>
+          <select id="auto-swap-reason" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-slate-300 text-xs focus:outline-none">
+            <option value="Food unavailable">Food unavailable</option>
+            <option value="Too expensive">Too expensive</option>
+            <option value="Don't like this food">Don't like this food</option>
+            <option value="Vegetarian preference">Vegetarian preference</option>
+          </select>
+          <button onclick="executeFoodSwap()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-700">
+            Auto-Swap
+          </button>
+        </div>
+
+        <button onclick="closeSwapFoodModal()" class="py-2 px-5 border border-slate-700 rounded-xl text-slate-300 hover:bg-slate-800 font-bold">
+          Close
         </button>
-        {% endfor %}
-      </div>
-
-      <div class="flex gap-2 pt-2 text-xs font-bold">
-        <button onclick="closeSwapFoodModal()" class="flex-1 py-2.5 border border-slate-700 rounded-xl text-slate-300 hover:bg-slate-800">Cancel</button>
-        <button onclick="executeFoodSwap()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-xl transition-colors">Find Alternative</button>
       </div>
     </div>
   </div>
@@ -673,35 +717,20 @@
     }
   }
 
-  // Food Swap Modal controllers
+  // Food Swap & Available Catalog Modal controllers
   let activeMealId = null;
   let activeFoodReason = 'Food unavailable';
+  let cachedAvailableFoods = [];
+  let currentFoodCategory = 'All';
 
-  function openSwapFoodModal(mealId) {
+  async function openSwapFoodModal(mealId) {
     activeMealId = mealId;
-    activeFoodReason = 'Food unavailable';
-
-    document.querySelectorAll('.food-swap-btn').forEach(btn => {
-      btn.className = "food-swap-btn w-full text-left px-4 py-2.5 rounded-xl border text-xs font-semibold transition-all border-slate-700 text-slate-300 hover:bg-slate-800";
-    });
-
-    const buttons = document.querySelectorAll('.food-swap-btn');
-    if (buttons.length > 0) {
-      buttons[0].className = "food-swap-btn w-full text-left px-4 py-2.5 rounded-xl border text-xs font-semibold transition-all border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold";
-    }
-
     document.getElementById('swap-food-modal').classList.remove('hidden');
-  }
-
-  function selectFoodSwapReason(reason) {
-    activeFoodReason = reason;
-    document.querySelectorAll('.food-swap-btn').forEach(btn => {
-      if (btn.innerText.trim() === reason) {
-        btn.className = "food-swap-btn w-full text-left px-4 py-2.5 rounded-xl border text-xs font-semibold transition-all border-emerald-500 bg-emerald-500/10 text-emerald-400 font-bold";
-      } else {
-        btn.className = "food-swap-btn w-full text-left px-4 py-2.5 rounded-xl border text-xs font-semibold transition-all border-slate-700 text-slate-300 hover:bg-slate-800";
-      }
-    });
+    document.getElementById('food-search-input').value = '';
+    currentFoodCategory = 'All';
+    setFoodCategoryFilter('All');
+    await loadAvailableFoodsCatalog();
+    if (window.lucide) lucide.createIcons();
   }
 
   function closeSwapFoodModal() {
@@ -709,13 +738,155 @@
     activeMealId = null;
   }
 
+  async function loadAvailableFoodsCatalog() {
+    const container = document.getElementById('foods-catalog-container');
+    container.innerHTML = `
+      <div class="text-center py-10 text-slate-400 text-xs">
+        <i data-lucide="loader-2" class="h-6 w-6 animate-spin mx-auto mb-2 text-emerald-400"></i>
+        Loading available foods catalog...
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+
+    try {
+      const res = await fetch('/api/nutrition/available-foods');
+      const data = await res.json();
+      if (res.ok && data.foods) {
+        cachedAvailableFoods = data.foods;
+        renderFoodsList(cachedAvailableFoods);
+      } else {
+        container.innerHTML = `<p class="text-rose-400 text-center py-8">Failed to load foods.</p>`;
+      }
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = `<p class="text-rose-400 text-center py-8">Error loading food database.</p>`;
+    }
+  }
+
+  function setFoodCategoryFilter(cat) {
+    currentFoodCategory = cat;
+    document.querySelectorAll('.food-filter-pill').forEach(btn => {
+      btn.classList.remove('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-400');
+      btn.classList.add('border-slate-800', 'bg-slate-950', 'text-slate-400');
+    });
+    const safeId = cat.replace(/\s+/g, '-').replace(/&/g, '-');
+    const activeBtn = document.getElementById(`food-cat-btn-${safeId}`) || document.getElementById(`food-cat-btn-${cat}`);
+    if (activeBtn) {
+      activeBtn.classList.remove('border-slate-800', 'bg-slate-950', 'text-slate-400');
+      activeBtn.classList.add('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-400');
+    }
+    filterFoodsList();
+  }
+
+  function filterFoodsList() {
+    const searchVal = (document.getElementById('food-search-input').value || '').trim().toLowerCase();
+    
+    let filtered = cachedAvailableFoods.filter(f => {
+      let catMatch = true;
+      if (currentFoodCategory === 'High Protein') {
+        catMatch = f.protein >= 12 || (f.protein / (f.calories || 1) * 100) >= 10;
+      } else if (currentFoodCategory === 'Dairy') {
+        catMatch = ['dairy', 'milk', 'paneer', 'curd', 'cheese', 'yogurt'].some(k => f.category.toLowerCase().includes(k) || f.name.toLowerCase().includes(k));
+      } else if (currentFoodCategory === 'Grains') {
+        catMatch = ['grains', 'rice', 'roti', 'oats', 'bread', 'pasta', 'dal', 'chapati'].some(k => f.category.toLowerCase().includes(k) || f.name.toLowerCase().includes(k));
+      } else if (currentFoodCategory === 'Snacks') {
+        catMatch = ['snack', 'snacks', 'canteen', 'nuts', 'shake', 'biscuit', 'samosa', 'sprouts'].some(k => f.category.toLowerCase().includes(k) || f.name.toLowerCase().includes(k));
+      } else if (currentFoodCategory === 'Veggies & Fruits') {
+        catMatch = ['fruit', 'vegetable', 'apple', 'banana', 'salad', 'veggie'].some(k => f.category.toLowerCase().includes(k) || f.name.toLowerCase().includes(k));
+      } else if (currentFoodCategory === 'Custom') {
+        catMatch = f.is_custom === true;
+      }
+
+      let searchMatch = true;
+      if (searchVal) {
+        searchMatch = f.name.toLowerCase().includes(searchVal) || f.category.toLowerCase().includes(searchVal);
+      }
+
+      return catMatch && searchMatch;
+    });
+
+    renderFoodsList(filtered);
+  }
+
+  function renderFoodsList(foods) {
+    const container = document.getElementById('foods-catalog-container');
+    if (!foods || foods.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-10 text-slate-400 text-xs">
+          <i data-lucide="info" class="h-6 w-6 mx-auto mb-2 text-slate-500"></i>
+          No foods match your search filter.
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+
+    container.innerHTML = foods.map(f => `
+      <div class="bg-slate-950/80 border border-slate-800 hover:border-emerald-500/50 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all group shadow-sm">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <h4 class="font-extrabold text-sm text-white group-hover:text-emerald-400 transition-colors">${f.name}</h4>
+            ${f.is_custom ? '<span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Custom</span>' : ''}
+            ${f.is_preferred ? '<span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Preferred</span>' : ''}
+          </div>
+          <p class="text-[10px] text-slate-400">${f.category} • ${f.common_unit || (f.serving_size_g + 'g serving')}</p>
+        </div>
+
+        <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+          <div class="grid grid-cols-4 gap-2 text-center text-[10px] font-mono bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-800">
+            <div><span class="text-slate-500 block text-[8px]">CAL</span><strong class="text-white">${f.calories}</strong></div>
+            <div><span class="text-slate-500 block text-[8px]">PROT</span><strong class="text-blue-400">${f.protein}g</strong></div>
+            <div><span class="text-slate-500 block text-[8px]">CARB</span><strong class="text-amber-400">${f.carbs}g</strong></div>
+            <div><span class="text-slate-500 block text-[8px]">COST</span><strong class="text-emerald-400">₹${f.cost}</strong></div>
+          </div>
+
+          <button
+            type="button"
+            onclick="selectFoodItemForMeal('${f.name.replace(/'/g, "\\'")}', ${f.serving_size_g || 100})"
+            class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl shadow transition-all hover:scale-[1.02] shrink-0"
+          >
+            Select
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    if (window.lucide) lucide.createIcons();
+  }
+
+  async function selectFoodItemForMeal(foodName, servingG) {
+    if (!activeMealId) return;
+
+    try {
+      const res = await fetch('/api/nutrition/select-food-for-meal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          meal_id: activeMealId,
+          food_name: foodName,
+          serving_size_g: servingG
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        window.location.reload();
+      } else {
+        alert(data.message || 'Failed to select food.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error connecting to server.');
+    }
+  }
+
   async function executeFoodSwap() {
     if (!activeMealId) return;
+    const reason = document.getElementById('auto-swap-reason') ? document.getElementById('auto-swap-reason').value : activeFoodReason;
     try {
       const res = await fetch("{{ url_for('api_substitute_meal') }}", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: activeMealId, reason: activeFoodReason })
+        body: JSON.stringify({ id: activeMealId, reason: reason })
       });
       const data = await res.json();
       if (res.ok) {

@@ -7,19 +7,29 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
     <div>
       <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Today's Workout Plan</h1>
-      <p class="text-xs text-slate-400 mt-1">Check off exercise sets, view graphical demonstrations, or swap movements to match available equipment.</p>
+      <p class="text-xs text-slate-400 mt-1">Check off exercise sets, view graphical demonstrations, or pick a custom single-muscle workout on-demand.</p>
     </div>
     
-    <!-- Weekday Selection Tabs -->
-    <div class="flex flex-wrap gap-1 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 w-fit shadow-md">
-      {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
-      <a
-        href="{{ url_for('today_workout', day=day) }}"
-        class="px-3.5 py-1.5 rounded-xl text-xs font-black transition-all {{ 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20' if day_name == day else 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}"
+    <div class="flex flex-wrap items-center gap-3">
+      <button
+        onclick="openCustomWorkoutModal()"
+        class="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-xs px-4 py-2.5 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
       >
-        {{ day[:3] }}
-      </a>
-      {% endfor %}
+        <i data-lucide="target" class="h-4 w-4"></i>
+        <span>🎯 Choose Today's Workout Focus</span>
+      </button>
+
+      <!-- Weekday Selection Tabs -->
+      <div class="flex flex-wrap gap-1 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 w-fit shadow-md">
+        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+        <a
+          href="{{ url_for('today_workout', day=day) }}"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-black transition-all {{ 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20' if day_name == day else 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}"
+        >
+          {{ day[:3] }}
+        </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
@@ -36,7 +46,7 @@
     </div>
     <button
       onclick="rebuildRemainingWeek()"
-      class="shrink-0 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-xs font-black px-5 py-3 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
+      class="shrink-0 flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-black px-5 py-3 rounded-2xl transition-all shadow hover:text-white"
     >
       <i data-lucide="refresh-cw" class="h-4 w-4"></i>
       Rebuild Remaining Week
@@ -53,6 +63,15 @@
       <p class="text-xs text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
         Muscles repair and grow during rest! Today has no scheduled resistance training. Focus on mobility, light walking, and meeting your daily protein goals.
       </p>
+      <div class="mt-6 flex justify-center">
+        <button
+          onclick="openCustomWorkoutModal()"
+          class="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-xs px-6 py-3 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
+        >
+          <i data-lucide="dumbbell" class="h-4 w-4"></i>
+          Train Today (Pick Single Muscle / Custom Focus)
+        </button>
+      </div>
     </div>
   {% else %}
     {% set completed = workout_day.exercises|selectattr('is_completed')|list|length %}
@@ -73,11 +92,11 @@
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <button
-              onclick="openChangeFocusModal()"
-              class="flex items-center gap-1.5 bg-slate-950/80 hover:bg-slate-800 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-xl transition-all border border-slate-800 shadow-sm"
+              onclick="openCustomWorkoutModal()"
+              class="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-xs px-3.5 py-2 rounded-xl transition-all shadow-md shadow-emerald-500/20"
             >
-              <i data-lucide="repeat" class="h-3.5 w-3.5 text-emerald-400"></i>
-              Change Focus
+              <i data-lucide="target" class="h-3.5 w-3.5"></i>
+              Single Muscle / Focus
             </button>
             <button
               onclick="adjustDurationModal()"
@@ -102,7 +121,7 @@
             </button>
             <button
               onclick="startWorkoutRunner()"
-              class="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-xs px-4 py-2 rounded-xl transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.02]"
+              class="flex items-center gap-1.5 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-black text-xs px-4 py-2 rounded-xl transition-all shadow-lg shadow-indigo-500/20 hover:scale-[1.02]"
             >
               <i data-lucide="play" class="h-3.5 w-3.5 fill-white"></i>
               Start Session
@@ -394,6 +413,147 @@
     </div>
   </div>
 
+  <!-- MODAL: Custom Single Muscle & On-Demand Workout Generator -->
+  <div id="custom-workout-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="font-black text-lg text-white flex items-center gap-2">
+            <i data-lucide="target" class="h-5 w-5 text-emerald-400"></i>
+            Choose Today's Workout Focus
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Select a single muscle group or custom focus. We'll generate a complete, tailored workout.</p>
+        </div>
+        <button onclick="closeCustomWorkoutModal()" class="text-slate-400 hover:text-white font-bold text-2xl">×</button>
+      </div>
+
+      <div class="overflow-y-auto space-y-4 pr-1 text-xs">
+        
+        <!-- Section A: Single Muscle Groups -->
+        <div>
+          <h4 class="font-extrabold text-slate-300 uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
+            <i data-lucide="crosshair" class="h-3.5 w-3.5 text-emerald-400"></i>
+            Single Muscle Isolation
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {% set muscles_list = [
+              ('Biceps', 'Biceps Brachii', 'zap'),
+              ('Triceps', 'Triceps Brachii', 'activity'),
+              ('Chest', 'Pectorals', 'shield'),
+              ('Back', 'Lats & Rhomboids', 'layers'),
+              ('Shoulders', 'Deltoids', 'aperture'),
+              ('Abs', 'Abdominals & Core', 'square'),
+              ('Quadriceps', 'Front Thighs', 'grid'),
+              ('Hamstrings', 'Back Thighs', 'disc'),
+              ('Glutes', 'Gluteus Maximus', 'circle'),
+              ('Calves', 'Calves & Lower Leg', 'maximize-2'),
+              ('Forearms', 'Forearms & Grip', 'crosshair')
+            ] %}
+            {% for m_name, m_sub, m_icon in muscles_list %}
+            <button
+              type="button"
+              onclick="selectCustomFocus('{{ m_name }}')"
+              id="focus-btn-{{ m_name }}"
+              class="custom-focus-btn p-3 rounded-2xl border border-slate-800 bg-slate-950/80 hover:border-emerald-500/60 text-left transition-all group flex flex-col justify-between"
+            >
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-emerald-400 font-bold"><i data-lucide="{{ m_icon }}" class="h-4 w-4"></i></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-700 group-hover:bg-emerald-400"></span>
+              </div>
+              <div>
+                <p class="font-black text-white text-xs group-hover:text-emerald-400 transition-colors">{{ m_name }}</p>
+                <p class="text-[10px] text-slate-400 truncate">{{ m_sub }}</p>
+              </div>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Section B: Popular Splits & Combinations -->
+        <div>
+          <h4 class="font-extrabold text-slate-300 uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
+            <i data-lucide="layers" class="h-3.5 w-3.5 text-blue-400"></i>
+            Splits & Combinations
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {% set splits_list = [
+              ('Push', 'Chest + Shoulders + Triceps', 'arrow-up'),
+              ('Pull', 'Back + Biceps', 'arrow-down'),
+              ('Legs', 'Full Lower Body', 'maximize'),
+              ('Upper Body', 'Complete Upper Split', 'trending-up'),
+              ('Full Body', 'Total Body Compound', 'sparkles'),
+              ('Express 20', '20-Min High Intensity', 'clock')
+            ] %}
+            {% for s_name, s_sub, s_icon in splits_list %}
+            <button
+              type="button"
+              onclick="selectCustomFocus('{{ s_name }}')"
+              id="focus-btn-{{ s_name|replace(' ', '-') }}"
+              class="custom-focus-btn p-3 rounded-2xl border border-slate-800 bg-slate-950/80 hover:border-blue-500/60 text-left transition-all group flex flex-col justify-between"
+            >
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-blue-400 font-bold"><i data-lucide="{{ s_icon }}" class="h-4 w-4"></i></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-slate-700 group-hover:bg-blue-400"></span>
+              </div>
+              <div>
+                <p class="font-black text-white text-xs group-hover:text-blue-400 transition-colors">{{ s_name }}</p>
+                <p class="text-[10px] text-slate-400 truncate">{{ s_sub }}</p>
+              </div>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Section C: Session Duration & Environment Controls -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Target Duration</label>
+            <div class="grid grid-cols-4 gap-1.5">
+              {% for d_mins in [15, 30, 45, 60] %}
+              <button
+                type="button"
+                onclick="selectCustomDuration({{ d_mins }})"
+                id="dur-btn-{{ d_mins }}"
+                class="custom-dur-btn py-2 text-center rounded-xl border border-slate-800 bg-slate-950 text-slate-300 font-black text-xs hover:border-emerald-500 transition-all"
+              >
+                {{ d_mins }}m
+              </button>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Equipment Setup</label>
+            <select
+              id="custom-env-select"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-emerald-500 focus:outline-none"
+            >
+              <option value="Gym">Gym Setup (Full Gym)</option>
+              <option value="Dumbbells Only">Dumbbells Only</option>
+              <option value="No Equipment">No Equipment (Bodyweight)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="custom-gen-status" class="hidden p-3 rounded-xl text-xs font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-300"></div>
+
+      </div>
+
+      <div class="flex gap-3 pt-3 border-t border-slate-800 text-xs font-bold shrink-0">
+        <button type="button" onclick="closeCustomWorkoutModal()" class="flex-1 py-3 border border-slate-800 rounded-2xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all">Cancel</button>
+        <button
+          type="button"
+          id="btn-confirm-custom-workout"
+          onclick="executeCustomWorkoutGeneration()"
+          class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+        >
+          <i data-lucide="sparkles" class="h-4 w-4"></i>
+          <span>Generate & Start Workout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL 3: Camera AI Overlay -->
   <div id="camera-modal" class="hidden fixed inset-0 bg-slate-950/95 z-50 flex flex-col items-center justify-center p-4">
     <div class="w-full max-w-md flex flex-col items-center space-y-4">
@@ -567,6 +727,90 @@
 {% block scripts %}
 <script>
   let currentActiveModalEx = null;
+  let selectedCustomFocus = 'Chest';
+  let selectedCustomDuration = 45;
+
+  function openCustomWorkoutModal() {
+    document.getElementById('custom-workout-modal').classList.remove('hidden');
+    selectCustomFocus(selectedCustomFocus || 'Chest');
+    selectCustomDuration(selectedCustomDuration || 45);
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function closeCustomWorkoutModal() {
+    document.getElementById('custom-workout-modal').classList.add('hidden');
+  }
+
+  function selectCustomFocus(focusName) {
+    selectedCustomFocus = focusName;
+    document.querySelectorAll('.custom-focus-btn').forEach(btn => {
+      btn.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'ring-2', 'ring-emerald-500/50', 'border-blue-500', 'bg-blue-500/10', 'ring-blue-500/50');
+      btn.classList.add('border-slate-800', 'bg-slate-950/80');
+    });
+    const safeId = focusName.replace(/\s+/g, '-');
+    const activeBtn = document.getElementById(`focus-btn-${safeId}`) || document.getElementById(`focus-btn-${focusName}`);
+    if (activeBtn) {
+      activeBtn.classList.remove('border-slate-800', 'bg-slate-950/80');
+      activeBtn.classList.add('border-emerald-500', 'bg-emerald-500/10', 'ring-2', 'ring-emerald-500/50');
+    }
+  }
+
+  function selectCustomDuration(mins) {
+    selectedCustomDuration = mins;
+    document.querySelectorAll('.custom-dur-btn').forEach(btn => {
+      btn.classList.remove('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-400');
+      btn.classList.add('border-slate-800', 'bg-slate-950', 'text-slate-300');
+    });
+    const activeDurBtn = document.getElementById(`dur-btn-${mins}`);
+    if (activeDurBtn) {
+      activeDurBtn.classList.remove('border-slate-800', 'bg-slate-950', 'text-slate-300');
+      activeDurBtn.classList.add('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-400');
+    }
+  }
+
+  async function executeCustomWorkoutGeneration() {
+    const btn = document.getElementById('btn-confirm-custom-workout');
+    const statusDiv = document.getElementById('custom-gen-status');
+    const envSelect = document.getElementById('custom-env-select');
+    const environment = envSelect ? envSelect.value : 'Gym';
+
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="refresh-cw" class="h-4 w-4 animate-spin"></i> Generating Workout...`;
+    if (window.lucide) lucide.createIcons();
+
+    statusDiv.classList.remove('hidden', 'bg-rose-500/10', 'border-rose-500/30', 'text-rose-300');
+    statusDiv.classList.add('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-300');
+    statusDiv.innerHTML = `Building targeted <strong>${selectedCustomFocus}</strong> workout plan with biomechanical models...`;
+
+    try {
+      const res = await fetch('/api/workout/generate-custom-today', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          focus: selectedCustomFocus,
+          duration_mins: selectedCustomDuration,
+          environment: environment
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        statusDiv.innerHTML = `✓ ${data.message} Loading your session...`;
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      } else {
+        statusDiv.classList.remove('bg-emerald-500/10', 'border-emerald-500/30', 'text-emerald-300');
+        statusDiv.classList.add('bg-rose-500/10', 'border-rose-500/30', 'text-rose-300');
+        statusDiv.innerHTML = `Error: ${data.message || 'Failed to generate custom workout.'}`;
+        btn.disabled = false;
+        btn.innerHTML = `<span>Generate & Start Workout</span>`;
+      }
+    } catch (err) {
+      statusDiv.innerHTML = `Error: Could not reach server. Please try again.`;
+      btn.disabled = false;
+      btn.innerHTML = `<span>Generate & Start Workout</span>`;
+    }
+  }
 
   // Guide Modal handlers
   function openGuideModal(ex) {

@@ -23,12 +23,25 @@ class Phase4AIIntelligenceTestCase(unittest.TestCase):
         self.ctx = self.app.app_context()
         self.ctx.push()
 
-        db.create_all()
-        seed_database()
+        try:
+            test_emails = ['p4_user@fitsync.ai', 'telemetry_test@fitsync.ai', 'user_a@fitsync.ai', 'user_b@fitsync.ai']
+            users = User.query.filter(User.email.in_(test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                ChatConversation.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     def tearDown(self):
         try:
-            User.query.filter(User.email.in_(['p4_user@fitsync.ai'])).delete()
+            test_emails = ['p4_user@fitsync.ai', 'telemetry_test@fitsync.ai', 'user_a@fitsync.ai', 'user_b@fitsync.ai']
+            users = User.query.filter(User.email.in_(test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                ChatConversation.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
             db.session.commit()
         except Exception:
             db.session.rollback()
@@ -36,6 +49,13 @@ class Phase4AIIntelligenceTestCase(unittest.TestCase):
         self.ctx.pop()
 
     def _create_and_onboard_user(self, email="p4_user@fitsync.ai", name="Phase 4 Athlete"):
+        existing_u = User.query.filter_by(email=email).first()
+        if existing_u:
+            UserProfile.query.filter_by(user_id=existing_u.id).delete()
+            ChatConversation.query.filter_by(user_id=existing_u.id).delete()
+            db.session.delete(existing_u)
+            db.session.commit()
+
         self.client.post('/register', data={'email': email, 'password': 'Password123!'}, follow_redirects=True)
         self.client.post('/onboarding', json={
             "name": name,

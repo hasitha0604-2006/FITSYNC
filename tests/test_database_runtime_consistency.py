@@ -21,9 +21,33 @@ class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()
         self.ctx.push()
+        self.test_emails = [
+            "temp_consistency@fitsync.ai",
+            "schema_test@fitsync.ai",
+            "survive_startup@fitsync.ai",
+            "survive_restart@fitsync.ai",
+            "test_iso_a@fitsync.ai",
+            "test_iso_b@fitsync.ai"
+        ]
+        try:
+            users = User.query.filter(User.email.in_(self.test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
         init_app_database(self.app)
 
     def tearDown(self):
+        try:
+            users = User.query.filter(User.email.in_(self.test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
         db.session.remove()
         self.ctx.pop()
 

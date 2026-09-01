@@ -416,8 +416,15 @@ class CompletedWorkout(db.Model):
 # -----------------------------------------------------------------------------
 # ENGINE IMPORTS (services)
 # -----------------------------------------------------------------------------
-from services.fitness_engine import generate_weekly_workout, find_alternative_exercise, switch_today_focus, scale_workout_duration, scale_workout_difficulty
-from services.nutrition_engine import calculate_ai_targets, generate_daily_meals, get_food_alternative
+from services.fitness_engine import (
+    generate_weekly_workout, find_alternative_exercise, switch_today_focus,
+    scale_workout_duration, scale_workout_difficulty, generate_custom_today_workout,
+    filter_exercises_for_focus
+)
+from services.nutrition_engine import (
+    calculate_ai_targets, generate_daily_meals, get_food_alternative,
+    swap_meal_with_chosen_food
+)
 from services.adaptation_engine import rebuild_remaining_week_logic, move_workout_logic, skip_workout_logic
 from services.form_analysis import check_exercise_form
 from services.ai_diet_engine import generate_ai_diet_plan
@@ -1809,6 +1816,53 @@ def api_change_focus():
     return jsonify({"status": "success", "message": msg, "focus": new_focus, "explanation": explanation})
 
 
+@app.route("/api/workout/generate-custom-today", methods=["POST"])
+def api_generate_custom_today():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    focus = data.get("focus", "").strip()
+    if not focus:
+        return jsonify({"status": "error", "message": "Workout focus is required (e.g. Biceps, Chest, Back, Legs)."}), 400
+
+    duration_mins = int(data.get("duration_mins") or data.get("duration_minutes") or data.get("duration") or 45)
+    env_override = data.get("environment") or user.profile.workout_environment or "Gym"
+
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+    if not plan:
+        # Create a new workout plan if not present
+        plan = WorkoutPlan(user_id=user.id, is_active=True)
+        db.session.add(plan)
+        db.session.commit()
+
+    today_name = datetime.now().strftime("%A")
+    today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+    if not today_w:
+        today_w = WorkoutDay(workout_plan_id=plan.id, day_name=today_name, day_number=1, focus=focus, is_rest_day=False, status="upcoming")
+        db.session.add(today_w)
+        db.session.commit()
+
+    all_ex = get_exercises_data()
+    success, msg, exercises = generate_custom_today_workout(
+        plan, today_name, focus, duration_mins, env_override,
+        user.profile, user.equipments, all_ex, db.session,
+        WorkoutDay, WorkoutExercise
+    )
+
+    if not success:
+        return jsonify({"status": "error", "message": msg}), 400
+
+    return jsonify({
+        "status": "success",
+        "message": msg,
+        "focus": focus,
+        "duration_minutes": duration_mins,
+        "exercises": exercises
+    })
+
+
 @app.route("/api/workout/adjust-duration", methods=["POST"])
 def api_adjust_duration():
     user = get_current_user()
@@ -2597,6 +2651,123 @@ def api_substitute_meal():
         db.session.commit()
 
     return jsonify({"status": "success", "replacement": alt["name"]})
+
+
+@app.route("/api/nutrition/available-foods", methods=["GET"])
+def api_get_available_foods():
+    user = get_current_user()
+    if not user:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    all_foods = get_all_user_foods(user)
+    user_prefs = {p.food_name.lower(): p for p in (user.food_preferences or [])}
+
+    enriched = []
+    for f in all_foods:
+        f_key = f["name"].lower()
+        pref_obj = user_prefs.get(f_key)
+        enriched.append({
+            "id": f.get("id"),
+            "name": f.get("name"),
+            "category": f.get("category", "General"),
+            "serving_size_g": f.get("serving_size_g", 100),
+            "calories": f.get("calories", 0),
+            "protein": f.get("protein", 0),
+            "carbs": f.get("carbs", 0),
+            "fat": f.get("fat", 0),
+            "cost": f.get("cost_approx", f.get("cost", 0)),
+            "common_unit": f.get("common_unit", f"{f.get('serving_size_g', 100)}g"),
+            "is_preferred": bool(pref_obj.is_preferred) if pref_obj else False,
+            "is_available": bool(pref_obj.is_available) if pref_obj else True,
+            "is_avoided": bool(pref_obj.is_avoided) if pref_obj else False,
+            "is_custom": bool(f.get("is_custom", False))
+        })
+
+    return jsonify({
+        "status": "success",
+        "foods": enriched,
+        "total": len(enriched)
+    })
+
+
+@app.route("/api/nutrition/select-food-for-meal", methods=["POST"])
+def api_select_food_for_meal():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.json or {}
+    meal_id = data.get("meal_id") or data.get("id")
+    food_name = data.get("food_name", "").strip()
+    custom_serving = data.get("serving_size_g")
+
+    if not meal_id or not food_name:
+        return jsonify({"status": "error", "message": "Meal ID and food name are required"}), 400
+
+    meal = Meal.query.get(meal_id)
+    if not meal or meal.meal_plan.user_id != user.id:
+        return jsonify({"status": "error", "message": "Meal item not found"}), 404
+
+    all_foods = get_all_user_foods(user)
+    target_food = next((f for f in all_foods if f["name"].lower() == food_name.lower()), None)
+    if not target_food:
+        cf = CustomFood.query.filter_by(user_id=user.id).filter(func.lower(CustomFood.name) == food_name.lower()).first()
+        if cf:
+            target_food = {
+                "id": f"cf_{cf.id}",
+                "name": cf.name,
+                "category": cf.category,
+                "serving_size_g": cf.serving_size_g,
+                "calories": cf.calories,
+                "protein": cf.protein,
+                "carbs": cf.carbs,
+                "fat": cf.fat,
+                "cost_approx": cf.cost,
+                "common_unit": f"{cf.serving_size_g}g serving",
+                "is_custom": True
+            }
+
+    if not target_food:
+        return jsonify({"status": "error", "message": f"Food '{food_name}' not found in database or custom catalog."}), 404
+
+    meal_plan = meal.meal_plan
+    old_cals = meal.calories
+    old_prot = meal.protein
+    old_carbs = meal.carbs
+    old_fat = meal.fat
+    old_cost = meal.cost or 0
+
+    updated_meal_data = swap_meal_with_chosen_food(meal, target_food, custom_serving)
+
+    # Recalculate meal plan totals
+    meal_plan.total_calories = max(0, int(meal_plan.total_calories - old_cals + meal.calories))
+    meal_plan.total_protein = max(0.0, round(meal_plan.total_protein - old_prot + meal.protein, 1))
+    meal_plan.total_carbs = max(0.0, round(meal_plan.total_carbs - old_carbs + meal.carbs, 1))
+    meal_plan.total_fat = max(0.0, round(meal_plan.total_fat - old_fat + meal.fat, 1))
+    meal_plan.total_cost = max(0, int((meal_plan.total_cost or 0) - old_cost + (meal.cost or 0)))
+    db.session.commit()
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    progress = ProgressRecord.query.filter_by(user_id=user.id, date=today_str).first()
+    if progress:
+        progress.calories_consumed = meal_plan.total_calories
+        progress.protein_consumed = meal_plan.total_protein
+        progress.carbs_consumed = meal_plan.total_carbs
+        progress.fat_consumed = meal_plan.total_fat
+        db.session.commit()
+
+    return jsonify({
+        "status": "success",
+        "message": f"Meal updated to {meal.food_name}",
+        "meal": updated_meal_data,
+        "meal_plan_totals": {
+            "total_calories": meal_plan.total_calories,
+            "total_protein": meal_plan.total_protein,
+            "total_carbs": meal_plan.total_carbs,
+            "total_fat": meal_plan.total_fat,
+            "total_cost": meal_plan.total_cost
+        }
+    })
 
 
 @app.route("/api/nutrition/targets", methods=["POST"])

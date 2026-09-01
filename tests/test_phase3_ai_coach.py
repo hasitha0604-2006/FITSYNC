@@ -18,18 +18,33 @@ class Phase3AICoachTestCase(unittest.TestCase):
     def setUp(self):
         self.app = app
         self.app.config['TESTING'] = True
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
         self.app.config['WTF_CSRF_ENABLED'] = False
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()
         self.ctx.push()
 
-        db.create_all()
-        seed_database()
+        self.test_emails = [
+            'coach_test@fitsync.ai', 'fitness_scope@fitsync.ai', 'off_topic@fitsync.ai',
+            'safety@fitsync.ai', 'sports@fitsync.ai', 'persist_conv@fitsync.ai',
+            'usera_ai@fitsync.ai', 'userb_ai@fitsync.ai', 'fallback_test@fitsync.ai'
+        ]
+        try:
+            users = User.query.filter(User.email.in_(self.test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                ChatConversation.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     def tearDown(self):
         try:
-            User.query.filter(User.email.in_(['coach_test@fitsync.ai', 'user_b@fitsync.ai'])).delete()
+            users = User.query.filter(User.email.in_(self.test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                ChatConversation.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
             db.session.commit()
         except Exception:
             db.session.rollback()
@@ -166,12 +181,7 @@ class Phase3AICoachTestCase(unittest.TestCase):
         self.client.post('/api/ai/chat', json={"message": "I want to train chest today"})
 
         # Switch session to User B
-        user_b = User(email="userb_ai@fitsync.ai", password_hash="hashed_pwd")
-        db.session.add(user_b)
-        db.session.commit()
-
-        with self.client.session_transaction() as sess:
-            sess['user_id'] = user_b.id
+        user_b = self._create_and_login_user("userb_ai@fitsync.ai", "User B")
 
         res_b = self.client.get('/api/ai/conversations')
         self.assertEqual(res_b.status_code, 200)

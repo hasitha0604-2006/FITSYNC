@@ -23,12 +23,47 @@ class Phase5UIUXTestCase(unittest.TestCase):
         self.ctx = self.app.app_context()
         self.ctx.push()
 
-        db.create_all()
-        seed_database()
+        try:
+            test_emails = ['p5_user@fitsync.ai', 'user_a_p5@fitsync.ai', 'user_b_p5@fitsync.ai', 'empty_user@fitsync.ai']
+            users = User.query.filter(User.email.in_(test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                CustomFood.query.filter_by(user_id=u.id).delete()
+                plans = WorkoutPlan.query.filter_by(user_id=u.id).all()
+                for p in plans:
+                    for d in p.days:
+                        WorkoutExercise.query.filter_by(workout_day_id=d.id).delete()
+                    WorkoutDay.query.filter_by(workout_plan_id=p.id).delete()
+                WorkoutPlan.query.filter_by(user_id=u.id).delete()
+
+                meal_plans = MealPlan.query.filter_by(user_id=u.id).all()
+                for mp in meal_plans:
+                    Meal.query.filter_by(meal_plan_id=mp.id).delete()
+                MealPlan.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     def tearDown(self):
         try:
-            User.query.filter(User.email.in_(['p5_user@fitsync.ai'])).delete()
+            test_emails = ['p5_user@fitsync.ai', 'user_a_p5@fitsync.ai', 'user_b_p5@fitsync.ai', 'empty_user@fitsync.ai']
+            users = User.query.filter(User.email.in_(test_emails)).all()
+            for u in users:
+                UserProfile.query.filter_by(user_id=u.id).delete()
+                CustomFood.query.filter_by(user_id=u.id).delete()
+                plans = WorkoutPlan.query.filter_by(user_id=u.id).all()
+                for p in plans:
+                    for d in p.days:
+                        WorkoutExercise.query.filter_by(workout_day_id=d.id).delete()
+                    WorkoutDay.query.filter_by(workout_plan_id=p.id).delete()
+                WorkoutPlan.query.filter_by(user_id=u.id).delete()
+
+                meal_plans = MealPlan.query.filter_by(user_id=u.id).all()
+                for mp in meal_plans:
+                    Meal.query.filter_by(meal_plan_id=mp.id).delete()
+                MealPlan.query.filter_by(user_id=u.id).delete()
+                db.session.delete(u)
             db.session.commit()
         except Exception:
             db.session.rollback()
@@ -36,6 +71,12 @@ class Phase5UIUXTestCase(unittest.TestCase):
         self.ctx.pop()
 
     def _create_and_onboard_user(self, email="p5_user@fitsync.ai", name="Phase 5 Athlete"):
+        existing_u = User.query.filter_by(email=email).first()
+        if existing_u:
+            UserProfile.query.filter_by(user_id=existing_u.id).delete()
+            db.session.delete(existing_u)
+            db.session.commit()
+
         self.client.post('/register', data={'email': email, 'password': 'Password123!'}, follow_redirects=True)
         self.client.post('/onboarding', json={
             "name": name,
