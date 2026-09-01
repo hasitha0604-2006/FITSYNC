@@ -246,6 +246,57 @@ class Phase2FeaturesTestCase(unittest.TestCase):
             cf_check = CustomFood.query.get(cf_a_id)
             self.assertIsNotNone(cf_check)
 
+    def test_update_physical_metrics_recalculates_targets_and_bmi(self):
+        """Updating physical metrics updates profile, recalculates targets & BMI, and logs progress."""
+        uid = self._create_and_onboard_user("metrics_test@fitsync.ai", "Metrics User", goal="Muscle Gain")
+
+        res = self.client.post('/api/profile/update-metrics', json={
+            "height": 180.0,
+            "weight": 80.0,
+            "age": 25,
+            "gender": "Male",
+            "fitness_goal": "Fat Loss",
+            "workout_environment": "Dumbbells Only"
+        })
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertEqual(data["status"], "success")
+        self.assertEqual(data["profile"]["height"], 180.0)
+        self.assertEqual(data["profile"]["weight"], 80.0)
+        self.assertEqual(data["profile"]["age"], 25)
+        self.assertEqual(data["profile"]["fitness_goal"], "Fat Loss")
+        self.assertEqual(data["profile"]["workout_environment"], "Dumbbells Only")
+        # BMI for 80kg / 1.80m = 24.7 (Normal)
+        self.assertEqual(data["profile"]["bmi"], 24.7)
+        self.assertEqual(data["profile"]["bmi_label"], "Normal")
+
+        # Verify DB persistence
+        with self.app.app_context():
+            user = db.session.get(User, uid)
+            self.assertEqual(user.profile.height, 180.0)
+            self.assertEqual(user.profile.weight, 80.0)
+            target = NutritionTarget.query.filter_by(user_id=uid).first()
+            self.assertIsNotNone(target)
+            self.assertGreater(target.calories, 0)
+            self.assertGreater(target.protein, 0)
+
+    def test_update_physical_metrics_validates_bounds(self):
+        """Invalid physical metrics ranges are rejected with 400 Bad Request."""
+        self._create_and_onboard_user("bounds_test@fitsync.ai", "Bounds User")
+
+        # Negative weight
+        res1 = self.client.post('/api/profile/update-metrics', json={"weight": -10})
+        self.assertEqual(res1.status_code, 400)
+
+        # Excessive height
+        res2 = self.client.post('/api/profile/update-metrics', json={"height": 500})
+        self.assertEqual(res2.status_code, 400)
+
+        # Unauthenticated request
+        self.client.get('/logout')
+        res3 = self.client.post('/api/profile/update-metrics', json={"weight": 75})
+        self.assertEqual(res3.status_code, 401)
+
 if __name__ == '__main__':
     unittest.main()
 

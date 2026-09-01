@@ -2215,6 +2215,151 @@ def api_workout_ai_query():
     return jsonify(result)
 
 
+@app.route("/api/profile/update-metrics", methods=["POST"])
+def api_update_physical_metrics():
+    user = get_current_user()
+    if not user:
+        return jsonify({"status": "error", "message": "Please log in to update physical metrics."}), 401
+
+    data = request.get_json() or {}
+    profile = user.profile
+    if not profile:
+        profile = UserProfile(user_id=user.id)
+        db.session.add(profile)
+
+    try:
+        # Validate & update height
+        if "height" in data and data["height"] is not None:
+            try:
+                h = float(data["height"])
+                if h < 50 or h > 260:
+                    return jsonify({"status": "error", "message": "Height must be between 50 cm and 260 cm."}), 400
+                profile.height = h
+            except (ValueError, TypeError):
+                return jsonify({"status": "error", "message": "Invalid height format."}), 400
+
+        # Validate & update weight
+        weight_changed = False
+        if "weight" in data and data["weight"] is not None:
+            try:
+                w = float(data["weight"])
+                if w < 20 or w > 400:
+                    return jsonify({"status": "error", "message": "Weight must be between 20 kg and 400 kg."}), 400
+                if profile.weight != w:
+                    weight_changed = True
+                profile.weight = w
+            except (ValueError, TypeError):
+                return jsonify({"status": "error", "message": "Invalid weight format."}), 400
+
+        # Validate & update age
+        if "age" in data and data["age"] is not None:
+            try:
+                a = int(data["age"])
+                if a < 10 or a > 120:
+                    return jsonify({"status": "error", "message": "Age must be between 10 and 120."}), 400
+                profile.age = a
+            except (ValueError, TypeError):
+                return jsonify({"status": "error", "message": "Invalid age format."}), 400
+
+        # Update gender
+        if "gender" in data and data["gender"]:
+            g = str(data["gender"]).strip().capitalize()
+            if g in ["Male", "Female", "Other"]:
+                profile.gender = g
+
+        # Update fitness goal
+        if "fitness_goal" in data and data["fitness_goal"]:
+            profile.fitness_goal = str(data["fitness_goal"]).strip()
+
+        # Update fitness level
+        if "fitness_level" in data and data["fitness_level"]:
+            profile.fitness_level = str(data["fitness_level"]).strip()
+
+        # Update workout environment
+        if "workout_environment" in data and data["workout_environment"]:
+            profile.workout_environment = str(data["workout_environment"]).strip()
+
+        # Update workout days/duration if provided
+        if "workout_days_per_week" in data and data["workout_days_per_week"]:
+            try:
+                profile.workout_days_per_week = max(1, min(7, int(data["workout_days_per_week"])))
+            except (ValueError, TypeError):
+                pass
+
+        if "workout_duration_mins" in data and data["workout_duration_mins"]:
+            try:
+                profile.workout_duration_mins = max(15, min(180, int(data["workout_duration_mins"])))
+            except (ValueError, TypeError):
+                pass
+
+        profile.updated_at = datetime.utcnow()
+
+        # Recalculate nutrition targets automatically
+        macros = calculate_ai_targets(profile)
+        targets = NutritionTarget.query.filter_by(user_id=user.id).first()
+        if not targets:
+            targets = NutritionTarget(user_id=user.id)
+            db.session.add(targets)
+        targets.calories = macros["calories"]
+        targets.protein = macros["protein"]
+        targets.carbs = macros["carbs"]
+        targets.fat = macros["fat"]
+        targets.is_custom = False
+
+        # Log new weight in ProgressRecord for progress tracking
+        today_str = datetime.now().strftime("%Y-%m-%d")
+        existing_prog = ProgressRecord.query.filter_by(user_id=user.id, date=today_str).first()
+        if existing_prog:
+            existing_prog.weight = profile.weight
+        else:
+            db.session.add(ProgressRecord(
+                user_id=user.id,
+                date=today_str,
+                weight=profile.weight,
+                calories_consumed=targets.calories
+            ))
+
+        db.session.commit()
+
+        # Calculate updated BMI
+        h_m = profile.height / 100.0 if profile.height else 1.75
+        bmi_val = round(profile.weight / (h_m * h_m), 1) if h_m > 0 else 0
+        if bmi_val < 18.5:
+            bmi_label = "Underweight"
+            bmi_color = "text-amber-400"
+        elif 25.0 <= bmi_val < 30.0:
+            bmi_label = "Overweight"
+            bmi_color = "text-amber-400"
+        elif bmi_val >= 30.0:
+            bmi_label = "Obese"
+            bmi_color = "text-rose-400"
+        else:
+            bmi_label = "Normal"
+            bmi_color = "text-emerald-400"
+
+        return jsonify({
+            "status": "success",
+            "message": "Physical metrics updated successfully! Daily targets and BMI have been recalibrated.",
+            "profile": {
+                "height": profile.height,
+                "weight": profile.weight,
+                "age": profile.age,
+                "gender": profile.gender,
+                "fitness_goal": profile.fitness_goal,
+                "fitness_level": profile.fitness_level,
+                "workout_environment": profile.workout_environment,
+                "bmi": bmi_val,
+                "bmi_label": bmi_label,
+                "bmi_color": bmi_color
+            },
+            "nutrition_targets": macros
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": f"Failed to update physical metrics: {str(e)}"}), 500
+
+
 @app.route("/api/profile/save", methods=["POST"])
 def api_save_profile():
     user = get_current_user()

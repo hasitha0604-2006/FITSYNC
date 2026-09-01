@@ -161,6 +161,137 @@
       </div>
     </div>
 
+    <!-- Physical & Body Metrics Card -->
+    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+      <div class="flex items-start gap-4">
+        <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20 shrink-0">
+          <i data-lucide="scale" class="h-6 w-6"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-bold text-white text-base">Physical Metrics & Body Stats</h3>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Change your weight, height, age, training goal, or gym environment whenever your measurements change.
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-slate-800" />
+
+      <form id="settings-physical-metrics-form" onsubmit="saveSettingsPhysicalMetrics(event)" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Height (cm) <span class="text-rose-400">*</span>
+            </label>
+            <div class="relative">
+              <input 
+                type="number" 
+                step="0.5" 
+                min="50" 
+                max="260" 
+                id="settings-metric-height" 
+                value="{{ profile.height }}" 
+                required
+                class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:border-emerald-500 focus:outline-none placeholder-slate-500 shadow-inner"
+              />
+              <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-semibold">cm</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Weight (kg) <span class="text-rose-400">*</span>
+            </label>
+            <div class="relative">
+              <input 
+                type="number" 
+                step="0.1" 
+                min="20" 
+                max="350" 
+                id="settings-metric-weight" 
+                value="{{ profile.weight }}" 
+                required
+                class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:border-emerald-500 focus:outline-none placeholder-slate-500 shadow-inner"
+              />
+              <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-semibold">kg</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Age (years) <span class="text-rose-400">*</span>
+            </label>
+            <input 
+              type="number" 
+              min="10" 
+              max="120" 
+              id="settings-metric-age" 
+              value="{{ profile.age }}" 
+              required
+              class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:border-emerald-500 focus:outline-none placeholder-slate-500 shadow-inner"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Gender <span class="text-rose-400">*</span>
+            </label>
+            <select 
+              id="settings-metric-gender" 
+              class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:border-emerald-500 focus:outline-none shadow-inner"
+            >
+              <option value="Male" {% if profile.gender|lower == 'male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if profile.gender|lower == 'female' %}selected{% endif %}>Female</option>
+              <option value="Other" {% if profile.gender|lower not in ['male', 'female'] %}selected{% endif %}>Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Fitness Goal
+            </label>
+            <select 
+              id="settings-metric-goal" 
+              class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:border-emerald-500 focus:outline-none shadow-inner"
+            >
+              <option value="Muscle Gain" {% if 'gain' in profile.fitness_goal|lower or 'muscle' in profile.fitness_goal|lower %}selected{% endif %}>Muscle Gain</option>
+              <option value="Fat Loss" {% if 'loss' in profile.fitness_goal|lower or 'fat' in profile.fitness_goal|lower %}selected{% endif %}>Fat Loss</option>
+              <option value="General Fitness" {% if 'general' in profile.fitness_goal|lower or 'maintenance' in profile.fitness_goal|lower %}selected{% endif %}>General Fitness</option>
+              <option value="Strength" {% if 'strength' in profile.fitness_goal|lower %}selected{% endif %}>Strength</option>
+              <option value="Endurance" {% if 'endurance' in profile.fitness_goal|lower or 'cardio' in profile.fitness_goal|lower %}selected{% endif %}>Endurance</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Workout Environment
+            </label>
+            <select 
+              id="settings-metric-env" 
+              class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:border-emerald-500 focus:outline-none shadow-inner"
+            >
+              <option value="Gym" {% if profile.workout_environment == 'Gym' %}selected{% endif %}>Gym</option>
+              <option value="Dumbbells Only" {% if profile.workout_environment == 'Dumbbells Only' %}selected{% endif %}>Dumbbells Only</option>
+              <option value="No Equipment" {% if profile.workout_environment == 'No Equipment' %}selected{% endif %}>No Equipment</option>
+              <option value="Home" {% if profile.workout_environment == 'Home' %}selected{% endif %}>Home Setup</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <span id="settings-metrics-status" class="text-xs font-semibold hidden"></span>
+          <button 
+            type="submit"
+            id="btn-save-settings-metrics"
+            class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 ml-auto flex items-center gap-1.5"
+          >
+            <i data-lucide="check" class="h-4 w-4"></i>
+            <span>Save Physical Metrics</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
     <!-- Theme & Appearance Card -->
     <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
       <div class="flex items-start gap-4">
@@ -491,6 +622,67 @@
     } finally {
       saveBtn.disabled = false;
       saveBtn.textContent = "Save Food Preferences & Budget";
+    }
+  }
+
+  async function saveSettingsPhysicalMetrics(event) {
+    event.preventDefault();
+    const btn = document.getElementById('btn-save-settings-metrics');
+    const msg = document.getElementById('settings-metrics-status');
+    const origHTML = btn ? btn.innerHTML : '';
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> Saving...';
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    const payload = {
+      height: parseFloat(document.getElementById('settings-metric-height')?.value),
+      weight: parseFloat(document.getElementById('settings-metric-weight')?.value),
+      age: parseInt(document.getElementById('settings-metric-age')?.value),
+      gender: document.getElementById('settings-metric-gender')?.value,
+      fitness_goal: document.getElementById('settings-metric-goal')?.value,
+      workout_environment: document.getElementById('settings-metric-env')?.value
+    };
+
+    try {
+      const res = await fetch("/api/profile/update-metrics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        if (msg) {
+          msg.className = "text-xs font-semibold text-emerald-400 block";
+          msg.innerHTML = "&#10003; " + (data.message || "Physical metrics saved successfully.");
+          msg.classList.remove('hidden');
+          setTimeout(() => msg.classList.add('hidden'), 3500);
+        }
+        if (typeof showToast === 'function') {
+          showToast('✅ Physical metrics & targets updated successfully!', true);
+        }
+      } else {
+        if (msg) {
+          msg.className = "text-xs font-semibold text-rose-400 block";
+          msg.textContent = data.message || "Unable to update physical metrics.";
+          msg.classList.remove('hidden');
+        }
+      }
+    } catch (err) {
+      if (msg) {
+        msg.className = "text-xs font-semibold text-rose-400 block";
+        msg.textContent = "Network error while saving metrics: " + err.message;
+        msg.classList.remove('hidden');
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origHTML;
+        if (window.lucide) window.lucide.createIcons();
+      }
     }
   }
 

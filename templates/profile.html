@@ -4,9 +4,19 @@
 <div class="flex-1 p-6 md:p-10 overflow-y-auto space-y-6 pb-20 md:pb-10 bg-slate-950 text-slate-100 w-full font-sans">
   
   <!-- Header -->
-  <div>
-    <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Profile & Preferences</h1>
-    <p class="text-xs text-slate-400 mt-1">Review your body metrics, workout frequencies, and dietary allocations.</p>
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Profile & Preferences</h1>
+      <p class="text-xs text-slate-400 mt-1">Review and update your body metrics, training goals, and dietary allocations whenever you want.</p>
+    </div>
+    <button
+      type="button"
+      onclick="openEditMetricsModal()"
+      class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-emerald-500/20 shrink-0 select-none cursor-pointer"
+    >
+      <i data-lucide="pencil" class="h-4 w-4"></i>
+      <span>Edit Physical Metrics</span>
+    </button>
   </div>
 
   <!-- Main Grid -->
@@ -15,29 +25,40 @@
     <!-- Metric A: Body Stats & BMI -->
     <section class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between space-y-6 lg:col-span-1">
       <div class="space-y-4">
-        <div class="flex items-center gap-2.5 select-none">
-          <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
-            <i data-lucide="user" class="h-5 w-5"></i>
+        <div class="flex items-center justify-between select-none">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+              <i data-lucide="user" class="h-5 w-5"></i>
+            </div>
+            <h3 class="font-bold text-white">Physical Metrics</h3>
           </div>
-          <h3 class="font-bold text-white">Physical Metrics</h3>
+          <button
+            type="button"
+            onclick="openEditMetricsModal()"
+            class="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-[11px] rounded-lg flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+            title="Edit Height, Weight, Age, Gender"
+          >
+            <i data-lucide="edit-3" class="h-3 w-3"></i>
+            <span>Edit</span>
+          </button>
         </div>
         
         <div class="grid grid-cols-2 gap-4 text-xs font-semibold">
-          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 transition-all hover:border-slate-700">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Height</span>
-            <span class="text-sm font-black text-white mt-1 block">{{ profile.height }} cm</span>
+            <span id="display-metric-height" class="text-sm font-black text-white mt-1 block">{{ profile.height }} cm</span>
           </div>
-          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 transition-all hover:border-slate-700">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Weight</span>
-            <span class="text-sm font-black text-white mt-1 block">{{ profile.weight }} kg</span>
+            <span id="display-metric-weight" class="text-sm font-black text-white mt-1 block">{{ profile.weight }} kg</span>
           </div>
-          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 transition-all hover:border-slate-700">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Age</span>
-            <span class="text-sm font-black text-white mt-1 block">{{ profile.age }} years</span>
+            <span id="display-metric-age" class="text-sm font-black text-white mt-1 block">{{ profile.age }} years</span>
           </div>
-          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 transition-all hover:border-slate-700">
             <span class="text-[10px] text-slate-400 font-bold uppercase block">Gender</span>
-            <span class="text-sm font-black text-white mt-1 block capitalize">{{ profile.gender }}</span>
+            <span id="display-metric-gender" class="text-sm font-black text-white mt-1 block capitalize">{{ profile.gender }}</span>
           </div>
         </div>
       </div>
@@ -63,11 +84,11 @@
       <div class="bg-slate-950/80 border border-slate-800 text-white p-4 rounded-xl flex items-center justify-between shadow select-none">
         <div>
           <span class="block text-[9px] text-slate-400 uppercase font-bold">Estimated BMI</span>
-          <span class="block text-2xl font-black text-white mt-1">{{ bmiScore }}</span>
+          <span id="display-bmi-score" class="block text-2xl font-black text-white mt-1">{{ bmiScore }}</span>
         </div>
         <div class="text-right">
           <span class="block text-[9px] text-slate-400 uppercase font-bold">Status</span>
-          <span class="block text-xs font-black mt-1 {{ bmiColor }}">{{ bmiLabel }}</span>
+          <span id="display-bmi-label" class="block text-xs font-black mt-1 {{ bmiColor }}">{{ bmiLabel }}</span>
         </div>
       </div>
     </section>
@@ -75,27 +96,38 @@
     <!-- Metric B: Parameter settings summary -->
     <section class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between space-y-4 lg:col-span-2">
       <div class="space-y-4">
-        <div class="flex items-center gap-2.5 select-none">
-          <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
-            <i data-lucide="settings" class="h-5 w-5"></i>
+        <div class="flex items-center justify-between select-none">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+              <i data-lucide="settings" class="h-5 w-5"></i>
+            </div>
+            <h3 class="font-bold text-white">Training & Dietary Parameters</h3>
           </div>
-          <h3 class="font-bold text-white">Training & Dietary Parameters</h3>
+          <button
+            type="button"
+            onclick="openEditMetricsModal()"
+            class="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-bold text-[11px] rounded-lg flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+            title="Edit Fitness Goal and Training Environment"
+          >
+            <i data-lucide="sliders" class="h-3 w-3"></i>
+            <span>Adjust</span>
+          </button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-slate-200 select-none">
           <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Fitness Goal</span>
-            <span class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.fitness_goal }}</span>
+            <span id="display-param-goal" class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.fitness_goal }}</span>
           </div>
           
           <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
             <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Fitness Level</span>
-            <span class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.fitness_level }}</span>
+            <span id="display-param-level" class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.fitness_level }}</span>
           </div>
 
           <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
-            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Dietary Preference</span>
-            <span class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.dietary_preference }}</span>
+            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Training Environment</span>
+            <span id="display-param-env" class="text-sm font-bold text-white capitalize mt-1 block">{{ profile.workout_environment or 'Gym' }}</span>
           </div>
 
           <div class="border border-slate-800 p-4 rounded-xl bg-slate-950/60">
@@ -154,7 +186,7 @@
       <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 select-none">
         <div class="flex items-start gap-1.5 text-[10px] text-slate-400 leading-relaxed max-w-sm">
           <i data-lucide="info" class="h-4 w-4 shrink-0 text-slate-400 mt-0.5"></i>
-          <p>Need to adapt your split because you signed up for a gym, bought dumbbells, or changed diet preferences? Reset onboarding parameters below.</p>
+          <p>Need to customize available canteen foods or restart the 9-step onboarding wizard? Choose an option below.</p>
         </div>
         <div class="flex gap-2 w-full sm:w-auto">
           <a
@@ -165,9 +197,9 @@
           </a>
           <a
             href="{{ url_for('onboarding') }}"
-            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-emerald-500/20 shrink-0"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-all shadow-sm shrink-0"
           >
-            Reset / Change Constraints
+            Full Onboarding Wizard
             <i data-lucide="chevron-right" class="h-4 w-4"></i>
           </a>
         </div>
@@ -188,4 +220,325 @@
   </section>
 
 </div>
+
+<!-- ========================================================================= -->
+<!-- EDIT PHYSICAL METRICS MODAL -->
+<!-- ========================================================================= -->
+<div id="edit-metrics-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-5 border-b border-slate-800 bg-slate-950/60">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
+          <i data-lucide="scale" class="h-5 w-5"></i>
+        </div>
+        <div>
+          <h3 class="font-black text-white text-base">Update Physical Metrics</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Recalibrate your BMR, TDEE, macro targets, and BMI score instantly.</p>
+        </div>
+      </div>
+      <button 
+        type="button" 
+        onclick="closeEditMetricsModal()"
+        class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors"
+      >
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+    </div>
+
+    <!-- Modal Form -->
+    <form id="edit-metrics-form" onsubmit="submitPhysicalMetrics(event)" class="p-6 space-y-4">
+      
+      <!-- Row 1: Height & Weight -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            Height (cm) <span class="text-rose-400">*</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="number" 
+              step="0.5" 
+              min="50" 
+              max="260" 
+              id="modal-metric-height" 
+              value="{{ profile.height }}" 
+              required
+              oninput="updateModalBMILive()"
+              class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:border-emerald-500 focus:outline-none placeholder-slate-500 shadow-inner"
+            />
+            <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-semibold">cm</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            Weight (kg) <span class="text-rose-400">*</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="number" 
+              step="0.1" 
+              min="20" 
+              max="350" 
+              id="modal-metric-weight" 
+              value="{{ profile.weight }}" 
+              required
+              oninput="updateModalBMILive()"
+              class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:border-emerald-500 focus:outline-none placeholder-slate-500 shadow-inner"
+            />
+            <span class="absolute right-3.5 top-2.5 text-xs text-slate-400 font-semibold">kg</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Age & Gender -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            Age (years) <span class="text-rose-400">*</span>
+          </label>
+          <input 
+            type="number" 
+            min="10" 
+            max="120" 
+            id="modal-metric-age" 
+            value="{{ profile.age }}" 
+            required
+            class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:border-emerald-500 focus:outline-none placeholder-slate-500 shadow-inner"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            Gender <span class="text-rose-400">*</span>
+          </label>
+          <select 
+            id="modal-metric-gender" 
+            class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:border-emerald-500 focus:outline-none shadow-inner"
+          >
+            <option value="Male" {% if profile.gender|lower == 'male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if profile.gender|lower == 'female' %}selected{% endif %}>Female</option>
+            <option value="Other" {% if profile.gender|lower not in ['male', 'female'] %}selected{% endif %}>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 3: Fitness Goal & Fitness Level -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            Primary Fitness Goal
+          </label>
+          <select 
+            id="modal-metric-goal" 
+            class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:border-emerald-500 focus:outline-none shadow-inner"
+          >
+            <option value="Muscle Gain" {% if 'gain' in profile.fitness_goal|lower or 'muscle' in profile.fitness_goal|lower %}selected{% endif %}>Muscle Gain (Hypertrophy)</option>
+            <option value="Fat Loss" {% if 'loss' in profile.fitness_goal|lower or 'fat' in profile.fitness_goal|lower %}selected{% endif %}>Fat Loss (Cutting)</option>
+            <option value="General Fitness" {% if 'general' in profile.fitness_goal|lower or 'maintenance' in profile.fitness_goal|lower %}selected{% endif %}>General Fitness / Maintenance</option>
+            <option value="Strength" {% if 'strength' in profile.fitness_goal|lower %}selected{% endif %}>Strength Training</option>
+            <option value="Endurance" {% if 'endurance' in profile.fitness_goal|lower or 'cardio' in profile.fitness_goal|lower %}selected{% endif %}>Endurance & Stamina</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            Experience Level
+          </label>
+          <select 
+            id="modal-metric-level" 
+            class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:border-emerald-500 focus:outline-none shadow-inner"
+          >
+            <option value="Beginner" {% if profile.fitness_level|lower == 'beginner' %}selected{% endif %}>Beginner (&lt; 6 months)</option>
+            <option value="Intermediate" {% if profile.fitness_level|lower == 'intermediate' %}selected{% endif %}>Intermediate (6–24 months)</option>
+            <option value="Advanced" {% if profile.fitness_level|lower == 'advanced' %}selected{% endif %}>Advanced (2+ years)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 4: Workout Environment -->
+      <div>
+        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+          Workout Environment
+        </label>
+        <select 
+          id="modal-metric-env" 
+          class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:border-emerald-500 focus:outline-none shadow-inner"
+        >
+          <option value="Gym" {% if profile.workout_environment == 'Gym' %}selected{% endif %}>Commercial Gym (Full Equipment)</option>
+          <option value="Dumbbells Only" {% if profile.workout_environment == 'Dumbbells Only' %}selected{% endif %}>Dumbbells Only (Hostel / Home)</option>
+          <option value="No Equipment" {% if profile.workout_environment == 'No Equipment' %}selected{% endif %}>No Equipment (Calisthenics / Bodyweight)</option>
+          <option value="Home" {% if profile.workout_environment == 'Home' %}selected{% endif %}>Home Setup (Basic Free Weights)</option>
+        </select>
+      </div>
+
+      <!-- Live BMI Preview Card inside Modal -->
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between shadow-inner">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-black text-xs">
+            BMI
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase block">Live Recalibrated Score</span>
+            <span id="modal-bmi-preview" class="text-sm font-black text-white block">{{ bmiScore }}</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] text-slate-400 font-bold uppercase block">Category</span>
+          <span id="modal-bmi-label-preview" class="text-xs font-black {{ bmiColor }} block">{{ bmiLabel }}</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button 
+          type="button" 
+          onclick="closeEditMetricsModal()"
+          class="px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-300 font-bold text-xs hover:bg-slate-800 transition-colors"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          id="btn-save-metrics"
+          class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-1.5"
+        >
+          <i data-lucide="check" class="h-4 w-4"></i>
+          <span>Save Changes</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openEditMetricsModal() {
+    const modal = document.getElementById('edit-metrics-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      updateModalBMILive();
+      if (window.lucide) window.lucide.createIcons();
+    }
+  }
+
+  function closeEditMetricsModal() {
+    const modal = document.getElementById('edit-metrics-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  }
+
+  function updateModalBMILive() {
+    const h = parseFloat(document.getElementById('modal-metric-height')?.value) || 0;
+    const w = parseFloat(document.getElementById('modal-metric-weight')?.value) || 0;
+    const previewScore = document.getElementById('modal-bmi-preview');
+    const previewLabel = document.getElementById('modal-bmi-label-preview');
+
+    if (!previewScore || !previewLabel) return;
+
+    if (h > 50 && w > 20) {
+      const hM = h / 100.0;
+      const score = (w / (hM * hM)).toFixed(1);
+      previewScore.textContent = score;
+
+      if (score < 18.5) {
+        previewLabel.textContent = 'Underweight';
+        previewLabel.className = 'text-xs font-black text-amber-400 block';
+      } else if (score >= 25.0 && score < 30.0) {
+        previewLabel.textContent = 'Overweight';
+        previewLabel.className = 'text-xs font-black text-amber-400 block';
+      } else if (score >= 30.0) {
+        previewLabel.textContent = 'Obese';
+        previewLabel.className = 'text-xs font-black text-rose-400 block';
+      } else {
+        previewLabel.textContent = 'Normal';
+        previewLabel.className = 'text-xs font-black text-emerald-400 block';
+      }
+    }
+  }
+
+  async function submitPhysicalMetrics(event) {
+    event.preventDefault();
+    const btn = document.getElementById('btn-save-metrics');
+    const origHTML = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> Saving...';
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    const payload = {
+      height: parseFloat(document.getElementById('modal-metric-height')?.value),
+      weight: parseFloat(document.getElementById('modal-metric-weight')?.value),
+      age: parseInt(document.getElementById('modal-metric-age')?.value),
+      gender: document.getElementById('modal-metric-gender')?.value,
+      fitness_goal: document.getElementById('modal-metric-goal')?.value,
+      fitness_level: document.getElementById('modal-metric-level')?.value,
+      workout_environment: document.getElementById('modal-metric-env')?.value
+    };
+
+    try {
+      const res = await fetch('/api/profile/update-metrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        // Update DOM display values in real-time
+        const p = data.profile;
+        if (p) {
+          const hEl = document.getElementById('display-metric-height');
+          const wEl = document.getElementById('display-metric-weight');
+          const aEl = document.getElementById('display-metric-age');
+          const gEl = document.getElementById('display-metric-gender');
+          const goalEl = document.getElementById('display-param-goal');
+          const lvlEl = document.getElementById('display-param-level');
+          const envEl = document.getElementById('display-param-env');
+          const bmiScoreEl = document.getElementById('display-bmi-score');
+          const bmiLabelEl = document.getElementById('display-bmi-label');
+
+          if (hEl) hEl.textContent = `${p.height} cm`;
+          if (wEl) wEl.textContent = `${p.weight} kg`;
+          if (aEl) aEl.textContent = `${p.age} years`;
+          if (gEl) gEl.textContent = p.gender;
+          if (goalEl) goalEl.textContent = p.fitness_goal;
+          if (lvlEl) lvlEl.textContent = p.fitness_level;
+          if (envEl) envEl.textContent = p.workout_environment;
+          if (bmiScoreEl) bmiScoreEl.textContent = p.bmi;
+          if (bmiLabelEl) {
+            bmiLabelEl.textContent = p.bmi_label;
+            bmiLabelEl.className = `block text-xs font-black mt-1 ${p.bmi_color}`;
+          }
+        }
+
+        closeEditMetricsModal();
+        if (typeof showToast === 'function') {
+          showToast('✅ Physical metrics & targets updated successfully!', true);
+        } else {
+          alert('Physical metrics updated successfully!');
+        }
+      } else {
+        alert(data.message || 'Failed to update physical metrics.');
+      }
+    } catch (err) {
+      alert('Network error while updating metrics: ' + err.message);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origHTML;
+        if (window.lucide) window.lucide.createIcons();
+      }
+    }
+  }
+
+  // Close modal on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeEditMetricsModal();
+  });
+</script>
 {% endblock %}
+
