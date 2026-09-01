@@ -399,25 +399,36 @@
 
       <!-- Modal Content -->
       <div class="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
-        <!-- Side-by-Side Animation and Anatomical Model -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Animation Column -->
-          <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner group">
-            <img id="demo-modal-img" src="" alt="Demonstration" class="w-full h-full object-contain" />
-            <div class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-lg shadow-lg">
-              <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="text-[9px] font-bold text-slate-200">Motion Avatar</span>
+        <!-- Side-by-Side Biomechanical Motion Animation and Anatomical Model -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Dynamic Biomechanical Motion Animation Column -->
+          <div class="lg:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between shadow-inner">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800/80 mb-2">
+              <span class="text-[10px] font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Kinematic Movement Demonstration
+              </span>
+              <span class="text-[9px] font-bold text-slate-400">Interactive Controls</span>
+            </div>
+            <div id="demo-motion-viewport" class="w-full">
+              <!-- Rendered dynamically by window.initExerciseMotionPlayer -->
             </div>
           </div>
 
           <!-- Anatomy Highlight Column -->
-          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex items-center justify-center relative">
-            <div class="w-full max-w-[210px] scale-[0.95]" id="modal-anatomy-container">
+          <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-2xl p-3 flex flex-col items-center justify-between relative shadow-inner">
+            <div class="w-full flex items-center justify-between pb-2 border-b border-slate-800/80 mb-2">
+              <span class="text-[10px] font-black text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                Target Muscle Map
+              </span>
+              <span class="text-[9px] font-bold text-slate-400">Anatomy Activation</span>
+            </div>
+            <div class="w-full max-w-[210px] py-1 scale-[0.95]" id="modal-anatomy-container">
               {% include 'anatomy_model.html' %}
             </div>
-            <div class="absolute bottom-3 right-3 flex items-center gap-1.5 bg-slate-900/90 backdrop-blur border border-slate-700 px-2.5 py-1 rounded-lg shadow-lg">
-              <span class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span>
-              <span class="text-[9px] font-bold text-slate-200">Anatomical Target</span>
+            <div class="w-full pt-2 border-t border-slate-800/80 text-center">
+              <span class="text-[9px] text-slate-400">Emerald = Primary • Amber = Secondary</span>
             </div>
           </div>
         </div>
@@ -771,8 +782,10 @@
     document.getElementById('demo-modal-primary-bar').style.width = `${pPct}%`;
     document.getElementById('demo-modal-secondary-muscles').innerText = (ex.secondary_muscles && ex.secondary_muscles.length) ? ex.secondary_muscles.join(', ') : 'Stabilizer muscles';
 
-    const img = document.getElementById('demo-modal-img');
-    img.src = ex.media_path || '/static/exercises/fallback_demo.svg';
+    // Mount Interactive Biomechanical Motion Animation Player
+    if (window.initExerciseMotionPlayer) {
+      window.initExerciseMotionPlayer('demo-motion-viewport', ex);
+    }
 
     const ol = document.getElementById('demo-modal-instructions');
     ol.innerHTML = '';
@@ -805,6 +818,10 @@
   }
 
   function closeDemoModal() {
+    if (window.__activeMotionPlayer) {
+      window.__activeMotionPlayer.isPlaying = false;
+      window.__activeMotionPlayer.updatePlayBtnState();
+    }
     document.getElementById('demo-modal').classList.add('hidden');
   }
 

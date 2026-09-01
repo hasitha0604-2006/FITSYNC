@@ -247,23 +247,36 @@
       </div>
 
       <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-300">
-        <!-- Side-by-Side Animation and Anatomical Model -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <!-- Animation Showcase -->
-          <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner">
-            <img id="modal-ex-img" src="" alt="Demonstration" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';" />
-            <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
-              Motion Avatar
+        <!-- Side-by-Side Biomechanical Motion Animation and Anatomical Model -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Dynamic Biomechanical Motion Animation Column -->
+          <div class="lg:col-span-7 bg-slate-950 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between shadow-inner">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800/80 mb-2">
+              <span class="text-[10px] font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Kinematic Movement Demonstration
+              </span>
+              <span class="text-[9px] font-bold text-slate-400">Interactive Controls</span>
+            </div>
+            <div id="today-motion-viewport" class="w-full">
+              <!-- Rendered dynamically by window.initExerciseMotionPlayer -->
             </div>
           </div>
 
           <!-- Anatomical Highlight Showcase -->
-          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex items-center justify-center relative">
+          <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-2xl p-2 flex flex-col items-center justify-between relative shadow-inner">
+            <div class="w-full flex items-center justify-between pb-2 border-b border-slate-800/80 mb-2">
+              <span class="text-[10px] font-black text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                Target Muscle Map
+              </span>
+              <span class="text-[9px] font-bold text-slate-400">Anatomy Activation</span>
+            </div>
             <div class="w-full max-w-[180px] scale-[0.95]" id="today-modal-anatomy-container">
               {% include 'anatomy_model.html' %}
             </div>
-            <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
-              Anatomy
+            <div class="w-full pt-1.5 border-t border-slate-800/80 text-center">
+              <span class="text-[9px] text-slate-400">Emerald = Primary • Amber = Secondary</span>
             </div>
           </div>
         </div>
@@ -563,8 +576,10 @@
     document.getElementById('modal-ex-working-loc').innerText = ex.working_location || ex.primary_muscle || ex.category;
     document.getElementById('modal-ex-joint-action').innerText = ex.joint_action || 'Joint Flexion & Extension';
 
-    const slug = ex.slug || ex.name.toLowerCase().replace(/ /g, '_').replace(/-/g, '_');
-    document.getElementById('modal-ex-img').src = ex.media_path || `/static/exercises/${slug}/demo.svg`;
+    // Mount Interactive Biomechanical Motion Animation Player
+    if (window.initExerciseMotionPlayer) {
+      window.initExerciseMotionPlayer('today-motion-viewport', ex);
+    }
 
     const ol = document.getElementById('modal-ex-instructions');
     ol.innerHTML = '';
@@ -599,6 +614,10 @@
   }
 
   function closeGuideModal() {
+    if (window.__activeMotionPlayer) {
+      window.__activeMotionPlayer.isPlaying = false;
+      window.__activeMotionPlayer.updatePlayBtnState();
+    }
     document.getElementById('guide-modal').classList.add('hidden');
   }
 

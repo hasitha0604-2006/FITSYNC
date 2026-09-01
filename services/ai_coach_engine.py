@@ -197,7 +197,7 @@ def _generate_offline_coaching_reply(q, user_context, qa_exercises, user_foods=N
         if qa_exercises:
             best_ex = qa_exercises[0]
             reply = f"For your **{today_focus}** training, **{best_ex['name']}** ({best_ex['category']}) is an outstanding movement! Focus on controlling the 2-second negative phase and driving through with full control."
-            return reply, "EXERCISE_EXPLANATION"
+            return reply, "WORKOUT_EXPLANATION" if "workout" in q else "EXERCISE_EXPLANATION"
 
         reply = f"To maximize your {goal} goal during today's {today_focus} session, perform 3-4 sets of 8-12 reps with a 60-90 second rest period. Focus on full range of motion over heavy weight!"
         return reply, "WORKOUT_EXPLANATION"
@@ -289,6 +289,8 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
             target_mins = 60
         elif "45" in q:
             target_mins = 45
+        elif "20" in q:
+            target_mins = 20
 
         plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
         if plan:
@@ -302,7 +304,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                 return {
                     "status": "success",
                     "action": "duration_adjustment_proposal",
-                    "intent": "WORKOUT_ADJUSTMENT",
+                    "intent": "ADJUST_DURATION",
                     "coach_reply": f"I can adjust your **{today_w.focus}** session from {curr_dur} mins to ~**{target_mins} minutes** so you can get a great workout without rushing.",
                     "explanation": f"Propose reducing workout density to ~{target_mins} minutes based on your available time.",
                     "proposed_action": {
@@ -331,7 +333,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                 return {
                     "status": "success",
                     "action": "difficulty_adjustment_proposal",
-                    "intent": "WORKOUT_ADJUSTMENT",
+                    "intent": "ADJUST_DIFFICULTY",
                     "coach_reply": f"I can adjust your **{today_w.focus}** session volume to be **{direction}** (modifying rep ranges & rest intervals) while preserving muscle activation.",
                     "explanation": f"Propose scaling workout intensity to be {direction} per your request.",
                     "proposed_action": {
@@ -346,8 +348,8 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                     "redirect_url": "/today-workout"
                 }
 
-    # 5. ACTION INTENT: EXPLAIN TODAY'S WORKOUT
-    if any(k in q for k in ["explain today", "today's workout", "todays workout", "my workout today", "what is today"]):
+    # 5. ACTION INTENT: EXPLAIN TODAY'S WORKOUT / GET TODAY'S WORKOUT
+    if any(k in q for k in ["explain today", "today's workout", "todays workout", "my workout today", "what is today", "workout today"]):
         if user and user.profile:
             plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
             if plan:
@@ -380,7 +382,91 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                             "explanation": f"Retrieved today's {today_w.focus} workout."
                         }
 
-    # 4. ACTION INTENT: SPORTS WARM-UP / TRAINING
+    # 6. ACTION INTENT: REPLACE EXERCISE ("Replace the first exercise", "Replace bench press", "Hate bench press", "Swap exercise")
+    if any(k in q for k in ["replace", "swap", "hate", "substitute", "alternative"]) and any(k in q for k in ["exercise", "first", "1st", "second", "2nd", "last", "bench", "squat", "press", "curl", "row", "pull", "deadlift", "lunge", "dip"]) and user and user.profile:
+        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+        if plan:
+            today_name = datetime.now().strftime("%A")
+            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+            if not today_w or today_w.is_rest_day or not today_w.exercises:
+                today_w = next((d for d in plan.days if not d.is_rest_day and d.exercises), None)
+
+            if today_w and today_w.exercises:
+                target_ex = today_w.exercises[0]
+                if "second" in q or "2nd" in q:
+                    target_ex = today_w.exercises[1] if len(today_w.exercises) > 1 else today_w.exercises[0]
+                elif "last" in q:
+                    target_ex = today_w.exercises[-1]
+                else:
+                    for ex_item in today_w.exercises:
+                        if any(word in ex_item.name.lower() for word in q.split() if len(word) > 3):
+                            target_ex = ex_item
+                            break
+
+                all_ex = get_exercises_data()
+                eq_names = [e.equipment_name for e in user.equipments] if user.equipments else ["Gym"]
+                alt = find_alternative_exercise(
+                    target_ex.category or "Chest",
+                    getattr(target_ex, 'exercise_id', target_ex.id),
+                    eq_names,
+                    all_ex,
+                    goal=user.profile.fitness_goal if user.profile else "General Fitness",
+                    fitness_level=user.profile.fitness_level if user.profile else "Beginner",
+                    workout_environment=user.profile.workout_environment if user.profile else "Gym"
+                )
+
+                if alt:
+                    return {
+                        "status": "success",
+                        "action": "exercise_swap_proposal",
+                        "intent": "REPLACE_EXERCISE",
+                        "coach_reply": f"I can replace **{target_ex.name}** with **{alt['name']}** ({alt.get('category', target_ex.category)}), which matches your equipment and biomechanically targets the same muscle groups.",
+                        "explanation": f"Compatible biomechanical alternative for {target_ex.name}.",
+                        "exercises": [alt],
+                        "proposed_action": {
+                            "type": "REPLACE_EXERCISE",
+                            "title": f"Replace {target_ex.name}",
+                            "current": f"{target_ex.name} ({target_ex.sets} sets × {target_ex.reps_min}-{target_ex.reps_max} reps)",
+                            "proposed": f"{alt['name']} ({target_ex.sets} sets × {alt.get('default_reps', '8-12')} reps)",
+                            "reason": "Biomechanical alternative matching your equipment.",
+                            "endpoint": "/api/workout/replace-exercise",
+                            "payload": {
+                                "workout_exercise_id": target_ex.id,
+                                "new_exercise_name": alt["name"],
+                                "category": alt.get("category", target_ex.category),
+                                "reps": alt.get("default_reps", "8-12")
+                            }
+                        },
+                        "redirect_url": "/today-workout"
+                    }
+
+    # 7. ACTION INTENT: PROGRESS INQUIRY / EXPLAIN PROGRESS
+    if any(k in q for k in ["how am i progressing", "my progress", "how am i doing", "progress report", "my consistency", "streak"]) and user and user.profile:
+        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+        total_days = len([d for d in plan.days if not d.is_rest_day]) if plan else 4
+        completed_days = len([d for d in plan.days if d.is_completed]) if plan else 0
+        pct = int((completed_days / max(1, total_days)) * 100) if total_days else 0
+
+        prog_recs = ProgressRecord.query.filter_by(user_id=user.id).order_by(ProgressRecord.date.desc()).limit(7).all()
+        logged_count = len(prog_recs)
+
+        reply = (
+            f"📊 **Progress Check for {user_context['name']}**:\n\n"
+            f"• **Weekly Workout Completion**: **{completed_days}/{total_days} sessions** ({pct}%)\n"
+            f"• **Goal**: {user_context['fitness_goal']} ({user_context['fitness_level']})\n"
+            f"• **Daily Macro Target**: {user_context['target_calories']} kcal | {user_context['target_protein']}g Protein | ₹{user_context['daily_budget']}/day\n"
+            f"• **Consistency**: Logged {logged_count} activity check-ins recently.\n\n"
+            "You are building solid momentum! Stay consistent with your daily protein and scheduled recovery days."
+        )
+        return {
+            "status": "success",
+            "action": "progress_explained",
+            "intent": "EXPLAIN_PROGRESS",
+            "coach_reply": reply,
+            "explanation": "Calculated weekly workout completion and progress adherence from database."
+        }
+
+    # 8. ACTION INTENT: SPORTS WARM-UP / TRAINING
     if any(k in q for k in ["sport", "football", "cricket", "basketball", "soccer", "running", "warmup", "warm-up", "agility"]):
         sports_reply, sports_intent = _get_sports_routine(q)
         return {
@@ -391,7 +477,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
             "explanation": "Generated sports dynamic warm-up routine."
         }
 
-    # 5. ACTION INTENT: CHANGE TODAY'S WORKOUT FOCUS ("I want to train chest today", "Switch to legs", "Let's do shoulders")
+    # 9. ACTION INTENT: CHANGE TODAY'S WORKOUT FOCUS ("I want to train chest today", "Switch to legs", "Let's do shoulders")
     muscle_focus_map = {
         "chest": ["chest", "pecs", "chest + triceps", "push day", "push"],
         "back": ["back", "lats", "back + biceps", "pull day", "pull"],
@@ -430,74 +516,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                     "redirect_url": "/today-workout"
                 }
 
-    # 6. ACTION INTENT: DURATION ADJUSTMENT ("I have 30 minutes", "Make workout 30 mins", "60 minute workout")
-    dur_match = re.search(r'(\d+)\s*(min|mins|minute|minutes)', q)
-    if ("time" in q or "durat" in q or "quick" in q or dur_match or "express" in q or "short" in q) and user and user.profile:
-        target_mins = 30
-        if dur_match:
-            target_mins = int(dur_match.group(1))
-        elif "60" in q or "hour" in q:
-            target_mins = 60
-        elif "45" in q:
-            target_mins = 45
-
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
-        if plan:
-            today_name = datetime.now().strftime("%A")
-            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
-            if not today_w or today_w.is_rest_day:
-                today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
-
-            if today_w:
-                curr_dur = today_w.duration_minutes or 45
-                return {
-                    "status": "success",
-                    "action": "duration_adjustment_proposal",
-                    "intent": "WORKOUT_ADJUSTMENT",
-                    "coach_reply": f"I can adjust your **{today_w.focus}** session from {curr_dur} mins to ~**{target_mins} minutes** so you can get a great workout without rushing.",
-                    "explanation": f"Propose reducing workout density to ~{target_mins} minutes based on your available time.",
-                    "proposed_action": {
-                        "type": "ADJUST_DURATION",
-                        "title": "Shorten Workout Duration",
-                        "current": f"{curr_dur} minutes",
-                        "proposed": f"{target_mins} minutes",
-                        "reason": f"You mentioned having {target_mins} minutes available today.",
-                        "endpoint": "/api/workout/adjust-duration",
-                        "payload": {"duration_mins": target_mins}
-                    },
-                    "redirect_url": "/today-workout"
-                }
-
-    # 7. ACTION INTENT: DIFFICULTY SCALING ("Make today's workout easier", "Make it harder", "Too tough", "Too easy")
-    if any(k in q for k in ["easier", "harder", "too tough", "too easy", "light", "heavy", "intense", "less weight"]) and user and user.profile:
-        direction = "easier" if any(k in q for k in ["easier", "too tough", "light", "less"]) else "harder"
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
-        if plan:
-            today_name = datetime.now().strftime("%A")
-            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
-            if not today_w or today_w.is_rest_day:
-                today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
-
-            if today_w:
-                return {
-                    "status": "success",
-                    "action": "difficulty_adjustment_proposal",
-                    "intent": "WORKOUT_ADJUSTMENT",
-                    "coach_reply": f"I can adjust your **{today_w.focus}** session volume to be **{direction}** (modifying rep ranges & rest intervals) while preserving muscle activation.",
-                    "explanation": f"Propose scaling workout intensity to be {direction} per your request.",
-                    "proposed_action": {
-                        "type": "ADJUST_DIFFICULTY",
-                        "title": f"Make Workout {direction.title()}",
-                        "current": "Standard Volume",
-                        "proposed": f"{direction.title()} Intensity & Reps",
-                        "reason": f"Scaled workout intensity to be {direction}.",
-                        "endpoint": "/api/workout/adjust-difficulty",
-                        "payload": {"direction": direction}
-                    },
-                    "redirect_url": "/today-workout"
-                }
-
-    # 8. ACTION INTENT: EQUIPMENT CONSTRAINTS ("I only have dumbbells today", "No equipment today", "I'm at home")
+    # 10. ACTION INTENT: EQUIPMENT CONSTRAINTS ("I only have dumbbells today", "No equipment today", "I'm at home")
     if any(k in q for k in ["dumbbell", "dumbbells", "no equipment", "home", "gym", "only have"]) and user and user.profile:
         env = "Gym"
         if "dumbbell" in q:
@@ -508,7 +527,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
         return {
             "status": "success",
             "action": "environment_proposal",
-            "intent": "EQUIPMENT_ALTERNATIVE",
+            "intent": "CHANGE_EQUIPMENT",
             "coach_reply": f"I can adapt your weekly training split to **{env}** and update exercise selections accordingly.",
             "explanation": f"Adapt workout split to {env}.",
             "proposed_action": {
@@ -523,7 +542,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
             "redirect_url": "/today-workout"
         }
 
-    # 9. ACTION INTENT: MEAL SWAP ("Swap my lunch", "I don't like this meal", "Cheaper meal", "High protein meal", "I don't have chicken")
+    # 11. ACTION INTENT: MEAL SWAP ("Swap my lunch", "I don't like this meal", "Cheaper meal", "High protein meal", "I don't have chicken")
     if (("swap" in q or "change" in q or "replace" in q or "substitute" in q or "don't have" in q or "dont have" in q) and any(k in q for k in ["lunch", "dinner", "breakfast", "snack", "meal", "food", "chicken", "paneer", "egg", "eggs"])) and user and user.profile:
         today_str = datetime.now().strftime("%Y-%m-%d")
         meal_p = MealPlan.query.filter_by(user_id=user.id, date=today_str).first()
@@ -552,7 +571,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                 return {
                     "status": "success",
                     "action": "meal_swap_proposal",
-                    "intent": "MEAL_SWAP",
+                    "intent": "SWAP_MEAL",
                     "coach_reply": f"I found a great alternative: **{alt['name']}** ({alt['calories']} kcal, {alt['protein']}g protein) for your {target_m.meal_type}. It fits right inside your ₹{user.profile.daily_food_budget} daily food budget!",
                     "explanation": f"High-protein meal alternative for {target_m.meal_type}.",
                     "foods": [alt],
@@ -568,7 +587,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                     "redirect_url": "/nutrition"
                 }
 
-    # 10. ACTION INTENT: MISSED WORKOUT / RESCHEDULING ("I missed yesterday's workout", "Shift missed workout", "Move to tomorrow")
+    # 12. ACTION INTENT: MISSED WORKOUT / RESCHEDULING ("I missed yesterday's workout", "Shift missed workout", "Move to tomorrow")
     if any(k in q for k in ["missed", "reschedule", "shift workout", "yesterday", "rebuild"]) and user and user.profile:
         plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
         if plan:
@@ -577,7 +596,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                 return {
                     "status": "success",
                     "action": "reschedule_proposal",
-                    "intent": "WORKOUT_ADJUSTMENT",
+                    "intent": "RESCHEDULE_WORKOUT",
                     "coach_reply": f"I can reschedule your missed **{missed_d.focus}** session to an upcoming rest day so your progress stays on track.",
                     "explanation": "Shift missed workout to upcoming rest day.",
                     "proposed_action": {
