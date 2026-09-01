@@ -601,6 +601,21 @@ def run_migrations():
         db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN duration_minutes INTEGER DEFAULT 0"))
         db.session.commit()
 
+    # 13. Purge any orphan records whose user_id no longer exists in users table
+    try:
+        db.session.execute(db.text("DELETE FROM user_profiles WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM user_equipments WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM user_food_preferences WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM nutrition_targets WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM workout_plans WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM meal_plans WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM progress_records WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM custom_foods WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.execute(db.text("DELETE FROM chat_conversations WHERE user_id NOT IN (SELECT id FROM users)"))
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+
 # Run database setup & migrations automatically on application boot
 with app.app_context():
     try:
@@ -914,21 +929,10 @@ def get_current_user():
 def is_user_onboarded(user):
     if not user:
         return False
-    if user.profile:
-        if user.profile.onboarding_completed:
-            return True
-        if user.profile.name and user.profile.fitness_goal and (user.profile.height or user.profile.weight):
-            user.profile.onboarding_completed = True
-            db.session.commit()
-            return True
-
-    # Also check if user already has an active workout plan or meal plan
-    has_plan = WorkoutPlan.query.filter_by(user_id=user.id).first()
-    if has_plan and user.profile:
-        user.profile.onboarding_completed = True
-        db.session.commit()
-        return True
-    return False
+    profile = UserProfile.query.filter_by(user_id=user.id).first()
+    if not profile:
+        return False
+    return bool(profile.onboarding_completed)
 
 def require_onboarded_user():
     user = get_current_user()
@@ -972,6 +976,18 @@ def register():
         hashed = generate_password_hash(password)
         new_user = User(email=clean_email, password_hash=hashed)
         db.session.add(new_user)
+        db.session.commit()
+
+        # Ensure a completely pristine state for newly registered user ID
+        UserProfile.query.filter_by(user_id=new_user.id).delete()
+        UserEquipment.query.filter_by(user_id=new_user.id).delete()
+        UserFoodPreference.query.filter_by(user_id=new_user.id).delete()
+        NutritionTarget.query.filter_by(user_id=new_user.id).delete()
+        WorkoutPlan.query.filter_by(user_id=new_user.id).delete()
+        MealPlan.query.filter_by(user_id=new_user.id).delete()
+        ProgressRecord.query.filter_by(user_id=new_user.id).delete()
+        CustomFood.query.filter_by(user_id=new_user.id).delete()
+        ChatConversation.query.filter_by(user_id=new_user.id).delete()
         db.session.commit()
 
         session.permanent = True

@@ -33,10 +33,11 @@ def reset_database():
                 os.remove(db_path)
                 print("[RESET] Existing database file deleted successfully.")
             except Exception as e:
-                print(f"[RESET ERROR] Failed to delete {db_path}: {e}")
+                print(f"[RESET WARNING] File deletion deferred (locked by active process), performing SQL drop_all: {e}")
 
-        # 2. Re-create all tables
-        print("[RESET] Creating fresh database schema...")
+        # 2. Re-create all tables cleanly
+        print("[RESET] Dropping existing schema and creating fresh database tables...")
+        db.drop_all()
         db.create_all()
 
         # 3. Run migrations and seeders

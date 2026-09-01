@@ -825,6 +825,15 @@
       }
     }
 
+    let determinedEnv = 'Gym';
+    if (equipments.includes('Full Gym')) {
+      determinedEnv = 'Gym';
+    } else if (equipments.includes('Dumbbells')) {
+      determinedEnv = 'Dumbbells Only';
+    } else if (equipments.includes('No Equipment')) {
+      determinedEnv = 'No Equipment';
+    }
+
     const payload = {
       name,
       age,
@@ -835,6 +844,7 @@
       fitness_level: fitnessLevel,
       workout_days_per_week: workoutDays,
       workout_duration_mins: workoutDuration,
+      workout_environment: determinedEnv,
       dietary_preference: dietaryPreference,
       budget_preference: budgetPrefStr,
       daily_food_budget: numericBudget,
