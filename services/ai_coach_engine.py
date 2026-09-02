@@ -240,13 +240,22 @@ def _generate_offline_coaching_reply(q, user_context, qa_exercises, user_foods=N
     return reply, "GENERAL_FITNESS"
 
 
-def process_coach_command(user, prompt_text, app_context=None, history=None):
+def process_coach_command(user, prompt_text, app_context=None, history=None, db_session=None):
     """
     Core Conversational Coach Entry Point.
     Parses natural language commands, resolves follow-ups, and returns structured Action Cards for user confirmation.
     """
+    from flask import has_app_context
+    if app_context and not has_app_context():
+        with app_context.app_context():
+            return _process_coach_command_inner(user, prompt_text, app_context=app_context, history=history, db_session=db_session)
+    return _process_coach_command_inner(user, prompt_text, app_context=app_context, history=history, db_session=db_session)
+
+def _process_coach_command_inner(user, prompt_text, app_context=None, history=None, db_session=None):
     from app import db, WorkoutPlan, WorkoutDay, WorkoutExercise, MealPlan, Meal, NutritionTarget, ProgressRecord, UserEquipment, UserProfile, get_all_user_foods, get_exercises_data
     from services.ai_search_engine import process_ai_gym_query
+
+    session = db_session or db.session
 
     if not prompt_text or not prompt_text.strip():
         user_name = user.profile.name if (user and user.profile) else "there"
@@ -295,15 +304,15 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
     }
 
     if user:
-        target = NutritionTarget.query.filter_by(user_id=user.id).first()
+        target = session.query(NutritionTarget).filter_by(user_id=user.id).first()
         if target:
             user_context["target_calories"] = target.calories
             user_context["target_protein"] = target.protein
 
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+        plan = session.query(WorkoutPlan).filter_by(user_id=user.id, is_active=True).first()
         if plan:
             today_name = datetime.now().strftime("%A")
-            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+            today_w = session.query(WorkoutDay).filter_by(workout_plan_id=plan.id, day_name=today_name).first()
             if today_w:
                 user_context["today_focus"] = today_w.focus
 
@@ -318,10 +327,10 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
         elif "45" in q:
             target_mins = 45
 
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+        plan = session.query(WorkoutPlan).filter_by(user_id=user.id, is_active=True).first()
         if plan:
             today_name = datetime.now().strftime("%A")
-            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+            today_w = session.query(WorkoutDay).filter_by(workout_plan_id=plan.id, day_name=today_name).first()
             if not today_w or today_w.is_rest_day:
                 today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
 
@@ -348,10 +357,10 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
     # 4. ACTION INTENT: DIFFICULTY SCALING ("Make today's workout easier", "Make it harder", "Too tough", "Too easy")
     if any(k in q for k in ["easier", "harder", "too tough", "too easy", "light", "heavy", "intense", "less weight"]) and user and user.profile:
         direction = "easier" if any(k in q for k in ["easier", "too tough", "light", "less"]) else "harder"
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+        plan = session.query(WorkoutPlan).filter_by(user_id=user.id, is_active=True).first()
         if plan:
             today_name = datetime.now().strftime("%A")
-            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+            today_w = session.query(WorkoutDay).filter_by(workout_plan_id=plan.id, day_name=today_name).first()
             if not today_w or today_w.is_rest_day:
                 today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
 
@@ -377,10 +386,10 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
     # 5. ACTION INTENT: EXPLAIN TODAY'S WORKOUT
     if any(k in q for k in ["explain today", "today's workout", "todays workout", "my workout today", "what is today"]):
         if user and user.profile:
-            plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+            plan = session.query(WorkoutPlan).filter_by(user_id=user.id, is_active=True).first()
             if plan:
                 today_name = datetime.now().strftime("%A")
-                today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
+                today_w = session.query(WorkoutDay).filter_by(workout_plan_id=plan.id, day_name=today_name).first()
                 if today_w:
                     if today_w.is_rest_day:
                         reply = f"Today ({today_name}) is scheduled as a **Rest & Recovery Day**. Use today to hydrate, get 8 hours of sleep, and hit your protein target of {user_context['target_protein']}g!"
@@ -438,7 +447,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                 break
 
     if target_focus and user and user.profile:
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+        plan = session.query(WorkoutPlan).filter_by(user_id=user.id, is_active=True).first()
         if plan:
             today_name = datetime.now().strftime("%A")
             all_ex = get_exercises_data()
@@ -487,7 +496,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
     # 9. ACTION INTENT: MEAL SWAP ("Swap my lunch", "I don't like this meal", "Cheaper meal", "High protein meal", "I don't have chicken")
     if (("swap" in q or "change" in q or "replace" in q or "substitute" in q or "don't have" in q or "dont have" in q) and any(k in q for k in ["lunch", "dinner", "breakfast", "snack", "meal", "food", "chicken", "paneer", "egg", "eggs"])) and user and user.profile:
         today_str = datetime.now().strftime("%Y-%m-%d")
-        meal_p = MealPlan.query.filter_by(user_id=user.id, date=today_str).first()
+        meal_p = session.query(MealPlan).filter_by(user_id=user.id, date=today_str).first()
         if meal_p and meal_p.meals:
             target_m = meal_p.meals[0]
             if "lunch" in q:
@@ -531,7 +540,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
 
     # 10. ACTION INTENT: MISSED WORKOUT / RESCHEDULING ("I missed yesterday's workout", "Shift missed workout", "Move to tomorrow")
     if any(k in q for k in ["missed", "reschedule", "shift workout", "yesterday", "rebuild"]) and user and user.profile:
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
+        plan = session.query(WorkoutPlan).filter_by(user_id=user.id, is_active=True).first()
         if plan:
             missed_d = next((d for d in plan.days if not d.is_completed and not d.is_rest_day), None)
             if missed_d:
