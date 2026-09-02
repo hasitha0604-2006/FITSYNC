@@ -1,6 +1,6 @@
 /**
  * FitSync AI — Interactive Workout Animation & Kinematic Player
- * Renders exercise-specific 2D animations, vector graphics, 60 FPS skeletal motion,
+ * Renders inline 60 FPS vector exercise animations, exercise-specific skeletal movement,
  * step-by-step form execution guides, and click-to-play video/animation controls.
  */
 
@@ -22,7 +22,6 @@
       this.animationFrameId = null;
       this.lastTimestamp = null;
       this.slug = 'bench_press';
-      this.assetPath = '/static/exercises/fallback_demo.svg';
     }
 
     async mount(containerId, exerciseData) {
@@ -35,18 +34,29 @@
       this.isPlaying = true;
       this.speed = 1.0;
 
-      // Compute slug and asset paths
+      // Compute slug
       const nameStr = (this.currentEx.name || '').toLowerCase();
       this.slug = nameStr.replace(/ /g, '_').replace(/-/g, '_');
-      this.assetPath = `/static/exercises/${this.slug}/demo.svg`;
 
-      // Fetch animation config from backend API or bridge if available
-      if (window.FitSyncAnimationBridge) {
-        this.animData = await window.FitSyncAnimationBridge.fetchAnimationConfig(this.slug || 1);
-      }
-
+      // Build DOM immediately so UI renders without delay
       this.buildDOM();
       this.initCanvas();
+
+      // Safely load inline SVG graphic asset
+      this.loadInlineSvgAsset();
+
+      // Safely fetch animation config from API if bridge available
+      if (window.FitSyncAnimationBridge) {
+        try {
+          const config = await window.FitSyncAnimationBridge.fetchAnimationConfig(this.slug || 1);
+          if (config) {
+            this.animData = config;
+          }
+        } catch (e) {
+          console.warn("[AnimationPlayer] Remote config fallback activated.", e);
+        }
+      }
+
       this.startAnimationLoop();
     }
 
@@ -80,14 +90,10 @@
             class="relative flex-1 w-full min-h-[230px] max-h-[290px] bg-slate-950/90 rounded-2xl border border-slate-800 hover:border-emerald-500/40 overflow-hidden flex items-center justify-center p-2 cursor-pointer group transition-all shadow-xl"
             title="Click animation viewport to Play / Pause"
           >
-            <!-- Vector Animation Graphic Asset -->
-            <img 
-              id="biomech-svg-asset" 
-              src="${this.assetPath}" 
-              onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';" 
-              alt="${this.currentEx.name} Animation" 
-              class="absolute inset-0 w-full h-full object-contain pointer-events-none p-2 opacity-95 transition-opacity"
-            />
+            <!-- Inline Vector SVG Graphic Asset Container -->
+            <div id="biomech-svg-container" class="absolute inset-0 w-full h-full flex items-center justify-center p-2 pointer-events-none opacity-90 transition-opacity">
+              <!-- Inline SVG fetched dynamically -->
+            </div>
 
             <!-- 2D Canvas Joint Kinematic Layer -->
             <canvas id="biomech-canvas" width="400" height="280" class="w-full h-full max-h-[270px] object-contain relative z-10 rounded-xl pointer-events-none"></canvas>
@@ -202,6 +208,32 @@
       this.attachEventListeners();
     }
 
+    async loadInlineSvgAsset() {
+      const container = this.container.querySelector('#biomech-svg-container');
+      if (!container) return;
+
+      const tryPaths = [
+        `/static/exercises/${this.slug}/demo.svg`,
+        `/static/exercises/fallback_demo.svg`
+      ];
+
+      for (const path of tryPaths) {
+        try {
+          const res = await fetch(path);
+          if (res.ok) {
+            const svgText = await res.text();
+            if (svgText && svgText.includes('<svg')) {
+              container.innerHTML = svgText;
+              this.updateSvgAnimationState();
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn("[AnimationPlayer] Svg fetch notice: " + path, e);
+        }
+      }
+    }
+
     initCanvas() {
       this.canvas = this.container.querySelector('#biomech-canvas');
       if (this.canvas) {
@@ -220,7 +252,6 @@
       // Click on animation stage/viewport directly plays/pauses
       if (stage) {
         stage.addEventListener('click', (e) => {
-          // Prevent triggering if clicked on inner controls or badges
           this.isPlaying = !this.isPlaying;
           this.updatePlayBtnState();
           this.showClickOverlayFeedback(this.isPlaying);
@@ -311,23 +342,26 @@
     updatePlayBtnState() {
       const icon = this.container.querySelector('#biomech-play-icon');
       const text = this.container.querySelector('#biomech-play-text');
-      const svgAsset = this.container.querySelector('#biomech-svg-asset');
-
       if (icon && text) {
         icon.textContent = this.isPlaying ? '⏸' : '▶';
         text.textContent = this.isPlaying ? 'Pause' : 'Play';
       }
+      this.updateSvgAnimationState();
+    }
 
-      if (svgAsset) {
-        if (this.isPlaying) {
-          svgAsset.style.animationPlayState = 'running';
-        } else {
-          svgAsset.style.animationPlayState = 'paused';
-        }
-      }
+    updateSvgAnimationState() {
+      const svgContainer = this.container.querySelector('#biomech-svg-container');
+      if (!svgContainer) return;
+      const elements = svgContainer.querySelectorAll('*');
+      elements.forEach(el => {
+        el.style.animationPlayState = this.isPlaying ? 'running' : 'paused';
+      });
     }
 
     startAnimationLoop() {
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+      }
       this.lastTimestamp = performance.now();
       const loop = (now) => {
         const delta = (now - this.lastTimestamp) / 1000.0;
@@ -559,18 +593,61 @@
 
     getFallbackFrame(t) {
       const k = 0.5 + 0.5 * Math.sin(t * Math.PI * 2);
+      const category = (this.currentEx.category || this.currentEx.name || '').toLowerCase();
+
+      // Exercise-specific dynamic movement kinematics
+      let elbowDelta = k * 35;
+      let kneeDelta = k * 40;
+      let hipDelta = k * 35;
+      let barY = 110 + k * 50;
+
+      if (category.includes('squat') || category.includes('lunge')) {
+        return {
+          phase: k > 0.5 ? 'ASCENDING DRIVE' : 'ECCENTRIC DESCENT',
+          equipment: { type: 'barbell', x: 200, y: 70 + kneeDelta },
+          joints: {
+            head: { x: 200, y: 30 + kneeDelta }, neck: { x: 200, y: 50 + kneeDelta }, chest: { x: 200, y: 75 + kneeDelta },
+            spine: { x: 200, y: 105 + kneeDelta }, pelvis: { x: 200, y: 135 + kneeDelta },
+            left_shoulder: { x: 180, y: 75 + kneeDelta }, left_elbow: { x: 175, y: 100 + kneeDelta }, left_wrist: { x: 185, y: 75 + kneeDelta },
+            right_shoulder: { x: 220, y: 75 + kneeDelta }, right_elbow: { x: 225, y: 100 + kneeDelta }, right_wrist: { x: 215, y: 75 + kneeDelta },
+            left_hip: { x: 185, y: 135 + kneeDelta }, left_knee: { x: 165 - kneeDelta * 0.3, y: 195 }, left_ankle: { x: 185, y: 250 },
+            right_hip: { x: 215, y: 135 + kneeDelta }, right_knee: { x: 235 + kneeDelta * 0.3, y: 195 }, right_ankle: { x: 215, y: 250 }
+          },
+          muscle_activations: { "Primary": 0.9 }
+        };
+      }
+
+      if (category.includes('curl')) {
+        const angle = Math.PI * (0.2 + 0.6 * k);
+        const handY = 135 - Math.sin(angle) * 45;
+        const handX = 185 - Math.cos(angle) * 20;
+        return {
+          phase: k > 0.5 ? 'CONCENTRIC CURL' : 'ECCENTRIC CONTROL',
+          equipment: { type: 'barbell', x: 200, y: handY },
+          joints: {
+            head: { x: 200, y: 40 }, neck: { x: 200, y: 60 }, chest: { x: 200, y: 90 },
+            spine: { x: 200, y: 120 }, pelvis: { x: 200, y: 150 },
+            left_shoulder: { x: 180, y: 90 }, left_elbow: { x: 175, y: 135 }, left_wrist: { x: handX, y: handY },
+            right_shoulder: { x: 220, y: 90 }, right_elbow: { x: 225, y: 135 }, right_wrist: { x: 400 - handX, y: handY },
+            left_hip: { x: 185, y: 150 }, left_knee: { x: 185, y: 200 }, left_ankle: { x: 185, y: 250 },
+            right_hip: { x: 215, y: 150 }, right_knee: { x: 215, y: 200 }, right_ankle: { x: 215, y: 250 }
+          },
+          muscle_activations: { "Primary": 0.95 }
+        };
+      }
+
       return {
         phase: k > 0.5 ? 'CONCENTRIC DRIVE' : 'ECCENTRIC CONTROL',
-        equipment: { type: 'barbell', x: 200, y: 110 + k * 60 },
+        equipment: { type: 'barbell', x: 200, y: barY },
         joints: {
           head: { x: 200, y: 40 }, neck: { x: 200, y: 60 }, chest: { x: 200, y: 90 },
           spine: { x: 200, y: 120 }, pelvis: { x: 200, y: 150 },
-          left_shoulder: { x: 180, y: 90 }, left_elbow: { x: 170 + k * 10, y: 115 + k * 30 }, left_wrist: { x: 185, y: 110 + k * 60 },
-          right_shoulder: { x: 220, y: 90 }, right_elbow: { x: 230 - k * 10, y: 115 + k * 30 }, right_wrist: { x: 215, y: 110 + k * 60 },
+          left_shoulder: { x: 180, y: 90 }, left_elbow: { x: 170 + elbowDelta * 0.3, y: 115 + elbowDelta * 0.8 }, left_wrist: { x: 185, y: barY },
+          right_shoulder: { x: 220, y: 90 }, right_elbow: { x: 230 - elbowDelta * 0.3, y: 115 + elbowDelta * 0.8 }, right_wrist: { x: 215, y: barY },
           left_hip: { x: 185, y: 150 }, left_knee: { x: 185, y: 200 }, left_ankle: { x: 185, y: 250 },
           right_hip: { x: 215, y: 150 }, right_knee: { x: 215, y: 200 }, right_ankle: { x: 215, y: 250 }
         },
-        muscle_activations: { "Primary": 0.8 }
+        muscle_activations: { "Primary": 0.85 }
       };
     }
 
