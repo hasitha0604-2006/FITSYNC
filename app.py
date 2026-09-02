@@ -1686,6 +1686,151 @@ def api_search_exercises():
     })
 
 
+def get_exercise_animation_data(exercise_id_or_name):
+    anim_path = BASE_DIR / "data" / "exercise_animations.json"
+    animations_data = {}
+    if anim_path.exists():
+        try:
+            with open(anim_path, "r", encoding="utf-8") as f:
+                animations_data = json.load(f)
+        except Exception:
+            pass
+
+    ex_obj = None
+    if str(exercise_id_or_name).isdigit():
+        ex_obj = db.session.get(Exercise, int(exercise_id_or_name))
+    if not ex_obj:
+        ex_obj = Exercise.query.filter(func.lower(Exercise.name) == str(exercise_id_or_name).lower()).first()
+
+    slug = ""
+    if ex_obj:
+        slug = ex_obj.name.lower().replace(' ', '_').replace('-', '_')
+    else:
+        slug = str(exercise_id_or_name).lower().replace(' ', '_').replace('-', '_')
+
+    if slug in animations_data:
+        return animations_data[slug], ex_obj
+
+    for key, data in animations_data.items():
+        if key in slug or slug in key:
+            return data, ex_obj
+
+    category = ex_obj.category if ex_obj else "General"
+    primaries = [ex_obj.primary_muscles] if ex_obj and isinstance(ex_obj.primary_muscles, str) else (ex_obj.primary_muscles if ex_obj and ex_obj.primary_muscles else ["Full Body"])
+    secondaries = [ex_obj.secondary_muscles] if ex_obj and isinstance(ex_obj.secondary_muscles, str) else (ex_obj.secondary_muscles if ex_obj and ex_obj.secondary_muscles else ["Core"])
+
+    fallback_config = {
+        "exercise_id": slug,
+        "name": ex_obj.name if ex_obj else slug.replace('_', ' ').title(),
+        "category": category,
+        "movement_type": "dynamic",
+        "equipment": ex_obj.equipment if ex_obj else "bodyweight",
+        "primary_muscles": primaries,
+        "secondary_muscles": secondaries,
+        "phases": [
+            {"name": "Starting Setup", "duration": 0.5},
+            {"name": "Active Movement", "duration": 1.2},
+            {"name": "Peak Contraction", "duration": 0.4},
+            {"name": "Controlled Return", "duration": 1.0}
+        ],
+        "keyframes": [
+            {
+                "timestamp": 0.0,
+                "phase": "Starting Setup",
+                "equipment": {"type": (ex_obj.equipment or "none").lower() if ex_obj else "none", "x": 200, "y": 150},
+                "joints": {
+                    "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+                    "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+                    "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 180, "y": 155},
+                    "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 220, "y": 155},
+                    "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+                    "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+                },
+                "muscle_activations": {p: 0.5 for p in primaries}
+            },
+            {
+                "timestamp": 0.5,
+                "phase": "Peak Contraction",
+                "equipment": {"type": (ex_obj.equipment or "none").lower() if ex_obj else "none", "x": 200, "y": 120},
+                "joints": {
+                    "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+                    "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+                    "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 170, "y": 110}, "left_wrist": {"x": 180, "y": 120},
+                    "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 230, "y": 110}, "right_wrist": {"x": 220, "y": 120},
+                    "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+                    "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+                },
+                "muscle_activations": {p: 1.0 for p in primaries}
+            },
+            {
+                "timestamp": 1.0,
+                "phase": "Starting Setup",
+                "equipment": {"type": (ex_obj.equipment or "none").lower() if ex_obj else "none", "x": 200, "y": 150},
+                "joints": {
+                    "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+                    "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+                    "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 180, "y": 155},
+                    "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 220, "y": 155},
+                    "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+                    "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+                },
+                "muscle_activations": {p: 0.5 for p in primaries}
+            }
+        ]
+    }
+    return fallback_config, ex_obj
+
+
+@app.route("/api/exercises/<exercise_id>/animation")
+def api_exercise_animation(exercise_id):
+    anim_data, ex_obj = get_exercise_animation_data(exercise_id)
+    return jsonify({
+        "status": "success",
+        "exercise_id": exercise_id,
+        "name": anim_data.get("name"),
+        "animation": anim_data
+    })
+
+
+@app.route("/api/exercises/<exercise_id>/muscles")
+def api_exercise_muscles(exercise_id):
+    anim_data, ex_obj = get_exercise_animation_data(exercise_id)
+    return jsonify({
+        "status": "success",
+        "exercise_id": exercise_id,
+        "primary_muscles": anim_data.get("primary_muscles", []),
+        "secondary_muscles": anim_data.get("secondary_muscles", []),
+        "engagement_split": {"primary_pct": 80, "secondary_pct": 20}
+    })
+
+
+@app.route("/api/exercises/<exercise_id>/movement")
+def api_exercise_movement(exercise_id):
+    anim_data, ex_obj = get_exercise_animation_data(exercise_id)
+    return jsonify({
+        "status": "success",
+        "exercise_id": exercise_id,
+        "movement_type": anim_data.get("movement_type", "dynamic"),
+        "equipment": anim_data.get("equipment", "bodyweight"),
+        "phases": anim_data.get("phases", [])
+    })
+
+
+@app.route("/api/exercises/<exercise_id>/animation-config")
+def api_exercise_animation_config(exercise_id):
+    anim_data, ex_obj = get_exercise_animation_data(exercise_id)
+    return jsonify({
+        "status": "success",
+        "exercise_id": exercise_id,
+        "config": {
+            "engine": "FitSync_CPlusPlus_WASM_V2",
+            "wasm_url": "/static/wasm/animation_engine.wasm",
+            "js_fallback": "/static/js/exercise_motion_player.js",
+            "animation_data": anim_data
+        }
+    })
+
+
 @app.route("/api/ai/search", methods=["POST", "GET"])
 def api_ai_search():
     user = get_current_user()

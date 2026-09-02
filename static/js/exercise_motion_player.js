@@ -181,11 +181,16 @@
                 </button>
               </div>
 
-              <!-- Speed Controls -->
-              <div class="flex items-center gap-1 bg-slate-950 p-0.5 rounded-lg border border-slate-800">
-                <button type="button" class="biomech-speed-btn px-2 py-1 rounded text-[10px] font-black transition-colors ${this.speed === 0.5 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="0.5">0.5x</button>
-                <button type="button" class="biomech-speed-btn px-2 py-1 rounded text-[10px] font-black transition-colors ${this.speed === 1.0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="1.0">1.0x</button>
-                <button type="button" class="biomech-speed-btn px-2 py-1 rounded text-[10px] font-black transition-colors ${this.speed === 1.5 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="1.5">1.5x</button>
+              <!-- Speed & Form Controls -->
+              <div class="flex flex-wrap items-center gap-1.5 bg-slate-950 p-1 rounded-lg border border-slate-800">
+                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 0.25 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="0.25">0.25x</button>
+                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 0.5 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="0.5">0.5x</button>
+                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 1.0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="1.0">1.0x</button>
+                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 1.5 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="1.5">1.5x</button>
+                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 2.0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="2.0">2.0x</button>
+                <button type="button" id="biomech-form-btn" class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-black hover:bg-cyan-500/30 transition-all flex items-center gap-1" title="Slow motion form demo">
+                  ⚡ Show Correct Form
+                </button>
               </div>
             </div>
           </div>
@@ -224,6 +229,25 @@
           this.isPlaying = false;
           this.updatePlayBtnState();
           this.renderFrame(this.progress);
+        });
+      }
+
+      const formBtn = this.container.querySelector('#biomech-form-btn');
+      if (formBtn) {
+        formBtn.addEventListener('click', () => {
+          this.speed = 0.25;
+          this.progress = 0;
+          this.direction = 1;
+          this.isPlaying = true;
+          this.updatePlayBtnState();
+          speedBtns.forEach(b => {
+            const spd = parseFloat(b.getAttribute('data-speed'));
+            if (spd === 0.25) {
+              b.className = 'biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+            } else {
+              b.className = 'biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors text-slate-400 hover:text-white';
+            }
+          });
         });
       }
 
