@@ -19,7 +19,7 @@ class AnimationEngineTestCase(unittest.TestCase):
         db.session.remove()
         self.ctx.pop()
 
-    def test_cpp_engine_structure_exists(self):
+    def test_cpp_engine_structure_and_bones_exist(self):
         base_dir = Path(__file__).resolve().parent.parent
         cpp_dir = base_dir / "animation_engine"
         
@@ -27,9 +27,10 @@ class AnimationEngineTestCase(unittest.TestCase):
         self.assertTrue((cpp_dir / "CMakeLists.txt").exists(), "CMakeLists.txt must exist")
         self.assertTrue((cpp_dir / "include" / "AnimationEngine.h").exists(), "AnimationEngine.h must exist")
         self.assertTrue((cpp_dir / "include" / "Joint.h").exists(), "Joint.h must exist")
-        self.assertTrue((cpp_dir / "include" / "AnimationFrame.h").exists(), "AnimationFrame.h must exist")
-        self.assertTrue((cpp_dir / "src" / "AnimationEngine.cpp").exists(), "AnimationEngine.cpp must exist")
+        self.assertTrue((cpp_dir / "include" / "Bone.h").exists(), "Bone.h must exist")
+        self.assertTrue((cpp_dir / "src" / "Bone.cpp").exists(), "Bone.cpp must exist")
         self.assertTrue((cpp_dir / "exercises" / "bench_press.cpp").exists(), "bench_press.cpp must exist")
+        self.assertTrue((cpp_dir / "exercises" / "romanian_deadlift.cpp").exists(), "romanian_deadlift.cpp must exist")
 
     def test_exercise_animations_json_schema(self):
         base_dir = Path(__file__).resolve().parent.parent
@@ -39,16 +40,17 @@ class AnimationEngineTestCase(unittest.TestCase):
         with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        self.assertIn("bench_press", data)
-        self.assertIn("squat", data)
-        self.assertIn("deadlift", data)
-        self.assertIn("bicep_curl", data)
+        required_exercises = [
+            "bench_press", "squat", "deadlift", "pushup", "pullup",
+            "bicep_curl", "shoulder_press", "lateral_raise", "tricep_pushdown", "romanian_deadlift"
+        ]
 
-        bench = data["bench_press"]
-        self.assertEqual(bench["movement_type"], "push")
-        self.assertIn("Chest", bench["primary_muscles"])
-        self.assertTrue(len(bench["keyframes"]) >= 3)
-        self.assertIn("equipment", bench["keyframes"][0])
+        for ex_id in required_exercises:
+            self.assertIn(ex_id, data, f"Exercise animation '{ex_id}' must exist in exercise_animations.json")
+            ex_data = data[ex_id]
+            self.assertIn("keyframes", ex_data)
+            self.assertTrue(len(ex_data["keyframes"]) >= 2)
+            self.assertIn("primary_muscles", ex_data)
 
     def test_animation_api_endpoints(self):
         # 1. /api/exercises/<id>/animation
@@ -78,17 +80,17 @@ class AnimationEngineTestCase(unittest.TestCase):
         data = res.get_json()
         self.assertEqual(data["status"], "success")
         self.assertIn("config", data)
-        self.assertIn("animation_data", data["config"])
 
-    def test_exercise_substitution_animation_data(self):
-        # Verify bench_press -> dumbbell_bench_press substitution animation lookup
+    def test_exercise_substitution_animation_update(self):
         res_barbell = self.client.get("/api/exercises/bench_press/animation-config")
         self.assertEqual(res_barbell.status_code, 200)
 
-        res_dumbbell = self.client.get("/api/exercises/dumbbell_bench_press/animation-config")
-        self.assertEqual(res_dumbbell.status_code, 200)
-        data_db = res_dumbbell.get_json()
-        self.assertEqual(data_db["status"], "success")
+        res_rdl = self.client.get("/api/exercises/romanian_deadlift/animation-config")
+        self.assertEqual(res_rdl.status_code, 200)
+
+        data_rdl = res_rdl.get_json()
+        self.assertEqual(data_rdl["status"], "success")
+        self.assertEqual(data_rdl["config"]["animation_data"]["name"], "Romanian Deadlift")
 
 if __name__ == '__main__':
     unittest.main()

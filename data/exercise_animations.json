@@ -8,135 +8,52 @@
     "primary_muscles": ["Chest"],
     "secondary_muscles": ["Triceps", "Front Deltoids"],
     "phases": [
-      {"name": "Starting Position", "duration": 0.5},
+      {"name": "Starting Setup", "duration": 0.5},
       {"name": "Controlled Lowering", "duration": 1.2},
-      {"name": "Bottom Touch Pause", "duration": 0.4},
+      {"name": "Bottom Chest Touch", "duration": 0.4},
       {"name": "Explosive Push", "duration": 0.9},
       {"name": "Top Lockout", "duration": 0.5}
     ],
     "keyframes": [
       {
         "timestamp": 0.0,
-        "phase": "Starting Position",
+        "phase": "Starting Setup",
         "equipment": {"type": "barbell", "x": 200, "y": 110},
         "joints": {
-          "head": {"x": 280, "y": 190},
-          "neck": {"x": 250, "y": 190},
-          "chest": {"x": 200, "y": 190},
-          "spine": {"x": 170, "y": 190},
-          "pelvis": {"x": 140, "y": 190},
-          "left_shoulder": {"x": 210, "y": 190},
-          "left_elbow": {"x": 210, "y": 150},
-          "left_wrist": {"x": 200, "y": 110},
-          "right_shoulder": {"x": 210, "y": 190},
-          "right_elbow": {"x": 210, "y": 150},
-          "right_wrist": {"x": 200, "y": 110},
-          "left_hip": {"x": 140, "y": 190},
-          "left_knee": {"x": 110, "y": 230},
-          "left_ankle": {"x": 110, "y": 260},
-          "right_hip": {"x": 140, "y": 190},
-          "right_knee": {"x": 110, "y": 230},
-          "right_ankle": {"x": 110, "y": 260}
+          "head": {"x": 280, "y": 190}, "neck": {"x": 250, "y": 190}, "chest": {"x": 200, "y": 190},
+          "spine": {"x": 170, "y": 190}, "pelvis": {"x": 140, "y": 190},
+          "left_shoulder": {"x": 210, "y": 190}, "left_elbow": {"x": 210, "y": 150}, "left_wrist": {"x": 200, "y": 110},
+          "right_shoulder": {"x": 210, "y": 190}, "right_elbow": {"x": 210, "y": 150}, "right_wrist": {"x": 200, "y": 110},
+          "left_hip": {"x": 140, "y": 190}, "left_knee": {"x": 110, "y": 230}, "left_ankle": {"x": 110, "y": 260},
+          "right_hip": {"x": 140, "y": 190}, "right_knee": {"x": 110, "y": 230}, "right_ankle": {"x": 110, "y": 260}
         },
         "muscle_activations": {"Chest": 0.6, "Triceps": 0.5}
       },
       {
-        "timestamp": 0.35,
-        "phase": "Controlled Lowering",
-        "equipment": {"type": "barbell", "x": 200, "y": 150},
-        "joints": {
-          "head": {"x": 280, "y": 190},
-          "neck": {"x": 250, "y": 190},
-          "chest": {"x": 200, "y": 190},
-          "spine": {"x": 170, "y": 190},
-          "pelvis": {"x": 140, "y": 190},
-          "left_shoulder": {"x": 210, "y": 190},
-          "left_elbow": {"x": 230, "y": 175},
-          "left_wrist": {"x": 200, "y": 150},
-          "right_shoulder": {"x": 210, "y": 190},
-          "right_elbow": {"x": 230, "y": 175},
-          "right_wrist": {"x": 200, "y": 150},
-          "left_hip": {"x": 140, "y": 190},
-          "left_knee": {"x": 110, "y": 230},
-          "left_ankle": {"x": 110, "y": 260},
-          "right_hip": {"x": 140, "y": 190},
-          "right_knee": {"x": 110, "y": 230},
-          "right_ankle": {"x": 110, "y": 260}
-        },
-        "muscle_activations": {"Chest": 0.9, "Triceps": 0.7}
-      },
-      {
-        "timestamp": 0.50,
-        "phase": "Bottom Touch Pause",
+        "timestamp": 0.5,
+        "phase": "Bottom Chest Touch",
         "equipment": {"type": "barbell", "x": 200, "y": 175},
         "joints": {
-          "head": {"x": 280, "y": 190},
-          "neck": {"x": 250, "y": 190},
-          "chest": {"x": 200, "y": 190},
-          "spine": {"x": 170, "y": 190},
-          "pelvis": {"x": 140, "y": 190},
-          "left_shoulder": {"x": 210, "y": 190},
-          "left_elbow": {"x": 240, "y": 195},
-          "left_wrist": {"x": 200, "y": 175},
-          "right_shoulder": {"x": 210, "y": 190},
-          "right_elbow": {"x": 240, "y": 195},
-          "right_wrist": {"x": 200, "y": 175},
-          "left_hip": {"x": 140, "y": 190},
-          "left_knee": {"x": 110, "y": 230},
-          "left_ankle": {"x": 110, "y": 260},
-          "right_hip": {"x": 140, "y": 190},
-          "right_knee": {"x": 110, "y": 230},
-          "right_ankle": {"x": 110, "y": 260}
+          "head": {"x": 280, "y": 190}, "neck": {"x": 250, "y": 190}, "chest": {"x": 200, "y": 190},
+          "spine": {"x": 170, "y": 190}, "pelvis": {"x": 140, "y": 190},
+          "left_shoulder": {"x": 210, "y": 190}, "left_elbow": {"x": 240, "y": 195}, "left_wrist": {"x": 200, "y": 175},
+          "right_shoulder": {"x": 210, "y": 190}, "right_elbow": {"x": 240, "y": 195}, "right_wrist": {"x": 200, "y": 175},
+          "left_hip": {"x": 140, "y": 190}, "left_knee": {"x": 110, "y": 230}, "left_ankle": {"x": 110, "y": 260},
+          "right_hip": {"x": 140, "y": 190}, "right_knee": {"x": 110, "y": 230}, "right_ankle": {"x": 110, "y": 260}
         },
         "muscle_activations": {"Chest": 1.0, "Triceps": 0.8}
-      },
-      {
-        "timestamp": 0.85,
-        "phase": "Explosive Push",
-        "equipment": {"type": "barbell", "x": 200, "y": 130},
-        "joints": {
-          "head": {"x": 280, "y": 190},
-          "neck": {"x": 250, "y": 190},
-          "chest": {"x": 200, "y": 190},
-          "spine": {"x": 170, "y": 190},
-          "pelvis": {"x": 140, "y": 190},
-          "left_shoulder": {"x": 210, "y": 190},
-          "left_elbow": {"x": 220, "y": 160},
-          "left_wrist": {"x": 200, "y": 130},
-          "right_shoulder": {"x": 210, "y": 190},
-          "right_elbow": {"x": 220, "y": 160},
-          "right_wrist": {"x": 200, "y": 130},
-          "left_hip": {"x": 140, "y": 190},
-          "left_knee": {"x": 110, "y": 230},
-          "left_ankle": {"x": 110, "y": 260},
-          "right_hip": {"x": 140, "y": 190},
-          "right_knee": {"x": 110, "y": 230},
-          "right_ankle": {"x": 110, "y": 260}
-        },
-        "muscle_activations": {"Chest": 0.95, "Triceps": 0.9}
       },
       {
         "timestamp": 1.0,
         "phase": "Top Lockout",
         "equipment": {"type": "barbell", "x": 200, "y": 110},
         "joints": {
-          "head": {"x": 280, "y": 190},
-          "neck": {"x": 250, "y": 190},
-          "chest": {"x": 200, "y": 190},
-          "spine": {"x": 170, "y": 190},
-          "pelvis": {"x": 140, "y": 190},
-          "left_shoulder": {"x": 210, "y": 190},
-          "left_elbow": {"x": 210, "y": 150},
-          "left_wrist": {"x": 200, "y": 110},
-          "right_shoulder": {"x": 210, "y": 190},
-          "right_elbow": {"x": 210, "y": 150},
-          "right_wrist": {"x": 200, "y": 110},
-          "left_hip": {"x": 140, "y": 190},
-          "left_knee": {"x": 110, "y": 230},
-          "left_ankle": {"x": 110, "y": 260},
-          "right_hip": {"x": 140, "y": 190},
-          "right_knee": {"x": 110, "y": 230},
-          "right_ankle": {"x": 110, "y": 260}
+          "head": {"x": 280, "y": 190}, "neck": {"x": 250, "y": 190}, "chest": {"x": 200, "y": 190},
+          "spine": {"x": 170, "y": 190}, "pelvis": {"x": 140, "y": 190},
+          "left_shoulder": {"x": 210, "y": 190}, "left_elbow": {"x": 210, "y": 150}, "left_wrist": {"x": 200, "y": 110},
+          "right_shoulder": {"x": 210, "y": 190}, "right_elbow": {"x": 210, "y": 150}, "right_wrist": {"x": 200, "y": 110},
+          "left_hip": {"x": 140, "y": 190}, "left_knee": {"x": 110, "y": 230}, "left_ankle": {"x": 110, "y": 260},
+          "right_hip": {"x": 140, "y": 190}, "right_knee": {"x": 110, "y": 230}, "right_ankle": {"x": 110, "y": 260}
         },
         "muscle_activations": {"Chest": 0.6, "Triceps": 0.5}
       }
@@ -152,9 +69,7 @@
     "secondary_muscles": ["Hamstrings", "Core"],
     "phases": [
       {"name": "Standing Setup", "duration": 0.5},
-      {"name": "Descending Squat", "duration": 1.2},
       {"name": "Parallel Depth Pause", "duration": 0.4},
-      {"name": "Upward Drive", "duration": 1.0},
       {"name": "Lockout & Stand", "duration": 0.5}
     ],
     "keyframes": [
@@ -163,23 +78,12 @@
         "phase": "Standing Setup",
         "equipment": {"type": "barbell", "x": 200, "y": 70},
         "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 70},
-          "left_elbow": {"x": 170, "y": 85},
-          "left_wrist": {"x": 185, "y": 70},
-          "right_shoulder": {"x": 220, "y": 70},
-          "right_elbow": {"x": 230, "y": 85},
-          "right_wrist": {"x": 215, "y": 70},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 70}, "left_elbow": {"x": 170, "y": 85}, "left_wrist": {"x": 185, "y": 70},
+          "right_shoulder": {"x": 220, "y": 70}, "right_elbow": {"x": 230, "y": 85}, "right_wrist": {"x": 215, "y": 70},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
         },
         "muscle_activations": {"Quadriceps": 0.5, "Glutes": 0.5}
       },
@@ -188,23 +92,12 @@
         "phase": "Parallel Depth Pause",
         "equipment": {"type": "barbell", "x": 190, "y": 140},
         "joints": {
-          "head": {"x": 190, "y": 110},
-          "neck": {"x": 190, "y": 130},
-          "chest": {"x": 190, "y": 155},
-          "spine": {"x": 185, "y": 175},
-          "pelvis": {"x": 175, "y": 195},
-          "left_shoulder": {"x": 175, "y": 140},
-          "left_elbow": {"x": 165, "y": 155},
-          "left_wrist": {"x": 180, "y": 140},
-          "right_shoulder": {"x": 205, "y": 140},
-          "right_elbow": {"x": 215, "y": 155},
-          "right_wrist": {"x": 200, "y": 140},
-          "left_hip": {"x": 160, "y": 195},
-          "left_knee": {"x": 210, "y": 205},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 190, "y": 195},
-          "right_knee": {"x": 235, "y": 205},
-          "right_ankle": {"x": 215, "y": 250}
+          "head": {"x": 190, "y": 110}, "neck": {"x": 190, "y": 130}, "chest": {"x": 190, "y": 155},
+          "spine": {"x": 185, "y": 175}, "pelvis": {"x": 175, "y": 195},
+          "left_shoulder": {"x": 175, "y": 140}, "left_elbow": {"x": 165, "y": 155}, "left_wrist": {"x": 180, "y": 140},
+          "right_shoulder": {"x": 205, "y": 140}, "right_elbow": {"x": 215, "y": 155}, "right_wrist": {"x": 200, "y": 140},
+          "left_hip": {"x": 160, "y": 195}, "left_knee": {"x": 210, "y": 205}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 190, "y": 195}, "right_knee": {"x": 235, "y": 205}, "right_ankle": {"x": 215, "y": 250}
         },
         "muscle_activations": {"Quadriceps": 1.0, "Glutes": 0.95}
       },
@@ -213,23 +106,12 @@
         "phase": "Lockout & Stand",
         "equipment": {"type": "barbell", "x": 200, "y": 70},
         "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 70},
-          "left_elbow": {"x": 170, "y": 85},
-          "left_wrist": {"x": 185, "y": 70},
-          "right_shoulder": {"x": 220, "y": 70},
-          "right_elbow": {"x": 230, "y": 85},
-          "right_wrist": {"x": 215, "y": 70},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 70}, "left_elbow": {"x": 170, "y": 85}, "left_wrist": {"x": 185, "y": 70},
+          "right_shoulder": {"x": 220, "y": 70}, "right_elbow": {"x": 230, "y": 85}, "right_wrist": {"x": 215, "y": 70},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
         },
         "muscle_activations": {"Quadriceps": 0.5, "Glutes": 0.5}
       }
@@ -242,12 +124,10 @@
     "movement_type": "hinge",
     "equipment": "barbell",
     "primary_muscles": ["Lower Back", "Glutes", "Hamstrings"],
-    "secondary_muscles": ["Lats", "Quadriceps", "Forearms"],
+    "secondary_muscles": ["Lats", "Quadriceps"],
     "phases": [
       {"name": "Bottom Setup", "duration": 0.6},
-      {"name": "Floor Break & Drive", "duration": 0.9},
-      {"name": "Lockout & Hips Through", "duration": 0.5},
-      {"name": "Controlled Return", "duration": 1.0}
+      {"name": "Lockout & Hips Through", "duration": 0.5}
     ],
     "keyframes": [
       {
@@ -255,23 +135,12 @@
         "phase": "Bottom Setup",
         "equipment": {"type": "barbell", "x": 200, "y": 220},
         "joints": {
-          "head": {"x": 230, "y": 120},
-          "neck": {"x": 220, "y": 135},
-          "chest": {"x": 210, "y": 155},
-          "spine": {"x": 190, "y": 170},
-          "pelvis": {"x": 170, "y": 180},
-          "left_shoulder": {"x": 205, "y": 155},
-          "left_elbow": {"x": 203, "y": 185},
-          "left_wrist": {"x": 200, "y": 220},
-          "right_shoulder": {"x": 205, "y": 155},
-          "right_elbow": {"x": 203, "y": 185},
-          "right_wrist": {"x": 200, "y": 220},
-          "left_hip": {"x": 170, "y": 180},
-          "left_knee": {"x": 200, "y": 215},
-          "left_ankle": {"x": 190, "y": 250},
-          "right_hip": {"x": 170, "y": 180},
-          "right_knee": {"x": 200, "y": 215},
-          "right_ankle": {"x": 190, "y": 250}
+          "head": {"x": 230, "y": 120}, "neck": {"x": 220, "y": 135}, "chest": {"x": 210, "y": 155},
+          "spine": {"x": 190, "y": 170}, "pelvis": {"x": 170, "y": 180},
+          "left_shoulder": {"x": 205, "y": 155}, "left_elbow": {"x": 203, "y": 185}, "left_wrist": {"x": 200, "y": 220},
+          "right_shoulder": {"x": 205, "y": 155}, "right_elbow": {"x": 203, "y": 185}, "right_wrist": {"x": 200, "y": 220},
+          "left_hip": {"x": 170, "y": 180}, "left_knee": {"x": 200, "y": 215}, "left_ankle": {"x": 190, "y": 250},
+          "right_hip": {"x": 170, "y": 180}, "right_knee": {"x": 200, "y": 215}, "right_ankle": {"x": 190, "y": 250}
         },
         "muscle_activations": {"Lower Back": 0.8, "Glutes": 0.8, "Hamstrings": 0.9}
       },
@@ -280,23 +149,12 @@
         "phase": "Lockout & Hips Through",
         "equipment": {"type": "barbell", "x": 200, "y": 150},
         "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 200, "y": 90},
-          "left_elbow": {"x": 200, "y": 120},
-          "left_wrist": {"x": 200, "y": 150},
-          "right_shoulder": {"x": 200, "y": 90},
-          "right_elbow": {"x": 200, "y": 120},
-          "right_wrist": {"x": 200, "y": 150},
-          "left_hip": {"x": 200, "y": 150},
-          "left_knee": {"x": 200, "y": 200},
-          "left_ankle": {"x": 200, "y": 250},
-          "right_hip": {"x": 200, "y": 150},
-          "right_knee": {"x": 200, "y": 200},
-          "right_ankle": {"x": 200, "y": 250}
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 200, "y": 90}, "left_elbow": {"x": 200, "y": 120}, "left_wrist": {"x": 200, "y": 150},
+          "right_shoulder": {"x": 200, "y": 90}, "right_elbow": {"x": 200, "y": 120}, "right_wrist": {"x": 200, "y": 150},
+          "left_hip": {"x": 200, "y": 150}, "left_knee": {"x": 200, "y": 200}, "left_ankle": {"x": 200, "y": 250},
+          "right_hip": {"x": 200, "y": 150}, "right_knee": {"x": 200, "y": 200}, "right_ankle": {"x": 200, "y": 250}
         },
         "muscle_activations": {"Lower Back": 1.0, "Glutes": 1.0, "Hamstrings": 0.8}
       },
@@ -305,117 +163,14 @@
         "phase": "Bottom Setup",
         "equipment": {"type": "barbell", "x": 200, "y": 220},
         "joints": {
-          "head": {"x": 230, "y": 120},
-          "neck": {"x": 220, "y": 135},
-          "chest": {"x": 210, "y": 155},
-          "spine": {"x": 190, "y": 170},
-          "pelvis": {"x": 170, "y": 180},
-          "left_shoulder": {"x": 205, "y": 155},
-          "left_elbow": {"x": 203, "y": 185},
-          "left_wrist": {"x": 200, "y": 220},
-          "right_shoulder": {"x": 205, "y": 155},
-          "right_elbow": {"x": 203, "y": 185},
-          "right_wrist": {"x": 200, "y": 220},
-          "left_hip": {"x": 170, "y": 180},
-          "left_knee": {"x": 200, "y": 215},
-          "left_ankle": {"x": 190, "y": 250},
-          "right_hip": {"x": 170, "y": 180},
-          "right_knee": {"x": 200, "y": 215},
-          "right_ankle": {"x": 190, "y": 250}
+          "head": {"x": 230, "y": 120}, "neck": {"x": 220, "y": 135}, "chest": {"x": 210, "y": 155},
+          "spine": {"x": 190, "y": 170}, "pelvis": {"x": 170, "y": 180},
+          "left_shoulder": {"x": 205, "y": 155}, "left_elbow": {"x": 203, "y": 185}, "left_wrist": {"x": 200, "y": 220},
+          "right_shoulder": {"x": 205, "y": 155}, "right_elbow": {"x": 203, "y": 185}, "right_wrist": {"x": 200, "y": 220},
+          "left_hip": {"x": 170, "y": 180}, "left_knee": {"x": 200, "y": 215}, "left_ankle": {"x": 190, "y": 250},
+          "right_hip": {"x": 170, "y": 180}, "right_knee": {"x": 200, "y": 215}, "right_ankle": {"x": 190, "y": 250}
         },
         "muscle_activations": {"Lower Back": 0.8, "Glutes": 0.8, "Hamstrings": 0.9}
-      }
-    ]
-  },
-  "bicep_curl": {
-    "exercise_id": "bicep_curl",
-    "name": "Barbell Curl",
-    "category": "Biceps",
-    "movement_type": "iso",
-    "equipment": "barbell",
-    "primary_muscles": ["Biceps"],
-    "secondary_muscles": ["Forearms", "Front Deltoids"],
-    "phases": [
-      {"name": "Arms Extended", "duration": 0.4},
-      {"name": "Flexing Elbows", "duration": 1.0},
-      {"name": "Peak Bicep Contraction", "duration": 0.4},
-      {"name": "Controlled Eccentric Lowering", "duration": 1.2}
-    ],
-    "keyframes": [
-      {
-        "timestamp": 0.0,
-        "phase": "Arms Extended",
-        "equipment": {"type": "barbell", "x": 200, "y": 155},
-        "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 90},
-          "left_elbow": {"x": 180, "y": 125},
-          "left_wrist": {"x": 185, "y": 155},
-          "right_shoulder": {"x": 220, "y": 90},
-          "right_elbow": {"x": 220, "y": 125},
-          "right_wrist": {"x": 215, "y": 155},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
-        },
-        "muscle_activations": {"Biceps": 0.4, "Forearms": 0.3}
-      },
-      {
-        "timestamp": 0.5,
-        "phase": "Peak Bicep Contraction",
-        "equipment": {"type": "barbell", "x": 200, "y": 95},
-        "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 90},
-          "left_elbow": {"x": 180, "y": 125},
-          "left_wrist": {"x": 190, "y": 95},
-          "right_shoulder": {"x": 220, "y": 90},
-          "right_elbow": {"x": 220, "y": 125},
-          "right_wrist": {"x": 210, "y": 95},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
-        },
-        "muscle_activations": {"Biceps": 1.0, "Forearms": 0.7}
-      },
-      {
-        "timestamp": 1.0,
-        "phase": "Arms Extended",
-        "equipment": {"type": "barbell", "x": 200, "y": 155},
-        "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 90},
-          "left_elbow": {"x": 180, "y": 125},
-          "left_wrist": {"x": 185, "y": 155},
-          "right_shoulder": {"x": 220, "y": 90},
-          "right_elbow": {"x": 220, "y": 125},
-          "right_wrist": {"x": 215, "y": 155},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
-        },
-        "muscle_activations": {"Biceps": 0.4, "Forearms": 0.3}
       }
     ]
   },
@@ -429,9 +184,7 @@
     "secondary_muscles": ["Triceps", "Front Deltoids", "Core"],
     "phases": [
       {"name": "High Plank Lockout", "duration": 0.4},
-      {"name": "Lowering Body", "duration": 1.0},
-      {"name": "Chest Off Floor Pause", "duration": 0.3},
-      {"name": "Pressing Up", "duration": 0.8}
+      {"name": "Chest Off Floor Pause", "duration": 0.3}
     ],
     "keyframes": [
       {
@@ -439,75 +192,156 @@
         "phase": "High Plank Lockout",
         "equipment": {"type": "none", "x": 200, "y": 200},
         "joints": {
-          "head": {"x": 290, "y": 130},
-          "neck": {"x": 270, "y": 140},
-          "chest": {"x": 230, "y": 150},
-          "spine": {"x": 190, "y": 165},
-          "pelvis": {"x": 150, "y": 180},
-          "left_shoulder": {"x": 230, "y": 150},
-          "left_elbow": {"x": 230, "y": 180},
-          "left_wrist": {"x": 230, "y": 210},
-          "right_shoulder": {"x": 230, "y": 150},
-          "right_elbow": {"x": 230, "y": 180},
-          "right_wrist": {"x": 230, "y": 210},
-          "left_hip": {"x": 150, "y": 180},
-          "left_knee": {"x": 110, "y": 195},
-          "left_ankle": {"x": 70, "y": 210},
-          "right_hip": {"x": 150, "y": 180},
-          "right_knee": {"x": 110, "y": 195},
-          "right_ankle": {"x": 70, "y": 210}
+          "head": {"x": 290, "y": 130}, "neck": {"x": 270, "y": 140}, "chest": {"x": 230, "y": 150},
+          "spine": {"x": 190, "y": 165}, "pelvis": {"x": 150, "y": 180},
+          "left_shoulder": {"x": 230, "y": 150}, "left_elbow": {"x": 230, "y": 180}, "left_wrist": {"x": 230, "y": 210},
+          "right_shoulder": {"x": 230, "y": 150}, "right_elbow": {"x": 230, "y": 180}, "right_wrist": {"x": 230, "y": 210},
+          "left_hip": {"x": 150, "y": 180}, "left_knee": {"x": 110, "y": 195}, "left_ankle": {"x": 70, "y": 210},
+          "right_hip": {"x": 150, "y": 180}, "right_knee": {"x": 110, "y": 195}, "right_ankle": {"x": 70, "y": 210}
         },
-        "muscle_activations": {"Chest": 0.6, "Triceps": 0.6, "Core": 0.7}
+        "muscle_activations": {"Chest": 0.6, "Triceps": 0.6}
       },
       {
         "timestamp": 0.5,
         "phase": "Chest Off Floor Pause",
         "equipment": {"type": "none", "x": 200, "y": 200},
         "joints": {
-          "head": {"x": 290, "y": 175},
-          "neck": {"x": 270, "y": 180},
-          "chest": {"x": 230, "y": 185},
-          "spine": {"x": 190, "y": 193},
-          "pelvis": {"x": 150, "y": 200},
-          "left_shoulder": {"x": 230, "y": 185},
-          "left_elbow": {"x": 210, "y": 200},
-          "left_wrist": {"x": 230, "y": 210},
-          "right_shoulder": {"x": 230, "y": 185},
-          "right_elbow": {"x": 250, "y": 200},
-          "right_wrist": {"x": 230, "y": 210},
-          "left_hip": {"x": 150, "y": 200},
-          "left_knee": {"x": 110, "y": 205},
-          "left_ankle": {"x": 70, "y": 210},
-          "right_hip": {"x": 150, "y": 200},
-          "right_knee": {"x": 110, "y": 205},
-          "right_ankle": {"x": 70, "y": 210}
+          "head": {"x": 290, "y": 175}, "neck": {"x": 270, "y": 180}, "chest": {"x": 230, "y": 185},
+          "spine": {"x": 190, "y": 193}, "pelvis": {"x": 150, "y": 200},
+          "left_shoulder": {"x": 230, "y": 185}, "left_elbow": {"x": 210, "y": 200}, "left_wrist": {"x": 230, "y": 210},
+          "right_shoulder": {"x": 230, "y": 185}, "right_elbow": {"x": 250, "y": 200}, "right_wrist": {"x": 230, "y": 210},
+          "left_hip": {"x": 150, "y": 200}, "left_knee": {"x": 110, "y": 205}, "left_ankle": {"x": 70, "y": 210},
+          "right_hip": {"x": 150, "y": 200}, "right_knee": {"x": 110, "y": 205}, "right_ankle": {"x": 70, "y": 210}
         },
-        "muscle_activations": {"Chest": 1.0, "Triceps": 0.85, "Core": 0.8}
+        "muscle_activations": {"Chest": 1.0, "Triceps": 0.85}
       },
       {
         "timestamp": 1.0,
         "phase": "High Plank Lockout",
         "equipment": {"type": "none", "x": 200, "y": 200},
         "joints": {
-          "head": {"x": 290, "y": 130},
-          "neck": {"x": 270, "y": 140},
-          "chest": {"x": 230, "y": 150},
-          "spine": {"x": 190, "y": 165},
-          "pelvis": {"x": 150, "y": 180},
-          "left_shoulder": {"x": 230, "y": 150},
-          "left_elbow": {"x": 230, "y": 180},
-          "left_wrist": {"x": 230, "y": 210},
-          "right_shoulder": {"x": 230, "y": 150},
-          "right_elbow": {"x": 230, "y": 180},
-          "right_wrist": {"x": 230, "y": 210},
-          "left_hip": {"x": 150, "y": 180},
-          "left_knee": {"x": 110, "y": 195},
-          "left_ankle": {"x": 70, "y": 210},
-          "right_hip": {"x": 150, "y": 180},
-          "right_knee": {"x": 110, "y": 195},
-          "right_ankle": {"x": 70, "y": 210}
+          "head": {"x": 290, "y": 130}, "neck": {"x": 270, "y": 140}, "chest": {"x": 230, "y": 150},
+          "spine": {"x": 190, "y": 165}, "pelvis": {"x": 150, "y": 180},
+          "left_shoulder": {"x": 230, "y": 150}, "left_elbow": {"x": 230, "y": 180}, "left_wrist": {"x": 230, "y": 210},
+          "right_shoulder": {"x": 230, "y": 150}, "right_elbow": {"x": 230, "y": 180}, "right_wrist": {"x": 230, "y": 210},
+          "left_hip": {"x": 150, "y": 180}, "left_knee": {"x": 110, "y": 195}, "left_ankle": {"x": 70, "y": 210},
+          "right_hip": {"x": 150, "y": 180}, "right_knee": {"x": 110, "y": 195}, "right_ankle": {"x": 70, "y": 210}
         },
-        "muscle_activations": {"Chest": 0.6, "Triceps": 0.6, "Core": 0.7}
+        "muscle_activations": {"Chest": 0.6, "Triceps": 0.6}
+      }
+    ]
+  },
+  "pullup": {
+    "exercise_id": "pullup",
+    "name": "Pull-Up",
+    "category": "Back",
+    "movement_type": "pull",
+    "equipment": "pullup_bar",
+    "primary_muscles": ["Lats", "Upper Back"],
+    "secondary_muscles": ["Biceps", "Rear Deltoids"],
+    "phases": [
+      {"name": "Dead Hang", "duration": 0.4},
+      {"name": "Chin Over Bar Contraction", "duration": 0.4}
+    ],
+    "keyframes": [
+      {
+        "timestamp": 0.0,
+        "phase": "Dead Hang",
+        "equipment": {"type": "barbell", "x": 200, "y": 30},
+        "joints": {
+          "head": {"x": 200, "y": 80}, "neck": {"x": 200, "y": 95}, "chest": {"x": 200, "y": 120},
+          "spine": {"x": 200, "y": 150}, "pelvis": {"x": 200, "y": 180},
+          "left_shoulder": {"x": 180, "y": 120}, "left_elbow": {"x": 180, "y": 70}, "left_wrist": {"x": 180, "y": 30},
+          "right_shoulder": {"x": 220, "y": 120}, "right_elbow": {"x": 220, "y": 70}, "right_wrist": {"x": 220, "y": 30},
+          "left_hip": {"x": 185, "y": 180}, "left_knee": {"x": 185, "y": 225}, "left_ankle": {"x": 185, "y": 260},
+          "right_hip": {"x": 215, "y": 180}, "right_knee": {"x": 215, "y": 225}, "right_ankle": {"x": 215, "y": 260}
+        },
+        "muscle_activations": {"Lats": 0.5, "Biceps": 0.4}
+      },
+      {
+        "timestamp": 0.5,
+        "phase": "Chin Over Bar Contraction",
+        "equipment": {"type": "barbell", "x": 200, "y": 30},
+        "joints": {
+          "head": {"x": 200, "y": 20}, "neck": {"x": 200, "y": 35}, "chest": {"x": 200, "y": 60},
+          "spine": {"x": 200, "y": 90}, "pelvis": {"x": 200, "y": 120},
+          "left_shoulder": {"x": 180, "y": 60}, "left_elbow": {"x": 160, "y": 65}, "left_wrist": {"x": 180, "y": 30},
+          "right_shoulder": {"x": 220, "y": 60}, "right_elbow": {"x": 240, "y": 65}, "right_wrist": {"x": 220, "y": 30},
+          "left_hip": {"x": 185, "y": 120}, "left_knee": {"x": 185, "y": 165}, "left_ankle": {"x": 185, "y": 200},
+          "right_hip": {"x": 215, "y": 120}, "right_knee": {"x": 215, "y": 165}, "right_ankle": {"x": 215, "y": 200}
+        },
+        "muscle_activations": {"Lats": 1.0, "Biceps": 0.9}
+      },
+      {
+        "timestamp": 1.0,
+        "phase": "Dead Hang",
+        "equipment": {"type": "barbell", "x": 200, "y": 30},
+        "joints": {
+          "head": {"x": 200, "y": 80}, "neck": {"x": 200, "y": 95}, "chest": {"x": 200, "y": 120},
+          "spine": {"x": 200, "y": 150}, "pelvis": {"x": 200, "y": 180},
+          "left_shoulder": {"x": 180, "y": 120}, "left_elbow": {"x": 180, "y": 70}, "left_wrist": {"x": 180, "y": 30},
+          "right_shoulder": {"x": 220, "y": 120}, "right_elbow": {"x": 220, "y": 70}, "right_wrist": {"x": 220, "y": 30},
+          "left_hip": {"x": 185, "y": 180}, "left_knee": {"x": 185, "y": 225}, "left_ankle": {"x": 185, "y": 260},
+          "right_hip": {"x": 215, "y": 180}, "right_knee": {"x": 215, "y": 225}, "right_ankle": {"x": 215, "y": 260}
+        },
+        "muscle_activations": {"Lats": 0.5, "Biceps": 0.4}
+      }
+    ]
+  },
+  "bicep_curl": {
+    "exercise_id": "bicep_curl",
+    "name": "Barbell Curl",
+    "category": "Biceps",
+    "movement_type": "iso",
+    "equipment": "barbell",
+    "primary_muscles": ["Biceps"],
+    "secondary_muscles": ["Forearms"],
+    "phases": [
+      {"name": "Arms Extended", "duration": 0.4},
+      {"name": "Peak Bicep Contraction", "duration": 0.4}
+    ],
+    "keyframes": [
+      {
+        "timestamp": 0.0,
+        "phase": "Arms Extended",
+        "equipment": {"type": "barbell", "x": 200, "y": 155},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 185, "y": 155},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 215, "y": 155},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Biceps": 0.4}
+      },
+      {
+        "timestamp": 0.5,
+        "phase": "Peak Bicep Contraction",
+        "equipment": {"type": "barbell", "x": 200, "y": 95},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 190, "y": 95},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 210, "y": 95},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Biceps": 1.0}
+      },
+      {
+        "timestamp": 1.0,
+        "phase": "Arms Extended",
+        "equipment": {"type": "barbell", "x": 200, "y": 155},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 185, "y": 155},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 215, "y": 155},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Biceps": 0.4}
       }
     ]
   },
@@ -518,12 +352,10 @@
     "movement_type": "push",
     "equipment": "barbell",
     "primary_muscles": ["Front Deltoids", "Side Deltoids"],
-    "secondary_muscles": ["Triceps", "Upper Chest"],
+    "secondary_muscles": ["Triceps"],
     "phases": [
       {"name": "Racked at Clavicle", "duration": 0.4},
-      {"name": "Pressing Overhead", "duration": 1.0},
-      {"name": "Overhead Lockout", "duration": 0.4},
-      {"name": "Lowering to Chest", "duration": 1.0}
+      {"name": "Overhead Lockout", "duration": 0.4}
     ],
     "keyframes": [
       {
@@ -531,75 +363,213 @@
         "phase": "Racked at Clavicle",
         "equipment": {"type": "barbell", "x": 200, "y": 80},
         "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 90},
-          "left_elbow": {"x": 170, "y": 115},
-          "left_wrist": {"x": 185, "y": 80},
-          "right_shoulder": {"x": 220, "y": 90},
-          "right_elbow": {"x": 230, "y": 115},
-          "right_wrist": {"x": 215, "y": 80},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 170, "y": 115}, "left_wrist": {"x": 185, "y": 80},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 230, "y": 115}, "right_wrist": {"x": 215, "y": 80},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
         },
-        "muscle_activations": {"Front Deltoids": 0.6, "Triceps": 0.5}
+        "muscle_activations": {"Front Deltoids": 0.6, "Side Deltoids": 0.6}
       },
       {
         "timestamp": 0.5,
         "phase": "Overhead Lockout",
         "equipment": {"type": "barbell", "x": 200, "y": 20},
         "joints": {
-          "head": {"x": 200, "y": 45},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 90},
-          "left_elbow": {"x": 182, "y": 55},
-          "left_wrist": {"x": 185, "y": 20},
-          "right_shoulder": {"x": 220, "y": 90},
-          "right_elbow": {"x": 218, "y": 55},
-          "right_wrist": {"x": 215, "y": 20},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
+          "head": {"x": 200, "y": 45}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 182, "y": 55}, "left_wrist": {"x": 185, "y": 20},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 218, "y": 55}, "right_wrist": {"x": 215, "y": 20},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
         },
-        "muscle_activations": {"Front Deltoids": 1.0, "Triceps": 0.9}
+        "muscle_activations": {"Front Deltoids": 1.0, "Side Deltoids": 0.9}
       },
       {
         "timestamp": 1.0,
         "phase": "Racked at Clavicle",
         "equipment": {"type": "barbell", "x": 200, "y": 80},
         "joints": {
-          "head": {"x": 200, "y": 40},
-          "neck": {"x": 200, "y": 60},
-          "chest": {"x": 200, "y": 90},
-          "spine": {"x": 200, "y": 120},
-          "pelvis": {"x": 200, "y": 150},
-          "left_shoulder": {"x": 180, "y": 90},
-          "left_elbow": {"x": 170, "y": 115},
-          "left_wrist": {"x": 185, "y": 80},
-          "right_shoulder": {"x": 220, "y": 90},
-          "right_elbow": {"x": 230, "y": 115},
-          "right_wrist": {"x": 215, "y": 80},
-          "left_hip": {"x": 185, "y": 150},
-          "left_knee": {"x": 185, "y": 200},
-          "left_ankle": {"x": 185, "y": 250},
-          "right_hip": {"x": 215, "y": 150},
-          "right_knee": {"x": 215, "y": 200},
-          "right_ankle": {"x": 215, "y": 250}
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 170, "y": 115}, "left_wrist": {"x": 185, "y": 80},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 230, "y": 115}, "right_wrist": {"x": 215, "y": 80},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
         },
-        "muscle_activations": {"Front Deltoids": 0.6, "Triceps": 0.5}
+        "muscle_activations": {"Front Deltoids": 0.6, "Side Deltoids": 0.6}
+      }
+    ]
+  },
+  "lateral_raise": {
+    "exercise_id": "lateral_raise",
+    "name": "Lateral Raise",
+    "category": "Shoulders",
+    "movement_type": "iso",
+    "equipment": "dumbbell",
+    "primary_muscles": ["Side Deltoids"],
+    "secondary_muscles": ["Traps"],
+    "phases": [
+      {"name": "Dumbbells Beside Thighs", "duration": 0.4},
+      {"name": "Parallel Shoulder Height Abduction", "duration": 0.4}
+    ],
+    "keyframes": [
+      {
+        "timestamp": 0.0,
+        "phase": "Dumbbells Beside Thighs",
+        "equipment": {"type": "dumbbell", "x": 200, "y": 160},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 175, "y": 125}, "left_wrist": {"x": 170, "y": 160},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 225, "y": 125}, "right_wrist": {"x": 230, "y": 160},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Side Deltoids": 0.4}
+      },
+      {
+        "timestamp": 0.5,
+        "phase": "Parallel Shoulder Height Abduction",
+        "equipment": {"type": "dumbbell", "x": 200, "y": 90},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 140, "y": 90}, "left_wrist": {"x": 110, "y": 90},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 260, "y": 90}, "right_wrist": {"x": 290, "y": 90},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Side Deltoids": 1.0}
+      },
+      {
+        "timestamp": 1.0,
+        "phase": "Dumbbells Beside Thighs",
+        "equipment": {"type": "dumbbell", "x": 200, "y": 160},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 175, "y": 125}, "left_wrist": {"x": 170, "y": 160},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 225, "y": 125}, "right_wrist": {"x": 230, "y": 160},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Side Deltoids": 0.4}
+      }
+    ]
+  },
+  "tricep_pushdown": {
+    "exercise_id": "tricep_pushdown",
+    "name": "Triceps Pushdown",
+    "category": "Triceps",
+    "movement_type": "iso",
+    "equipment": "cable",
+    "primary_muscles": ["Triceps"],
+    "secondary_muscles": ["Forearms"],
+    "phases": [
+      {"name": "90-Degree Elbow Flexion", "duration": 0.4},
+      {"name": "Full Arm Extension Lockout", "duration": 0.4}
+    ],
+    "keyframes": [
+      {
+        "timestamp": 0.0,
+        "phase": "90-Degree Elbow Flexion",
+        "equipment": {"type": "cable", "x": 200, "y": 125},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 200, "y": 125},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 200, "y": 125},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Triceps": 0.5}
+      },
+      {
+        "timestamp": 0.5,
+        "phase": "Full Arm Extension Lockout",
+        "equipment": {"type": "cable", "x": 200, "y": 175},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 200, "y": 175},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 200, "y": 175},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Triceps": 1.0}
+      },
+      {
+        "timestamp": 1.0,
+        "phase": "90-Degree Elbow Flexion",
+        "equipment": {"type": "cable", "x": 200, "y": 125},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 125}, "left_wrist": {"x": 200, "y": 125},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 125}, "right_wrist": {"x": 200, "y": 125},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Triceps": 0.5}
+      }
+    ]
+  },
+  "romanian_deadlift": {
+    "exercise_id": "romanian_deadlift",
+    "name": "Romanian Deadlift",
+    "category": "Legs",
+    "movement_type": "hinge",
+    "equipment": "barbell",
+    "primary_muscles": ["Hamstrings", "Glutes"],
+    "secondary_muscles": ["Lower Back"],
+    "phases": [
+      {"name": "Standing Setup", "duration": 0.4},
+      {"name": "Max Hamstring Stretch", "duration": 0.5}
+    ],
+    "keyframes": [
+      {
+        "timestamp": 0.0,
+        "phase": "Standing Setup",
+        "equipment": {"type": "barbell", "x": 200, "y": 150},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 120}, "left_wrist": {"x": 185, "y": 150},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 120}, "right_wrist": {"x": 215, "y": 150},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Hamstrings": 0.5, "Glutes": 0.5}
+      },
+      {
+        "timestamp": 0.5,
+        "phase": "Max Hamstring Stretch",
+        "equipment": {"type": "barbell", "x": 200, "y": 205},
+        "joints": {
+          "head": {"x": 240, "y": 90}, "neck": {"x": 230, "y": 105}, "chest": {"x": 215, "y": 125},
+          "spine": {"x": 190, "y": 145}, "pelvis": {"x": 160, "y": 155},
+          "left_shoulder": {"x": 215, "y": 125}, "left_elbow": {"x": 208, "y": 165}, "left_wrist": {"x": 200, "y": 205},
+          "right_shoulder": {"x": 215, "y": 125}, "right_elbow": {"x": 208, "y": 165}, "right_wrist": {"x": 200, "y": 205},
+          "left_hip": {"x": 160, "y": 155}, "left_knee": {"x": 175, "y": 205}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 160, "y": 155}, "right_knee": {"x": 175, "y": 205}, "right_ankle": {"x": 185, "y": 250}
+        },
+        "muscle_activations": {"Hamstrings": 1.0, "Glutes": 0.9}
+      },
+      {
+        "timestamp": 1.0,
+        "phase": "Standing Setup",
+        "equipment": {"type": "barbell", "x": 200, "y": 150},
+        "joints": {
+          "head": {"x": 200, "y": 40}, "neck": {"x": 200, "y": 60}, "chest": {"x": 200, "y": 90},
+          "spine": {"x": 200, "y": 120}, "pelvis": {"x": 200, "y": 150},
+          "left_shoulder": {"x": 180, "y": 90}, "left_elbow": {"x": 180, "y": 120}, "left_wrist": {"x": 185, "y": 150},
+          "right_shoulder": {"x": 220, "y": 90}, "right_elbow": {"x": 220, "y": 120}, "right_wrist": {"x": 215, "y": 150},
+          "left_hip": {"x": 185, "y": 150}, "left_knee": {"x": 185, "y": 200}, "left_ankle": {"x": 185, "y": 250},
+          "right_hip": {"x": 215, "y": 150}, "right_knee": {"x": 215, "y": 200}, "right_ankle": {"x": 215, "y": 250}
+        },
+        "muscle_activations": {"Hamstrings": 0.5, "Glutes": 0.5}
       }
     ]
   }
