@@ -1,0 +1,1122 @@
+{
+  "1": {
+    "exercise_id": 1,
+    "exercise_name": "Bench Press",
+    "slug": "bench_press",
+    "video": "/static/exercise_media/bench_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/bench_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "2": {
+    "exercise_id": 2,
+    "exercise_name": "Incline Dumbbell Press",
+    "slug": "incline_dumbbell_press",
+    "video": "/static/exercise_media/incline_dumbbell_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/incline_dumbbell_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "3": {
+    "exercise_id": 3,
+    "exercise_name": "Push-ups",
+    "slug": "push_ups",
+    "video": "/static/exercise_media/push_ups.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/push_ups.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "4": {
+    "exercise_id": 4,
+    "exercise_name": "Chest Fly",
+    "slug": "chest_fly",
+    "video": "/static/exercise_media/chest_fly.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/chest_fly.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "5": {
+    "exercise_id": 5,
+    "exercise_name": "Lat Pulldown",
+    "slug": "lat_pulldown",
+    "video": "/static/exercise_media/lat_pulldown.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/lat_pulldown.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "6": {
+    "exercise_id": 6,
+    "exercise_name": "One Arm Dumbbell Row",
+    "slug": "one_arm_dumbbell_row",
+    "video": "/static/exercise_media/one_arm_dumbbell_row.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/one_arm_dumbbell_row.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "7": {
+    "exercise_id": 7,
+    "exercise_name": "Bent Over Row",
+    "slug": "bent_over_row",
+    "video": "/static/exercise_media/bent_over_row.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/bent_over_row.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "8": {
+    "exercise_id": 8,
+    "exercise_name": "Shoulder Press",
+    "slug": "shoulder_press",
+    "video": "/static/exercise_media/shoulder_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/shoulder_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "9": {
+    "exercise_id": 9,
+    "exercise_name": "Lateral Raise",
+    "slug": "lateral_raise",
+    "video": "/static/exercise_media/lateral_raise.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/lateral_raise.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "10": {
+    "exercise_id": 10,
+    "exercise_name": "Squat",
+    "slug": "squat",
+    "video": "/static/exercise_media/squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "11": {
+    "exercise_id": 11,
+    "exercise_name": "Lunges",
+    "slug": "lunges",
+    "video": "/static/exercise_media/lunges.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/lunges.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "12": {
+    "exercise_id": 12,
+    "exercise_name": "Leg Extension",
+    "slug": "leg_extension",
+    "video": "/static/exercise_media/leg_extension.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/leg_extension.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "13": {
+    "exercise_id": 13,
+    "exercise_name": "Leg Curl",
+    "slug": "leg_curl",
+    "video": "/static/exercise_media/leg_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/leg_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "14": {
+    "exercise_id": 14,
+    "exercise_name": "Calf Raises",
+    "slug": "calf_raises",
+    "video": "/static/exercise_media/calf_raises.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/calf_raises.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "15": {
+    "exercise_id": 15,
+    "exercise_name": "Barbell Curl",
+    "slug": "barbell_curl",
+    "video": "/static/exercise_media/barbell_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/barbell_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "16": {
+    "exercise_id": 16,
+    "exercise_name": "Hammer Curl",
+    "slug": "hammer_curl",
+    "video": "/static/exercise_media/hammer_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/hammer_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "17": {
+    "exercise_id": 17,
+    "exercise_name": "Cable Pushdown",
+    "slug": "cable_pushdown",
+    "video": "/static/exercise_media/cable_pushdown.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_pushdown.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "18": {
+    "exercise_id": 18,
+    "exercise_name": "Dumbbell Overhead Extension",
+    "slug": "dumbbell_overhead_extension",
+    "video": "/static/exercise_media/dumbbell_overhead_extension.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_overhead_extension.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "19": {
+    "exercise_id": 19,
+    "exercise_name": "Plank",
+    "slug": "plank",
+    "video": "/static/exercise_media/plank.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/plank.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "20": {
+    "exercise_id": 20,
+    "exercise_name": "Crunches",
+    "slug": "crunches",
+    "video": "/static/exercise_media/crunches.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/crunches.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "21": {
+    "exercise_id": 21,
+    "exercise_name": "Leg Raises",
+    "slug": "leg_raises",
+    "video": "/static/exercise_media/leg_raises.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/leg_raises.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "22": {
+    "exercise_id": 22,
+    "exercise_name": "Bicep Curl",
+    "slug": "bicep_curl",
+    "video": "/static/exercise_media/bicep_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/bicep_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "23": {
+    "exercise_id": 23,
+    "exercise_name": "Dumbbell Squats",
+    "slug": "dumbbell_squats",
+    "video": "/static/exercise_media/dumbbell_squats.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_squats.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "24": {
+    "exercise_id": 24,
+    "exercise_name": "Resistance Band Chest Press",
+    "slug": "resistance_band_chest_press",
+    "video": "/static/exercise_media/resistance_band_chest_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/resistance_band_chest_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "25": {
+    "exercise_id": 25,
+    "exercise_name": "Barbell Squat",
+    "slug": "barbell_squat",
+    "video": "/static/exercise_media/barbell_squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/barbell_squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "26": {
+    "exercise_id": 26,
+    "exercise_name": "Romanian Deadlift",
+    "slug": "romanian_deadlift",
+    "video": "/static/exercise_media/romanian_deadlift.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/romanian_deadlift.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "27": {
+    "exercise_id": 27,
+    "exercise_name": "Concentration Curl",
+    "slug": "concentration_curl",
+    "video": "/static/exercise_media/concentration_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/concentration_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "28": {
+    "exercise_id": 28,
+    "exercise_name": "Russian Twists",
+    "slug": "russian_twists",
+    "video": "/static/exercise_media/russian_twists.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/russian_twists.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "29": {
+    "exercise_id": 29,
+    "exercise_name": "Dumbbell Shoulder Press",
+    "slug": "dumbbell_shoulder_press",
+    "video": "/static/exercise_media/dumbbell_shoulder_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_shoulder_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "30": {
+    "exercise_id": 30,
+    "exercise_name": "Tricep Dips",
+    "slug": "tricep_dips",
+    "video": "/static/exercise_media/tricep_dips.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/tricep_dips.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "31": {
+    "exercise_id": 31,
+    "exercise_name": "Pull-ups",
+    "slug": "pull_ups",
+    "video": "/static/exercise_media/pull_ups.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/pull_ups.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "32": {
+    "exercise_id": 32,
+    "exercise_name": "Goblet Squat",
+    "slug": "goblet_squat",
+    "video": "/static/exercise_media/goblet_squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/goblet_squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "33": {
+    "exercise_id": 33,
+    "exercise_name": "Preacher Curl",
+    "slug": "preacher_curl",
+    "video": "/static/exercise_media/preacher_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/preacher_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "34": {
+    "exercise_id": 34,
+    "exercise_name": "Cable Curl",
+    "slug": "cable_curl",
+    "video": "/static/exercise_media/cable_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "35": {
+    "exercise_id": 35,
+    "exercise_name": "Incline Dumbbell Curl",
+    "slug": "incline_dumbbell_curl",
+    "video": "/static/exercise_media/incline_dumbbell_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/incline_dumbbell_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "36": {
+    "exercise_id": 36,
+    "exercise_name": "Skull Crushers",
+    "slug": "skull_crushers",
+    "video": "/static/exercise_media/skull_crushers.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/skull_crushers.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "37": {
+    "exercise_id": 37,
+    "exercise_name": "Close Grip Bench Press",
+    "slug": "close_grip_bench_press",
+    "video": "/static/exercise_media/close_grip_bench_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/close_grip_bench_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "38": {
+    "exercise_id": 38,
+    "exercise_name": "Seated Cable Row",
+    "slug": "seated_cable_row",
+    "video": "/static/exercise_media/seated_cable_row.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/seated_cable_row.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "39": {
+    "exercise_id": 39,
+    "exercise_name": "Arnold Press",
+    "slug": "arnold_press",
+    "video": "/static/exercise_media/arnold_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/arnold_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "40": {
+    "exercise_id": 40,
+    "exercise_name": "Reverse Fly",
+    "slug": "reverse_fly",
+    "video": "/static/exercise_media/reverse_fly.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/reverse_fly.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "41": {
+    "exercise_id": 41,
+    "exercise_name": "Hip Thrust",
+    "slug": "hip_thrust",
+    "video": "/static/exercise_media/hip_thrust.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/hip_thrust.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "42": {
+    "exercise_id": 42,
+    "exercise_name": "Leg Press",
+    "slug": "leg_press",
+    "video": "/static/exercise_media/leg_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/leg_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "43": {
+    "exercise_id": 43,
+    "exercise_name": "Wrist Curls",
+    "slug": "wrist_curls",
+    "video": "/static/exercise_media/wrist_curls.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/wrist_curls.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "44": {
+    "exercise_id": 44,
+    "exercise_name": "Farmers Walk",
+    "slug": "farmers_walk",
+    "video": "/static/exercise_media/farmers_walk.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/farmers_walk.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "45": {
+    "exercise_id": 45,
+    "exercise_name": "Ab Wheel Rollout",
+    "slug": "ab_wheel_rollout",
+    "video": "/static/exercise_media/ab_wheel_rollout.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/ab_wheel_rollout.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "46": {
+    "exercise_id": 46,
+    "exercise_name": "Bulgarian Split Squat",
+    "slug": "bulgarian_split_squat",
+    "video": "/static/exercise_media/bulgarian_split_squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/bulgarian_split_squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "47": {
+    "exercise_id": 47,
+    "exercise_name": "Side Plank",
+    "slug": "side_plank",
+    "video": "/static/exercise_media/side_plank.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/side_plank.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "48": {
+    "exercise_id": 48,
+    "exercise_name": "Decline Barbell Bench Press",
+    "slug": "decline_barbell_bench_press",
+    "video": "/static/exercise_media/decline_barbell_bench_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/decline_barbell_bench_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "49": {
+    "exercise_id": 49,
+    "exercise_name": "Incline Push-Up",
+    "slug": "incline_push_up",
+    "video": "/static/exercise_media/incline_push_up.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/incline_push_up.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "50": {
+    "exercise_id": 50,
+    "exercise_name": "Decline Push-Up",
+    "slug": "decline_push_up",
+    "video": "/static/exercise_media/decline_push_up.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/decline_push_up.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "51": {
+    "exercise_id": 51,
+    "exercise_name": "Cable Crossover",
+    "slug": "cable_crossover",
+    "video": "/static/exercise_media/cable_crossover.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_crossover.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "52": {
+    "exercise_id": 52,
+    "exercise_name": "Chest Dips",
+    "slug": "chest_dips",
+    "video": "/static/exercise_media/chest_dips.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/chest_dips.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "53": {
+    "exercise_id": 53,
+    "exercise_name": "Machine Chest Press",
+    "slug": "machine_chest_press",
+    "video": "/static/exercise_media/machine_chest_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/machine_chest_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "54": {
+    "exercise_id": 54,
+    "exercise_name": "Pec Deck Fly",
+    "slug": "pec_deck_fly",
+    "video": "/static/exercise_media/pec_deck_fly.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/pec_deck_fly.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "55": {
+    "exercise_id": 55,
+    "exercise_name": "Dumbbell Floor Press",
+    "slug": "dumbbell_floor_press",
+    "video": "/static/exercise_media/dumbbell_floor_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_floor_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "56": {
+    "exercise_id": 56,
+    "exercise_name": "Barbell Deadlift",
+    "slug": "barbell_deadlift",
+    "video": "/static/exercise_media/barbell_deadlift.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/barbell_deadlift.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "57": {
+    "exercise_id": 57,
+    "exercise_name": "Chin-Up",
+    "slug": "chin_up",
+    "video": "/static/exercise_media/chin_up.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/chin_up.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "58": {
+    "exercise_id": 58,
+    "exercise_name": "T-Bar Row",
+    "slug": "t_bar_row",
+    "video": "/static/exercise_media/t_bar_row.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/t_bar_row.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "59": {
+    "exercise_id": 59,
+    "exercise_name": "Inverted Bodyweight Row",
+    "slug": "inverted_bodyweight_row",
+    "video": "/static/exercise_media/inverted_bodyweight_row.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/inverted_bodyweight_row.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "60": {
+    "exercise_id": 60,
+    "exercise_name": "Straight Arm Pulldown",
+    "slug": "straight_arm_pulldown",
+    "video": "/static/exercise_media/straight_arm_pulldown.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/straight_arm_pulldown.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "61": {
+    "exercise_id": 61,
+    "exercise_name": "Barbell Shrug",
+    "slug": "barbell_shrug",
+    "video": "/static/exercise_media/barbell_shrug.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/barbell_shrug.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "62": {
+    "exercise_id": 62,
+    "exercise_name": "Hyperextensions",
+    "slug": "hyperextensions",
+    "video": "/static/exercise_media/hyperextensions.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/hyperextensions.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "63": {
+    "exercise_id": 63,
+    "exercise_name": "Cable Lateral Raise",
+    "slug": "cable_lateral_raise",
+    "video": "/static/exercise_media/cable_lateral_raise.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_lateral_raise.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "64": {
+    "exercise_id": 64,
+    "exercise_name": "Face Pull",
+    "slug": "face_pull",
+    "video": "/static/exercise_media/face_pull.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/face_pull.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "65": {
+    "exercise_id": 65,
+    "exercise_name": "Dumbbell Front Raise",
+    "slug": "dumbbell_front_raise",
+    "video": "/static/exercise_media/dumbbell_front_raise.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_front_raise.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "66": {
+    "exercise_id": 66,
+    "exercise_name": "Pike Push-Up",
+    "slug": "pike_push_up",
+    "video": "/static/exercise_media/pike_push_up.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/pike_push_up.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "67": {
+    "exercise_id": 67,
+    "exercise_name": "Upright Row",
+    "slug": "upright_row",
+    "video": "/static/exercise_media/upright_row.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/upright_row.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "68": {
+    "exercise_id": 68,
+    "exercise_name": "Spider Curl",
+    "slug": "spider_curl",
+    "video": "/static/exercise_media/spider_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/spider_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "69": {
+    "exercise_id": 69,
+    "exercise_name": "Reverse Barbell Curl",
+    "slug": "reverse_barbell_curl",
+    "video": "/static/exercise_media/reverse_barbell_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/reverse_barbell_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "70": {
+    "exercise_id": 70,
+    "exercise_name": "Diamond Push-Up",
+    "slug": "diamond_push_up",
+    "video": "/static/exercise_media/diamond_push_up.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/diamond_push_up.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "71": {
+    "exercise_id": 71,
+    "exercise_name": "Dumbbell Tricep Kickback",
+    "slug": "dumbbell_tricep_kickback",
+    "video": "/static/exercise_media/dumbbell_tricep_kickback.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_tricep_kickback.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "72": {
+    "exercise_id": 72,
+    "exercise_name": "Cable Overhead Tricep Extension",
+    "slug": "cable_overhead_tricep_extension",
+    "video": "/static/exercise_media/cable_overhead_tricep_extension.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_overhead_tricep_extension.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "73": {
+    "exercise_id": 73,
+    "exercise_name": "Reverse Wrist Curls",
+    "slug": "reverse_wrist_curls",
+    "video": "/static/exercise_media/reverse_wrist_curls.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/reverse_wrist_curls.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "74": {
+    "exercise_id": 74,
+    "exercise_name": "Dead Hang",
+    "slug": "dead_hang",
+    "video": "/static/exercise_media/dead_hang.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dead_hang.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "75": {
+    "exercise_id": 75,
+    "exercise_name": "Hanging Leg Raise",
+    "slug": "hanging_leg_raise",
+    "video": "/static/exercise_media/hanging_leg_raise.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/hanging_leg_raise.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "76": {
+    "exercise_id": 76,
+    "exercise_name": "Bicycle Crunches",
+    "slug": "bicycle_crunches",
+    "video": "/static/exercise_media/bicycle_crunches.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/bicycle_crunches.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "77": {
+    "exercise_id": 77,
+    "exercise_name": "Cable Woodchopper",
+    "slug": "cable_woodchopper",
+    "video": "/static/exercise_media/cable_woodchopper.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_woodchopper.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "78": {
+    "exercise_id": 78,
+    "exercise_name": "Mountain Climbers",
+    "slug": "mountain_climbers",
+    "video": "/static/exercise_media/mountain_climbers.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/mountain_climbers.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "79": {
+    "exercise_id": 79,
+    "exercise_name": "Barbell Front Squat",
+    "slug": "barbell_front_squat",
+    "video": "/static/exercise_media/barbell_front_squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/barbell_front_squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "80": {
+    "exercise_id": 80,
+    "exercise_name": "Hack Squat",
+    "slug": "hack_squat",
+    "video": "/static/exercise_media/hack_squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/hack_squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "81": {
+    "exercise_id": 81,
+    "exercise_name": "Walking Lunges",
+    "slug": "walking_lunges",
+    "video": "/static/exercise_media/walking_lunges.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/walking_lunges.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "82": {
+    "exercise_id": 82,
+    "exercise_name": "Dumbbell Romanian Deadlift",
+    "slug": "dumbbell_romanian_deadlift",
+    "video": "/static/exercise_media/dumbbell_romanian_deadlift.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_romanian_deadlift.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "83": {
+    "exercise_id": 83,
+    "exercise_name": "Glute Bridge",
+    "slug": "glute_bridge",
+    "video": "/static/exercise_media/glute_bridge.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/glute_bridge.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "84": {
+    "exercise_id": 84,
+    "exercise_name": "Cable Glute Kickback",
+    "slug": "cable_glute_kickback",
+    "video": "/static/exercise_media/cable_glute_kickback.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_glute_kickback.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "85": {
+    "exercise_id": 85,
+    "exercise_name": "Seated Leg Curl",
+    "slug": "seated_leg_curl",
+    "video": "/static/exercise_media/seated_leg_curl.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/seated_leg_curl.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "86": {
+    "exercise_id": 86,
+    "exercise_name": "Standing Barbell Calf Raise",
+    "slug": "standing_barbell_calf_raise",
+    "video": "/static/exercise_media/standing_barbell_calf_raise.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/standing_barbell_calf_raise.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "87": {
+    "exercise_id": 87,
+    "exercise_name": "Seated Calf Raise",
+    "slug": "seated_calf_raise",
+    "video": "/static/exercise_media/seated_calf_raise.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/seated_calf_raise.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "88": {
+    "exercise_id": 88,
+    "exercise_name": "Single-Leg Dumbbell Calf Raise",
+    "slug": "single_leg_dumbbell_calf_raise",
+    "video": "/static/exercise_media/single_leg_dumbbell_calf_raise.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/single_leg_dumbbell_calf_raise.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "89": {
+    "exercise_id": 89,
+    "exercise_name": "Burpees",
+    "slug": "burpees",
+    "video": "/static/exercise_media/burpees.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/burpees.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "90": {
+    "exercise_id": 90,
+    "exercise_name": "Kettlebell Swing",
+    "slug": "kettlebell_swing",
+    "video": "/static/exercise_media/kettlebell_swing.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/kettlebell_swing.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "91": {
+    "exercise_id": 91,
+    "exercise_name": "Dumbbell Thrusters",
+    "slug": "dumbbell_thrusters",
+    "video": "/static/exercise_media/dumbbell_thrusters.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dumbbell_thrusters.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "92": {
+    "exercise_id": 92,
+    "exercise_name": "Barbell Clean and Press",
+    "slug": "barbell_clean_and_press",
+    "video": "/static/exercise_media/barbell_clean_and_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/barbell_clean_and_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "93": {
+    "exercise_id": 93,
+    "exercise_name": "Box Jumps",
+    "slug": "box_jumps",
+    "video": "/static/exercise_media/box_jumps.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/box_jumps.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "94": {
+    "exercise_id": 94,
+    "exercise_name": "Battle Ropes",
+    "slug": "battle_ropes",
+    "video": "/static/exercise_media/battle_ropes.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/battle_ropes.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "95": {
+    "exercise_id": 95,
+    "exercise_name": "Rowing Machine Intervals",
+    "slug": "rowing_machine_intervals",
+    "video": "/static/exercise_media/rowing_machine_intervals.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/rowing_machine_intervals.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "96": {
+    "exercise_id": 96,
+    "exercise_name": "Jump Rope",
+    "slug": "jump_rope",
+    "video": "/static/exercise_media/jump_rope.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/jump_rope.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "97": {
+    "exercise_id": 97,
+    "exercise_name": "Dynamic Chest Stretch",
+    "slug": "dynamic_chest_stretch",
+    "video": "/static/exercise_media/dynamic_chest_stretch.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/dynamic_chest_stretch.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "98": {
+    "exercise_id": 98,
+    "exercise_name": "Cat-Cow Stretch",
+    "slug": "cat_cow_stretch",
+    "video": "/static/exercise_media/cat_cow_stretch.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cat_cow_stretch.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "99": {
+    "exercise_id": 99,
+    "exercise_name": "Worlds Greatest Stretch",
+    "slug": "worlds_greatest_stretch",
+    "video": "/static/exercise_media/worlds_greatest_stretch.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/worlds_greatest_stretch.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "100": {
+    "exercise_id": 100,
+    "exercise_name": "Hamstring Dynamic Sweep",
+    "slug": "hamstring_dynamic_sweep",
+    "video": "/static/exercise_media/hamstring_dynamic_sweep.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/hamstring_dynamic_sweep.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "101": {
+    "exercise_id": 101,
+    "exercise_name": "Thoracic Spine Rotations",
+    "slug": "thoracic_spine_rotations",
+    "video": "/static/exercise_media/thoracic_spine_rotations.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/thoracic_spine_rotations.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "102": {
+    "exercise_id": 102,
+    "exercise_name": "Svend Press",
+    "slug": "svend_press",
+    "video": "/static/exercise_media/svend_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/svend_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "103": {
+    "exercise_id": 103,
+    "exercise_name": "Landmine Press",
+    "slug": "landmine_press",
+    "video": "/static/exercise_media/landmine_press.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/landmine_press.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "104": {
+    "exercise_id": 104,
+    "exercise_name": "Sissy Squat",
+    "slug": "sissy_squat",
+    "video": "/static/exercise_media/sissy_squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/sissy_squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "105": {
+    "exercise_id": 105,
+    "exercise_name": "Cable Rope Overhead Tricep Extension",
+    "slug": "cable_rope_overhead_tricep_extension",
+    "video": "/static/exercise_media/cable_rope_overhead_tricep_extension.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cable_rope_overhead_tricep_extension.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "106": {
+    "exercise_id": 106,
+    "exercise_name": "Kettlebell Goblet Squat",
+    "slug": "kettlebell_goblet_squat",
+    "video": "/static/exercise_media/kettlebell_goblet_squat.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/kettlebell_goblet_squat.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "107": {
+    "exercise_id": 107,
+    "exercise_name": "Barbell Glute Bridge",
+    "slug": "barbell_glute_bridge",
+    "video": "/static/exercise_media/barbell_glute_bridge.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/barbell_glute_bridge.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "108": {
+    "exercise_id": 108,
+    "exercise_name": "Plate Pinch Hold",
+    "slug": "plate_pinch_hold",
+    "video": "/static/exercise_media/plate_pinch_hold.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/plate_pinch_hold.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "109": {
+    "exercise_id": 109,
+    "exercise_name": "Wall Sit",
+    "slug": "wall_sit",
+    "video": "/static/exercise_media/wall_sit.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/wall_sit.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "110": {
+    "exercise_id": 110,
+    "exercise_name": "Hollow Body Hold",
+    "slug": "hollow_body_hold",
+    "video": "/static/exercise_media/hollow_body_hold.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/hollow_body_hold.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "111": {
+    "exercise_id": 111,
+    "exercise_name": "Kettlebell Sumo Deadlift",
+    "slug": "kettlebell_sumo_deadlift",
+    "video": "/static/exercise_media/kettlebell_sumo_deadlift.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/kettlebell_sumo_deadlift.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  },
+  "112": {
+    "exercise_id": 112,
+    "exercise_name": "Single-Arm Cable Row",
+    "slug": "single_arm_cable_row",
+    "video": "/static/exercise_media/single_arm_cable_row.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/single_arm_cable_row.webp",
+    "media_type": "mp4",
+    "status": "missing",
+    "license": "FitSync Media Library / CC0"
+  }
+}

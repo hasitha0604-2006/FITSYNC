@@ -164,14 +164,69 @@ class Exercise(db.Model):
     demonstration_available = db.Column(db.Boolean, default=True)
     demonstration_asset = db.Column(db.String(255), nullable=True)
     thumbnail = db.Column(db.String(255), nullable=True)
+    demo_video = db.Column(db.String(255), nullable=True)
+    animation_type = db.Column(db.String(50), nullable=True, default="video")
+    media_status = db.Column(db.String(50), nullable=True, default="missing")
 
     def to_dict(self):
         slug = self.name.lower().replace(' ', '_').replace('-', '_')
-        asset_path = f"/static/exercises/{slug}/demo.svg"
-        if self.demonstration_asset and os.path.exists(self.demonstration_asset.lstrip('/')):
-            asset_path = self.demonstration_asset
-        elif not os.path.exists(asset_path.lstrip('/')):
-            asset_path = "/static/exercises/fallback_demo.svg"
+        
+        # Canonical exercise-specific video paths
+        video_rel = f"/static/exercise_media/{slug}.mp4"
+        video_disk = BASE_DIR / "static" / "exercise_media" / f"{slug}.mp4"
+        video_exists = video_disk.exists()
+        
+        # SVG animation paths (fallback if video not yet rendered/present)
+        svg_rel = f"/static/exercises/{slug}/demo.svg"
+        svg_disk = BASE_DIR / "static" / "exercises" / slug / "demo.svg"
+        svg_exists = svg_disk.exists()
+        
+        # Determine actual media status & paths
+        if video_exists:
+            actual_video = video_rel
+            media_type = "mp4"
+            status = "available"
+            media_available = True
+            primary_asset = video_rel
+        elif self.demo_video and os.path.exists(str(self.demo_video).lstrip('/')):
+            actual_video = self.demo_video
+            media_type = "mp4"
+            status = "available"
+            media_available = True
+            primary_asset = self.demo_video
+        else:
+            actual_video = None
+            media_type = "svg" if svg_exists else "none"
+            status = "missing"
+            media_available = False
+            primary_asset = svg_rel if svg_exists else "/static/exercises/fallback_demo.svg"
+
+        p_muscles = json.loads(self.primary_muscles) if self.primary_muscles and self.primary_muscles.startswith("[") else ([m.strip() for m in self.primary_muscles.split(",")] if self.primary_muscles else [self.category])
+        s_muscles = json.loads(self.secondary_muscles) if self.secondary_muscles and self.secondary_muscles.startswith("[") else ([m.strip() for m in self.secondary_muscles.split(",")] if self.secondary_muscles else [])
+        
+        # Parse instructions list
+        if self.instructions and self.instructions.startswith("["):
+            try:
+                inst_list = json.loads(self.instructions)
+            except Exception:
+                inst_list = [i.strip() for i in self.instructions.split("\n") if i.strip()]
+        elif self.instructions:
+            inst_list = [i.strip() for i in self.instructions.split("\n") if i.strip()]
+        else:
+            inst_list = []
+
+        # Parse mistakes list
+        if self.common_mistakes and self.common_mistakes.startswith("["):
+            try:
+                mist_list = json.loads(self.common_mistakes)
+            except Exception:
+                mist_list = [m.strip() for m in self.common_mistakes.split("\n") if m.strip()]
+        elif self.common_mistakes:
+            mist_list = [m.strip() for m in self.common_mistakes.split("\n") if m.strip()]
+        else:
+            mist_list = []
+
+        thumb_path = self.thumbnail or (f"/static/exercise_media/thumbnails/{slug}.webp" if (BASE_DIR / "static" / "exercise_media" / "thumbnails" / f"{slug}.webp").exists() else primary_asset)
 
         return {
             "id": self.id,
@@ -179,26 +234,39 @@ class Exercise(db.Model):
             "name": self.name,
             "aliases": json.loads(self.aliases) if self.aliases and self.aliases.startswith("[") else ([a.strip() for a in self.aliases.split(",")] if self.aliases else []),
             "category": self.category,
-            "primary_muscles": json.loads(self.primary_muscles) if self.primary_muscles and self.primary_muscles.startswith("[") else ([m.strip() for m in self.primary_muscles.split(",")] if self.primary_muscles else []),
-            "secondary_muscles": json.loads(self.secondary_muscles) if self.secondary_muscles and self.secondary_muscles.startswith("[") else ([m.strip() for m in self.secondary_muscles.split(",")] if self.secondary_muscles else []),
+            "primary_muscles": p_muscles,
+            "secondary_muscles": s_muscles,
+            "primary_muscle": p_muscles[0] if p_muscles else self.category,
             "equipment": self.equipment or "No Equipment",
             "difficulty": self.difficulty or "Beginner",
             "environment": self.environment or "Gym",
             "goal": self.goal or "General Fitness",
-            "instructions": self.instructions or "",
-            "common_mistakes": self.common_mistakes or "",
-            "safety_notes": self.safety_notes or "",
+            "instructions": inst_list,
+            "common_mistakes": mist_list,
+            "safety_notes": self.safety_notes or "Maintain controlled form throughout movement.",
             "sets": self.default_sets or 3,
             "reps": f"{self.default_reps_min or 8}-{self.default_reps_max or 12}",
             "reps_min": self.default_reps_min or 8,
             "reps_max": self.default_reps_max or 12,
             "rest_seconds": self.default_rest_seconds or 60,
+            "default_sets": self.default_sets or 3,
+            "default_reps": f"{self.default_reps_min or 8}-{self.default_reps_max or 12}",
+            "default_rest": self.default_rest_seconds or 60,
             "demonstration_available": self.demonstration_available,
-            "demonstration_asset": asset_path,
-            "media_path": asset_path,
+            "demonstration_asset": primary_asset,
+            "demo_video": actual_video,
+            "media_path": primary_asset,
+            "media_type": media_type,
+            "media_status": status,
+            "media_available": media_available,
             "supported_demo": True,
-            "thumbnail": self.thumbnail or f"/static/exercises/{slug}/thumbnail.png",
-            "slug": slug
+            "thumbnail": thumb_path,
+            "slug": slug,
+            "start_pos": getattr(self, "start_pos", None) or "Establish solid starting posture.",
+            "movement": getattr(self, "movement", None) or "Execute movement under control.",
+            "end_pos": getattr(self, "end_pos", None) or "Hold contraction and return safely.",
+            "working_location": getattr(self, "working_location", None) or (p_muscles[0] if p_muscles else self.category),
+            "joint_action": getattr(self, "joint_action", None) or "Joint Flexion & Extension"
         }
 
 class Food(db.Model):
@@ -326,25 +394,88 @@ class WorkoutExercise(db.Model):
         
         p_muscles = []
         s_muscles = []
-        inst_text = self.instructions or ""
-        mistakes_text = self.common_mistakes or ""
-        demo_asset = f"/static/exercises/{slug}/demo.svg"
+        inst_data = self.instructions or ""
+        mistakes_data = self.common_mistakes or ""
+        
+        # Canonical video paths
+        video_rel = f"/static/exercise_media/{slug}.mp4"
+        video_disk = BASE_DIR / "static" / "exercise_media" / f"{slug}.mp4"
+        video_exists = video_disk.exists()
+
+        svg_rel = f"/static/exercises/{slug}/demo.svg"
+        svg_disk = BASE_DIR / "static" / "exercises" / slug / "demo.svg"
+        svg_exists = svg_disk.exists()
+
+        demo_video = None
+        if video_exists:
+            demo_video = video_rel
+            primary_asset = video_rel
+            media_type = "mp4"
+            media_status = "available"
+            media_available = True
+        elif master and master.demo_video and os.path.exists(str(master.demo_video).lstrip('/')):
+            demo_video = master.demo_video
+            primary_asset = master.demo_video
+            media_type = "mp4"
+            media_status = "available"
+            media_available = True
+        elif svg_exists:
+            primary_asset = svg_rel
+            media_type = "svg"
+            media_status = "missing"
+            media_available = False
+        else:
+            primary_asset = "/static/exercises/fallback_demo.svg"
+            media_type = "none"
+            media_status = "missing"
+            media_available = False
+
+        equipment = "Gym"
+        difficulty = "Intermediate"
+        working_loc = self.category
+        joint_act = "Joint Flexion & Extension"
 
         if master:
             master_dict = master.to_dict()
             p_muscles = master_dict.get("primary_muscles") or [self.category]
             s_muscles = master_dict.get("secondary_muscles") or []
-            if not inst_text:
-                inst_text = master.instructions or ""
-            if not mistakes_text:
-                mistakes_text = master.common_mistakes or ""
-            demo_asset = master_dict.get("demonstration_asset") or demo_asset
-
-        if not os.path.exists(demo_asset.lstrip('/')):
-            demo_asset = "/static/exercises/fallback_demo.svg"
+            if not inst_data:
+                inst_data = master_dict.get("instructions") or master.instructions or ""
+            if not mistakes_data:
+                mistakes_data = master_dict.get("common_mistakes") or master.common_mistakes or ""
+            equipment = master.equipment or equipment
+            difficulty = master.difficulty or difficulty
+            working_loc = master_dict.get("working_location") or (p_muscles[0] if p_muscles else self.category)
+            joint_act = master_dict.get("joint_action") or joint_act
 
         if not p_muscles:
             p_muscles = [self.category]
+
+        # Ensure instructions is formatted cleanly as a list
+        if isinstance(inst_data, list):
+            inst_list = inst_data
+        elif isinstance(inst_data, str) and inst_data.startswith("["):
+            try:
+                inst_list = json.loads(inst_data)
+            except Exception:
+                inst_list = [i.strip() for i in inst_data.split("\n") if i.strip()]
+        elif isinstance(inst_data, str) and inst_data:
+            inst_list = [i.strip() for i in inst_data.split("\n") if i.strip()]
+        else:
+            inst_list = []
+
+        # Ensure mistakes is formatted cleanly as a list
+        if isinstance(mistakes_data, list):
+            mist_list = mistakes_data
+        elif isinstance(mistakes_data, str) and mistakes_data.startswith("["):
+            try:
+                mist_list = json.loads(mistakes_data)
+            except Exception:
+                mist_list = [m.strip() for m in mistakes_data.split("\n") if m.strip()]
+        elif isinstance(mistakes_data, str) and mistakes_data:
+            mist_list = [m.strip() for m in mistakes_data.split("\n") if m.strip()]
+        else:
+            mist_list = []
 
         return {
             "id": self.id,
@@ -356,18 +487,26 @@ class WorkoutExercise(db.Model):
             "reps_min": self.reps_min or 8,
             "reps_max": self.reps_max or 12,
             "rest_seconds": self.rest_seconds,
-            "instructions": inst_text,
+            "instructions": inst_list,
             "start_pos": self.start_pos or "Position figure in starting alignment.",
             "movement": self.movement or "Execute movement under control.",
             "end_pos": self.end_pos or "Contract target muscle group at peak.",
-            "common_mistakes": mistakes_text,
+            "common_mistakes": mist_list,
             "is_completed": self.is_completed,
             "slug": slug,
-            "media_path": demo_asset,
-            "demonstration_asset": demo_asset,
+            "equipment": equipment,
+            "difficulty": difficulty,
+            "demo_video": demo_video,
+            "media_path": primary_asset,
+            "demonstration_asset": primary_asset,
+            "media_type": media_type,
+            "media_status": media_status,
+            "media_available": media_available,
             "primary_muscles": p_muscles,
             "secondary_muscles": s_muscles,
             "primary_muscle": p_muscles[0] if p_muscles else self.category,
+            "working_location": working_loc,
+            "joint_action": joint_act,
             "supported_demo": True
         }
 
@@ -627,12 +766,55 @@ def run_migrations():
     except Exception as e:
         db.session.rollback()
 
+    # 14. Add demo_video, animation_type, media_status to exercises table
+    try:
+        db.session.execute(db.text("SELECT demo_video FROM exercises LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        print("[MIGRATION] Adding demo_video, animation_type, media_status to exercises...")
+        try:
+            db.session.execute(db.text("ALTER TABLE exercises ADD COLUMN demo_video VARCHAR(255)"))
+        except Exception:
+            db.session.rollback()
+        try:
+            db.session.execute(db.text("ALTER TABLE exercises ADD COLUMN animation_type VARCHAR(50) DEFAULT 'video'"))
+        except Exception:
+            db.session.rollback()
+        try:
+            db.session.execute(db.text("ALTER TABLE exercises ADD COLUMN media_status VARCHAR(50) DEFAULT 'missing'"))
+        except Exception:
+            db.session.rollback()
+        db.session.commit()
+
 # Run database setup & migrations automatically on application boot
 with app.app_context():
     try:
         run_migrations()
     except Exception as _db_init_err:
         print(f"[MIGRATION WARNING] Auto-migration error: {_db_init_err}")
+
+def validate_media_path(path_str):
+    """
+    Security check: Ensures media paths are strictly confined to authorized static media directories,
+    blocking directory traversal attacks (e.g. '../', '..\\', absolute system files).
+    """
+    if not path_str or not isinstance(path_str, str):
+        return False
+    cleaned = path_str.replace('\\', '/').strip()
+    if '..' in cleaned or cleaned.startswith('/etc') or cleaned.startswith('C:') or cleaned.startswith('/root'):
+        return False
+    allowed_prefixes = (
+        '/static/exercise_media/', 'static/exercise_media/',
+        '/static/exercises/', 'static/exercises/'
+    )
+    if not any(cleaned.startswith(p) for p in allowed_prefixes):
+        return False
+    try:
+        abs_path = (BASE_DIR / cleaned.lstrip('/')).resolve()
+        static_dir = (BASE_DIR / 'static').resolve()
+        return static_dir in abs_path.parents or abs_path == static_dir
+    except Exception:
+        return False
 
 def seed_exercises_table():
     try:
@@ -664,6 +846,10 @@ def seed_exercises_table():
             if isinstance(sn_val, list):
                 sn_val = "\n".join(sn_val)
 
+            slug_name = name_val.lower().replace(' ', '_').replace('-', '_')
+            video_disk = BASE_DIR / "static" / "exercise_media" / f"{slug_name}.mp4"
+            status_val = "available" if video_disk.exists() else "missing"
+
             existing_record = existing_ex.get(ex_id) or existing_names.get(name_val.lower())
             if existing_record:
                 # Update existing exercise metadata safely
@@ -677,8 +863,9 @@ def seed_exercises_table():
                 existing_record.instructions = inst_val or existing_record.instructions
                 existing_record.common_mistakes = cm_val or existing_record.common_mistakes
                 existing_record.safety_notes = sn_val or existing_record.safety_notes
+                existing_record.demo_video = f"/static/exercise_media/{slug_name}.mp4" if video_disk.exists() else existing_record.demo_video
+                existing_record.media_status = status_val
             else:
-                slug_name = name_val.lower().replace(' ', '_').replace('-', '_')
                 e = Exercise(
                     id=ex_id,
                     name=name_val,
@@ -699,7 +886,10 @@ def seed_exercises_table():
                     default_rest_seconds=item.get("default_rest", item.get("rest_seconds", 60)),
                     demonstration_available=item.get("demonstration_available", True),
                     demonstration_asset=item.get("demonstration_asset", f"/static/exercises/{slug_name}/demo.svg"),
-                    thumbnail=item.get("thumbnail", f"/static/exercises/{slug_name}/thumbnail.png")
+                    thumbnail=item.get("thumbnail", f"/static/exercises/{slug_name}/thumbnail.png"),
+                    demo_video=f"/static/exercise_media/{slug_name}.mp4" if video_disk.exists() else None,
+                    animation_type="video",
+                    media_status=status_val
                 )
                 db.session.add(e)
                 added_count += 1
@@ -1636,6 +1826,59 @@ def api_manage_custom_food(food_id):
 
     db.session.commit()
     return jsonify({"status": "success", "message": "Custom food updated."})
+
+
+@app.route("/api/exercises/<int:exercise_id>", methods=["GET"])
+def api_get_exercise(exercise_id):
+    all_ex = get_exercises_data()
+    ex = next((item for item in all_ex if item["id"] == exercise_id), None)
+    if not ex:
+        db_ex = db.session.get(Exercise, exercise_id)
+        if db_ex:
+            ex = db_ex.to_dict()
+    if not ex:
+        return jsonify({"status": "error", "message": "Exercise not found"}), 404
+
+    # Security validation of media reference
+    demo_video = ex.get("demo_video")
+    if demo_video and not validate_media_path(demo_video):
+        demo_video = None
+
+    return jsonify({
+        "status": "success",
+        "id": ex.get("id"),
+        "exercise_id": ex.get("id"),
+        "name": ex.get("name"),
+        "slug": ex.get("slug"),
+        "category": ex.get("category"),
+        "primary_muscles": ex.get("primary_muscles", []),
+        "secondary_muscles": ex.get("secondary_muscles", []),
+        "primary_muscle": ex.get("primary_muscle") or (ex.get("primary_muscles", [ex.get("category")])[0] if ex.get("primary_muscles") else ex.get("category")),
+        "equipment": ex.get("equipment", "No Equipment"),
+        "difficulty": ex.get("difficulty", "Beginner"),
+        "environment": ex.get("environment", "Gym"),
+        "instructions": ex.get("instructions", []),
+        "common_mistakes": ex.get("common_mistakes", []),
+        "safety_notes": ex.get("safety_notes", ""),
+        "sets": ex.get("sets", 3),
+        "reps": ex.get("reps", "8-12"),
+        "rest_seconds": ex.get("rest_seconds", 60),
+        "demo_video": demo_video,
+        "media_path": ex.get("media_path"),
+        "demonstration_asset": ex.get("demonstration_asset"),
+        "thumbnail": ex.get("thumbnail"),
+        "media_type": ex.get("media_type", "mp4"),
+        "media_status": ex.get("media_status", "missing"),
+        "media_available": bool(ex.get("media_available", False)),
+        "supported_demo": bool(ex.get("supported_demo", True)),
+        "start_pos": ex.get("start_pos", "Establish solid starting alignment."),
+        "movement": ex.get("movement", "Execute movement under control."),
+        "end_pos": ex.get("end_pos", "Contract target muscle group at peak and return."),
+        "working_location": ex.get("working_location", ex.get("category")),
+        "joint_action": ex.get("joint_action", "Joint Flexion & Extension"),
+        "muscle_engagement": ex.get("muscle_engagement", {"primary_pct": 80, "secondary_pct": 20}),
+        "coaching_cues": ex.get("coaching_cues", [])
+    })
 
 
 @app.route("/api/exercises/search")

@@ -178,10 +178,10 @@
                   <!-- Graphical Thumbnail -->
                   <div class="h-12 w-12 rounded-xl bg-slate-950 border border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
                     <img 
-                      src="/static/exercises/{{ ex.name|lower|replace(' ', '_')|replace('-', '_') }}/demo.svg" 
+                      src="{{ ex.demonstration_asset or ex.media_path or '/static/exercises/' + ex.name|lower|replace(' ', '_')|replace('-', '_') + '/demo.svg' }}" 
                       alt="{{ ex.name }}"
                       class="h-full w-full object-cover"
-                      onerror="this.onerror=null; this.src='/static/exercises/squat/demo.svg';"
+                      onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';"
                     />
                   </div>
                   <div>
@@ -864,8 +864,7 @@
 
   function closeGuideModal() {
     if (window.__activeMotionPlayer) {
-      window.__activeMotionPlayer.isPlaying = false;
-      window.__activeMotionPlayer.updatePlayBtnState();
+      window.__activeMotionPlayer.destroy();
     }
     document.getElementById('guide-modal').classList.add('hidden');
   }
