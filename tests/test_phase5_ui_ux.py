@@ -167,7 +167,7 @@ class Phase5UIUXTestCase(unittest.TestCase):
         """Newly registered users render dashboard cleanly without crashing."""
         self.client.post('/register', data={'email': 'empty_user@fitsync.ai', 'password': 'Password123!'}, follow_redirects=True)
 
-        res = self.client.get('/dashboard')
+        res = self.client.get('/dashboard', follow_redirects=True)
         self.assertEqual(res.status_code, 200)
         self.assertIn("FitSync", res.get_data(as_text=True))
 

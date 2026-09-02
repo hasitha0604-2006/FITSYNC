@@ -69,7 +69,7 @@ class Phase1AcceptanceTestCase(unittest.TestCase):
         # STEP 4: Confirm profile, WorkoutPlan, MealPlan exist in SQLite
         print("[STEP 4] Confirming User A profile, workout plan & meal plan in DB...")
         with self.app.app_context():
-            user_a_db = User.query.get(user_a_id)
+            user_a_db = db.session.get(User, user_a_id)
             self.assertIsNotNone(user_a_db.profile)
             self.assertEqual(user_a_db.profile.name, "Alpha Athlete")
             self.assertTrue(user_a_db.profile.onboarding_completed)
@@ -84,7 +84,7 @@ class Phase1AcceptanceTestCase(unittest.TestCase):
         # STEP 6: Confirm database STILL contains User A after logout
         print("[STEP 6] Confirming User A data remains intact in DB after logout...")
         with self.app.app_context():
-            user_a_post_logout = User.query.get(user_a_id)
+            user_a_post_logout = db.session.get(User, user_a_id)
             self.assertIsNotNone(user_a_post_logout)
             self.assertEqual(user_a_post_logout.profile.name, "Alpha Athlete")
 

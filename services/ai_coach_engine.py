@@ -16,9 +16,32 @@ from services.fitness_engine import generate_weekly_workout, find_alternative_ex
 from services.adaptation_engine import rebuild_remaining_week_logic, move_workout_logic
 from services.nutrition_engine import get_food_alternative
 
+def _clean_and_parse_json(text_content):
+    """
+    Cleans markdown code fences and parses JSON payload safely.
+    """
+    if not text_content:
+        return None
+    cleaned = text_content.strip()
+    cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'\s*```$', '', cleaned)
+    cleaned = cleaned.strip()
+
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        match = re.search(r'(\{.*\})', cleaned, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(1))
+            except Exception:
+                pass
+        return None
+
+
 def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
     """
-    Calls Google Gemini 1.5 Flash API with user telemetry context and recent conversation history.
+    Calls Google Gemini API with user telemetry context and recent conversation history.
     Returns natural language coach response or None on failure.
     """
     try:
@@ -38,7 +61,7 @@ def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
             "Return valid JSON matching this schema: {\"coach_reply\": \"string\", \"intent\": \"string\"}"
         )
 
-        model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+        model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
@@ -51,12 +74,17 @@ def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
             headers={'Content-Type': 'application/json'}
         )
 
-        with urllib.request.urlopen(req, timeout=15) as response:
+        with urllib.request.urlopen(req, timeout=6) as response:
             res_body = json.loads(response.read().decode('utf-8'))
-            text_content = res_body['candidates'][0]['content']['parts'][0]['text']
-            parsed = json.loads(text_content)
-            return parsed
-    except Exception:
+            candidates = res_body.get('candidates', [])
+            if candidates and 'content' in candidates[0] and 'parts' in candidates[0]['content']:
+                text_content = candidates[0]['content']['parts'][0].get('text', '')
+                parsed = _clean_and_parse_json(text_content)
+                if parsed and isinstance(parsed, dict) and "coach_reply" in parsed:
+                    return parsed
+        return None
+    except Exception as e:
+        print(f"[AI COACH WARNING] Gemini API call skipped/failed: {e}")
         return None
 
 
@@ -430,73 +458,6 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
                     "redirect_url": "/today-workout"
                 }
 
-    # 6. ACTION INTENT: DURATION ADJUSTMENT ("I have 30 minutes", "Make workout 30 mins", "60 minute workout")
-    dur_match = re.search(r'(\d+)\s*(min|mins|minute|minutes)', q)
-    if ("time" in q or "durat" in q or "quick" in q or dur_match or "express" in q or "short" in q) and user and user.profile:
-        target_mins = 30
-        if dur_match:
-            target_mins = int(dur_match.group(1))
-        elif "60" in q or "hour" in q:
-            target_mins = 60
-        elif "45" in q:
-            target_mins = 45
-
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
-        if plan:
-            today_name = datetime.now().strftime("%A")
-            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
-            if not today_w or today_w.is_rest_day:
-                today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
-
-            if today_w:
-                curr_dur = today_w.duration_minutes or 45
-                return {
-                    "status": "success",
-                    "action": "duration_adjustment_proposal",
-                    "intent": "WORKOUT_ADJUSTMENT",
-                    "coach_reply": f"I can adjust your **{today_w.focus}** session from {curr_dur} mins to ~**{target_mins} minutes** so you can get a great workout without rushing.",
-                    "explanation": f"Propose reducing workout density to ~{target_mins} minutes based on your available time.",
-                    "proposed_action": {
-                        "type": "ADJUST_DURATION",
-                        "title": "Shorten Workout Duration",
-                        "current": f"{curr_dur} minutes",
-                        "proposed": f"{target_mins} minutes",
-                        "reason": f"You mentioned having {target_mins} minutes available today.",
-                        "endpoint": "/api/workout/adjust-duration",
-                        "payload": {"duration_mins": target_mins}
-                    },
-                    "redirect_url": "/today-workout"
-                }
-
-    # 7. ACTION INTENT: DIFFICULTY SCALING ("Make today's workout easier", "Make it harder", "Too tough", "Too easy")
-    if any(k in q for k in ["easier", "harder", "too tough", "too easy", "light", "heavy", "intense", "less weight"]) and user and user.profile:
-        direction = "easier" if any(k in q for k in ["easier", "too tough", "light", "less"]) else "harder"
-        plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).first()
-        if plan:
-            today_name = datetime.now().strftime("%A")
-            today_w = WorkoutDay.query.filter_by(workout_plan_id=plan.id, day_name=today_name).first()
-            if not today_w or today_w.is_rest_day:
-                today_w = next((d for d in plan.days if not d.is_rest_day), plan.days[0] if plan.days else None)
-
-            if today_w:
-                return {
-                    "status": "success",
-                    "action": "difficulty_adjustment_proposal",
-                    "intent": "WORKOUT_ADJUSTMENT",
-                    "coach_reply": f"I can adjust your **{today_w.focus}** session volume to be **{direction}** (modifying rep ranges & rest intervals) while preserving muscle activation.",
-                    "explanation": f"Propose scaling workout intensity to be {direction} per your request.",
-                    "proposed_action": {
-                        "type": "ADJUST_DIFFICULTY",
-                        "title": f"Make Workout {direction.title()}",
-                        "current": "Standard Volume",
-                        "proposed": f"{direction.title()} Intensity & Reps",
-                        "reason": f"Scaled workout intensity to be {direction}.",
-                        "endpoint": "/api/workout/adjust-difficulty",
-                        "payload": {"direction": direction}
-                    },
-                    "redirect_url": "/today-workout"
-                }
-
     # 8. ACTION INTENT: EQUIPMENT CONSTRAINTS ("I only have dumbbells today", "No equipment today", "I'm at home")
     if any(k in q for k in ["dumbbell", "dumbbells", "no equipment", "home", "gym", "only have"]) and user and user.profile:
         env = "Gym"
@@ -596,7 +557,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
     api_key = os.getenv("AI_API_KEY") or os.getenv("GEMINI_API_KEY")
     gemini_res = None
     if api_key:
-        gemini_res = _call_gemini_coach_api(prompt_text, user_context, api_key)
+        gemini_res = _call_gemini_coach_api(prompt_text, user_context, api_key, history=history)
 
     qa_result = process_ai_gym_query(prompt_text, user_profile=user.profile if (user and user.profile) else None)
     qa_exercises = qa_result.get("exercises", [])

@@ -1,8 +1,31 @@
 import os
 import json
+import re
 import urllib.request
 import urllib.parse
 from services.nutrition_engine import generate_daily_meals, calculate_ai_targets
+
+def _clean_and_parse_json(text_content):
+    """
+    Cleans markdown code fences and parses JSON payload safely.
+    """
+    if not text_content:
+        return None
+    cleaned = text_content.strip()
+    cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'\s*```$', '', cleaned)
+    cleaned = cleaned.strip()
+
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        match = re.search(r'(\{.*\})', cleaned, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(1))
+            except Exception:
+                pass
+        return None
 
 def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_foods, date_str):
     """
@@ -56,7 +79,7 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
             f"Data: {json.dumps(prompt_data)}"
         )
 
-        model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+        model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
@@ -69,11 +92,15 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
             headers={'Content-Type': 'application/json'}
         )
         
-        with urllib.request.urlopen(req, timeout=15) as response:
+        with urllib.request.urlopen(req, timeout=6) as response:
             res_body = json.loads(response.read().decode('utf-8'))
-            text_content = res_body['candidates'][0]['content']['parts'][0]['text']
-            parsed = json.loads(text_content)
-            explanation = parsed.get("explanation", "")
+            candidates = res_body.get('candidates', [])
+            explanation = ""
+            if candidates and 'content' in candidates[0] and 'parts' in candidates[0]['content']:
+                text_content = candidates[0]['content']['parts'][0].get('text', '')
+                parsed = _clean_and_parse_json(text_content)
+                if parsed and isinstance(parsed, dict):
+                    explanation = parsed.get("explanation", "")
 
         if not explanation:
             explanation = (
@@ -89,6 +116,7 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
         }
 
     except Exception as e:
+        print(f"[AI DIET WARNING] Gemini API call skipped/failed: {e}")
         explanation = (
             f"Your plan is protein-focused ({target_nutrition.protein}g target) to support your {profile.fitness_goal} "
             f"goal while staying strictly within your ₹{profile.daily_food_budget or 150}/day food budget."
@@ -96,7 +124,7 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
         return {
             "status": "success",
             "is_ai": False,
-            "notice": f"AI planning is temporarily unavailable. We've generated your plan using FitSync's nutrition engine.",
+            "notice": "AI planning is temporarily unavailable. We've generated your plan using FitSync's nutrition engine.",
             "explanation": explanation,
             "meals": base_meals
         }
@@ -132,7 +160,7 @@ def generate_ai_grocery_list(profile, active_meals):
 
     if api_key:
         try:
-            model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+            model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
             prompt = (
                 "You are FitSync AI's budget nutrition expert. Create a concise 7-day hostel grocery list summary "
@@ -144,21 +172,24 @@ def generate_ai_grocery_list(profile, active_meals):
                 "generationConfig": {"temperature": 0.3, "responseMimeType": "application/json"}
             }
             req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers={'Content-Type': 'application/json'})
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.urlopen(req, timeout=6) as response:
                 res_body = json.loads(response.read().decode('utf-8'))
-                text_content = res_body['candidates'][0]['content']['parts'][0]['text']
-                parsed = json.loads(text_content)
-                return {
-                    "status": "success",
-                    "is_ai": True,
-                    "weekly_budget": weekly_budget,
-                    "total_est_cost": total_est_cost,
-                    "summary": parsed.get("summary", f"7-day grocery list tailored to your ₹{weekly_budget} budget."),
-                    "pro_tip": parsed.get("tip", "Buy dry staples (chana, peanuts, lentils) in bulk to save ~15% weekly!"),
-                    "items": grocery_items
-                }
-        except Exception:
-            pass
+                candidates = res_body.get('candidates', [])
+                if candidates and 'content' in candidates[0] and 'parts' in candidates[0]['content']:
+                    text_content = candidates[0]['content']['parts'][0].get('text', '')
+                    parsed = _clean_and_parse_json(text_content)
+                    if parsed and isinstance(parsed, dict):
+                        return {
+                            "status": "success",
+                            "is_ai": True,
+                            "weekly_budget": weekly_budget,
+                            "total_est_cost": total_est_cost,
+                            "summary": parsed.get("summary", f"7-day grocery list tailored to your ₹{weekly_budget} budget."),
+                            "pro_tip": parsed.get("tip", "Buy dry staples (chana, peanuts, lentils) in bulk to save ~15% weekly!"),
+                            "items": grocery_items
+                        }
+        except Exception as e:
+            print(f"[AI GROCERY WARNING] Gemini API call skipped/failed: {e}")
 
     return {
         "status": "success",

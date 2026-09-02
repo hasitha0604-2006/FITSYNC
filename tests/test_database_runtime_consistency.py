@@ -14,8 +14,10 @@ from app import app, db, User, UserProfile, init_app_database, normalize_email
 class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
 
     def setUp(self):
+        from app import DB_PATH
         self.app = app
         self.app.config['TESTING'] = True
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH.as_posix()}"
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()
         self.ctx.push()
@@ -32,14 +34,14 @@ class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
 
     # 1. Canonical database path is deterministic
     def test_1_canonical_database_path_deterministic(self):
-        base_dir = Path(__file__).resolve().parent
+        base_dir = Path(__file__).resolve().parent.parent
         expected_path = (base_dir / "instance" / "fitsync.db").resolve()
         self.assertTrue(expected_path.as_posix().endswith("instance/fitsync.db"))
         self.assertTrue(expected_path.parent.exists())
 
     # 2. Flask SQLAlchemy URI points to canonical database
     def test_2_sqlalchemy_uri_points_to_canonical_db(self):
-        base_dir = Path(__file__).resolve().parent
+        base_dir = Path(__file__).resolve().parent.parent
         expected_db_path = (base_dir / "instance" / "fitsync.db").resolve()
         configured_uri = self.app.config.get('SQLALCHEMY_DATABASE_URI', '')
         self.assertTrue(configured_uri.startswith("sqlite:///"))
@@ -119,7 +121,7 @@ class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
         db.engine.dispose()
 
         # Re-query
-        reloaded = User.query.get(uid)
+        reloaded = db.session.get(User, uid)
         self.assertIsNotNone(reloaded)
         self.assertEqual(reloaded.email, email)
 
@@ -142,7 +144,7 @@ class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
 
     # 11. No alternate accidental database is created
     def test_11_no_alternate_accidental_db_created(self):
-        base_dir = Path(__file__).resolve().parent
+        base_dir = Path(__file__).resolve().parent.parent
         instance_dir = base_dir / "instance"
         all_dbs = list(instance_dir.glob("*.db"))
         self.assertEqual(len(all_dbs), 1)
