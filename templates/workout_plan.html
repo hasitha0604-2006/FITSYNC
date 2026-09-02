@@ -7,26 +7,30 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
     <div>
       <h1 class="text-2xl md:text-3xl font-black text-white tracking-tight">Weekly Workout Plan</h1>
-      <p class="text-xs text-slate-400 mt-1">Your personalised training schedule for the week.</p>
+      <p class="text-xs text-slate-400 mt-1">Your personalised training schedule & biomechanical motion guides.</p>
     </div>
     <div class="flex items-center gap-2 flex-wrap">
+      <button onclick="openFocusModal()"
+         class="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02]">
+        <i data-lucide="target" class="h-4 w-4"></i> Select Muscle Focus
+      </button>
       <a href="{{ url_for('today_workout') }}"
          class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition-colors">
         <i data-lucide="play" class="h-4 w-4"></i> Today's Workout
       </a>
       <button onclick="confirmRegenerate()"
-         class="flex items-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl border shadow-sm transition-colors">
-        <i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate Plan
+         class="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition-colors">
+        <i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate Split
       </button>
     </div>
   </div>
 
   {% if not plan %}
     {# ── Empty State ── #}
-    <div class="bg-white border border-dashed rounded-2xl p-12 text-center shadow-sm">
-      <i data-lucide="dumbbell" class="h-12 w-12 mx-auto text-slate-300 mb-4"></i>
-      <h3 class="font-bold text-slate-800 text-base">No Workout Plan Found</h3>
-      <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Complete onboarding to generate your personalised weekly training schedule.</p>
+    <div class="bg-slate-900/80 border border-dashed border-slate-800 rounded-3xl p-12 text-center shadow-xl">
+      <i data-lucide="dumbbell" class="h-12 w-12 mx-auto text-slate-600 mb-4"></i>
+      <h3 class="font-bold text-white text-base">No Workout Plan Found</h3>
+      <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Complete onboarding to generate your personalised weekly training schedule.</p>
       <a href="{{ url_for('onboarding') }}" class="inline-flex items-center gap-1.5 mt-4 bg-primary-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-primary-600 transition-colors">
         <i data-lucide="arrow-right" class="h-4 w-4"></i> Start Onboarding
       </a>
@@ -34,25 +38,28 @@
   {% else %}
 
   {# ── Plan Summary Card ── #}
-  <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-5 mb-6 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div class="space-y-1.5">
-      <p class="text-[10px] font-bold uppercase tracking-widest text-primary-400">Your Training Profile</p>
-      <h2 class="text-lg font-black">{{ profile.name }}'s Plan</h2>
-      <div class="flex flex-wrap items-center gap-2 mt-1">
+  <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-6 mb-6 shadow-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="space-y-2">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-400">Personalized Training Split</p>
+      </div>
+      <h2 class="text-xl font-black text-white">{{ profile.name }}'s Weekly Split</h2>
+      <div class="flex flex-wrap items-center gap-2 pt-1">
         <span class="bg-primary-500/20 text-primary-300 border border-primary-500/30 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
           🎯 {{ profile.fitness_goal }}
         </span>
-        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+        <span class="bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
           {{ profile.fitness_level }}
         </span>
-        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+        <span class="bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
           {{ profile.workout_days_per_week }}d / week
         </span>
-        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
-          {{ profile.workout_duration_mins }} min
+        <span class="bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+          ~{{ profile.workout_duration_mins }} min
         </span>
         {% if equipment_list %}
-        <span class="bg-slate-700 text-slate-300 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
+        <span class="bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg">
           🏋️ {{ equipment_list | join(', ') | truncate(30) }}
         </span>
         {% endif %}
@@ -61,20 +68,20 @@
 
     {# Weekly Progress Stats #}
     <div class="grid grid-cols-3 gap-3 md:gap-4 shrink-0">
-      <div class="bg-slate-800 rounded-xl p-3 text-center">
+      <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
         <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Done</p>
-        <p class="text-xl font-black text-primary-400">{{ completed_days }}</p>
+        <p class="text-xl font-black text-emerald-400">{{ completed_days }}</p>
         <p class="text-[9px] text-slate-500">of {{ total_workout_days }}</p>
       </div>
-      <div class="bg-slate-800 rounded-xl p-3 text-center">
+      <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
         <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Streak</p>
         <p class="text-xl font-black text-amber-400">🔥{{ streak }}</p>
         <p class="text-[9px] text-slate-500">days</p>
       </div>
-      <div class="bg-slate-800 rounded-xl p-3 text-center">
+      <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-center">
         <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Progress</p>
         {% set pct = ((completed_days / total_workout_days * 100)|round|int) if total_workout_days > 0 else 0 %}
-        <p class="text-xl font-black text-emerald-400">{{ pct }}%</p>
+        <p class="text-xl font-black text-teal-400">{{ pct }}%</p>
         <p class="text-[9px] text-slate-500">this week</p>
       </div>
     </div>
@@ -82,7 +89,7 @@
 
   {# ── Weekly Progress Bar ── #}
   {% if total_workout_days > 0 %}
-  <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl px-6 py-5 mb-6 shadow-xl">
+  <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl px-6 py-5 mb-6 shadow-xl">
     <div class="flex items-center justify-between mb-2.5">
       <span class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
         <i data-lucide="trending-up" class="h-4 w-4 text-emerald-400"></i>
@@ -111,7 +118,7 @@
   {% endif %}
 
   {# ── 7-Day Schedule Grid ── #}
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-8">
     {% for day in plan.days | sort(attribute='day_number') %}
       {% set is_today = (day.day_name == today_name) %}
       {% set is_past = (day.day_number is not none and today_day_number is not none and day.day_number < today_day_number) %}
@@ -148,7 +155,7 @@
         {% set card_cls = "border-slate-800 bg-slate-900/80 shadow-sm" %}
       {% endif %}
 
-      <div class="border rounded-3xl p-5 flex flex-col justify-between {{ card_cls }} hover:border-slate-700 hover:shadow-xl transition-all relative">
+      <div class="border rounded-3xl p-5 flex flex-col justify-between {{ card_cls }} hover:border-slate-700 hover:shadow-2xl transition-all relative group" id="day-card-{{ day.id }}">
 
         {# TODAY glow accent #}
         {% if state == "today" %}
@@ -158,49 +165,64 @@
         <div>
           {# Day header #}
           <div class="flex items-center justify-between mb-3">
-            <div>
+            <div class="flex items-center gap-1.5">
               <span class="text-sm font-extrabold text-white">{{ day.day_name }}</span>
               {% if is_today %}
-                <span class="ml-1.5 inline-block text-[9px] font-black uppercase tracking-wider bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full shadow-sm">TODAY</span>
+                <span class="inline-block text-[9px] font-black uppercase tracking-wider bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full shadow-sm">TODAY</span>
               {% endif %}
             </div>
 
-            {# State badge #}
-            {% if state == "completed" %}
-              <span class="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                Done
-              </span>
-            {% elif state == "missed" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-0.5 rounded-full">Missed</span>
-            {% elif state == "skipped" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Skipped</span>
-            {% elif state == "rest" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800/80 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Rest</span>
-            {% elif state == "today" %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2.5 py-0.5 rounded-full">Active</span>
-            {% else %}
-              <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Upcoming</span>
-            {% endif %}
+            <div class="flex items-center gap-1">
+              <button 
+                type="button" 
+                onclick="openFocusModal('{{ day.day_name }}', '{{ day.focus }}')" 
+                class="text-[10px] font-bold text-slate-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                title="Customize muscle focus for {{ day.day_name }}"
+              >
+                <i data-lucide="edit-3" class="h-3.5 w-3.5"></i>
+              </button>
+
+              {# State badge #}
+              {% if state == "completed" %}
+                <span class="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  Done
+                </span>
+              {% elif state == "missed" %}
+                <span class="text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-0.5 rounded-full">Missed</span>
+              {% elif state == "skipped" %}
+                <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Skipped</span>
+              {% elif state == "rest" %}
+                <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800/80 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Rest</span>
+              {% elif state == "today" %}
+                <span class="text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2.5 py-0.5 rounded-full">Active</span>
+              {% else %}
+                <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full">Upcoming</span>
+              {% endif %}
+            </div>
           </div>
 
           {# Focus #}
           <div class="mb-3">
-            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Focus</p>
-            <p class="text-xs font-black text-white mt-0.5">{{ day.focus }}</p>
+            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Target Focus</p>
+            <p class="text-xs font-black text-white mt-0.5 flex items-center justify-between">
+              <span>{{ day.focus }}</span>
+            </p>
           </div>
 
           {# Rest day content #}
           {% if state == "rest" %}
-            <div class="py-5 text-center">
+            <div class="py-5 text-center bg-slate-950/40 rounded-2xl border border-slate-800/80 p-4">
               <i data-lucide="moon" class="h-8 w-8 text-slate-500 mx-auto mb-2"></i>
               <p class="text-[11px] text-slate-300 font-bold">Recovery & Rest</p>
-              <p class="text-[10px] text-slate-400 mt-0.5">Muscles grow during rest. Stay hydrated and hit daily protein.</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">Muscles recover and grow during rest. Stay hydrated & hit your protein goal.</p>
+              <button onclick="openFocusModal('{{ day.day_name }}', 'Chest')" class="mt-3 text-[10px] font-bold text-emerald-400 hover:text-emerald-300 underline block mx-auto">
+                Switch to Workout Day
+              </button>
             </div>
 
           {# Workout day content #}
           {% else %}
-            {# Duration + exercise count #}
             {# Duration + exercise count #}
             <div class="flex items-center gap-3 text-[10px] text-slate-400 mb-3">
               <span class="flex items-center gap-1 font-semibold">
@@ -226,26 +248,53 @@
               <p class="text-[9px] text-slate-400 mb-3 font-semibold">{{ done_cnt }}/{{ total_cnt }} exercises done</p>
             {% endif %}
 
-            {# Exercise mini-list #}
-            <ul class="space-y-1.5">
-              {% for ex in day.exercises[:4] %}
-                <li class="flex items-center justify-between text-[11px] p-2 rounded-xl bg-slate-950/50 border border-slate-800/80 {% if ex.is_completed %}text-slate-500 line-through{% else %}text-slate-200{% endif %}">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center
-                                 {% if ex.is_completed %}bg-emerald-500 border-emerald-500{% else %}border-slate-700 bg-slate-900{% endif %}">
-                      {% if ex.is_completed %}
-                        <svg class="w-2.5 h-2.5 text-slate-950 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                      {% endif %}
+            {# Exercise list with details & playable animation button #}
+            <div class="space-y-2" id="ex-list-{{ day.id }}">
+              {% for ex in day.exercises %}
+                {% set is_hidden = loop.index > 3 %}
+                <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 hover:border-slate-700 transition-all flex flex-col gap-1.5 {% if is_hidden %}hidden extra-ex-{{ day.id }}{% endif %}">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <div class="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center
+                                   {% if ex.is_completed %}bg-emerald-500 border-emerald-500{% else %}border-slate-700 bg-slate-900{% endif %}">
+                        {% if ex.is_completed %}
+                          <svg class="w-2.5 h-2.5 text-slate-950 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        {% endif %}
+                      </div>
+                      <span class="truncate font-bold text-xs {% if ex.is_completed %}text-slate-500 line-through{% else %}text-white{% endif %}">{{ ex.name }}</span>
                     </div>
-                    <span class="truncate font-semibold">{{ ex.name }}</span>
+
+                    <button 
+                      type="button" 
+                      onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})" 
+                      class="text-[10px] font-black text-emerald-400 hover:text-slate-950 bg-emerald-500/10 hover:bg-emerald-400 border border-emerald-500/30 px-2 py-1 rounded-lg transition-all shrink-0 flex items-center gap-1 shadow-sm"
+                      title="Play Biomechanical Motion Animation & Guide"
+                    >
+                      <span>▶ Demo</span>
+                    </button>
                   </div>
-                  <button onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})" class="text-[9px] font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-lg transition-all shrink-0 ml-1">Demo</button>
-                </li>
+
+                  {# Detailed Specs: Sets, Reps, Rest, Target Muscle #}
+                  <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5 border-t border-slate-900">
+                    <span class="font-bold text-emerald-400/90 font-mono">{{ ex.sets }} sets × {{ ex.reps }} reps</span>
+                    <span class="text-slate-400 flex items-center gap-1">
+                      <i data-lucide="timer" class="h-2.5 w-2.5 text-teal-400"></i> {{ ex.rest_seconds }}s rest
+                    </span>
+                  </div>
+                </div>
               {% endfor %}
-              {% if day.exercises | length > 4 %}
-                <li class="text-[10px] text-slate-400 text-center font-bold pt-1">+{{ day.exercises | length - 4 }} more exercises</li>
+
+              {% if day.exercises | length > 3 %}
+                <button 
+                  type="button" 
+                  onclick="toggleExtraExercises({{ day.id }})" 
+                  id="toggle-btn-{{ day.id }}" 
+                  class="w-full py-1 text-[10px] text-slate-400 hover:text-emerald-400 font-bold text-center transition-colors"
+                >
+                  + Show {{ day.exercises | length - 3 }} more exercises
+                </button>
               {% endif %}
-            </ul>
+            </div>
           {% endif %}
         </div>
 
@@ -260,7 +309,7 @@
             </a>
           {% elif state == "today" %}
             <a href="{{ url_for('today_workout', day=day.day_name) }}"
-               class="flex-1 text-center text-xs bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5 hover:scale-[1.02]">
+               class="flex-1 text-center text-xs bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-black py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5 hover:scale-[1.02]">
               <i data-lucide="play" class="h-3.5 w-3.5"></i> Start Workout
             </a>
           {% elif state == "missed" %}
@@ -304,38 +353,38 @@
             {% if "Skipped" not in day.focus %}
             <div class="flex items-center justify-between py-3 border-b border-slate-800/80">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center">
-                  <i data-lucide="check" class="h-4 w-4 text-emerald-600"></i>
+                <div class="w-8 h-8 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center justify-center text-emerald-400">
+                  <i data-lucide="check" class="h-4 w-4"></i>
                 </div>
                 <div>
-                  <p class="text-xs font-bold text-slate-800">{{ day.focus }}</p>
-                  <p class="text-[10px] text-slate-500">{{ day.day_name }} · {{ day.exercises | length }} exercises
+                  <p class="text-xs font-bold text-white">{{ day.focus }}</p>
+                  <p class="text-[10px] text-slate-400">{{ day.day_name }} · {{ day.exercises | length }} exercises
                     {% if day.duration_minutes and day.duration_minutes > 0 %} · ~{{ day.duration_minutes }} min{% endif %}
                   </p>
                 </div>
               </div>
-              <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Completed</span>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">Completed</span>
             </div>
             {% endif %}
           {% endfor %}
           {% for cw in history %}
-          <div class="flex items-center justify-between py-2.5 border-b border-slate-100">
+          <div class="flex items-center justify-between py-2.5 border-b border-slate-800/80">
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 bg-slate-100 rounded-xl flex items-center justify-center">
-                <i data-lucide="calendar" class="h-4 w-4 text-slate-500"></i>
+              <div class="w-8 h-8 bg-slate-800 rounded-xl flex items-center justify-center text-slate-400">
+                <i data-lucide="calendar" class="h-4 w-4"></i>
               </div>
               <div>
-                <p class="text-xs font-bold text-slate-800">{{ cw.workout_name }}</p>
-                <p class="text-[10px] text-slate-500">{{ cw.date }}</p>
+                <p class="text-xs font-bold text-white">{{ cw.workout_name }}</p>
+                <p class="text-[10px] text-slate-400">{{ cw.date }}</p>
               </div>
             </div>
-            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Past</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">Past</span>
           </div>
           {% endfor %}
         </div>
       {% else %}
         <div class="py-8 text-center text-slate-400">
-          <i data-lucide="calendar-x" class="h-8 w-8 mx-auto mb-2 text-slate-300"></i>
+          <i data-lucide="calendar-x" class="h-8 w-8 mx-auto mb-2 text-slate-500"></i>
           <p class="text-xs font-semibold">No workout history yet</p>
           <p class="text-[10px] mt-0.5">Complete your first workout to see history here.</p>
         </div>
@@ -346,27 +395,218 @@
   {% endif %} {# end plan check #}
 </div>
 
+{# ── Target Muscle Focus Selector Modal ── #}
+<div id="focus-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 space-y-5 shadow-2xl">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div class="flex items-center gap-2.5">
+        <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/30">
+          <i data-lucide="target" class="h-5 w-5"></i>
+        </div>
+        <div>
+          <h3 class="font-black text-white text-base">Select Target Muscle Focus</h3>
+          <p class="text-[11px] text-slate-400">Pick any body part to customize your workout</p>
+        </div>
+      </div>
+      <button onclick="closeFocusModal()" class="h-8 w-8 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full flex items-center justify-center transition-colors">
+        ✕
+      </button>
+    </div>
+
+    <!-- Day Selection -->
+    <div>
+      <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Apply to Day</label>
+      <select id="focus-day-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-bold text-white focus:border-emerald-500 focus:outline-none">
+        <option value="{{ today_name }}">Today ({{ today_name }})</option>
+        {% if plan %}
+          {% for d in plan.days | sort(attribute='day_number') %}
+            {% if d.day_name != today_name %}
+              <option value="{{ d.day_name }}">{{ d.day_name }} (Current: {{ d.focus }})</option>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </select>
+    </div>
+
+    <!-- Muscle Group Grid -->
+    <div>
+      <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Choose Muscle Group / Body Part</label>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-bold">
+        {% set focuses = [
+          ('Chest', '🏋️', 'Chest & Pecs'),
+          ('Biceps', '💪', 'Biceps & Arms'),
+          ('Back', '🦅', 'Back & Lats'),
+          ('Triceps', '⚡', 'Triceps'),
+          ('Shoulders', '🛡️', 'Deltoids'),
+          ('Legs', '🦵', 'Quads & Glutes'),
+          ('Core', '🎯', 'Abs & Core'),
+          ('Full Body', '💥', 'Full Body / HIIT')
+        ] %}
+        {% for f_name, f_icon, f_desc in focuses %}
+          <button 
+            type="button" 
+            onclick="applyMuscleFocus('{{ f_name }}')"
+            class="focus-btn p-3 rounded-2xl bg-slate-950 hover:bg-emerald-500/10 border border-slate-800 hover:border-emerald-500/40 text-left transition-all group flex flex-col justify-between"
+          >
+            <span class="text-xl mb-1">{{ f_icon }}</span>
+            <span class="text-white text-xs font-black block group-hover:text-emerald-400">{{ f_name }}</span>
+            <span class="text-[9px] text-slate-400 font-normal mt-0.5">{{ f_desc }}</span>
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="pt-2 flex justify-end">
+      <button onclick="closeFocusModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl border border-slate-700 transition-colors">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
 {# ── Regenerate Confirm Modal ── #}
 <div id="regenerate-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+  <div class="bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl max-w-md w-full p-6 space-y-4">
     <div class="flex items-center gap-3">
-      <div class="p-2.5 bg-amber-100 rounded-xl">
-        <i data-lucide="alert-triangle" class="h-5 w-5 text-amber-600"></i>
+      <div class="p-2.5 bg-amber-500/10 text-amber-400 border border-amber-500/30 rounded-xl">
+        <i data-lucide="alert-triangle" class="h-5 w-5"></i>
       </div>
-      <h3 class="font-black text-slate-900 text-base">Regenerate Workout Plan?</h3>
+      <h3 class="font-black text-white text-base">Regenerate Weekly Plan?</h3>
     </div>
-    <p class="text-sm text-slate-600 leading-relaxed">
-      This will create a brand-new workout plan based on your current profile settings.
-      Your previous plan will be archived and this week's progress will be preserved in history.
+    <p class="text-xs text-slate-300 leading-relaxed">
+      This will create a new structured weekly schedule based on your profile settings.
+      Previous workout logs are saved in your workout history.
     </p>
     <div class="flex gap-3 pt-2">
       <button onclick="closeRegenModal()"
-              class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+              class="flex-1 py-2.5 rounded-xl border border-slate-700 text-xs font-bold text-slate-300 hover:bg-slate-800 transition-colors">
         Cancel
       </button>
       <button onclick="doRegenerate()"
-              class="flex-1 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-white text-sm font-bold transition-colors flex items-center justify-center gap-1.5" id="regen-btn">
-        <i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate
+              class="flex-1 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5" id="regen-btn">
+        <i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate Split
+      </button>
+    </div>
+  </div>
+</div>
+
+{# ── Interactive Graphical Demonstration & Motion Guide Modal ── #}
+<div id="guide-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 md:p-6 select-none">
+  <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh] shadow-2xl">
+    <!-- Modal Header -->
+    <div class="bg-slate-950 text-white p-4 md:p-5 flex items-center justify-between border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <span class="h-3 w-3 rounded-full bg-emerald-400 animate-ping"></span>
+        <div>
+          <h3 id="modal-ex-name" class="font-extrabold text-base md:text-lg text-white leading-tight">Exercise Name</h3>
+          <p id="modal-ex-cat" class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider mt-0.5">Category</p>
+        </div>
+      </div>
+      <button onclick="closeGuideModal()" class="h-8 w-8 bg-slate-800 hover:bg-slate-700 rounded-full text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-4 md:p-6 overflow-y-auto space-y-4 text-xs text-slate-300">
+      
+      <!-- Interactive 60fps Biomechanical Motion Player Container -->
+      <div id="workout-plan-motion-container" class="w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner flex items-center justify-center">
+        <!-- FitSyncExercisePlayer mounts here automatically -->
+      </div>
+
+      <!-- Specs Row: Sets, Reps, Rest, Equipment -->
+      <div class="grid grid-cols-3 gap-2.5 text-center">
+        <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+          <span class="text-[9px] font-bold uppercase text-slate-400 block">Sets & Reps</span>
+          <span id="modal-ex-sets-reps" class="font-extrabold text-xs text-emerald-400 mt-0.5 block">3 × 10-12</span>
+        </div>
+        <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+          <span class="text-[9px] font-bold uppercase text-slate-400 block">Rest Interval</span>
+          <span id="modal-ex-rest" class="font-extrabold text-xs text-teal-400 mt-0.5 block">60s</span>
+        </div>
+        <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+          <span class="text-[9px] font-bold uppercase text-slate-400 block">Equipment</span>
+          <span id="modal-ex-equipment" class="font-extrabold text-xs text-slate-200 mt-0.5 block">Gym Equipment</span>
+        </div>
+      </div>
+
+      <!-- Target Musculature & Anatomy Map -->
+      <div class="p-4 bg-slate-950/90 border border-emerald-500/30 rounded-2xl space-y-3 shadow-inner">
+        <div class="flex items-center justify-between">
+          <h5 class="font-black uppercase tracking-wider text-[10px] text-emerald-400 flex items-center gap-1.5">
+            <i data-lucide="target" class="h-3.5 w-3.5"></i> Biomechanical Muscle Activation
+          </h5>
+          <span class="text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
+            Target Anatomy
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-[10px]">
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <span class="text-slate-400 font-bold uppercase block text-[9px]">📍 Prime Mover</span>
+            <p id="modal-ex-working-loc" class="font-bold text-emerald-400 text-xs mt-0.5"></p>
+          </div>
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <span class="text-slate-400 font-bold uppercase block text-[9px]">⚙️ Synergists / Support</span>
+            <p id="modal-ex-joint-action" class="font-bold text-cyan-400 text-xs mt-0.5"></p>
+          </div>
+        </div>
+
+        <!-- Inline Anatomy Visualization -->
+        <div class="bg-slate-900 rounded-xl p-2 flex flex-col items-center justify-center relative" id="modal-anatomy-container">
+          {% include 'anatomy_model.html' %}
+        </div>
+      </div>
+
+      <!-- Movement Phases & Breathing -->
+      <div class="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-3">
+        <h5 class="font-bold uppercase tracking-wider text-[10px] text-primary-400">Biomechanical Execution & Breathing</h5>
+        <div class="grid grid-cols-3 gap-2 text-center text-[10px] leading-snug">
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-slate-400 font-bold uppercase tracking-wide text-[9px]">1. Start Position</p>
+            <p id="modal-ex-start" class="text-slate-200 mt-1"></p>
+          </div>
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-slate-400 font-bold uppercase tracking-wide text-[9px]">2. Concentric Drive</p>
+            <p id="modal-ex-move" class="text-slate-200 mt-1"></p>
+          </div>
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <p class="text-slate-400 font-bold uppercase tracking-wide text-[9px]">3. Peak Squeeze</p>
+            <p id="modal-ex-end" class="text-slate-200 mt-1"></p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[10px] pt-1">
+          <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+            <span class="text-blue-400 font-bold uppercase block text-[9px]">🌬️ Eccentric Inhale</span>
+            <p class="text-slate-300 text-[10px] mt-0.5">Inhale and lower with controlled 2-3s tempo.</p>
+          </div>
+          <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+            <span class="text-emerald-400 font-bold uppercase block text-[9px]">💨 Concentric Exhale</span>
+            <p class="text-slate-300 text-[10px] mt-0.5">Exhale forcefully as you drive through peak contraction.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Instructions -->
+      <div class="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-2">
+        <h4 class="font-bold text-xs uppercase tracking-wider text-white mb-1.5">Step-by-Step Instructions</h4>
+        <ol id="modal-ex-instructions" class="list-decimal list-inside space-y-1.5 text-slate-300 leading-relaxed"></ol>
+      </div>
+
+      <!-- Common Mistakes -->
+      <div id="modal-ex-mistakes-container" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-200 hidden">
+        <h4 class="font-bold text-xs uppercase tracking-wide text-amber-400 mb-1.5 flex items-center gap-1.5">
+          ⚠️ Common Mistakes to Avoid
+        </h4>
+        <ul id="modal-ex-mistakes" class="list-disc list-inside space-y-1 text-xs"></ul>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-end">
+      <button onclick="closeGuideModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl border border-slate-700 transition-colors">
+        Close Demo
       </button>
     </div>
   </div>
@@ -374,140 +614,38 @@
 
 {# ── Toast Notification ── #}
 <div id="toast" class="fixed bottom-6 right-4 z-50 hidden">
-  <div class="bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2.5 max-w-xs">
-    <i data-lucide="check-circle" class="h-4 w-4 text-primary-400" id="toast-icon"></i>
+  <div class="bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg border border-slate-700 flex items-center gap-2.5 max-w-xs">
+    <i data-lucide="check-circle" class="h-4 w-4 text-emerald-400" id="toast-icon"></i>
     <span id="toast-msg">Done!</span>
-  </div>
-</div>
-
-{# ── Graphical Demonstration & Guide Modal ── #}
-<div id="guide-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-  <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] shadow-2xl">
-    <div class="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
-      <div>
-        <h3 id="modal-ex-name" class="font-bold text-lg">Exercise Name</h3>
-        <p id="modal-ex-cat" class="text-xs text-primary-400 capitalize">Category</p>
-      </div>
-      <button onclick="closeGuideModal()" class="h-8 w-8 bg-slate-800 rounded-full text-slate-400 hover:text-white flex items-center justify-center transition-colors">
-        <span class="text-xl font-bold">×</span>
-      </button>
-    </div>
-
-    <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-300">
-      <!-- Side-by-Side Animation & Anatomical Model -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Motion Avatar -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner">
-          <img id="modal-ex-img" src="" alt="Demonstration" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='/static/exercises/fallback_demo.svg';" />
-          <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
-            Movement Guide
-          </div>
-        </div>
-
-        <!-- Anatomical Muscle Map -->
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-2 flex flex-col items-center justify-center relative" id="modal-anatomy-container">
-          {% include 'anatomy_model.html' %}
-          <div class="absolute bottom-2 right-2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold text-slate-200">
-            Anatomical Target
-          </div>
-        </div>
-      </div>
-
-      <div class="p-4 bg-slate-950 border border-emerald-500/30 rounded-xl space-y-2.5 shadow-inner">
-        <div class="flex items-center justify-between">
-          <h5 class="font-extrabold uppercase tracking-wider text-[10px] text-emerald-400 flex items-center gap-1.5">
-            <i data-lucide="target" class="h-3.5 w-3.5"></i> Target Muscle & Location
-          </h5>
-          <span class="text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded">
-            Active Biomechanics
-          </span>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2 text-[10px]">
-          <div class="bg-slate-900 p-2 rounded border border-slate-800">
-            <span class="text-slate-400 font-bold uppercase block text-[9px]">📍 Primary Target</span>
-            <p id="modal-ex-working-loc" class="font-bold text-emerald-400 text-xs mt-0.5"></p>
-          </div>
-          <div class="bg-slate-900 p-2 rounded border border-slate-800">
-            <span class="text-slate-400 font-bold uppercase block text-[9px]">⚙️ Secondary Support</span>
-            <p id="modal-ex-joint-action" class="font-bold text-cyan-400 text-xs mt-0.5"></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl space-y-3">
-        <h5 class="font-bold uppercase tracking-wider text-[10px] text-primary-400">Positioning & Breathing</h5>
-        <div class="grid grid-cols-3 gap-2.5 text-center text-[9px] leading-snug">
-          <div class="bg-slate-900 p-2 rounded border border-slate-800">
-            <p class="text-slate-400 font-bold uppercase tracking-wide">Start Position</p>
-            <p id="modal-ex-start" class="text-slate-200 mt-1"></p>
-          </div>
-          <div class="bg-slate-900 p-2 rounded border border-slate-800">
-            <p class="text-slate-400 font-bold uppercase tracking-wide">Movement Path</p>
-            <p id="modal-ex-move" class="text-slate-200 mt-1"></p>
-          </div>
-          <div class="bg-slate-900 p-2 rounded border border-slate-800">
-            <p class="text-slate-400 font-bold uppercase tracking-wide">End Position</p>
-            <p id="modal-ex-end" class="text-slate-200 mt-1"></p>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-2 text-[10px] pt-1">
-          <div class="bg-slate-900 p-2 rounded border border-slate-800">
-            <span class="text-blue-400 font-bold uppercase block text-[9px]">🌬️ Inhale</span>
-            <p class="text-slate-300 text-[10px] mt-0.5">During controlled eccentric lowering phase.</p>
-          </div>
-          <div class="bg-slate-900 p-2 rounded border border-slate-800">
-            <span class="text-emerald-400 font-bold uppercase block text-[9px]">💨 Exhale</span>
-            <p class="text-slate-300 text-[10px] mt-0.5">During powerful concentric lifting phase.</p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h4 class="font-bold text-sm text-white mb-1.5">Step-by-Step Instructions:</h4>
-        <ol id="modal-ex-instructions" class="list-decimal list-inside space-y-1 pl-1 text-slate-300"></ol>
-      </div>
-
-      <!-- Form Performance Checklist -->
-      <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2">
-        <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-400">Form Checklist</h4>
-        <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300">
-          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Stable Posture</div>
-          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Controlled Movement</div>
-          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Full Safe Range</div>
-          <div class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">✓</span> Proper Breathing</div>
-        </div>
-      </div>
-
-      <div id="modal-ex-mistakes-container" class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-200 hidden">
-        <h4 class="font-bold text-xs uppercase tracking-wide text-amber-400 mb-1.5 flex items-center gap-1.5">
-          ⚠️ Common Mistakes
-        </h4>
-        <ul id="modal-ex-mistakes" class="list-disc list-inside space-y-0.5 text-xs"></ul>
-      </div>
-    </div>
-
-    <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-end">
-      <button onclick="closeGuideModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl border border-slate-700 transition-colors">
-        Close Guide
-      </button>
-    </div>
   </div>
 </div>
 
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/exercise_motion_player.js') }}"></script>
 <script>
+let currentGuideExercise = null;
+
 function openGuideModal(ex) {
+  currentGuideExercise = ex;
   document.getElementById('modal-ex-name').innerText = ex.name;
-  document.getElementById('modal-ex-cat').innerText = `${ex.category} Category`;
-  document.getElementById('modal-ex-start').innerText = ex.start_pos || 'Position figure in starting alignment.';
-  document.getElementById('modal-ex-move').innerText = ex.movement || 'Execute movement under control.';
-  document.getElementById('modal-ex-end').innerText = ex.end_pos || 'Contract target muscle group at peak.';
+  document.getElementById('modal-ex-cat').innerText = `${ex.category || 'General'} · Level: ${ex.difficulty || 'Intermediate'}`;
+  document.getElementById('modal-ex-start').innerText = ex.start_pos || 'Establish solid starting posture.';
+  document.getElementById('modal-ex-move').innerText = ex.movement || 'Execute movement under strict control.';
+  document.getElementById('modal-ex-end').innerText = ex.end_pos || 'Squeeze target muscle group at peak.';
+
+  const setsVal = ex.sets || 3;
+  const repsVal = ex.reps || '10-12';
+  const restVal = ex.rest_seconds || 60;
+  const eqVal = ex.equipment || 'Gym Equipment';
+
+  document.getElementById('modal-ex-sets-reps').innerText = `${setsVal} sets × ${repsVal} reps`;
+  document.getElementById('modal-ex-rest').innerText = `${restVal}s`;
+  document.getElementById('modal-ex-equipment').innerText = eqVal;
 
   const prim = ex.primary_muscles && ex.primary_muscles.length ? ex.primary_muscles.join(', ') : (ex.primary_muscle || ex.category);
-  const sec = ex.secondary_muscles && ex.secondary_muscles.length ? ex.secondary_muscles.join(', ') : 'Stabilizer muscles';
+  const sec = ex.secondary_muscles && ex.secondary_muscles.length ? ex.secondary_muscles.join(', ') : 'Stabilizer musculature';
 
   document.getElementById('modal-ex-working-loc').innerText = prim;
   document.getElementById('modal-ex-joint-action').innerText = sec;
@@ -516,8 +654,10 @@ function openGuideModal(ex) {
     highlightAnatomyMuscles(prim, sec, '#modal-anatomy-container');
   }
 
-  const demoAsset = ex.media_path || ex.demonstration_asset || `/static/exercises/${ex.slug || ex.name.toLowerCase().replace(/ /g, '_')}/demo.svg`;
-  document.getElementById('modal-ex-img').src = demoAsset;
+  // Mount 60fps Playable Biomechanical Motion Player Engine
+  if (window.initExerciseMotionPlayer) {
+    window.initExerciseMotionPlayer('workout-plan-motion-container', ex);
+  }
 
   const ol = document.getElementById('modal-ex-instructions');
   ol.innerHTML = '';
@@ -553,6 +693,71 @@ function openGuideModal(ex) {
 
 function closeGuideModal() {
   document.getElementById('guide-modal').classList.add('hidden');
+  if (window.__activeMotionPlayer) {
+    window.__activeMotionPlayer.destroy();
+  }
+}
+
+// ── Expand/Collapse Extra Exercises ──
+function toggleExtraExercises(dayId) {
+  const extraItems = document.querySelectorAll(`.extra-ex-${dayId}`);
+  const btn = document.getElementById(`toggle-btn-${dayId}`);
+  let isHidden = true;
+  extraItems.forEach(el => {
+    if (el.classList.contains('hidden')) {
+      el.classList.remove('hidden');
+      isHidden = false;
+    } else {
+      el.classList.add('hidden');
+      isHidden = true;
+    }
+  });
+  if (btn) {
+    btn.innerText = isHidden ? `+ Show ${extraItems.length} more exercises` : '- Show fewer exercises';
+  }
+}
+
+// ── Target Muscle Focus Modal ──
+function openFocusModal(preselectedDay, currentFocus) {
+  const modal = document.getElementById('focus-modal');
+  const daySelect = document.getElementById('focus-day-select');
+  if (preselectedDay && daySelect) {
+    daySelect.value = preselectedDay;
+  }
+  modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeFocusModal() {
+  document.getElementById('focus-modal').classList.add('hidden');
+}
+
+async function applyMuscleFocus(focusName) {
+  const daySelect = document.getElementById('focus-day-select');
+  const targetDay = daySelect ? daySelect.value : '{{ today_name }}';
+
+  showToast(`Updating ${targetDay} to ${focusName} focus...`, true);
+  closeFocusModal();
+
+  try {
+    const res = await fetch('/api/workout/day/change-focus', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        day_name: targetDay,
+        focus: focusName
+      })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      showToast(`✅ ${targetDay} updated to ${focusName}!`, true);
+      setTimeout(() => location.reload(), 1200);
+    } else {
+      showToast('❌ ' + (data.message || 'Failed to update focus.'), false);
+    }
+  } catch (err) {
+    showToast('❌ Network error updating focus.', false);
+  }
 }
 
 // ── History Toggle ──
@@ -566,7 +771,7 @@ function toggleHistory() {
 // ── Regenerate Modal ──
 function confirmRegenerate() {
   document.getElementById('regenerate-modal').classList.remove('hidden');
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 function closeRegenModal() {
   document.getElementById('regenerate-modal').classList.add('hidden');
@@ -585,8 +790,8 @@ async function doRegenerate() {
     } else {
       showToast('❌ ' + (data.message || 'Failed to regenerate.'), false);
       btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate';
-      lucide.createIcons();
+      btn.innerHTML = '<i data-lucide="refresh-cw" class="h-4 w-4"></i> Regenerate Split';
+      if (window.lucide) lucide.createIcons();
     }
   } catch(e) {
     showToast('❌ Network error. Please try again.', false);
@@ -626,6 +831,9 @@ function showToast(msg, success=true) {
 // Close modal on overlay click
 document.getElementById('regenerate-modal').addEventListener('click', function(e) {
   if (e.target === this) closeRegenModal();
+});
+document.getElementById('focus-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeFocusModal();
 });
 document.getElementById('guide-modal').addEventListener('click', function(e) {
   if (e.target === this) closeGuideModal();

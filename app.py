@@ -2116,6 +2116,94 @@ def api_change_focus():
     return jsonify({"status": "success", "message": msg, "focus": new_focus, "explanation": explanation})
 
 
+@app.route("/api/workout/day/change-focus", methods=["POST"])
+def api_change_day_focus():
+    user = get_current_user()
+    if not user or not user.profile:
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    day_id = data.get("day_id")
+    day_name = (data.get("day_name") or "").strip()
+    new_focus = (data.get("focus") or "").strip()
+
+    if not new_focus:
+        return jsonify({"status": "error", "message": "New workout focus is required (e.g. Chest, Biceps, Back, Shoulders, Legs, Core)."}), 400
+
+    plan = WorkoutPlan.query.filter_by(user_id=user.id, is_active=True).order_by(WorkoutPlan.id.desc()).first()
+    if not plan:
+        return jsonify({"status": "error", "message": "No active workout plan found"}), 404
+
+    target_day = None
+    if day_id:
+        target_day = WorkoutDay.query.filter_by(id=day_id, workout_plan_id=plan.id).first()
+    elif day_name:
+        for d in plan.days:
+            if d.day_name.lower() == day_name.lower():
+                target_day = d
+                break
+    else:
+        today_name = datetime.now().strftime("%A")
+        for d in plan.days:
+            if d.day_name.lower() == today_name.lower():
+                target_day = d
+                break
+
+    if not target_day:
+        return jsonify({"status": "error", "message": "Specified workout day was not found in plan."}), 404
+
+    all_ex = get_exercises_data()
+    allowed_eq = [eq.equipment_name for eq in user.equipments] if user.equipments else None
+    matching = filter_exercises_for_focus(all_ex, new_focus, allowed_equipment=allowed_eq)
+    if not matching:
+        matching = filter_exercises_for_focus(all_ex, new_focus, allowed_equipment=None)
+    if not matching:
+        matching = all_ex[:5]
+
+    target_day.focus = f"{new_focus.title()} Focus" if not new_focus.lower().endswith("focus") else new_focus.title()
+    target_day.is_rest_day = False
+    target_day.status = "upcoming"
+    target_day.exercises.clear()
+    db.session.commit()
+
+    reps_default = "8-10" if user.profile.fitness_goal == "Strength" else ("12-15" if user.profile.fitness_goal == "Fat Loss" else "10-12")
+    sets_default = 4 if user.profile.fitness_level == "Advanced" else 3
+
+    for idx, ex in enumerate(matching[:6]):
+        inst_str = ex["instructions"] if isinstance(ex["instructions"], str) else "\n".join(ex.get("instructions", []))
+        reps_val = ex.get("default_reps") or reps_default
+        w_ex = WorkoutExercise(
+            workout_day_id=target_day.id,
+            exercise_id=int(ex["id"]),
+            name=ex["name"],
+            category=ex["category"],
+            sets=int(ex.get("default_sets") or sets_default),
+            reps=str(reps_val),
+            reps_min=8,
+            reps_max=12,
+            rest_seconds=int(ex.get("default_rest") or 60),
+            instructions=inst_str,
+            start_pos=ex.get("start_pos"),
+            movement=ex.get("movement"),
+            end_pos=ex.get("end_pos"),
+            common_mistakes="\n".join(ex.get("common_mistakes", [])) if isinstance(ex.get("common_mistakes"), list) else ex.get("common_mistakes", ""),
+            is_completed=False,
+            order_idx=idx
+        )
+        db.session.add(w_ex)
+
+    db.session.commit()
+
+    return jsonify({
+        "status": "success",
+        "message": f"Successfully updated {target_day.day_name} to {target_day.focus}!",
+        "day_id": target_day.id,
+        "day_name": target_day.day_name,
+        "focus": target_day.focus,
+        "exercises": [e.to_dict() for e in target_day.exercises]
+    })
+
+
 @app.route("/api/workout/generate-custom-today", methods=["POST"])
 def api_generate_custom_today():
     user = get_current_user()
