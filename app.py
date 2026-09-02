@@ -1717,6 +1717,9 @@ def api_ai_chat():
             "redirect_url": result.get("redirect_url")
         })
     except Exception as e:
+        import traceback
+        print(f"[API AI CHAT ERROR] {e}")
+        traceback.print_exc()
         db.session.rollback()
         return jsonify({"status": "error", "message": "Coach encountered a temporary server problem."}), 500
 
