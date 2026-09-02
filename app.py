@@ -989,7 +989,17 @@ def is_user_onboarded(user):
     profile = UserProfile.query.filter_by(user_id=user.id).first()
     if not profile:
         return False
-    return bool(profile.onboarding_completed)
+    if profile.onboarding_completed:
+        return True
+    # Auto-flag onboarded if profile attributes exist
+    if profile.name or profile.fitness_goal or profile.height or profile.weight:
+        profile.onboarding_completed = True
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+        return True
+    return False
 
 def require_onboarded_user():
     user = get_current_user()
@@ -1035,18 +1045,6 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        # Ensure a completely pristine state for newly registered user ID
-        UserProfile.query.filter_by(user_id=new_user.id).delete()
-        UserEquipment.query.filter_by(user_id=new_user.id).delete()
-        UserFoodPreference.query.filter_by(user_id=new_user.id).delete()
-        NutritionTarget.query.filter_by(user_id=new_user.id).delete()
-        WorkoutPlan.query.filter_by(user_id=new_user.id).delete()
-        MealPlan.query.filter_by(user_id=new_user.id).delete()
-        ProgressRecord.query.filter_by(user_id=new_user.id).delete()
-        CustomFood.query.filter_by(user_id=new_user.id).delete()
-        ChatConversation.query.filter_by(user_id=new_user.id).delete()
-        db.session.commit()
-
         session.permanent = True
         session['user_id'] = new_user.id
         return redirect(url_for("onboarding"))
@@ -1074,11 +1072,11 @@ def login():
 
         if not user:
             flash("No account found with this email address. Please check your email or create an account.", "error")
-            return redirect(url_for("login"))
+            return redirect(url_for("login", email=clean_email))
 
         if not check_password_hash(user.password_hash, password):
             flash("Incorrect password. Please try again.", "error")
-            return redirect(url_for("login"))
+            return redirect(url_for("login", email=clean_email))
 
         session.permanent = True
         session['user_id'] = user.id
@@ -1355,6 +1353,11 @@ def workout_plan():
                 prev_num = dn
             else:
                 break
+
+    if plan and plan.days:
+        for d in plan.days:
+            if d.day_number is None:
+                d.day_number = 0
 
     # Equipment list
     equipment_list = [eq.equipment_name for eq in user.equipments]
@@ -2637,6 +2640,7 @@ def api_save_profile():
         if not profile:
             profile = UserProfile(user_id=user.id)
             db.session.add(profile)
+        profile.onboarding_completed = True
             
         # Update core profile attributes if passed
         if "name" in data and data["name"]:
