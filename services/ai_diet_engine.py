@@ -79,7 +79,7 @@ def generate_ai_diet_plan(profile, food_preferences_list, target_nutrition, all_
             f"Data: {json.dumps(prompt_data)}"
         )
 
-        model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+        model_name = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
@@ -160,7 +160,7 @@ def generate_ai_grocery_list(profile, active_meals):
 
     if api_key:
         try:
-            model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+            model_name = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
             prompt = (
                 "You are FitSync AI's budget nutrition expert. Create a concise 7-day hostel grocery list summary "

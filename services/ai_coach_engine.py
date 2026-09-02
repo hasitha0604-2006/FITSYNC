@@ -61,7 +61,7 @@ def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
             "Return valid JSON matching this schema: {\"coach_reply\": \"string\", \"intent\": \"string\"}"
         )
 
-        model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+        model_name = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
