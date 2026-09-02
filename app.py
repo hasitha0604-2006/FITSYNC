@@ -22,6 +22,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Load environment variables from .env
 load_dotenv()
 
+# Alias __main__ to 'app' in sys.modules to prevent dual SQLAlchemy instances on 'from app import db'
+if __name__ == "__main__":
+    sys.modules['app'] = sys.modules[__name__]
+
 # Path Safety
 BASE_DIR = Path(__file__).resolve().parent
 INSTANCE_DIR = BASE_DIR / "instance"
@@ -1736,7 +1740,7 @@ def api_ai_chat():
         db.session.add(user_msg)
         db.session.commit()
 
-        result = process_coach_command(user, message_text, app_context=app, history=history_list)
+        result = process_coach_command(user, message_text, app_context=app, history=history_list, db_session=db.session)
 
         reply_text = result.get("coach_reply") or result.get("message") or "I'm your FitSync Coach. How can I help today?"
         intent = result.get("intent") or result.get("action") or "GENERAL_FITNESS"
@@ -1790,6 +1794,9 @@ def api_ai_chat():
             "redirect_url": result.get("redirect_url")
         })
     except Exception as e:
+        import traceback
+        print(f"[API AI CHAT ERROR] {e}")
+        traceback.print_exc()
         db.session.rollback()
         return jsonify({"status": "error", "message": "Coach encountered a temporary server problem."}), 500
 
