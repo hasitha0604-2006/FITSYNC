@@ -7,7 +7,6 @@ class FitSyncAICoachTestCase(unittest.TestCase):
 
     def setUp(self):
         app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
         app.config['WTF_CSRF_ENABLED'] = False
         
         self.client = app.test_client()
@@ -19,10 +18,14 @@ class FitSyncAICoachTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            User.query.filter(User.email.in_([
-                'usera@fitsync.ai', 'userb@fitsync.ai', 'student@fitsync.ai',
-                'safety_user@fitsync.ai', 'sports_user@fitsync.ai', 'persistence_test@fitsync.ai'
-            ])).delete()
+            demo_user = User.query.filter_by(email='demo@fitsync.ai').first()
+            demo_id = demo_user.id if demo_user else -1
+            ChatMessage.query.filter(ChatMessage.conversation_id.in_(
+                db.session.query(ChatConversation.id).filter(ChatConversation.user_id != demo_id)
+            )).delete(synchronize_session=False)
+            ChatConversation.query.filter(ChatConversation.user_id != demo_id).delete(synchronize_session=False)
+            UserProfile.query.filter(UserProfile.user_id != demo_id).delete(synchronize_session=False)
+            User.query.filter(User.email != 'demo@fitsync.ai').delete(synchronize_session=False)
             db.session.commit()
         except Exception:
             db.session.rollback()

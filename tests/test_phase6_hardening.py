@@ -325,7 +325,7 @@ class Phase6HardeningTestCase(unittest.TestCase):
         uid = user.id
 
         db.session.remove()
-        reloaded_user = User.query.get(uid)
+        reloaded_user = db.session.get(User, uid)
         self.assertIsNotNone(reloaded_user)
         self.assertIsNotNone(reloaded_user.profile)
         self.assertEqual(reloaded_user.profile.name, "Persist Tester")

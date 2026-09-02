@@ -14,10 +14,10 @@ from app import app, db, User, UserProfile, init_app_database, normalize_email
 class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
 
     def setUp(self):
+        from app import DB_PATH
         self.app = app
         self.app.config['TESTING'] = True
-        base_dir = Path(__file__).resolve().parent.parent
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{(base_dir / 'instance' / 'fitsync.db').as_posix()}"
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH.as_posix()}"
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()
         self.ctx.push()
@@ -140,7 +140,7 @@ class DatabaseRuntimeConsistencyTestCase(unittest.TestCase):
         db.engine.dispose()
 
         # Re-query
-        reloaded = User.query.get(uid)
+        reloaded = db.session.get(User, uid)
         self.assertIsNotNone(reloaded)
         self.assertEqual(reloaded.email, email)
 

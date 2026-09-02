@@ -16,9 +16,32 @@ from services.fitness_engine import generate_weekly_workout, find_alternative_ex
 from services.adaptation_engine import rebuild_remaining_week_logic, move_workout_logic
 from services.nutrition_engine import get_food_alternative
 
+def _clean_and_parse_json(text_content):
+    """
+    Cleans markdown code fences and parses JSON payload safely.
+    """
+    if not text_content:
+        return None
+    cleaned = text_content.strip()
+    cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'\s*```$', '', cleaned)
+    cleaned = cleaned.strip()
+
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        match = re.search(r'(\{.*\})', cleaned, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(1))
+            except Exception:
+                pass
+        return None
+
+
 def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
     """
-    Calls Google Gemini 1.5 Flash API with user telemetry context and recent conversation history.
+    Calls Google Gemini API with user telemetry context and recent conversation history.
     Returns natural language coach response or None on failure.
     """
     try:
@@ -38,7 +61,7 @@ def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
             "Return valid JSON matching this schema: {\"coach_reply\": \"string\", \"intent\": \"string\"}"
         )
 
-        model_name = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+        model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
@@ -51,12 +74,17 @@ def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
             headers={'Content-Type': 'application/json'}
         )
 
-        with urllib.request.urlopen(req, timeout=15) as response:
+        with urllib.request.urlopen(req, timeout=6) as response:
             res_body = json.loads(response.read().decode('utf-8'))
-            text_content = res_body['candidates'][0]['content']['parts'][0]['text']
-            parsed = json.loads(text_content)
-            return parsed
-    except Exception:
+            candidates = res_body.get('candidates', [])
+            if candidates and 'content' in candidates[0] and 'parts' in candidates[0]['content']:
+                text_content = candidates[0]['content']['parts'][0].get('text', '')
+                parsed = _clean_and_parse_json(text_content)
+                if parsed and isinstance(parsed, dict) and "coach_reply" in parsed:
+                    return parsed
+        return None
+    except Exception as e:
+        print(f"[AI COACH WARNING] Gemini API call skipped/failed: {e}")
         return None
 
 
@@ -615,7 +643,7 @@ def process_coach_command(user, prompt_text, app_context=None, history=None):
     api_key = os.getenv("AI_API_KEY") or os.getenv("GEMINI_API_KEY")
     gemini_res = None
     if api_key:
-        gemini_res = _call_gemini_coach_api(prompt_text, user_context, api_key)
+        gemini_res = _call_gemini_coach_api(prompt_text, user_context, api_key, history=history)
 
     qa_result = process_ai_gym_query(prompt_text, user_profile=user.profile if (user and user.profile) else None)
     qa_exercises = qa_result.get("exercises", [])

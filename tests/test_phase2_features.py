@@ -94,7 +94,7 @@ class Phase2FeaturesTestCase(unittest.TestCase):
 
         # Verify DB updated
         with self.app.app_context():
-            user = User.query.get(uid)
+            user = db.session.get(User, uid)
             self.assertEqual(user.profile.name, "Updated Name Hero")
             self.assertEqual(user.profile.weight, 80.0)
             self.assertEqual(user.profile.fitness_goal, "Fat Loss")
@@ -134,7 +134,7 @@ class Phase2FeaturesTestCase(unittest.TestCase):
 
         # Verify persisted in SQLite
         with self.app.app_context():
-            we = WorkoutExercise.query.get(ex_id)
+            we = db.session.get(WorkoutExercise, ex_id)
             self.assertTrue(we.is_completed)
 
     def test_exercise_replacement(self):
@@ -154,7 +154,7 @@ class Phase2FeaturesTestCase(unittest.TestCase):
         self.assertEqual(data["status"], "success")
 
         with self.app.app_context():
-            updated_ex = WorkoutExercise.query.get(orig_ex_id)
+            updated_ex = db.session.get(WorkoutExercise, orig_ex_id)
             self.assertNotEqual(updated_ex.name, orig_name)
 
     def test_custom_food_creation_and_user_scoping(self):
@@ -255,7 +255,7 @@ class Phase2FeaturesTestCase(unittest.TestCase):
 
         # User A's custom food should still exist in SQLite
         with self.app.app_context():
-            cf_check = CustomFood.query.get(cf_a_id)
+            cf_check = db.session.get(CustomFood, cf_a_id)
             self.assertIsNotNone(cf_check)
 
     def test_update_physical_metrics_recalculates_targets_and_bmi(self):

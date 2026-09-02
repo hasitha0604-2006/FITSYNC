@@ -11,7 +11,7 @@ if sys.stdout and hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     except Exception:
         pass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
@@ -71,8 +71,8 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     profile = db.relationship("UserProfile", backref="user", uselist=False, cascade="all, delete-orphan")
     equipments = db.relationship("UserEquipment", backref="user", cascade="all, delete-orphan")
@@ -99,15 +99,15 @@ class CustomFood(db.Model):
     fiber = db.Column(db.Float, default=0.0)
     cost = db.Column(db.Integer, nullable=False, default=0)
     notes = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 class ChatConversation(db.Model):
     __tablename__ = "chat_conversations"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     title = db.Column(db.String(120), nullable=True, default="Fitness Coaching")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     messages = db.relationship("ChatMessage", backref="conversation", cascade="all, delete-orphan", order_by="ChatMessage.id")
 
@@ -119,7 +119,7 @@ class ChatMessage(db.Model):
     message = db.Column(db.Text, nullable=False)
     intent = db.Column(db.String(50), nullable=True)
     extra_data_json = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     def to_dict(self):
         extra = None
@@ -248,7 +248,7 @@ class UserProfile(db.Model):
     budget_preference = db.Column(db.String(50), nullable=True)
     daily_food_budget = db.Column(db.Integer, nullable=True, default=150)
     onboarding_completed = db.Column(db.Boolean, default=False)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
 class UserEquipment(db.Model):
     __tablename__ = "user_equipments"
@@ -279,7 +279,7 @@ class WorkoutPlan(db.Model):
     __tablename__ = "workout_plans"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean, default=True)
     days = db.relationship("WorkoutDay", backref="plan", cascade="all, delete-orphan")
 
@@ -318,7 +318,7 @@ class WorkoutExercise(db.Model):
 
     def to_dict(self):
         slug = self.name.lower().replace(' ', '_').replace('-', '_')
-        master = Exercise.query.get(self.exercise_id) if self.exercise_id else None
+        master = db.session.get(Exercise, self.exercise_id) if self.exercise_id else None
         
         p_muscles = []
         s_muscles = []
@@ -973,7 +973,7 @@ def get_current_user():
     if 'user_id' not in session:
         return None
     try:
-        user = User.query.get(session['user_id'])
+        user = db.session.get(User, session['user_id'])
         if not user:
             session.pop('user_id', None)
             return None
@@ -1428,7 +1428,7 @@ def meal_detail(meal_id):
     user, redir = require_onboarded_user()
     if redir:
         return redir
-    meal = Meal.query.get(meal_id)
+    meal = db.session.get(Meal, meal_id)
     if not meal or meal.meal_plan.user_id != user.id:
         flash("Meal not found.", "error")
         return redirect(url_for("nutrition"))
@@ -1601,7 +1601,7 @@ def api_manage_custom_food(food_id):
     if not user:
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
-    c_food = CustomFood.query.get(food_id)
+    c_food = db.session.get(CustomFood, food_id)
     if not c_food or c_food.user_id != user.id:
         return jsonify({"status": "error", "message": "Custom food item not found."}), 404
 
@@ -1771,7 +1771,7 @@ def api_ai_chat():
                 extra_data_json=json.dumps(extra_data)
             )
             db.session.add(assistant_msg)
-            conv.updated_at = datetime.utcnow()
+            conv.updated_at = datetime.now(timezone.utc)
             db.session.commit()
 
         return jsonify({
@@ -2057,7 +2057,7 @@ def api_toggle_exercise():
     
     data = request.json
     ex_id = data.get("id")
-    ex = WorkoutExercise.query.get(ex_id)
+    ex = db.session.get(WorkoutExercise, ex_id)
     if not ex or ex.workout_day.plan.user_id != user.id:
         return jsonify({"status": "error", "message": "Exercise not found"}), 404
         
@@ -2097,12 +2097,12 @@ def api_substitute_exercise():
     new_ex_id = data.get("new_exercise_id")
     reason = data.get("reason", "")
 
-    orig_ex = WorkoutExercise.query.get(ex_id)
+    orig_ex = db.session.get(WorkoutExercise, ex_id)
     if not orig_ex or orig_ex.workout_day.plan.user_id != user.id:
         return jsonify({"status": "error", "message": "Exercise not found"}), 404
 
     if new_ex_id:
-        new_master = Exercise.query.get(new_ex_id)
+        new_master = db.session.get(Exercise, new_ex_id)
         if new_master:
             orig_ex.exercise_id = new_master.id
             orig_ex.name = new_master.name
@@ -2625,12 +2625,12 @@ def api_substitute_meal():
     meal_id = data.get("id") or data.get("meal_id")
     new_food_id = data.get("new_food_id") or data.get("food_id")
     
-    meal = Meal.query.get(meal_id)
+    meal = db.session.get(Meal, meal_id)
     if not meal or meal.meal_plan.user_id != user.id:
         return jsonify({"status": "error", "message": "Meal item not found"}), 404
 
     if new_food_id:
-        food = Food.query.get(new_food_id)
+        food = db.session.get(Food, new_food_id)
         if food:
             meal.food_id = food.id
             meal.food_name = food.name
