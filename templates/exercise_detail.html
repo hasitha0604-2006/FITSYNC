@@ -189,15 +189,13 @@
       >
         Back to Library
       </a>
-      {% if ex.name in ['Squats', 'Squat', 'Push-ups', 'Push-up', 'Bicep Curls', 'Bicep Curl'] %}
       <a 
-        href="{{ url_for('form_check') }}"
+        href="{{ url_for('form_check', exercise_id=ex.id, exercise=ex.slug) }}"
         class="w-full sm:w-auto text-center py-2.5 px-5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 sm:ml-auto"
       >
         <i data-lucide="camera" class="h-4 w-4"></i>
-        Optional AI Form Check
+        AI Form Check
       </a>
-      {% endif %}
     </div>
   </div>
 </div>

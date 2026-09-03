@@ -227,21 +227,12 @@
                 <i data-lucide="play-circle" class="h-4 w-4 text-emerald-400"></i> Visual
               </button>
               
-              {% if 'squat' in ex.name|lower or 'push-up' in ex.name|lower or 'pushup' in ex.name|lower or 'bicep curl' in ex.name|lower %}
               <button
-                onclick="startAIFormCheck('{{ ex.name }}')"
-                class="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-primary-500/10 hover:bg-primary-500/20 text-primary-400 text-xs font-bold border border-primary-500/30 transition-colors"
+                onclick="startAIFormCheck('{{ ex.name }}', '{{ ex.category }}')"
+                class="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-primary-500/10 hover:bg-primary-500/20 text-primary-400 text-xs font-bold border border-primary-500/30 transition-colors shadow-sm"
               >
                 <i data-lucide="camera" class="h-4 w-4"></i> AI Form
               </button>
-              {% else %}
-              <button
-                onclick="openGuideModal({{ ex.to_dict()|tojson|safe }})"
-                class="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition-colors"
-              >
-                <i data-lucide="info" class="h-4 w-4"></i> Details
-              </button>
-              {% endif %}
 
               <button
                 onclick="openSwapModal({{ ex.id }})"
@@ -429,76 +420,42 @@
 
       <div class="overflow-y-auto space-y-4 pr-1 text-xs">
         
-        <!-- Section A: Single Muscle Groups -->
+        <!-- EXACT 10 TODAY'S WORKOUT SELECTION GRID -->
         <div>
-          <h4 class="font-extrabold text-slate-300 uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
-            <i data-lucide="crosshair" class="h-3.5 w-3.5 text-emerald-400"></i>
-            Single Muscle Isolation
+          <h4 class="font-extrabold text-slate-300 uppercase tracking-wider text-[11px] mb-3 flex items-center gap-1.5">
+            <i data-lucide="target" class="h-4 w-4 text-emerald-400"></i>
+            WHAT DO YOU WANT TO TRAIN TODAY?
           </h4>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {% set muscles_list = [
-              ('Biceps', 'Biceps Brachii', 'zap'),
-              ('Triceps', 'Triceps Brachii', 'activity'),
-              ('Chest', 'Pectorals', 'shield'),
-              ('Back', 'Lats & Rhomboids', 'layers'),
-              ('Shoulders', 'Deltoids', 'aperture'),
-              ('Abs', 'Abdominals & Core', 'square'),
-              ('Quadriceps', 'Front Thighs', 'grid'),
-              ('Hamstrings', 'Back Thighs', 'disc'),
-              ('Glutes', 'Gluteus Maximus', 'circle'),
-              ('Calves', 'Calves & Lower Leg', 'maximize-2'),
-              ('Forearms', 'Forearms & Grip', 'crosshair')
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {% set todays_workout_options = [
+              ('Chest Only', 'chest-only', 'Pectorals & Chest Isolation', 'shield'),
+              ('Chest + Triceps', 'chest-triceps', 'Push Compound & Extension', 'layers'),
+              ('Triceps Only', 'triceps-only', 'Triceps Arms Isolation', 'activity'),
+              ('Back Only', 'back-only', 'Lats & Rhomboids Back', 'align-justify'),
+              ('Back + Biceps', 'back-biceps', 'Pull Compound & Flexion', 'git-commit'),
+              ('Biceps Only', 'biceps-only', 'Biceps Arms Isolation', 'zap'),
+              ('Legs Only', 'legs-only', 'Quads, Hamstrings & Glutes', 'disc'),
+              ('Legs + Shoulders', 'legs-shoulders', 'Lower Body & Deltoids', 'grid'),
+              ('Shoulders Only', 'shoulders-only', 'Deltoids & Overhead Press', 'aperture'),
+              ('Cardio', 'cardio', 'Aerobic & Cardio Conditioning', 'heart-pulse')
             ] %}
-            {% for m_name, m_sub, m_icon in muscles_list %}
+            {% for opt_title, opt_key, opt_sub, opt_icon in todays_workout_options %}
             <button
               type="button"
-              onclick="selectCustomFocus('{{ m_name }}')"
-              id="focus-btn-{{ m_name }}"
-              class="custom-focus-btn p-3 rounded-2xl border border-slate-800 bg-slate-950/80 hover:border-emerald-500/60 text-left transition-all group flex flex-col justify-between"
+              onclick="selectCustomFocus('{{ opt_title }}')"
+              id="focus-btn-{{ opt_key }}"
+              class="custom-focus-btn p-3.5 rounded-2xl border border-slate-800 bg-slate-950/80 hover:border-emerald-500/60 text-left transition-all group flex items-center justify-between gap-3"
             >
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-emerald-400 font-bold"><i data-lucide="{{ m_icon }}" class="h-4 w-4"></i></span>
-                <span class="h-1.5 w-1.5 rounded-full bg-slate-700 group-hover:bg-emerald-400"></span>
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/10 transition-colors shrink-0">
+                  <i data-lucide="{{ opt_icon }}" class="h-4 w-4"></i>
+                </div>
+                <div>
+                  <p class="font-black text-white text-xs group-hover:text-emerald-400 transition-colors">{{ opt_title }}</p>
+                  <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ opt_sub }}</p>
+                </div>
               </div>
-              <div>
-                <p class="font-black text-white text-xs group-hover:text-emerald-400 transition-colors">{{ m_name }}</p>
-                <p class="text-[10px] text-slate-400 truncate">{{ m_sub }}</p>
-              </div>
-            </button>
-            {% endfor %}
-          </div>
-        </div>
-
-        <!-- Section B: Popular Splits & Combinations -->
-        <div>
-          <h4 class="font-extrabold text-slate-300 uppercase tracking-wider text-[11px] mb-2 flex items-center gap-1.5">
-            <i data-lucide="layers" class="h-3.5 w-3.5 text-blue-400"></i>
-            Splits & Combinations
-          </h4>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {% set splits_list = [
-              ('Push', 'Chest + Shoulders + Triceps', 'arrow-up'),
-              ('Pull', 'Back + Biceps', 'arrow-down'),
-              ('Legs', 'Full Lower Body', 'maximize'),
-              ('Upper Body', 'Complete Upper Split', 'trending-up'),
-              ('Full Body', 'Total Body Compound', 'sparkles'),
-              ('Express 20', '20-Min High Intensity', 'clock')
-            ] %}
-            {% for s_name, s_sub, s_icon in splits_list %}
-            <button
-              type="button"
-              onclick="selectCustomFocus('{{ s_name }}')"
-              id="focus-btn-{{ s_name|replace(' ', '-') }}"
-              class="custom-focus-btn p-3 rounded-2xl border border-slate-800 bg-slate-950/80 hover:border-blue-500/60 text-left transition-all group flex flex-col justify-between"
-            >
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-blue-400 font-bold"><i data-lucide="{{ s_icon }}" class="h-4 w-4"></i></span>
-                <span class="h-1.5 w-1.5 rounded-full bg-slate-700 group-hover:bg-blue-400"></span>
-              </div>
-              <div>
-                <p class="font-black text-white text-xs group-hover:text-blue-400 transition-colors">{{ s_name }}</p>
-                <p class="text-[10px] text-slate-400 truncate">{{ s_sub }}</p>
-              </div>
+              <span class="text-xs text-slate-600 group-hover:text-emerald-400 shrink-0">▶</span>
             </button>
             {% endfor %}
           </div>
@@ -554,59 +511,122 @@
     </div>
   </div>
 
-  <!-- MODAL 3: Camera AI Overlay -->
-  <div id="camera-modal" class="hidden fixed inset-0 bg-slate-950/95 z-50 flex flex-col items-center justify-center p-4">
-    <div class="w-full max-w-md flex flex-col items-center space-y-4">
-      <div class="w-full flex items-center justify-between border-b border-slate-800 pb-3">
-        <div>
-          <h3 class="text-white font-bold text-lg flex items-center gap-2">
-            <i data-lucide="camera" class="h-5 w-5 text-primary-400"></i>
-            AI Form Checker
-          </h3>
-          <p id="camera-ex-title" class="text-[11px] text-slate-400 uppercase tracking-wider font-semibold">Testing: Squat</p>
+  <!-- MODAL 3: Camera AI Form Checker Overlay -->
+  <div id="camera-modal" class="hidden fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex flex-col items-center justify-center p-3 md:p-6 select-none">
+    <div class="w-full max-w-xl bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden flex flex-col max-h-[92vh] shadow-2xl">
+      
+      <!-- Modal Header -->
+      <div class="bg-slate-950 p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="h-3 w-3 rounded-full bg-emerald-400 animate-ping"></span>
+          <div>
+            <h3 class="text-white font-extrabold text-base flex items-center gap-2">
+              <i data-lucide="camera" class="h-4 w-4 text-emerald-400"></i>
+              Real-Time AI Form Checker
+            </h3>
+            <p id="camera-ex-title" class="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">Exercise: Squat</p>
+          </div>
         </div>
-        <button onclick="stopAIFormCheck()" class="bg-slate-800 hover:bg-slate-700 text-slate-400 p-2 rounded-full transition-colors">
-          <i data-lucide="x" class="h-5 w-5"></i>
+        <button onclick="stopAIFormCheck()" class="h-8 w-8 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full flex items-center justify-center transition-colors">
+          ✕
         </button>
       </div>
 
-      <div class="relative border border-slate-800 bg-black rounded-2xl w-full h-[280px] overflow-hidden flex items-center justify-center">
-        <video id="webcam-video" class="absolute inset-0 w-full h-full object-cover scale-x-[-1] hidden" playsinline muted></video>
-        <canvas id="hidden-canvas" class="hidden"></canvas>
-        
-        <div id="virtual-coach-info" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-slate-400 space-y-2">
-          <i data-lucide="camera-off" class="h-8 w-8 text-amber-500 mb-2"></i>
-          <h4 class="text-sm font-bold text-slate-200">Virtual AI Simulator Active</h4>
-          <p class="text-[10px] max-w-[280px]">
-            Webcam blocked/unavailable. Simulating coordinate waves to evaluate posture angles cleanly.
+      <!-- Setup Guidance Banner -->
+      <div id="camera-setup-banner" class="bg-slate-950/90 border-b border-slate-800 p-3 text-xs flex items-start gap-2.5">
+        <div class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 shrink-0 mt-0.5">
+          <i data-lucide="info" class="h-4 w-4"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <span class="font-extrabold text-white text-[11px] uppercase tracking-wider block">Recommended Camera View Setup:</span>
+          <p id="camera-guidance-text" class="text-[11px] text-slate-300 leading-relaxed mt-0.5">
+            Position camera far enough away to see your full body in frame.
           </p>
         </div>
+      </div>
 
-        <div class="absolute top-4 left-4 bg-slate-900/85 text-white font-mono text-[10px] px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5">
-          <span class="h-2 w-2 rounded-full bg-primary-500 animate-ping"></span>
-          Joint Angle: <strong id="joint-angle-text" class="text-primary-400">180°</strong>
+      <!-- Camera Viewport & HUD -->
+      <div class="relative border-y border-slate-800 bg-black w-full h-[320px] md:h-[400px] overflow-hidden flex items-center justify-center">
+        <video id="webcam-video" class="absolute inset-0 w-full h-full object-cover scale-x-[-1] hidden" playsinline muted></video>
+        <canvas id="pose-overlay-canvas" class="absolute inset-0 w-full h-full object-cover scale-x-[-1] z-10"></canvas>
+
+        <div id="virtual-coach-info" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-slate-400 space-y-3 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 z-20">
+          <div class="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-amber-400 shadow-md">
+            <i data-lucide="camera-off" class="h-7 w-7"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-black text-white">Camera Offline / Standby</h4>
+            <p class="text-xs text-slate-400 max-w-sm mt-1 leading-relaxed">
+              Camera access required for AI Form Check. Click below to grant permission, or launch AI Simulator mode.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button
+              type="button"
+              onclick="retryCameraStart()"
+              class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs rounded-xl shadow transition-transform active:scale-95 flex items-center gap-1.5"
+            >
+              <i data-lucide="video" class="h-3.5 w-3.5"></i> Try Again
+            </button>
+            <button
+              type="button"
+              onclick="startSimModeFallback()"
+              class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 font-bold text-xs rounded-xl transition-colors"
+            >
+              <i data-lucide="activity" class="h-3.5 w-3.5 text-amber-400"></i> AI Simulator
+            </button>
+          </div>
         </div>
 
-        <div id="sim-active-badge" class="absolute top-4 right-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono text-[9px] px-2 py-0.5 rounded hidden">
-          SIMULATION
+        <!-- HUD Telemetry Badges (Top) -->
+        <div class="absolute top-3 left-3 flex items-center gap-2 z-30">
+          <div class="bg-slate-950/90 backdrop-blur-md text-white font-mono text-xs px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-2 shadow-lg">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>Angle: <strong id="joint-angle-text" class="text-emerald-400 font-black text-sm">180°</strong></span>
+          </div>
+          <div id="sim-active-badge" class="bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] font-bold px-2.5 py-1 rounded-xl hidden">
+            SIMULATION
+          </div>
+        </div>
+
+        <div class="absolute top-3 right-3 flex items-center gap-2 z-30">
+          <div class="bg-slate-950/90 backdrop-blur-md text-slate-200 font-mono text-xs px-3 py-1.5 rounded-xl border border-slate-800 shadow-lg flex items-center gap-1.5">
+            <span class="text-[10px] font-bold text-slate-400">Reps:</span>
+            <strong id="hud-rep-counter" class="text-emerald-400 text-sm font-black">0</strong>
+          </div>
+        </div>
+
+        <!-- Bottom Telemetry Bar: Form Score & Phase -->
+        <div class="absolute bottom-3 left-3 right-3 bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-2xl p-2.5 z-30 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Form Score:</span>
+            <span id="hud-score-text" class="font-mono font-black text-emerald-400 text-sm">100/100</span>
+          </div>
+          <div id="hud-phase-badge" class="bg-slate-900 border border-slate-800 text-teal-300 font-mono text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-xl">
+            SETUP
+          </div>
         </div>
       </div>
 
-      <div class="w-full p-4 rounded-xl bg-slate-900 border border-slate-800 text-center flex flex-col items-center justify-center min-h-[80px]">
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 text-primary-400">AI Coach Feedback</p>
-        <h4 id="coach-feedback-text" class="text-sm font-semibold text-slate-100 max-w-[400px] leading-relaxed">
-          "Align your body..."
-        </h4>
+      <!-- Real-Time Feedback Panel -->
+      <div id="coach-feedback-box" class="p-4 bg-slate-950 text-center flex flex-col items-center justify-center min-h-[90px] space-y-1">
+        <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-1">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Dynamic Biomechanical Form Feedback
+        </p>
+        <div id="coach-feedback-text" class="text-xs md:text-sm font-bold text-slate-100 max-w-[480px] leading-relaxed space-y-1">
+          "Position yourself in full view of the camera."
+        </div>
       </div>
 
-      <p class="text-[10px] text-slate-500 text-center max-w-[360px]">
-        🔒 Camera snapshots are evaluated locally for joint coordinates. FitSync AI does not store or upload video recordings.
-      </p>
-      
-      <button onclick="stopAIFormCheck()" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-bold py-3 rounded-xl transition-colors text-xs">
-        Finish Analysis & Exit
-      </button>
+      <!-- Privacy & Disclaimer Footer -->
+      <div class="p-3 bg-slate-950 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] text-slate-400">
+        <span class="text-[10px]">🔒 <strong>100% Local Privacy:</strong> Camera frames processed locally in browser JS.</span>
+        <button onclick="stopAIFormCheck()" class="w-full sm:w-auto px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition-colors">
+          Finish Analysis & Exit
+        </button>
+      </div>
     </div>
+  </div>
   <!-- MODAL 4: Start Workout Execution Runner Modal -->
   <div id="runner-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-lg overflow-hidden flex flex-col max-h-[92vh] shadow-2xl">
@@ -727,12 +747,12 @@
 {% block scripts %}
 <script>
   let currentActiveModalEx = null;
-  let selectedCustomFocus = 'Chest';
+  let selectedCustomFocus = 'Chest Only';
   let selectedCustomDuration = 45;
 
   function openCustomWorkoutModal() {
     document.getElementById('custom-workout-modal').classList.remove('hidden');
-    selectCustomFocus(selectedCustomFocus || 'Chest');
+    selectCustomFocus(selectedCustomFocus || 'Chest Only');
     selectCustomDuration(selectedCustomDuration || 45);
     if (window.lucide) lucide.createIcons();
   }
@@ -744,10 +764,10 @@
   function selectCustomFocus(focusName) {
     selectedCustomFocus = focusName;
     document.querySelectorAll('.custom-focus-btn').forEach(btn => {
-      btn.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'ring-2', 'ring-emerald-500/50', 'border-blue-500', 'bg-blue-500/10', 'ring-blue-500/50');
+      btn.classList.remove('border-emerald-500', 'bg-emerald-500/10', 'ring-2', 'ring-emerald-500/50');
       btn.classList.add('border-slate-800', 'bg-slate-950/80');
     });
-    const safeId = focusName.replace(/\s+/g, '-');
+    const safeId = focusName.toLowerCase().replace(/\s+\+\s+/g, '-').replace(/\s+/g, '-');
     const activeBtn = document.getElementById(`focus-btn-${safeId}`) || document.getElementById(`focus-btn-${focusName}`);
     if (activeBtn) {
       activeBtn.classList.remove('border-slate-800', 'bg-slate-950/80');
@@ -980,62 +1000,93 @@
     }
   }
 
-  // Camera AI Form Checker
-  let cameraActive = false;
-  let poseInterval = null;
+  // Camera AI Form Checker Engine Integration
   let formCheckExName = '';
+  let formCheckCategory = '';
 
-  async function startAIFormCheck(exName) {
-    formCheckExName = exName;
-    document.getElementById('camera-ex-title').innerText = `Testing: ${exName}`;
-    document.getElementById('coach-feedback-text').innerText = "Initializing camera telemetry...";
-    document.getElementById('camera-modal').classList.remove('hidden');
+  async function startAIFormCheck(exName, category) {
+    formCheckExName = exName || 'Squat';
+    formCheckCategory = category || 'General';
 
-    const video = document.getElementById('webcam-video');
-    const simBadge = document.getElementById('sim-active-badge');
+    const config = window.FitSyncAIFormChecker ? window.FitSyncAIFormChecker.setExercise(formCheckExName, formCheckCategory) : { name: exName, position_guidance: "Position camera to view your exercise movement." };
+
+    const titleEl = document.getElementById('camera-ex-title');
+    const guidanceEl = document.getElementById('camera-guidance-text');
+    const coachText = document.getElementById('coach-feedback-text');
     const coachInfo = document.getElementById('virtual-coach-info');
+    const simBadge = document.getElementById('sim-active-badge');
+    const videoEl = document.getElementById('webcam-video');
+    const canvasEl = document.getElementById('pose-overlay-canvas');
 
-    cameraActive = false;
-    simBadge.classList.add('hidden');
-    coachInfo.classList.remove('hidden');
-    video.classList.add('hidden');
+    if (titleEl) titleEl.innerText = `Exercise: ${config.name || exName}`;
+    if (guidanceEl) guidanceEl.innerText = config.position_guidance || "Position camera to view your full body in frame.";
+    if (coachText) coachText.innerText = `Initializing posture tracking for ${config.name || exName}...`;
 
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 400, height: 300, facingMode: "user" }
-      });
-      video.srcObject = stream;
-      video.play();
-      
-      cameraActive = true;
-      video.classList.remove('hidden');
-      coachInfo.classList.add('hidden');
+    document.getElementById('camera-modal').classList.remove('hidden');
+    if (simBadge) simBadge.classList.add('hidden');
+    if (coachInfo) coachInfo.classList.add('hidden');
+    if (videoEl) videoEl.classList.remove('hidden');
 
-      poseInterval = setInterval(() => {
-        captureFrameAndAnalyze();
-      }, 800);
+    if (window.FitSyncAIFormChecker) {
+      const cameraSuccess = await window.FitSyncAIFormChecker.startCamera(videoEl, canvasEl, updateCameraHUDTelemetry);
+      if (!cameraSuccess) {
+        if (coachInfo) coachInfo.classList.remove('hidden');
+        if (videoEl) videoEl.classList.add('hidden');
+      }
+    }
+  }
 
-    } catch (err) {
-      console.warn("Webcam blocked, using virtual coordinates.");
-      simBadge.classList.remove('hidden');
-      
-      poseInterval = setInterval(() => {
-        simulateFrameAnalysis();
-      }, 1000);
+  function retryCameraStart() {
+    startAIFormCheck(formCheckExName, formCheckCategory);
+  }
+
+  function startSimModeFallback() {
+    const coachInfo = document.getElementById('virtual-coach-info');
+    const videoEl = document.getElementById('webcam-video');
+    const simBadge = document.getElementById('sim-active-badge');
+    if (coachInfo) coachInfo.classList.add('hidden');
+    if (videoEl) videoEl.classList.add('hidden');
+    if (simBadge) simBadge.classList.remove('hidden');
+
+    if (window.FitSyncAIFormChecker) {
+      window.FitSyncAIFormChecker.startSimulation(updateCameraHUDTelemetry);
+    }
+  }
+
+  function updateCameraHUDTelemetry(data) {
+    const angleEl = document.getElementById('joint-angle-text');
+    const scoreEl = document.getElementById('hud-score-text');
+    const repEl = document.getElementById('hud-rep-counter');
+    const phaseEl = document.getElementById('hud-phase-badge');
+    const coachText = document.getElementById('coach-feedback-text');
+    const simBadge = document.getElementById('sim-active-badge');
+
+    if (angleEl && data.angle !== undefined) angleEl.innerText = `${data.angle}°`;
+    if (scoreEl && data.score !== undefined) scoreEl.innerText = `${data.score}/100`;
+    if (repEl && data.reps !== undefined) repEl.innerText = data.reps;
+    if (phaseEl && data.phase) phaseEl.innerText = data.phase.toUpperCase();
+
+    if (simBadge) {
+      if (data.simulated) simBadge.classList.remove('hidden');
+      else simBadge.classList.add('hidden');
+    }
+
+    if (coachText && data.feedback) {
+      const items = Array.isArray(data.feedback) ? data.feedback : [data.feedback];
+      coachText.innerHTML = items.map(msg => `<p class="leading-relaxed">${msg}</p>`).join('');
     }
   }
 
   function stopAIFormCheck() {
-    if (poseInterval) clearInterval(poseInterval);
-    
+    if (window.FitSyncAIFormChecker) {
+      window.FitSyncAIFormChecker.stop();
+    }
     const video = document.getElementById('webcam-video');
     if (video && video.srcObject) {
       video.srcObject.getTracks().forEach(track => track.stop());
       video.srcObject = null;
     }
-    
     document.getElementById('camera-modal').classList.add('hidden');
-    cameraActive = false;
   }
 
   async function captureFrameAndAnalyze() {

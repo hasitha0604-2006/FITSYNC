@@ -451,6 +451,10 @@
   </script>
   <script src="{{ url_for('static', filename='js/animation_engine_bridge.js') }}"></script>
   <script src="{{ url_for('static', filename='js/exercise_motion_player.js') }}"></script>
+  <!-- MediaPipe Pose JS Engine & FitSync AI Form Checker -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='js/ai_form_checker.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

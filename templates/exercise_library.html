@@ -558,7 +558,10 @@
         </div>
       </div>
 
-      <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-end">
+      <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-between items-center gap-3">
+        <a id="lib-modal-form-check-link" href="/form-check" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-1.5">
+          <i data-lucide="camera" class="h-4 w-4"></i> AI Form Check
+        </a>
         <button onclick="closeLibraryDetailModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl border border-slate-700 transition-colors">
           Close
         </button>
@@ -830,6 +833,12 @@
     document.getElementById('lib-modal-cat').innerText = `${ex.category} Category — ${ex.difficulty}`;
     document.getElementById('lib-modal-primary').innerText = ex.primary_muscle || ex.category;
     document.getElementById('lib-modal-equip').innerText = ex.equipment;
+
+    const fcLink = document.getElementById('lib-modal-form-check-link');
+    if (fcLink) {
+      const slug = ex.slug || ex.name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+      fcLink.href = `/form-check?exercise_id=${ex.id || ex.exercise_id || ''}&exercise=${slug}`;
+    }
 
     const ol = document.getElementById('lib-modal-instructions');
     ol.innerHTML = '';

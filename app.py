@@ -1626,8 +1626,25 @@ def form_check():
     user, redir = require_onboarded_user()
     if redir:
         return redir
-    # Render full page form check
-    return render_template("form_check.html")
+    
+    all_exercises = Exercise.query.order_by(Exercise.name).all()
+    exercise_id = request.args.get("exercise_id", type=int)
+    ex_slug = request.args.get("exercise", type=str)
+    
+    selected_ex = None
+    if exercise_id:
+        selected_ex = db.session.get(Exercise, exercise_id)
+    elif ex_slug:
+        normalized = ex_slug.lower().replace('-', '_')
+        for ex in all_exercises:
+            if ex.name.lower().replace(' ', '_').replace('-', '_') == normalized or normalized in ex.name.lower():
+                selected_ex = ex
+                break
+
+    if not selected_ex and all_exercises:
+        selected_ex = all_exercises[0]
+
+    return render_template("form_check.html", exercises=all_exercises, selected_ex=selected_ex)
 
 @app.route("/nutrition", methods=["GET"])
 def nutrition():

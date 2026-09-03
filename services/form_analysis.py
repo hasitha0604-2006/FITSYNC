@@ -110,7 +110,61 @@ def check_exercise_form(exercise_name, frame_base64):
                 feedback = "Go lower: Continue descending until hips are parallel to knees."
                 phase = "Eccentric Descent"
                 score = 82
-                
+
+        elif "incline" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            elbow = [landmarks[14].x, landmarks[14].y]
+            wrist = [landmarks[16].x, landmarks[16].y]
+            angle = calculate_angle(shoulder, elbow, wrist)
+            if angle > 145:
+                feedback = "Incline lockout: Focus upper chest squeeze."
+                phase = "Lockout"
+                score = 100
+            elif angle < 80:
+                feedback = "🔥 Excellent upper chest depth! Drive bar vertically overhead."
+                phase = "Peak Contraction"
+                score = 96
+            else:
+                feedback = "Maintain controlled bar path to clavicle line."
+                phase = "Incline Drive"
+                score = 84
+
+        elif "dumbbell" in ex_name or "db" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            elbow = [landmarks[14].x, landmarks[14].y]
+            wrist = [landmarks[16].x, landmarks[16].y]
+            angle = calculate_angle(shoulder, elbow, wrist)
+            if angle > 150:
+                feedback = "Squeeze chest at top without banging dumbbells together."
+                phase = "Top Lockout"
+                score = 100
+            elif angle < 75:
+                feedback = "🔥 Great stretch! Press dumbbells inward as you rise."
+                phase = "Bottom Stretch"
+                score = 96
+            else:
+                feedback = "Keep wrists aligned directly over elbows."
+                phase = "Pressing"
+                score = 85
+
+        elif "bench" in ex_name or "chest_press" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            elbow = [landmarks[14].x, landmarks[14].y]
+            wrist = [landmarks[16].x, landmarks[16].y]
+            angle = calculate_angle(shoulder, elbow, wrist)
+            if angle > 150:
+                feedback = "Arms extended. Lower bar under control toward mid-chest."
+                phase = "Start"
+                score = 100
+            elif angle < 85:
+                feedback = "🔥 Good depth! Touch chest lightly and press up explosively."
+                phase = "Peak Contraction"
+                score = 98
+            else:
+                feedback = "Keep pressing through chest and triceps. Avoid flaring elbows."
+                phase = "Movement"
+                score = 85
+
         elif "push-up" in ex_name or "pushup" in ex_name:
             shoulder = [landmarks[12].x, landmarks[12].y]
             elbow = [landmarks[14].x, landmarks[14].y]
@@ -130,6 +184,60 @@ def check_exercise_form(exercise_name, frame_base64):
                 phase = "Descent"
                 score = 80
 
+        elif "pulldown" in ex_name or "lat" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            elbow = [landmarks[14].x, landmarks[14].y]
+            wrist = [landmarks[16].x, landmarks[16].y]
+            angle = calculate_angle(shoulder, elbow, wrist)
+            if angle > 155:
+                feedback = "Full lat extension. Pull bar to upper chest."
+                phase = "Full Stretch"
+                score = 100
+            elif angle < 75:
+                feedback = "🔥 Great squeeze! Bar to upper chest, drive elbows into side pockets."
+                phase = "Peak Contraction"
+                score = 98
+            else:
+                feedback = "Depress shoulder blades as you pull downward."
+                phase = "Pulling"
+                score = 85
+
+        elif "row" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            elbow = [landmarks[14].x, landmarks[14].y]
+            wrist = [landmarks[16].x, landmarks[16].y]
+            angle = calculate_angle(shoulder, elbow, wrist)
+            if angle > 150:
+                feedback = "Reach forward with arms, letting lats stretch fully."
+                phase = "Arm Extension"
+                score = 100
+            elif angle < 70:
+                feedback = "🔥 Squeeze rhomboids! Pull handle into belly button area."
+                phase = "Peak Retraction"
+                score = 97
+            else:
+                feedback = "Drive elbows back past your ribs without torso swing."
+                phase = "Rowing Drive"
+                score = 84
+
+        elif "tricep" in ex_name or "pushdown" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            elbow = [landmarks[14].x, landmarks[14].y]
+            wrist = [landmarks[16].x, landmarks[16].y]
+            angle = calculate_angle(shoulder, elbow, wrist)
+            if angle > 155:
+                feedback = "🔥 Perfect tricep extension! Squeeze horseshoe peak."
+                phase = "Full Lockout"
+                score = 98
+            elif angle < 85:
+                feedback = "Allow forearms to reach 90° before pushing back down."
+                phase = "Top Return"
+                score = 100
+            else:
+                feedback = "Extend forearms downward using triceps."
+                phase = "Pushing Down"
+                score = 85
+
         elif "overhead" in ex_name or "shoulder_press" in ex_name or "military" in ex_name or "press" in ex_name:
             shoulder = [landmarks[12].x, landmarks[12].y]
             elbow = [landmarks[14].x, landmarks[14].y]
@@ -148,6 +256,82 @@ def check_exercise_form(exercise_name, frame_base64):
                 feedback = "Drive upward: Press arms fully overhead without arching lower back."
                 phase = "Concentric Lift"
                 score = 85
+
+        elif "crunch" in ex_name or "situp" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            hip = [landmarks[24].x, landmarks[24].y]
+            knee = [landmarks[26].x, landmarks[26].y]
+            angle = calculate_angle(shoulder, hip, knee)
+            if angle < 120:
+                feedback = "🔥 Peak abdominal contraction! Squeeze torso upward."
+                phase = "Peak Contraction"
+                score = 98
+            else:
+                feedback = "Control the return. Focus on curling through your torso."
+                phase = "Extended Setup"
+                score = 85
+
+        elif "raise" in ex_name and ("leg" in ex_name or "hip" in ex_name):
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            hip = [landmarks[24].x, landmarks[24].y]
+            ankle = [landmarks[28].x, landmarks[28].y]
+            angle = calculate_angle(shoulder, hip, ankle)
+            if angle < 105:
+                feedback = "🔥 Peak leg elevation! Lower under strict control."
+                phase = "Peak Elevation"
+                score = 98
+            else:
+                feedback = "Keep your legs controlled. Avoid swinging your legs."
+                phase = "Raising/Lowering"
+                score = 85
+
+        elif "twist" in ex_name:
+            feedback = "🔥 Deep oblique twist! Rotate shoulders side-to-side."
+            phase = "Oblique Twist"
+            score = 95
+            angle = 90.0
+
+        elif "rdl" in ex_name or "romanian" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            hip = [landmarks[24].x, landmarks[24].y]
+            knee = [landmarks[26].x, landmarks[26].y]
+            angle = calculate_angle(shoulder, hip, knee)
+            if angle < 100:
+                feedback = "🔥 Excellent hamstring stretch! Push hips back with slight knee flex."
+                phase = "Hamstring Stretch Peak"
+                score = 98
+            else:
+                feedback = "Move through your hips. Avoid simply squatting down."
+                phase = "Hip Hinge"
+                score = 85
+
+        elif "thrust" in ex_name or "bridge" in ex_name:
+            shoulder = [landmarks[12].x, landmarks[12].y]
+            hip = [landmarks[24].x, landmarks[24].y]
+            knee = [landmarks[26].x, landmarks[26].y]
+            angle = calculate_angle(shoulder, hip, knee)
+            if angle > 160:
+                feedback = "🔥 Peak hip extension! Squeeze glutes hard at top."
+                phase = "Lockout"
+                score = 98
+            else:
+                feedback = "Drive through heels to extend hips fully."
+                phase = "Thrusting"
+                score = 85
+
+        elif "calf" in ex_name:
+            knee = [landmarks[26].x, landmarks[26].y]
+            ankle = [landmarks[28].x, landmarks[28].y]
+            angle = 135.0
+            feedback = "🔥 Peak heel elevation! Squeeze calves at top of movement."
+            phase = "Peak Elevation"
+            score = 98
+
+        elif "wrist" in ex_name or "farmer" in ex_name:
+            feedback = "Keep forearm and posture stable with controlled movement."
+            phase = "Controlled Hold"
+            score = 95
+            angle = 160.0
 
         elif "lunge" in ex_name:
             hip = [landmarks[24].x, landmarks[24].y]
@@ -187,7 +371,7 @@ def check_exercise_form(exercise_name, frame_base64):
                 phase = "Adjustment"
                 score = 75
                 
-        else: # Bicep Curl
+        else: # Bicep Curl / General
             shoulder = [landmarks[12].x, landmarks[12].y]
             elbow = [landmarks[14].x, landmarks[14].y]
             wrist = [landmarks[16].x, landmarks[16].y]
