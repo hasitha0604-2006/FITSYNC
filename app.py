@@ -1183,17 +1183,7 @@ def is_user_onboarded(user):
     profile = UserProfile.query.filter_by(user_id=user.id).first()
     if not profile:
         return False
-    if profile.onboarding_completed:
-        return True
-    # Auto-flag existing completed profiles as onboarded
-    if profile.name and profile.fitness_goal and profile.weight and profile.height:
-        profile.onboarding_completed = True
-        try:
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
-        return True
-    return False
+    return bool(profile.onboarding_completed)
 
 def require_onboarded_user():
     user = get_current_user()

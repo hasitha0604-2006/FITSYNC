@@ -540,6 +540,57 @@
         showError('Please enter your name.');
         return;
       }
+    } else if (currentStep === 2) {
+      const ageVal = parseInt(document.getElementById('user-age').value);
+      if (isNaN(ageVal) || ageVal < 10 || ageVal > 120) {
+        showError('Please enter a valid age between 10 and 120.');
+        return;
+      }
+      const gender = document.getElementById('user-gender').value;
+      if (!gender) {
+        showError('Please select your gender.');
+        return;
+      }
+    } else if (currentStep === 3) {
+      const heightVal = parseFloat(document.getElementById('user-height').value);
+      if (isNaN(heightVal) || heightVal < 50 || heightVal > 260) {
+        showError('Please enter a valid height between 50 and 260 cm.');
+        return;
+      }
+      const weightVal = parseFloat(document.getElementById('user-weight').value);
+      if (isNaN(weightVal) || weightVal < 20 || weightVal > 400) {
+        showError('Please enter a valid weight between 20 and 400 kg.');
+        return;
+      }
+    } else if (currentStep === 4) {
+      if (!fitnessLevel) {
+        showError('Please select your fitness level.');
+        return;
+      }
+    } else if (currentStep === 5) {
+      if (!fitnessGoal) {
+        showError('Please select your primary fitness goal.');
+        return;
+      }
+    } else if (currentStep === 6) {
+      if (!workoutDays) {
+        showError('Please select how many days per week you plan to train.');
+        return;
+      }
+      if (!workoutDuration) {
+        showError('Please select your target workout duration.');
+        return;
+      }
+    } else if (currentStep === 7) {
+      if (!dietaryPreference) {
+        showError('Please select your dietary preference.');
+        return;
+      }
+    } else if (currentStep === 8) {
+      if (!equipments || equipments.length === 0) {
+        showError('Please select available equipment or select "No Equipment".');
+        return;
+      }
     }
     
     if (currentStep < totalSteps) {
