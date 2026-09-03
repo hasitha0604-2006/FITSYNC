@@ -205,8 +205,8 @@ body.theme-light .text-slate-500 {
 [data-theme="light"] a.bg-emerald-600,
 [data-theme="light"] a.bg-rose-500,
 [data-theme="light"] a.bg-red-600,
-[data-theme="light"] .bg-emerald-500.text-white,
-[data-theme="light"] .bg-emerald-600.text-white,
+[data-theme="light"] .bg-emerald-500,
+[data-theme="light"] .bg-emerald-600,
 [data-theme="light"] .btn-primary-gradient,
 body.theme-light button.bg-emerald-500,
 body.theme-light button.bg-emerald-600,
@@ -218,10 +218,44 @@ body.theme-light a.bg-emerald-500,
 body.theme-light a.bg-emerald-600,
 body.theme-light a.bg-rose-500,
 body.theme-light a.bg-red-600,
-body.theme-light .bg-emerald-500.text-white,
-body.theme-light .bg-emerald-600.text-white,
+body.theme-light .bg-emerald-500,
+body.theme-light .bg-emerald-600,
 body.theme-light .btn-primary-gradient {
-  color: #ffffff !important;
+  color: #090d16 !important;
+  font-weight: 900 !important;
+}
+
+/* Onboarding Step Navigation Button Specific High-Contrast Rules */
+#complete-btn,
+button#complete-btn {
+  background-color: #10b981 !important;
+  color: #090d16 !important;
+  font-weight: 900 !important;
+  opacity: 1 !important;
+  display: flex !important;
+}
+
+#complete-btn span,
+#complete-btn i,
+button#complete-btn span,
+button#complete-btn i {
+  color: #090d16 !important;
+  font-weight: 900 !important;
+}
+
+#next-btn,
+button#next-btn {
+  background-color: #10b981 !important;
+  color: #090d16 !important;
+  font-weight: 900 !important;
+}
+
+#next-btn span,
+#next-btn i,
+button#next-btn span,
+button#next-btn i {
+  color: #090d16 !important;
+  font-weight: 900 !important;
 }
 
 /* Light Theme Inputs & Form Controls */

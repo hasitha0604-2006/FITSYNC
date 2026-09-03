@@ -379,13 +379,13 @@
             type="button"
             onclick="selectOnboardingBudget('{{ item[0] }}')"
             id="budget-{{ item[0]|replace('₹', '')|replace('+', '') }}"
-            class="budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750"
+            class="budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-300 hover:border-emerald-500/40"
           >
-            <span class="font-bold text-sm text-white flex items-center gap-1">
-              <i data-lucide="indian-rupee" class="h-4 w-4 text-primary-400"></i>
+            <span class="budget-title font-bold text-sm text-slate-100 flex items-center gap-1">
+              <i data-lucide="indian-rupee" class="h-4 w-4 text-emerald-400"></i>
               {{ item[0] }} / Day
             </span>
-            <span class="text-[10px] text-slate-450 mt-1 leading-normal">{{ item[1] }}</span>
+            <span class="budget-desc text-[10px] text-slate-400 mt-1 leading-normal">{{ item[1] }}</span>
           </button>
           {% endfor %}
           
@@ -393,13 +393,13 @@
             type="button"
             onclick="selectOnboardingBudget('Custom')"
             id="budget-Custom"
-            class="budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750"
+            class="budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-300 hover:border-emerald-500/40"
           >
-            <span class="font-bold text-sm text-white flex items-center gap-1">
-              <i data-lucide="sliders" class="h-4 w-4 text-primary-400"></i>
+            <span class="budget-title font-bold text-sm text-slate-100 flex items-center gap-1">
+              <i data-lucide="sliders" class="h-4 w-4 text-emerald-400"></i>
               Custom Budget
             </span>
-            <span class="text-[10px] text-slate-450 mt-1 leading-normal">Enter any custom value (e.g. ₹135/day)</span>
+            <span class="budget-desc text-[10px] text-slate-400 mt-1 leading-normal">Enter any custom value (e.g. ₹135/day)</span>
           </button>
         </div>
 
@@ -438,19 +438,20 @@
         type="button"
         id="next-btn"
         onclick="nextStep()"
-        class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-colors ml-auto"
+        class="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-md ml-auto shadow-emerald-500/20"
       >
-        Next <i data-lucide="arrow-right" class="h-4 w-4"></i>
+        <span>Next</span>
+        <i data-lucide="arrow-right" class="h-4 w-4"></i>
       </button>
 
       <button
         type="button"
         id="complete-btn"
         onclick="submitProfile()"
-        class="hidden flex items-center gap-1.5 bg-gradient-to-r from-primary-650 to-primary-500 hover:opacity-90 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all shadow-lg ml-auto"
+        class="hidden flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs px-6 py-3 rounded-xl transition-all shadow-lg ml-auto shadow-emerald-500/20"
       >
-        Build My FitSync Plan
-        <i data-lucide="chevron-right" class="h-4 w-4"></i>
+        <span>Complete Setup</span>
+        <i data-lucide="check" class="h-4 w-4"></i>
       </button>
     </div>
 
@@ -757,12 +758,20 @@
   function selectOnboardingBudget(b) {
     budget = b;
     document.querySelectorAll('.budget-btn').forEach(btn => {
-      btn.className = "budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-450 hover:border-slate-750";
+      btn.className = "budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-slate-800 bg-slate-950/60 text-slate-300 hover:border-emerald-500/40";
+      const title = btn.querySelector('.budget-title');
+      if (title) title.className = "budget-title font-bold text-sm text-slate-100 flex items-center gap-1";
+      const desc = btn.querySelector('.budget-desc');
+      if (desc) desc.className = "budget-desc text-[10px] text-slate-400 mt-1 leading-normal";
     });
 
     const activeBtn = document.getElementById(`budget-${b.replace('₹', '').replace('+', '')}`);
     if (activeBtn) {
-      activeBtn.className = "budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-primary-500 bg-primary-500/10 text-white";
+      activeBtn.className = "budget-btn flex flex-col px-4 py-3 rounded-xl border text-left transition-all border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-md shadow-emerald-500/10";
+      const title = activeBtn.querySelector('.budget-title');
+      if (title) title.className = "budget-title font-bold text-sm text-emerald-400 flex items-center gap-1";
+      const desc = activeBtn.querySelector('.budget-desc');
+      if (desc) desc.className = "budget-desc text-[10px] text-emerald-300/90 font-medium mt-1 leading-normal";
     }
 
     const container = document.getElementById('custom-budget-input-container');
