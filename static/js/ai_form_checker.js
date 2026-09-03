@@ -892,6 +892,213 @@ window.FitSyncAIFormChecker = (function() {
 
         return { score, feedback, phase, primaryAngle: Math.round(metrics.torsoInclineAngle) };
       }
+    },
+
+    // 28. TREE POSE (YOGA)
+    tree_pose: {
+      name: "Tree Pose",
+      type: "yoga",
+      camera_view: "Full body front view showing single-leg balance",
+      position_guidance: "Stand facing camera showing head to feet. Place foot on inner thigh or calf (avoid knee).",
+      required_landmarks: [LANDMARKS.LEFT_HIP, LANDMARKS.RIGHT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.RIGHT_KNEE, LANDMARKS.LEFT_ANKLE, LANDMARKS.RIGHT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['single_leg_balance', 'hip_alignment', 'torso_uprightness', 'standing_knee_stability'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Tree Balance Hold";
+        const sym = metrics.legSymmetryDiff;
+
+        if (sym < 15) {
+          score -= 15;
+          feedback.push("⚠ Lift one leg into tree pose balance. Sole on inner thigh or calf.");
+        } else {
+          feedback.push("● Good balance! Keep standing leg strong and core engaged.");
+        }
+
+        if (metrics.torsoInclineAngle < 150) {
+          score -= 15;
+          feedback.push("⚠ Keep your torso upright and shoulders relaxed.");
+        }
+
+        return { score, feedback, phase, primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 29. DOWNWARD-FACING DOG (YOGA)
+    downward_facing_dog: {
+      name: "Downward-Facing Dog",
+      type: "yoga",
+      camera_view: "Side view showing inverted V shape",
+      position_guidance: "Position camera from the side to capture your hands, shoulders, hips, and heels.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_WRIST, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['inverted_v_alignment', 'spine_lengthening', 'hip_elevation', 'arm_extension'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Downward Dog Hold";
+        const dev = metrics.plankAlignmentDev;
+
+        if (dev < 15) {
+          score -= 20;
+          feedback.push("⚠ Lift your hips higher toward ceiling to form an inverted V shape.");
+        } else {
+          feedback.push("● Excellent Downward Dog! Press floor away and draw heels toward mat.");
+        }
+
+        return { score, feedback, phase, primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 30. WARRIOR II (YOGA)
+    warrior_ii: {
+      name: "Warrior II",
+      type: "yoga",
+      camera_view: "Side or front view showing 90° front knee & extended arms",
+      position_guidance: "Position camera to capture your wide lunge stance and horizontal arms.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.RIGHT_SHOULDER, LANDMARKS.LEFT_WRIST, LANDMARKS.RIGHT_WRIST, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['front_knee_flexion', 'arm_horizontal_extension', 'torso_uprightness', 'hip_openness'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Warrior II Hold";
+        const kneeAngle = metrics.primarySideKneeAngle;
+
+        if (kneeAngle > 125) {
+          score -= 15;
+          feedback.push("● Sink hips lower into front knee lunge (~90°).");
+        } else {
+          feedback.push("● Good Warrior II alignment! Keep front knee aligned over ankle.");
+        }
+
+        if (metrics.armSymmetryDiff > 20) {
+          score -= 15;
+          feedback.push("⚠ Keep both arms parallel to floor, extending in opposite directions.");
+        }
+
+        return { score, feedback, phase, primaryAngle: Math.round(kneeAngle) };
+      }
+    },
+
+    // 31. TRIANGLE POSE (YOGA)
+    triangle_pose: {
+      name: "Triangle Pose",
+      type: "yoga",
+      camera_view: "Front view showing lateral torso bend & stacked arms",
+      position_guidance: "Position camera to capture your lateral hip hinge and vertical arm extension.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.RIGHT_SHOULDER, LANDMARKS.LEFT_WRIST, LANDMARKS.RIGHT_WRIST, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['lateral_torso_fold', 'arm_vertical_stacking', 'leg_extension'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Triangle Stretch Hold";
+
+        feedback.push("● Open chest and stack top arm vertically over shoulder.");
+        return { score, feedback, phase, primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 32. CAT-COW (YOGA FLOW)
+    cat_cow: {
+      name: "Cat-Cow Pose",
+      type: "yoga",
+      camera_view: "Side view showing tabletop spine arching & rounding",
+      position_guidance: "Position camera at side profile on mat to view spine flow from hands and knees.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE],
+      is_hold_exercise: false,
+      rep_thresholds: { start: 165, peak: 130 },
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Tabletop Flow";
+        const angle = metrics.torsoInclineAngle;
+
+        if (angle > 160) {
+          phase = "Cow Pose (Arch)";
+          feedback.push("● Cow Pose: Inhale, dip belly down, lift chest and gaze up.");
+        } else if (angle < 135) {
+          phase = "Cat Pose (Round)";
+          feedback.push("● Cat Pose: Exhale, press floor away, arch spine and tuck chin.");
+        } else {
+          phase = "Spinal Transition";
+          feedback.push("● Move smoothly between Cat and Cow with breath.");
+        }
+
+        return { score, feedback, phase, primaryAngle: Math.round(angle) };
+      }
+    },
+
+    // 33. COBRA POSE (YOGA)
+    cobra_pose: {
+      name: "Cobra Pose",
+      type: "yoga",
+      camera_view: "Side view showing chest lift & lower back arch",
+      position_guidance: "Position camera from side on mat to capture torso lift off mat.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_ELBOW],
+      is_hold_exercise: true,
+      rules: ['chest_elevation', 'elbow_tuck', 'shoulder_depression'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Cobra Back Extension";
+
+        feedback.push("● Lift chest off mat using back muscles. Keep shoulders down and soft elbows.");
+        return { score, feedback, phase, primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 34. CHILD'S POSE (YOGA)
+    child_pose: {
+      name: "Child's Pose",
+      type: "yoga",
+      camera_view: "Side view showing hip fold & extended arms",
+      position_guidance: "Position camera at side to capture hips to heels resting fold.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE],
+      is_hold_exercise: true,
+      rules: ['resting_fold', 'arm_extension', 'breath_relaxation'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Rest hips back on heels. Breathe deeply and release spine tension.");
+        return { score, feedback, phase: "Resting Fold Hold", primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 35. MOUNTAIN POSE (YOGA)
+    mountain_pose: {
+      name: "Mountain Pose",
+      type: "yoga",
+      camera_view: "Full body front view showing standing alignment",
+      position_guidance: "Stand facing camera showing head to feet with tall posture.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.RIGHT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['upright_posture', 'weight_distribution', 'shoulder_relaxation'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Stand tall, weight distributed evenly across both feet. Engage core.");
+        return { score, feedback, phase: "Mountain Pose Hold", primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 36. CORPSE POSE (YOGA)
+    corpse_pose: {
+      name: "Corpse Pose",
+      type: "yoga",
+      camera_view: "Side or top view showing full body relaxation",
+      position_guidance: "Lie flat on back on mat with arms at side.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['full_body_relaxation', 'mindfulness_hold'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Savasana relaxation. Release all muscular effort and breathe naturally.");
+        return { score, feedback, phase: "Savasana Hold", primaryAngle: 180 };
+      }
     }
   };
 
@@ -902,6 +1109,18 @@ window.FitSyncAIFormChecker = (function() {
     const cat = (categoryStr || '').toLowerCase();
     const name = (exerciseName || '').toLowerCase();
 
+    if (cat.includes('yoga') || name.includes('pose') || name.includes('tadasana') || name.includes('dog') || name.includes('warrior')) {
+      if (name.includes('tree') || name.includes('vrksasana')) return EXERCISE_CONFIGS.tree_pose;
+      if (name.includes('dog') || name.includes('downward')) return EXERCISE_CONFIGS.downward_facing_dog;
+      if (name.includes('warrior_ii') || name.includes('warrior ii') || name.includes('warrior_2')) return EXERCISE_CONFIGS.warrior_ii;
+      if (name.includes('triangle') || name.includes('trikonasana')) return EXERCISE_CONFIGS.triangle_pose;
+      if (name.includes('cat') || name.includes('cow')) return EXERCISE_CONFIGS.cat_cow;
+      if (name.includes('cobra') || name.includes('bhujangasana')) return EXERCISE_CONFIGS.cobra_pose;
+      if (name.includes('child') || name.includes('balasana')) return EXERCISE_CONFIGS.child_pose;
+      if (name.includes('mountain') || name.includes('tadasana')) return EXERCISE_CONFIGS.mountain_pose;
+      if (name.includes('corpse') || name.includes('savasana')) return EXERCISE_CONFIGS.corpse_pose;
+      return EXERCISE_CONFIGS.tree_pose;
+    }
     if (name.includes('crunch') || name.includes('twist') || name.includes('leg_raise') || cat.includes('abs')) {
       if (name.includes('bicycle')) return EXERCISE_CONFIGS.bicycle_crunch;
       if (name.includes('twist')) return EXERCISE_CONFIGS.russian_twist;
@@ -988,7 +1207,24 @@ window.FitSyncAIFormChecker = (function() {
     if (!str) return 'squat';
     let s = str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '_');
     if (EXERCISE_CONFIGS[s]) return s;
-    // Common aliases
+    // Common aliases & Yoga matches
+    if (s.includes('tree') || s.includes('vrksasana')) return 'tree_pose';
+    if (s.includes('downward') || s.includes('adho_mukha')) return 'downward_facing_dog';
+    if (s.includes('warrior_ii') || s.includes('warrior_2')) return 'warrior_ii';
+    if (s.includes('warrior_i') || s.includes('warrior_1')) return 'warrior_i';
+    if (s.includes('triangle') || s.includes('trikonasana')) return 'triangle_pose';
+    if (s.includes('cat_cow') || s.includes('marjaryasana')) return 'cat_cow';
+    if (s.includes('cobra') || s.includes('bhujangasana')) return 'cobra_pose';
+    if (s.includes('child') || s.includes('balasana')) return 'child_pose';
+    if (s.includes('mountain') || s.includes('tadasana')) return 'mountain_pose';
+    if (s.includes('corpse') || s.includes('savasana')) return 'corpse_pose';
+    if (s.includes('chair') || s.includes('utkatasana')) return 'chair_pose';
+    if (s.includes('boat') || s.includes('navasana')) return 'boat_pose';
+    if (s.includes('seated_forward') || s.includes('paschimottanasana')) return 'seated_forward_fold';
+    if (s.includes('butterfly') || s.includes('baddha')) return 'butterfly_pose';
+    if (s.includes('low_lunge') || s.includes('anjaneyasana')) return 'low_lunge';
+    if (s.includes('crescent') || s.includes('high_lunge')) return 'crescent_lunge';
+
     if (s.includes('bench_press') || s.includes('chest_press')) return 'bench_press';
     if (s.includes('incline')) return 'incline_bench_press';
     if (s.includes('dumbbell_bench') || s.includes('db_bench')) return 'dumbbell_bench_press';
@@ -1095,8 +1331,22 @@ window.FitSyncAIFormChecker = (function() {
         this.isCameraRunning = true;
         return true;
       } catch (err) {
-        console.warn("[FitSync AI] Camera access denied or locked. Launching AI Simulator.", err);
-        return this.startSimulation(telemetryCb);
+        console.warn("[FitSync AI] Camera access denied or locked.", err);
+        if (telemetryCb) {
+          telemetryCb({
+            status: "error",
+            exercise: this.activeConfig ? this.activeConfig.name : 'Exercise',
+            score: null,
+            angle: 0,
+            phase: "Camera Access Error",
+            reps: 0,
+            feedback: ["Camera access is required for AI Form Check."],
+            simulated: false,
+            cameraDenied: true,
+            landmarkWarning: "Camera access is required for AI Form Check."
+          });
+        }
+        return false;
       }
     }
 
@@ -1237,16 +1487,16 @@ window.FitSyncAIFormChecker = (function() {
       });
 
       if (lowVisibilityCount > 0) {
-        const warnMsg = missingLandmarkName || "Unable to clearly detect the required body position. Please adjust your camera.";
+        const warnMsg = missingLandmarkName || "Your position cannot be detected clearly. Please adjust your camera position.";
         if (this.onTelemetryUpdate) {
           this.onTelemetryUpdate({
             status: "warning",
             exercise: this.activeConfig.name,
-            score: 50,
+            score: null,
             angle: 0,
             phase: "Occlusion / Adjust Camera",
             reps: this.activeConfig.is_hold_exercise ? `Hold: ${Math.round(this.holdSeconds || 0)}s` : this.repCount,
-            feedback: [warnMsg],
+            feedback: ["Your position cannot be detected clearly.", "Please adjust your camera position."],
             simulated: false,
             landmarkWarning: warnMsg
           });

@@ -551,17 +551,67 @@ EXACT_TODAYS_WORKOUT_OPTIONS = {
     "legs_only": {"title": "Legs Only", "groups": ["legs"], "combined": False},
     "legs_shoulders": {"title": "Legs + Shoulders", "groups": ["legs", "shoulders"], "combined": True},
     "shoulders_only": {"title": "Shoulders Only", "groups": ["shoulders"], "combined": False},
-    "cardio": {"title": "Cardio", "groups": ["cardio"], "combined": False, "is_cardio": True}
+    "cardio": {"title": "Cardio", "groups": ["cardio"], "combined": False, "is_cardio": True},
+    "abs": {"title": "Abs", "groups": ["abs"], "combined": False},
+    "quadriceps": {"title": "Quadriceps", "groups": ["quadriceps"], "combined": False},
+    "hamstrings": {"title": "Hamstrings", "groups": ["hamstrings"], "combined": False},
+    "glutes": {"title": "Glutes", "groups": ["glutes"], "combined": False},
+    "calves": {"title": "Calves", "groups": ["calves"], "combined": False},
+    "forearms": {"title": "Forearms", "groups": ["forearms"], "combined": False}
+}
+
+EXACT_YOGA_OPTIONS = {
+    "beginner_yoga": {
+        "title": "Beginner Yoga",
+        "poses": ["Mountain Pose", "Child's Pose", "Cat-Cow Pose", "Downward-Facing Dog", "Cobra Pose", "Seated Forward Fold", "Corpse Pose"]
+    },
+    "full_body_yoga": {
+        "title": "Full Body Yoga",
+        "poses": ["Mountain Pose", "Downward-Facing Dog", "Warrior I", "Warrior II", "Chair Pose", "Bridge Pose", "Plank Pose", "Corpse Pose"]
+    },
+    "flexibility": {
+        "title": "Flexibility",
+        "poses": ["Seated Forward Fold", "Butterfly Pose", "Low Lunge", "Triangle Pose", "Downward-Facing Dog", "Child's Pose", "Corpse Pose"]
+    },
+    "strength_balance": {
+        "title": "Strength & Balance",
+        "poses": ["Tree Pose", "Warrior I", "Warrior II", "Chair Pose", "Boat Pose", "Side Plank Pose", "Crescent Lunge"]
+    },
+    "stress_relief": {
+        "title": "Stress Relief",
+        "poses": ["Child's Pose", "Cat-Cow Pose", "Seated Forward Fold", "Butterfly Pose", "Corpse Pose"]
+    },
+    "morning_yoga": {
+        "title": "Morning Yoga",
+        "poses": ["Mountain Pose", "Cat-Cow Pose", "Low Lunge", "Downward-Facing Dog", "Warrior I", "Cobra Pose"]
+    },
+    "back_spine": {
+        "title": "Back & Spine",
+        "poses": ["Cat-Cow Pose", "Cobra Pose", "Upward-Facing Dog", "Bridge Pose", "Seated Forward Fold", "Child's Pose"]
+    },
+    "hip_opening": {
+        "title": "Hip Opening",
+        "poses": ["Low Lunge", "Crescent Lunge", "Butterfly Pose", "Warrior II", "Child's Pose"]
+    },
+    "recovery_yoga": {
+        "title": "Recovery Yoga",
+        "poses": ["Child's Pose", "Cat-Cow Pose", "Butterfly Pose", "Seated Forward Fold", "Corpse Pose"]
+    }
 }
 
 def _normalize_option_key(focus_str):
-    s = (focus_str or "").strip().lower().replace(" + ", "_").replace(" ", "_").replace("-", "_")
+    s = (focus_str or "").strip().lower().replace(" + ", "_").replace(" & ", "_").replace(" ", "_").replace("-", "_")
     if s in EXACT_TODAYS_WORKOUT_OPTIONS:
-        return s
+        return s, "gym"
+    if s in EXACT_YOGA_OPTIONS:
+        return s, "yoga"
     for key, cfg in EXACT_TODAYS_WORKOUT_OPTIONS.items():
         if key == s or cfg["title"].lower() == focus_str.strip().lower() or key.replace("_only", "") == s:
-            return key
-    return "chest_only"
+            return key, "gym"
+    for key, cfg in EXACT_YOGA_OPTIONS.items():
+        if key == s or cfg["title"].lower() == focus_str.strip().lower():
+            return key, "yoga"
+    return "chest_only", "gym"
 
 def _matches_muscle_group(ex, group_name):
     g = group_name.lower().strip()
@@ -591,31 +641,48 @@ def _matches_muscle_group(ex, group_name):
         return cat in ["shoulders", "deltoids"] or any(w in primary_str for w in ["shoulder", "deltoid", "deltoids"])
     elif g == "cardio":
         return cat == "cardio" or "cardio" in primary_str
+    elif g == "abs":
+        return cat in ["abs", "core"] or any(w in primary_str for w in ["abs", "abdominals", "core", "oblique", "rectus abdominis"])
+    elif g == "quadriceps":
+        return cat in ["quadriceps", "quads"] or any(w in primary_str for w in ["quad", "quadriceps", "quads", "rectus femoris"]) or (cat == "legs" and any(w in ex_name for w in ["squat", "lunge", "leg extension", "leg press", "wall sit"]))
+    elif g == "hamstrings":
+        return cat == "hamstrings" or any(w in primary_str for w in ["hamstring", "hamstrings", "biceps femoris"]) or (cat == "legs" and any(w in ex_name for w in ["leg curl", "romanian", "rdl", "good morning", "stiff leg"]))
+    elif g == "glutes":
+        return cat == "glutes" or any(w in primary_str for w in ["glute", "glutes", "gluteus"]) or (cat == "legs" and any(w in ex_name for w in ["thrust", "bridge", "kickback"]))
+    elif g == "calves":
+        return cat in ["calves", "calf"] or any(w in primary_str for w in ["calf", "calves", "gastrocnemius", "soleus"]) or any(w in ex_name for w in ["calf", "calves"])
+    elif g == "forearms":
+        return cat == "forearms" or any(w in primary_str for w in ["forearm", "forearms", "brachioradialis", "wrist"]) or any(w in ex_name for w in ["wrist", "farmer", "dead hang", "pinch"])
     return False
 
 def filter_exercises_for_focus(all_exercises, focus_str, allowed_equipment=None):
     """
-    Selects exercises specifically targeting the chosen single muscle, combined split, or cardio.
-    Strictly respects muscle classification and primary targets.
+    Selects exercises specifically targeting the chosen single muscle, combined split, cardio, or yoga category.
+    Strictly respects classification and primary targets.
     """
-    opt_key = _normalize_option_key(focus_str)
-    cfg = EXACT_TODAYS_WORKOUT_OPTIONS.get(opt_key, EXACT_TODAYS_WORKOUT_OPTIONS["chest_only"])
-    groups = cfg["groups"]
+    opt_key, mode = _normalize_option_key(focus_str)
+    if mode == "yoga":
+        cfg = EXACT_YOGA_OPTIONS.get(opt_key, EXACT_YOGA_OPTIONS["beginner_yoga"])
+        pose_names = [p.lower() for p in cfg["poses"]]
+        matching = [ex for ex in all_exercises if (ex.get("name") or "").lower() in pose_names or (ex.get("category") or "").lower().startswith("yoga")]
+    else:
+        cfg = EXACT_TODAYS_WORKOUT_OPTIONS.get(opt_key, EXACT_TODAYS_WORKOUT_OPTIONS["chest_only"])
+        groups = cfg["groups"]
 
-    matching = []
-    for ex in all_exercises:
-        ex_eq = ex.get("equipment", "No Equipment")
-        if allowed_equipment and ex_eq not in allowed_equipment and "No Equipment" not in allowed_equipment:
-            continue
-
-        if any(_matches_muscle_group(ex, g) for g in groups):
-            matching.append(ex)
-
-    if not matching and allowed_equipment:
-        # Retry without equipment constraint if empty
+        matching = []
         for ex in all_exercises:
+            ex_eq = ex.get("equipment", "No Equipment")
+            if allowed_equipment and ex_eq not in allowed_equipment and "No Equipment" not in allowed_equipment:
+                continue
+
             if any(_matches_muscle_group(ex, g) for g in groups):
                 matching.append(ex)
+
+        if not matching and allowed_equipment:
+            # Retry without equipment constraint if empty
+            for ex in all_exercises:
+                if any(_matches_muscle_group(ex, g) for g in groups):
+                    matching.append(ex)
 
     # Deduplicate while preserving order
     seen = set()
@@ -631,25 +698,20 @@ def filter_exercises_for_focus(all_exercises, focus_str, allowed_equipment=None)
 
 def generate_custom_today_workout(plan, today_day_name, focus_str, duration_mins, env_override, user_profile, equipments, all_exercises, db_session, WorkoutDayModel, WorkoutExerciseModel):
     """
-    Dynamically generates today's workout for one of the EXACT 10 workout selections:
-    1. Chest Only
-    2. Chest + Triceps
-    3. Triceps Only
-    4. Back Only
-    5. Back + Biceps
-    6. Biceps Only
-    7. Legs Only
-    8. Legs + Shoulders
-    9. Shoulders Only
-    10. Cardio
+    Dynamically generates today's workout for any of the 16 Gym selections or 9 Yoga categories.
     """
-    opt_key = _normalize_option_key(focus_str)
-    cfg = EXACT_TODAYS_WORKOUT_OPTIONS.get(opt_key, EXACT_TODAYS_WORKOUT_OPTIONS["chest_only"])
-    raw_str = (focus_str or "").strip()
-    if raw_str.lower() in [cfg["title"].lower(), opt_key]:
+    opt_key, mode = _normalize_option_key(focus_str)
+    
+    if mode == "yoga":
+        cfg = EXACT_YOGA_OPTIONS.get(opt_key, EXACT_YOGA_OPTIONS["beginner_yoga"])
         canonical_title = cfg["title"]
     else:
-        canonical_title = raw_str.title()
+        cfg = EXACT_TODAYS_WORKOUT_OPTIONS.get(opt_key, EXACT_TODAYS_WORKOUT_OPTIONS["chest_only"])
+        raw_str = (focus_str or "").strip()
+        if raw_str.lower() in [cfg["title"].lower(), opt_key]:
+            canonical_title = cfg["title"]
+        else:
+            canonical_title = raw_str.title()
 
     today_day = WorkoutDayModel.query.filter_by(workout_plan_id=plan.id, day_name=today_day_name).first()
     if not today_day:
@@ -675,59 +737,74 @@ def generate_custom_today_workout(plan, today_day_name, focus_str, duration_mins
     allowed_eq = _get_allowed_equipment([eq.equipment_name for eq in equipments] if equipments else [], target_env)
 
     mins = int(duration_mins) if duration_mins else 45
-    if mins <= 20:
-        count = 3
+    if mins <= 25:
+        target_count_per_group = 5
         default_sets = 3
-    elif mins <= 35:
-        count = 4
+    elif mins <= 45:
+        target_count_per_group = 6
         default_sets = 3
-    elif mins <= 50:
-        count = 5
-        default_sets = 4
     else:
-        count = 6
+        target_count_per_group = 7
         default_sets = 4
 
     selected_exercises = []
-    groups = cfg["groups"]
 
-    if cfg.get("combined") and len(groups) == 2:
-        g1, g2 = groups[0], groups[1]
-        c1 = [ex for ex in all_exercises if _matches_muscle_group(ex, g1) and (not allowed_eq or ex.get("equipment") in allowed_eq or ex.get("equipment") == "No Equipment")]
-        if not c1:
-            c1 = [ex for ex in all_exercises if _matches_muscle_group(ex, g1)]
-        
-        c2 = [ex for ex in all_exercises if _matches_muscle_group(ex, g2) and (not allowed_eq or ex.get("equipment") in allowed_eq or ex.get("equipment") == "No Equipment")]
-        if not c2:
-            c2 = [ex for ex in all_exercises if _matches_muscle_group(ex, g2)]
-
-        count_g1 = (count + 1) // 2
-        count_g2 = count - count_g1
-
+    if mode == "yoga":
+        desired_poses = cfg["poses"]
         seen_ids = set()
-        for ex in c1[:count_g1]:
-            ex_id = ex.get("id") or ex.get("name")
-            if ex_id not in seen_ids:
-                seen_ids.add(ex_id)
-                selected_exercises.append(ex)
-
-        for ex in c2[:count_g2]:
-            ex_id = ex.get("id") or ex.get("name")
-            if ex_id not in seen_ids:
-                seen_ids.add(ex_id)
-                selected_exercises.append(ex)
+        for pose_name in desired_poses:
+            match = next((ex for ex in all_exercises if ex.get("name", "").lower() == pose_name.lower()), None)
+            if not match:
+                match = next((ex for ex in all_exercises if pose_name.lower() in ex.get("name", "").lower()), None)
+            if match:
+                ex_id = match.get("id") or match.get("name")
+                if ex_id not in seen_ids:
+                    seen_ids.add(ex_id)
+                    ex_copy = dict(match)
+                    ex_copy["target_group"] = "Yoga Pose"
+                    selected_exercises.append(ex_copy)
     else:
-        g = groups[0]
-        candidates = [ex for ex in all_exercises if _matches_muscle_group(ex, g) and (not allowed_eq or ex.get("equipment") in allowed_eq or ex.get("equipment") == "No Equipment")]
-        if not candidates:
-            candidates = [ex for ex in all_exercises if _matches_muscle_group(ex, g)]
-        
-        seen_ids = set()
-        for ex in candidates[:count]:
-            ex_id = ex.get("id") or ex.get("name")
-            if ex_id not in seen_ids:
-                seen_ids.add(ex_id)
-                selected_exercises.append(ex)
+        groups = cfg["groups"]
+        if cfg.get("combined") and len(groups) == 2:
+            g1, g2 = groups[0], groups[1]
+            c1 = [ex for ex in all_exercises if _matches_muscle_group(ex, g1) and (not allowed_eq or ex.get("equipment") in allowed_eq or ex.get("equipment") == "No Equipment")]
+            if len(c1) < target_count_per_group:
+                c1 = [ex for ex in all_exercises if _matches_muscle_group(ex, g1)]
+            
+            c2 = [ex for ex in all_exercises if _matches_muscle_group(ex, g2) and (not allowed_eq or ex.get("equipment") in allowed_eq or ex.get("equipment") == "No Equipment")]
+            if len(c2) < target_count_per_group:
+                c2 = [ex for ex in all_exercises if _matches_muscle_group(ex, g2)]
+
+            seen_ids = set()
+            for ex in c1[:target_count_per_group]:
+                ex_id = ex.get("id") or ex.get("name")
+                if ex_id not in seen_ids:
+                    seen_ids.add(ex_id)
+                    ex_copy = dict(ex)
+                    ex_copy["target_group"] = g1.title()
+                    selected_exercises.append(ex_copy)
+
+            for ex in c2[:target_count_per_group]:
+                ex_id = ex.get("id") or ex.get("name")
+                if ex_id not in seen_ids:
+                    seen_ids.add(ex_id)
+                    ex_copy = dict(ex)
+                    ex_copy["target_group"] = g2.title()
+                    selected_exercises.append(ex_copy)
+        else:
+            g = groups[0]
+            candidates = [ex for ex in all_exercises if _matches_muscle_group(ex, g) and (not allowed_eq or ex.get("equipment") in allowed_eq or ex.get("equipment") == "No Equipment")]
+            if len(candidates) < target_count_per_group:
+                candidates = [ex for ex in all_exercises if _matches_muscle_group(ex, g)]
+            
+            seen_ids = set()
+            for ex in candidates[:target_count_per_group]:
+                ex_id = ex.get("id") or ex.get("name")
+                if ex_id not in seen_ids:
+                    seen_ids.add(ex_id)
+                    ex_copy = dict(ex)
+                    ex_copy["target_group"] = g.title() if g != "cardio" else "Cardio"
+                    selected_exercises.append(ex_copy)
 
     status_msg = f"Successfully generated custom {canonical_title} workout ({mins} mins)."
     if not selected_exercises:
