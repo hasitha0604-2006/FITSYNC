@@ -232,7 +232,11 @@ button#complete-btn {
   color: #090d16 !important;
   font-weight: 900 !important;
   opacity: 1 !important;
-  display: flex !important;
+}
+
+#complete-btn.hidden,
+button#complete-btn.hidden {
+  display: none !important;
 }
 
 #complete-btn span,
@@ -248,6 +252,11 @@ button#next-btn {
   background-color: #10b981 !important;
   color: #090d16 !important;
   font-weight: 900 !important;
+}
+
+#next-btn.hidden,
+button#next-btn.hidden {
+  display: none !important;
 }
 
 #next-btn span,
