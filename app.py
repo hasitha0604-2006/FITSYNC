@@ -1185,8 +1185,8 @@ def is_user_onboarded(user):
         return False
     if profile.onboarding_completed:
         return True
-    # Auto-flag onboarded if profile attributes exist
-    if profile.name or profile.fitness_goal or profile.height or profile.weight:
+    # Auto-flag existing completed profiles as onboarded
+    if profile.name and profile.fitness_goal and profile.weight and profile.height:
         profile.onboarding_completed = True
         try:
             db.session.commit()
