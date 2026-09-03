@@ -1,202 +1,253 @@
 /**
- * FitSync AI — Interactive Workout Animation & Kinematic Player
- * Renders inline 60 FPS vector exercise animations, exercise-specific skeletal movement,
- * step-by-step form execution guides, and click-to-play video/animation controls.
+ * FitSync AI — Exercise-Specific Animation & Video Player Engine
+ * 
+ * Strict architectural rules:
+ * 1. Every exercise is bound to its own canonical media asset (exercise_id / slug).
+ * 2. Never show generic or wrong exercise video fallbacks.
+ * 3. Graceful, professional fallback UI when video is unavailable.
+ * 4. Strict video switching: previous video halts immediately upon exercise change.
+ * 5. Full HTML5 controls: autoplay (muted), loop, playsinline, controls, speed, replay, fullscreen.
  */
 
 (function(window) {
   'use strict';
 
-  class BiomechanicalCanvasPlayer {
+  class FitSyncExercisePlayer {
     constructor() {
       this.container = null;
-      this.canvas = null;
-      this.ctx = null;
       this.currentEx = null;
-      this.animData = null;
-      this.isPlaying = true;
-      this.speed = 1.0;
-      this.progress = 0.0;
-      this.currentRep = 1;
-      this.targetReps = 10;
-      this.animationFrameId = null;
-      this.lastTimestamp = null;
-      this.slug = 'bench_press';
+      this.videoElement = null;
+      this.isPlaying = false;
+      this.playbackRate = 1.0;
+      this.isMuted = true;
+      this.containerId = null;
+      this._timeUpdateHandler = null;
+      this._errorHandler = null;
     }
 
-    async mount(containerId, exerciseData) {
-      this.container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
-      if (!this.container) return;
-
-      this.currentEx = exerciseData || { name: 'Exercise', category: 'General' };
-      this.progress = 0.0;
-      this.currentRep = 1;
-      this.isPlaying = true;
-      this.speed = 1.0;
-
-      // Compute slug
-      const nameStr = (this.currentEx.name || '').toLowerCase();
-      this.slug = nameStr.replace(/ /g, '_').replace(/-/g, '_');
-
-      // Build DOM immediately so UI renders without delay
-      this.buildDOM();
-      this.initCanvas();
-
-      // Safely load inline SVG graphic asset
-      this.loadInlineSvgAsset();
-
-      // Safely fetch animation config from API if bridge available
-      if (window.FitSyncAnimationBridge) {
+    /**
+     * Stop and cleanup any currently running video or animations
+     */
+    destroy() {
+      if (this.videoElement) {
         try {
-          const config = await window.FitSyncAnimationBridge.fetchAnimationConfig(this.slug || 1);
-          if (config) {
-            this.animData = config;
-          }
+          this.videoElement.pause();
+          this.videoElement.removeAttribute('src');
+          this.videoElement.load();
         } catch (e) {
-          console.warn("[AnimationPlayer] Remote config fallback activated.", e);
+          // Ignore teardown errors
+        }
+        if (this._timeUpdateHandler && this.videoElement) {
+          this.videoElement.removeEventListener('timeupdate', this._timeUpdateHandler);
+        }
+        if (this._errorHandler && this.videoElement) {
+          this.videoElement.removeEventListener('error', this._errorHandler);
+        }
+        this.videoElement = null;
+      }
+      this.isPlaying = false;
+      if (this.container) {
+        this.container.innerHTML = '';
+      }
+    }
+
+    /**
+     * Normalize and validate exercise data
+     */
+    sanitizeExerciseData(ex) {
+      if (!ex) return null;
+      const id = ex.id || ex.exercise_id || null;
+      const name = ex.name || 'Unknown Exercise';
+      const slug = ex.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+      const category = ex.category || 'General';
+      const primaryMuscles = Array.isArray(ex.primary_muscles) ? ex.primary_muscles : (ex.primary_muscles ? [ex.primary_muscles] : [category]);
+      const secondaryMuscles = Array.isArray(ex.secondary_muscles) ? ex.secondary_muscles : [];
+      const primaryMuscle = ex.primary_muscle || (primaryMuscles.length ? primaryMuscles[0] : category);
+      
+      const instructions = Array.isArray(ex.instructions) ? ex.instructions : (typeof ex.instructions === 'string' && ex.instructions ? ex.instructions.split('\n') : []);
+      const commonMistakes = Array.isArray(ex.common_mistakes) ? ex.common_mistakes : (typeof ex.common_mistakes === 'string' && ex.common_mistakes ? ex.common_mistakes.split('\n') : []);
+      const safetyNotes = ex.safety_notes || 'Maintain controlled form throughout the movement.';
+
+      return {
+        id: id,
+        exercise_id: id,
+        name: name,
+        slug: slug,
+        category: category,
+        primary_muscles: primaryMuscles,
+        secondary_muscles: secondaryMuscles,
+        primary_muscle: primaryMuscle,
+        equipment: ex.equipment || 'Gym Equipment',
+        difficulty: ex.difficulty || 'Intermediate',
+        instructions: instructions,
+        common_mistakes: commonMistakes,
+        safety_notes: safetyNotes,
+        start_pos: ex.start_pos || 'Establish solid starting posture and anchor points.',
+        movement: ex.movement || 'Execute concentric & eccentric motion under strict control.',
+        end_pos: ex.end_pos || 'Hold contraction at peak and return to starting alignment.',
+        working_location: ex.working_location || primaryMuscle,
+        joint_action: ex.joint_action || 'Joint Flexion & Extension',
+        demo_video: ex.demo_video || null,
+        media_path: ex.media_path || null,
+        media_type: ex.media_type || 'mp4',
+        media_status: ex.media_status || (ex.demo_video ? 'available' : 'missing'),
+        media_available: Boolean(ex.media_available || (ex.demo_video && ex.media_status === 'available'))
+      };
+    }
+
+    /**
+     * Mount exercise player in container element
+     */
+    async mount(containerId, exerciseData) {
+      this.containerId = containerId;
+      this.container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
+      if (!this.container) {
+        console.warn(`[FitSyncPlayer] Container element #${containerId} not found.`);
+        return;
+      }
+
+      // Step 1: Tear down previous video immediately to prevent wrong video bugs
+      this.destroy();
+
+      // Step 2: If exercise data is an ID, fetch canonical metadata from API
+      if (typeof exerciseData === 'number' || (typeof exerciseData === 'string' && !isNaN(exerciseData))) {
+        try {
+          const res = await fetch(`/api/exercises/${exerciseData}`);
+          if (res.ok) {
+            const json = await res.json();
+            exerciseData = json.exercise || json;
+          }
+        } catch (err) {
+          console.error('[FitSyncPlayer] Failed to fetch exercise metadata:', err);
         }
       }
 
-      this.startAnimationLoop();
+      this.currentEx = this.sanitizeExerciseData(exerciseData);
+      if (!this.currentEx) {
+        this.renderUnavailableFallback('Exercise details not found.');
+        return;
+      }
+
+      // Step 3: Validate video asset availability
+      const canonicalSlug = this.currentEx.slug;
+      const expectedVideoPath = `/static/exercise_media/${canonicalSlug}.mp4`;
+      const videoSource = this.currentEx.demo_video || (this.currentEx.media_available ? expectedVideoPath : null);
+
+      if (this.currentEx.media_available && videoSource) {
+        this.renderVideoPlayer(videoSource);
+      } else {
+        this.renderUnavailableFallback();
+      }
     }
 
-    buildDOM() {
-      const primaryMuscle = (this.animData && this.animData.primary_muscles && this.animData.primary_muscles.length)
-        ? this.animData.primary_muscles.join(', ')
-        : (this.currentEx.primary_muscle || this.currentEx.category || 'Target Muscle');
+    /**
+     * Render responsive HTML5 video player with custom controls
+     */
+    renderVideoPlayer(videoSrc) {
+      const ex = this.currentEx;
+      const primaryMuscle = ex.primary_muscle || ex.category;
 
-      const secondaryMuscles = (this.animData && this.animData.secondary_muscles && this.animData.secondary_muscles.length)
-        ? this.animData.secondary_muscles.join(', ')
-        : 'Stabilizer Muscles';
+      const playerHtml = `
+        <div class="fitsync-video-wrapper relative w-full bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex flex-col select-none">
+          <!-- Video Viewport Container (16:9 Aspect Ratio) -->
+          <div class="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden group">
+            <video
+              id="fitsync-active-video"
+              class="w-full h-full object-contain cursor-pointer"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              aria-label="Demonstration video for ${ex.name}"
+            >
+              <source src="${videoSrc}" type="video/mp4" />
+              Your browser does not support HTML5 video playback.
+            </video>
 
-      const instructions = this.currentEx.instructions || [
-        "1. Assume correct starting stance and secure grip.",
-        "2. Inhale and lower the weight under strict control over 2 seconds.",
-        "3. Pause at the bottom transition for full muscular stretch.",
-        "4. Exhale and drive explosively upward back to top lockout.",
-        "5. Squeeze target muscles at peak contraction."
-      ];
-
-      const instructionsList = Array.isArray(instructions) 
-        ? instructions 
-        : (typeof instructions === 'string' ? instructions.split('.').filter(s => s.trim().length > 0) : []);
-
-      const html = `
-        <div class="biomech-player relative w-full h-full flex flex-col justify-between select-none">
-          
-          <!-- CLICKABLE ANIMATION STAGE / VIEWPORT -->
-          <div 
-            id="biomech-stage" 
-            class="relative flex-1 w-full min-h-[230px] max-h-[290px] bg-slate-950/90 rounded-2xl border border-slate-800 hover:border-emerald-500/40 overflow-hidden flex items-center justify-center p-2 cursor-pointer group transition-all shadow-xl"
-            title="Click animation viewport to Play / Pause"
-          >
-            <!-- Inline Vector SVG Graphic Asset Container -->
-            <div id="biomech-svg-container" class="absolute inset-0 w-full h-full flex items-center justify-center p-2 pointer-events-none opacity-90 transition-opacity">
-              <!-- Inline SVG fetched dynamically -->
-            </div>
-
-            <!-- 2D Canvas Joint Kinematic Layer -->
-            <canvas id="biomech-canvas" width="400" height="280" class="w-full h-full max-h-[270px] object-contain relative z-10 rounded-xl pointer-events-none"></canvas>
-
-            <!-- Click Play / Pause Feedback Overlay -->
-            <div id="biomech-click-overlay" class="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px] z-30 flex items-center justify-center opacity-0 transition-opacity pointer-events-none">
-              <div class="px-5 py-3 rounded-2xl bg-emerald-500/90 text-slate-950 font-black text-sm flex items-center gap-2 shadow-2xl scale-95 transition-transform" id="biomech-overlay-text">
-                <span id="biomech-overlay-icon">▶</span>
-                <span id="biomech-overlay-msg">PLAYING</span>
-              </div>
-            </div>
-
-            <!-- HUD Overlay: Phase & Real-Time Breathing Cue -->
-            <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-20">
-              <div class="flex items-center gap-2">
-                <span id="biomech-phase-badge" class="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-500/20 border border-emerald-500/40 px-2.5 py-0.5 rounded-full backdrop-blur-md shadow-sm">
-                  STARTING SETUP
-                </span>
-                <span id="biomech-rep-badge" class="text-[10px] font-bold text-slate-300 bg-slate-900/90 px-2.5 py-0.5 rounded-full border border-slate-700 backdrop-blur-md">
-                  REP 1 / 10
-                </span>
-              </div>
-              <div id="biomech-breath-cue" class="text-[11px] font-extrabold text-teal-300 flex items-center gap-1.5 bg-slate-950/90 border border-teal-500/30 px-2.5 py-1 rounded-lg backdrop-blur-md shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                <span>Inhale & Brace Core</span>
-              </div>
-            </div>
-
-            <!-- Muscle Indicator Badges -->
-            <div class="absolute bottom-3 right-3 flex flex-col items-end gap-1 z-20">
-              <div class="text-[10px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded flex items-center gap-1.5 backdrop-blur-md">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]"></span>
-                <span>Primary: ${primaryMuscle}</span>
-              </div>
-              <div class="text-[9px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded flex items-center gap-1.5 backdrop-blur-md">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                <span>Secondary: ${secondaryMuscles}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP-BY-STEP FORM & EXECUTION GUIDE (HOW TO DO THE WORKOUT) -->
-          <div class="mt-2.5 bg-slate-950/80 border border-slate-800 rounded-xl p-3 space-y-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                📖 How to Perform Exercise
+            <!-- Video Overlay Badges -->
+            <div class="absolute top-3 left-3 flex items-center gap-2 pointer-events-none z-10">
+              <span class="bg-slate-950/90 backdrop-blur-md text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg shadow-lg flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                ${ex.name}
               </span>
-              <span class="text-[9px] font-bold text-slate-400">Biomechanical Form Guide</span>
+              <span class="bg-slate-950/80 backdrop-blur-md text-slate-300 border border-slate-700 text-[10px] font-bold px-2 py-1 rounded-lg">
+                ${primaryMuscle}
+              </span>
             </div>
-            <ul class="text-[11px] text-slate-300 space-y-1 pl-1 font-medium">
-              ${instructionsList.length > 0 
-                ? instructionsList.slice(0, 3).map((inst, idx) => `<li class="flex items-start gap-1.5"><span class="text-emerald-400 font-bold">${idx + 1}.</span> <span>${inst.replace(/^\d+\.\s*/, '')}</span></li>`).join('')
-                : `<li class="flex items-start gap-1.5"><span class="text-emerald-400 font-bold">1.</span> <span>Maintain strict posture, control tempo, and breathe steadily through execution.</span></li>`
-              }
-            </ul>
+
+            <!-- Big Center Play/Pause Indicator -->
+            <div id="video-center-indicator" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 z-10">
+              <div class="h-16 w-16 rounded-full bg-slate-950/80 border border-emerald-500/50 text-emerald-400 flex items-center justify-center shadow-2xl backdrop-blur-md">
+                <span id="center-indicator-icon" class="text-2xl font-black">▶</span>
+              </div>
+            </div>
           </div>
 
-          <!-- PLAYBACK CONTROLS BAR -->
-          <div class="mt-2.5 bg-slate-900/90 border border-slate-800/90 rounded-xl p-2.5 flex flex-col gap-2">
-            <!-- Timeline Scrubber -->
-            <div class="flex items-center gap-2.5">
-              <span class="text-[10px] font-bold text-slate-400 w-8">0%</span>
-              <input 
-                type="range" 
-                id="biomech-scrubber" 
-                min="0" 
-                max="100" 
-                value="0" 
-                class="flex-1 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-              />
-              <span class="text-[10px] font-bold text-emerald-400 w-8 text-right" id="biomech-scrub-val">0%</span>
+          <!-- Interactive Control Bar -->
+          <div class="bg-slate-900 border-t border-slate-800/90 p-3 flex flex-col gap-2 z-20">
+            <!-- Timeline Scrubber Bar -->
+            <div class="w-full flex items-center gap-2">
+              <span id="video-time-current" class="text-[10px] font-mono font-bold text-slate-400 shrink-0">0:00</span>
+              <div id="video-progress-track" class="relative flex-1 h-2 bg-slate-950 rounded-full overflow-hidden cursor-pointer border border-slate-800">
+                <div id="video-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full w-0 transition-all duration-100"></div>
+              </div>
+              <span id="video-time-total" class="text-[10px] font-mono font-bold text-slate-400 shrink-0">0:00</span>
             </div>
 
-            <!-- Interactive Control Buttons -->
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-1.5">
-                <button 
-                  type="button" 
-                  id="biomech-play-btn" 
-                  class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20"
+            <!-- Buttons Row -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <!-- Play/Pause Toggle -->
+                <button
+                  type="button"
+                  id="btn-player-toggle"
+                  class="h-8 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow transition-transform active:scale-95"
+                  title="Play / Pause"
                 >
-                  <span id="biomech-play-icon">⏸</span>
-                  <span id="biomech-play-text">Pause</span>
+                  <span id="btn-toggle-label">⏸ Pause</span>
                 </button>
-                <button 
-                  type="button" 
-                  id="biomech-replay-btn" 
-                  class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs transition-colors border border-slate-700"
+
+                <!-- Replay Button -->
+                <button
+                  type="button"
+                  id="btn-player-replay"
+                  class="h-8 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1 transition-colors"
                   title="Replay from start"
                 >
-                  ↻ Replay
+                  <span>🔁 Replay</span>
+                </button>
+
+                <!-- Speed Switcher -->
+                <button
+                  type="button"
+                  id="btn-player-speed"
+                  class="h-8 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-[11px] font-bold font-mono transition-colors"
+                  title="Playback Speed"
+                >
+                  <span id="speed-label">1.0x</span>
                 </button>
               </div>
 
-              <!-- Speed & Form Controls -->
-              <div class="flex flex-wrap items-center gap-1.5 bg-slate-950 p-1 rounded-lg border border-slate-800">
-                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 0.25 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="0.25">0.25x</button>
-                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 0.5 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="0.5">0.5x</button>
-                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 1.0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="1.0">1.0x</button>
-                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 1.5 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="1.5">1.5x</button>
-                <button type="button" class="biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors ${this.speed === 2.0 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white'}" data-speed="2.0">2.0x</button>
-                <button type="button" id="biomech-form-btn" class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-black hover:bg-cyan-500/30 transition-all flex items-center gap-1" title="Slow motion form demo">
-                  ⚡ Show Correct Form
+              <div class="flex items-center gap-2">
+                <!-- Mute Toggle -->
+                <button
+                  type="button"
+                  id="btn-player-mute"
+                  class="h-8 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold transition-colors"
+                  title="Toggle Sound"
+                >
+                  <span id="mute-label">🔇 Muted</span>
+                </button>
+
+                <!-- Fullscreen Toggle -->
+                <button
+                  type="button"
+                  id="btn-player-fullscreen"
+                  class="h-8 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-colors"
+                  title="Fullscreen"
+                >
+                  <span>⛶ Fullscreen</span>
                 </button>
               </div>
             </div>
@@ -204,451 +255,476 @@
         </div>
       `;
 
-      this.container.innerHTML = html;
-      this.attachEventListeners();
+      this.container.innerHTML = playerHtml;
+      this.attachVideoEvents();
     }
 
-    async loadInlineSvgAsset() {
-      const container = this.container.querySelector('#biomech-svg-container');
-      if (!container) return;
+    /**
+     * Attach control listeners to the active HTML5 video
+     */
+    attachVideoEvents() {
+      const video = this.container.querySelector('#fitsync-active-video');
+      if (!video) return;
 
-      const tryPaths = [
-        `/static/exercises/${this.slug}/demo.svg`,
-        `/static/exercises/fallback_demo.svg`
-      ];
+      this.videoElement = video;
+      this.isPlaying = true;
+      this.playbackRate = 1.0;
+      this.isMuted = true;
 
-      for (const path of tryPaths) {
-        try {
-          const res = await fetch(path);
-          if (res.ok) {
-            const svgText = await res.text();
-            if (svgText && svgText.includes('<svg')) {
-              container.innerHTML = svgText;
-              this.updateSvgAnimationState();
-              return;
-            }
-          }
-        } catch (e) {
-          console.warn("[AnimationPlayer] Svg fetch notice: " + path, e);
-        }
-      }
-    }
+      const btnToggle = this.container.querySelector('#btn-player-toggle');
+      const toggleLabel = this.container.querySelector('#btn-toggle-label');
+      const btnReplay = this.container.querySelector('#btn-player-replay');
+      const btnSpeed = this.container.querySelector('#btn-player-speed');
+      const speedLabel = this.container.querySelector('#speed-label');
+      const btnMute = this.container.querySelector('#btn-player-mute');
+      const muteLabel = this.container.querySelector('#mute-label');
+      const btnFullscreen = this.container.querySelector('#btn-player-fullscreen');
+      const timeCurrent = this.container.querySelector('#video-time-current');
+      const timeTotal = this.container.querySelector('#video-time-total');
+      const progressBar = this.container.querySelector('#video-progress-bar');
+      const progressTrack = this.container.querySelector('#video-progress-track');
+      const centerIndicator = this.container.querySelector('#video-center-indicator');
+      const centerIcon = this.container.querySelector('#center-indicator-icon');
 
-    initCanvas() {
-      this.canvas = this.container.querySelector('#biomech-canvas');
-      if (this.canvas) {
-        this.ctx = this.canvas.getContext('2d');
-      }
-    }
+      const formatTime = (seconds) => {
+        if (!seconds || isNaN(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      };
 
-    attachEventListeners() {
-      const stage = this.container.querySelector('#biomech-stage');
-      const playBtn = this.container.querySelector('#biomech-play-btn');
-      const replayBtn = this.container.querySelector('#biomech-replay-btn');
-      const scrubber = this.container.querySelector('#biomech-scrubber');
-      const speedBtns = this.container.querySelectorAll('.biomech-speed-btn');
-      const formBtn = this.container.querySelector('#biomech-form-btn');
+      const flashCenterIndicator = (icon) => {
+        if (!centerIndicator || !centerIcon) return;
+        centerIcon.innerText = icon;
+        centerIndicator.classList.remove('opacity-0');
+        centerIndicator.classList.add('opacity-100');
+        setTimeout(() => {
+          centerIndicator.classList.remove('opacity-100');
+          centerIndicator.classList.add('opacity-0');
+        }, 400);
+      };
 
-      // Click on animation stage/viewport directly plays/pauses
-      if (stage) {
-        stage.addEventListener('click', (e) => {
-          this.isPlaying = !this.isPlaying;
-          this.updatePlayBtnState();
-          this.showClickOverlayFeedback(this.isPlaying);
-        });
-      }
-
-      if (playBtn) {
-        playBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.isPlaying = !this.isPlaying;
-          this.updatePlayBtnState();
-          this.showClickOverlayFeedback(this.isPlaying);
-        });
-      }
-
-      if (replayBtn) {
-        replayBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.progress = 0.0;
-          this.currentRep = 1;
-          this.isPlaying = true;
-          this.updatePlayBtnState();
-          this.showClickOverlayFeedback(true);
-        });
-      }
-
-      if (scrubber) {
-        scrubber.addEventListener('input', (e) => {
-          this.progress = parseFloat(e.target.value) / 100.0;
-          this.isPlaying = false;
-          this.updatePlayBtnState();
-          this.renderCanvasFrame();
-        });
-      }
-
-      if (formBtn) {
-        formBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.speed = 0.25;
-          this.progress = 0.0;
-          this.isPlaying = true;
-          this.updatePlayBtnState();
-          this.updateSpeedBtnStyles(0.25);
-          this.showClickOverlayFeedback(true, "SLOW FORM DEMO (0.25x)");
-        });
-      }
-
-      speedBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const spd = parseFloat(btn.getAttribute('data-speed')) || 1.0;
-          this.speed = spd;
-          this.updateSpeedBtnStyles(spd);
-        });
-      });
-    }
-
-    showClickOverlayFeedback(isPlaying, customText) {
-      const overlay = this.container.querySelector('#biomech-click-overlay');
-      const icon = this.container.querySelector('#biomech-overlay-icon');
-      const msg = this.container.querySelector('#biomech-overlay-msg');
-      if (!overlay) return;
-
-      if (icon) icon.textContent = isPlaying ? '▶' : '⏸';
-      if (msg) msg.textContent = customText || (isPlaying ? 'PLAYING ANIMATION' : 'PAUSED');
-
-      overlay.classList.remove('opacity-0', 'pointer-events-none');
-      overlay.classList.add('opacity-100');
-
-      setTimeout(() => {
-        overlay.classList.remove('opacity-100');
-        overlay.classList.add('opacity-0', 'pointer-events-none');
-      }, 700);
-    }
-
-    updateSpeedBtnStyles(selectedSpeed) {
-      const speedBtns = this.container.querySelectorAll('.biomech-speed-btn');
-      speedBtns.forEach(b => {
-        const spd = parseFloat(b.getAttribute('data-speed'));
-        if (spd === selectedSpeed) {
-          b.className = 'biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+      const togglePlay = () => {
+        if (video.paused) {
+          video.play().then(() => {
+            this.isPlaying = true;
+            if (toggleLabel) toggleLabel.innerText = '⏸ Pause';
+            flashCenterIndicator('▶');
+          }).catch(() => {});
         } else {
-          b.className = 'biomech-speed-btn px-1.5 py-0.5 rounded text-[10px] font-black transition-colors text-slate-400 hover:text-white';
+          video.pause();
+          this.isPlaying = false;
+          if (toggleLabel) toggleLabel.innerText = '▶ Play';
+          flashCenterIndicator('⏸');
         }
-      });
-    }
+      };
 
-    updatePlayBtnState() {
-      const icon = this.container.querySelector('#biomech-play-icon');
-      const text = this.container.querySelector('#biomech-play-text');
-      if (icon && text) {
-        icon.textContent = this.isPlaying ? '⏸' : '▶';
-        text.textContent = this.isPlaying ? 'Pause' : 'Play';
+      if (btnToggle) btnToggle.onclick = togglePlay;
+      video.onclick = togglePlay;
+
+      if (btnReplay) {
+        btnReplay.onclick = () => {
+          video.currentTime = 0;
+          video.play();
+          this.isPlaying = true;
+          if (toggleLabel) toggleLabel.innerText = '⏸ Pause';
+          flashCenterIndicator('🔁');
+        };
       }
-      this.updateSvgAnimationState();
-    }
 
-    updateSvgAnimationState() {
-      const svgContainer = this.container.querySelector('#biomech-svg-container');
-      if (!svgContainer) return;
-      const elements = svgContainer.querySelectorAll('*');
-      elements.forEach(el => {
-        el.style.animationPlayState = this.isPlaying ? 'running' : 'paused';
-      });
-    }
-
-    startAnimationLoop() {
-      if (this.animationFrameId) {
-        cancelAnimationFrame(this.animationFrameId);
+      const speeds = [1.0, 1.5, 0.5];
+      let speedIdx = 0;
+      if (btnSpeed) {
+        btnSpeed.onclick = () => {
+          speedIdx = (speedIdx + 1) % speeds.length;
+          this.playbackRate = speeds[speedIdx];
+          video.playbackRate = this.playbackRate;
+          if (speedLabel) speedLabel.innerText = `${this.playbackRate.toFixed(1)}x`;
+        };
       }
-      this.lastTimestamp = performance.now();
-      const loop = (now) => {
-        const delta = (now - this.lastTimestamp) / 1000.0;
-        this.lastTimestamp = now;
 
-        if (this.isPlaying) {
-          this.progress += (delta * this.speed * 0.4);
-          if (this.progress >= 1.0) {
-            this.progress = 0.0;
-            this.currentRep++;
-            if (this.currentRep > this.targetReps) {
-              this.currentRep = 1;
+      if (btnMute) {
+        btnMute.onclick = () => {
+          video.muted = !video.muted;
+          this.isMuted = video.muted;
+          if (muteLabel) muteLabel.innerText = video.muted ? '🔇 Muted' : '🔊 Sound';
+        };
+      }
+
+      if (btnFullscreen) {
+        btnFullscreen.onclick = () => {
+          if (!document.fullscreenElement) {
+            const wrapper = this.container.querySelector('.fitsync-video-wrapper');
+            if (wrapper && wrapper.requestFullscreen) {
+              wrapper.requestFullscreen();
+            } else if (video.requestFullscreen) {
+              video.requestFullscreen();
             }
+          } else {
+            if (document.exitFullscreen) document.exitFullscreen();
           }
-          this.renderCanvasFrame();
-        }
-
-        this.animationFrameId = requestAnimationFrame(loop);
-      };
-      this.animationFrameId = requestAnimationFrame(loop);
-    }
-
-    renderCanvasFrame() {
-      if (!this.ctx || !this.canvas) return;
-      const ctx = this.ctx;
-      const w = this.canvas.width;
-      const h = this.canvas.height;
-
-      // Clear canvas
-      ctx.clearRect(0, 0, w, h);
-
-      // Evaluate keyframes for skeletal joint positions
-      const frameData = this.evaluateKeyframe(this.progress);
-
-      // Update UI HUD
-      const phaseBadge = this.container.querySelector('#biomech-phase-badge');
-      const repBadge = this.container.querySelector('#biomech-rep-badge');
-      const scrubber = this.container.querySelector('#biomech-scrubber');
-      const scrubVal = this.container.querySelector('#biomech-scrub-val');
-      const breathCue = this.container.querySelector('#biomech-breath-cue');
-
-      if (phaseBadge) phaseBadge.textContent = (frameData.phase || 'ACTIVE MOVEMENT').toUpperCase();
-      if (repBadge) repBadge.textContent = `REP ${this.currentRep} / ${this.targetReps}`;
-      if (scrubber) scrubber.value = Math.round(this.progress * 100);
-      if (scrubVal) scrubVal.textContent = `${Math.round(this.progress * 100)}%`;
-
-      if (breathCue) {
-        const p = this.progress;
-        if (p < 0.4) breathCue.innerHTML = '<span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span><span>Inhale & Brace Core</span>';
-        else if (p < 0.7) breathCue.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Pause & Hold Posture</span>';
-        else breathCue.innerHTML = '<span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span><span>Exhale & Drive Upward</span>';
-      }
-
-      // Render 2D Skeleton, Muscles & Equipment on Canvas
-      this.drawSkeletonOnCanvas(ctx, frameData);
-    }
-
-    evaluateKeyframe(t) {
-      if (!this.animData || !this.animData.keyframes || !this.animData.keyframes.length) {
-        return this.getFallbackFrame(t);
-      }
-
-      const keyframes = this.animData.keyframes;
-      if (keyframes.size === 1) return keyframes[0];
-
-      let f1 = keyframes[0];
-      let f2 = keyframes[keyframes.length - 1];
-
-      for (let i = 0; i < keyframes.length - 1; i++) {
-        if (t >= keyframes[i].timestamp && t <= keyframes[i + 1].timestamp) {
-          f1 = keyframes[i];
-          f2 = keyframes[i + 1];
-          break;
-        }
-      }
-
-      const factor = (f2.timestamp > f1.timestamp) ? (t - f1.timestamp) / (f2.timestamp - f1.timestamp) : 0;
-      return this.interpolateKeyframes(f1, f2, factor);
-    }
-
-    interpolateKeyframes(f1, f2, factor) {
-      const res = {
-        phase: factor < 0.5 ? f1.phase : f2.phase,
-        equipment: {
-          type: f1.equipment ? f1.equipment.type : 'none',
-          x: f1.equipment ? f1.equipment.x + factor * (f2.equipment.x - f1.equipment.x) : 200,
-          y: f1.equipment ? f1.equipment.y + factor * (f2.equipment.y - f1.equipment.y) : 150
-        },
-        joints: {},
-        muscle_activations: {}
-      };
-
-      const j1 = f1.joints || {};
-      const j2 = f2.joints || {};
-
-      for (let key in j1) {
-        const p1 = j1[key];
-        const p2 = j2[key] || p1;
-        res.joints[key] = {
-          x: p1.x + factor * (p2.x - p1.x),
-          y: p1.y + factor * (p2.y - p1.y)
         };
       }
 
-      const m1 = f1.muscle_activations || {};
-      const m2 = f2.muscle_activations || {};
-      for (let key in m1) {
-        const v1 = m1[key];
-        const v2 = m2[key] !== undefined ? m2[key] : v1;
-        res.muscle_activations[key] = v1 + factor * (v2 - v1);
-      }
+      this._timeUpdateHandler = () => {
+        if (!video.duration) return;
+        const pct = (video.currentTime / video.duration) * 100;
+        if (progressBar) progressBar.style.width = `${pct}%`;
+        if (timeCurrent) timeCurrent.innerText = formatTime(video.currentTime);
+        if (timeTotal) timeTotal.innerText = formatTime(video.duration);
+      };
+      video.addEventListener('timeupdate', this._timeUpdateHandler);
 
-      return res;
-    }
-
-    drawSkeletonOnCanvas(ctx, frameData) {
-      const joints = frameData.joints;
-      const eq = frameData.equipment;
-
-      // Draw Equipment Bench if exercise is bench press
-      if (this.currentEx.name && this.currentEx.name.toLowerCase().includes('bench')) {
-        ctx.fillStyle = '#1e293b';
-        ctx.strokeStyle = '#475569';
-        ctx.lineWidth = 4;
-        ctx.fillRect(100, 195, 200, 15);
-        ctx.strokeRect(100, 195, 200, 15);
-
-        ctx.beginPath();
-        ctx.moveTo(120, 210); ctx.lineTo(120, 250);
-        ctx.moveTo(280, 210); ctx.lineTo(280, 250);
-        ctx.stroke();
-      }
-
-      // Draw Standard Bones
-      const bones = [
-        ['head', 'neck'], ['neck', 'chest'], ['chest', 'spine'], ['spine', 'pelvis'],
-        ['chest', 'left_shoulder'], ['left_shoulder', 'left_elbow'], ['left_elbow', 'left_wrist'],
-        ['chest', 'right_shoulder'], ['right_shoulder', 'right_elbow'], ['right_elbow', 'right_wrist'],
-        ['pelvis', 'left_hip'], ['left_hip', 'left_knee'], ['left_knee', 'left_ankle'],
-        ['pelvis', 'right_hip'], ['right_hip', 'right_knee'], ['right_knee', 'right_ankle']
-      ];
-
-      // Draw Muscle Glowing Highlights
-      ctx.save();
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = '#10b981';
-      ctx.strokeStyle = 'rgba(16, 185, 129, 0.7)';
-      ctx.lineWidth = 14;
-
-      if (joints.chest && joints.left_shoulder) {
-        ctx.beginPath();
-        ctx.moveTo(joints.chest.x, joints.chest.y);
-        ctx.lineTo(joints.left_shoulder.x, joints.left_shoulder.y);
-        ctx.stroke();
-      }
-      if (joints.left_hip && joints.left_knee) {
-        ctx.beginPath();
-        ctx.moveTo(joints.left_hip.x, joints.left_hip.y);
-        ctx.lineTo(joints.left_knee.x, joints.left_knee.y);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // Draw Bone Segments
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 6;
-      ctx.lineCap = 'round';
-
-      bones.forEach(([j1Name, j2Name]) => {
-        if (joints[j1Name] && joints[j2Name]) {
-          ctx.beginPath();
-          ctx.moveTo(joints[j1Name].x, joints[j1Name].y);
-          ctx.lineTo(joints[j2Name].x, joints[j2Name].y);
-          ctx.stroke();
-        }
+      video.addEventListener('loadedmetadata', () => {
+        if (timeTotal) timeTotal.innerText = formatTime(video.duration);
       });
 
-      // Draw Head
-      if (joints.head) {
-        ctx.fillStyle = '#f8fafc';
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(joints.head.x, joints.head.y, 14, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
+      if (progressTrack) {
+        progressTrack.onclick = (e) => {
+          const rect = progressTrack.getBoundingClientRect();
+          const clickPos = (e.clientX - rect.left) / rect.width;
+          if (video.duration) {
+            video.currentTime = clickPos * video.duration;
+          }
+        };
       }
 
-      // Draw Joint Pivots
-      ctx.fillStyle = '#38bdf8';
-      for (let jKey in joints) {
-        if (jKey !== 'head') {
-          ctx.beginPath();
-          ctx.arc(joints[jKey].x, joints[jKey].y, 4, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      // Draw Equipment (Barbell / Dumbbells / Cable)
-      if (eq && eq.type === 'barbell') {
-        ctx.strokeStyle = '#e2e8f0';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(eq.x - 70, eq.y);
-        ctx.lineTo(eq.x + 70, eq.y);
-        ctx.stroke();
-
-        ctx.fillStyle = '#0284c7';
-        ctx.fillRect(eq.x - 75, eq.y - 15, 8, 30);
-        ctx.fillRect(eq.x + 67, eq.y - 15, 8, 30);
-      } else if (eq && eq.type === 'dumbbell') {
-        ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(eq.x - 45, eq.y - 8, 12, 16);
-        ctx.fillRect(eq.x + 35, eq.y - 8, 12, 16);
-      }
+      this._errorHandler = () => {
+        console.warn(`[FitSyncPlayer] Video playback failed for ${this.currentEx.name}. Displaying verified fallback.`);
+        this.renderUnavailableFallback('Video file format or asset currently not available on server.');
+      };
+      video.addEventListener('error', this._errorHandler);
     }
 
-    renderArmCurl(k) { return this.evaluateKeyframe(k); }
-    renderChestPress(k) { return this.evaluateKeyframe(k); }
-    renderOverheadPress(k) { return this.evaluateKeyframe(k); }
-    renderSquat(k) { return this.evaluateKeyframe(k); }
-    renderDeadlift(k) { return this.evaluateKeyframe(k); }
-    renderRowPull(k) { return this.evaluateKeyframe(k); }
-    renderLunge(k) { return this.evaluateKeyframe(k); }
-    renderLateralRaise(k) { return this.evaluateKeyframe(k); }
-    renderTricepExt(k) { return this.evaluateKeyframe(k); }
-    renderCorePlank(k) { return this.evaluateKeyframe(k); }
-    renderLegIso(k) { return this.evaluateKeyframe(k); }
-
-    getFallbackFrame(t) {
-      const k = 0.5 + 0.5 * Math.sin(t * Math.PI * 2);
-      const category = (this.currentEx.category || this.currentEx.name || '').toLowerCase();
-
-      // Exercise-specific dynamic movement kinematics
-      let elbowDelta = k * 35;
-      let kneeDelta = k * 40;
-      let hipDelta = k * 35;
-      let barY = 110 + k * 50;
-
-      if (category.includes('squat') || category.includes('lunge')) {
-        return {
-          phase: k > 0.5 ? 'ASCENDING DRIVE' : 'ECCENTRIC DESCENT',
-          equipment: { type: 'barbell', x: 200, y: 70 + kneeDelta },
-          joints: {
-            head: { x: 200, y: 30 + kneeDelta }, neck: { x: 200, y: 50 + kneeDelta }, chest: { x: 200, y: 75 + kneeDelta },
-            spine: { x: 200, y: 105 + kneeDelta }, pelvis: { x: 200, y: 135 + kneeDelta },
-            left_shoulder: { x: 180, y: 75 + kneeDelta }, left_elbow: { x: 175, y: 100 + kneeDelta }, left_wrist: { x: 185, y: 75 + kneeDelta },
-            right_shoulder: { x: 220, y: 75 + kneeDelta }, right_elbow: { x: 225, y: 100 + kneeDelta }, right_wrist: { x: 215, y: 75 + kneeDelta },
-            left_hip: { x: 185, y: 135 + kneeDelta }, left_knee: { x: 165 - kneeDelta * 0.3, y: 195 }, left_ankle: { x: 185, y: 250 },
-            right_hip: { x: 215, y: 135 + kneeDelta }, right_knee: { x: 235 + kneeDelta * 0.3, y: 195 }, right_ankle: { x: 215, y: 250 }
-          },
-          muscle_activations: { "Primary": 0.9 }
-        };
-      }
-
-      if (category.includes('curl')) {
-        const angle = Math.PI * (0.2 + 0.6 * k);
-        const handY = 135 - Math.sin(angle) * 45;
-        const handX = 185 - Math.cos(angle) * 20;
-        return {
-          phase: k > 0.5 ? 'CONCENTRIC CURL' : 'ECCENTRIC CONTROL',
-          equipment: { type: 'barbell', x: 200, y: handY },
-          joints: {
-            head: { x: 200, y: 40 }, neck: { x: 200, y: 60 }, chest: { x: 200, y: 90 },
-            spine: { x: 200, y: 120 }, pelvis: { x: 200, y: 150 },
-            left_shoulder: { x: 180, y: 90 }, left_elbow: { x: 175, y: 135 }, left_wrist: { x: handX, y: handY },
-            right_shoulder: { x: 220, y: 90 }, right_elbow: { x: 225, y: 135 }, right_wrist: { x: 400 - handX, y: handY },
-            left_hip: { x: 185, y: 150 }, left_knee: { x: 185, y: 200 }, left_ankle: { x: 185, y: 250 },
-            right_hip: { x: 215, y: 150 }, right_knee: { x: 215, y: 200 }, right_ankle: { x: 215, y: 250 }
-          },
-          muscle_activations: { "Primary": 0.95 }
-        };
-      }
-
-      return {
-        phase: k > 0.5 ? 'CONCENTRIC DRIVE' : 'ECCENTRIC CONTROL',
-        equipment: { type: 'barbell', x: 200, y: barY },
-        joints: {
-          head: { x: 200, y: 40 }, neck: { x: 200, y: 60 }, chest: { x: 200, y: 90 },
-          spine: { x: 200, y: 120 }, pelvis: { x: 200, y: 150 },
-          left_shoulder: { x: 180, y: 90 }, left_elbow: { x: 170 + elbowDelta * 0.3, y: 115 + elbowDelta * 0.8 }, left_wrist: { x: 185, y: barY },
-          right_shoulder: { x: 220, y: 90 }, right_elbow: { x: 230 - elbowDelta * 0.3, y: 115 + elbowDelta * 0.8 }, right_wrist: { x: 215, y: barY },
-          left_hip: { x: 185, y: 150 }, left_knee: { x: 185, y: 200 }, left_ankle: { x: 185, y: 250 },
-          right_hip: { x: 215, y: 150 }, right_knee: { x: 215, y: 200 }, right_ankle: { x: 215, y: 250 }
-        },
-        muscle_activations: { "Primary": 0.85 }
+    /**
+     * Render professional, accessible fallback UI when animation video is unavailable.
+     * NEVER substitutes another exercise's video.
+     */
+    renderUnavailableFallback(customReason) {
+      const ex = this.currentEx || {
+        name: 'Selected Exercise',
+        category: 'Fitness',
+        primary_muscles: ['Target Muscle'],
+        secondary_muscles: [],
+        instructions: ['Follow prescribed movement with controlled tempo.'],
+        safety_notes: 'Maintain core stability and proper form.'
       };
+
+      const primary = ex.primary_muscle || ex.category;
+      const secondaries = ex.secondary_muscles || [];
+      const instructionsList = ex.instructions || [];
+
+      const fallbackHtml = `
+        <div class="fitsync-fallback-card relative w-full bg-slate-950 rounded-2xl border border-slate-800 p-5 shadow-2xl space-y-4 select-none">
+          <!-- Unavailable Notice Banner -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/90 border border-amber-500/30 rounded-xl p-3.5 shadow-inner">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                <span class="text-base">🎬</span>
+              </div>
+              <div>
+                <h4 class="text-xs font-black uppercase tracking-wider text-amber-400">Animation unavailable for this exercise</h4>
+                <p class="text-[11px] text-slate-400 mt-0.5">
+                  ${customReason || 'Exact kinematic video asset is queued for studio capture. Verified biomechanical instructions are provided below.'}
+                </p>
+              </div>
+            </div>
+            
+            <button
+              type="button"
+              onclick="window.initExerciseMotionPlayer('${this.containerId}', ${JSON.stringify(ex).replace(/"/g, '&quot;')})"
+              class="shrink-0 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
+            >
+              <span>🔄 Retry</span>
+            </button>
+          </div>
+
+          <!-- Exercise Identity Header -->
+          <div class="flex items-start justify-between border-b border-slate-800/80 pb-3">
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-primary-400 bg-primary-500/10 border border-primary-500/20 px-2 py-0.5 rounded">
+                ${ex.category}
+              </span>
+              <h3 class="text-lg font-black text-white mt-1 leading-tight">${ex.name}</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] font-bold text-slate-400 block">Equipment</span>
+              <span class="text-xs font-bold text-slate-200">${ex.equipment || 'Gym Equipment'}</span>
+            </div>
+          </div>
+
+          <!-- Muscle Involvement Chips -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Target Musculature</span>
+            <div class="flex flex-wrap gap-1.5 items-center">
+              <span class="text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-lg">
+                Primary: ${primary}
+              </span>
+              ${secondaries.map(sec => `
+                <span class="text-xs font-medium bg-slate-900 text-slate-300 border border-slate-800 px-2 py-1 rounded-lg">
+                  ${sec}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Biomechanical Movement Checkpoints -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
+            <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+              <span class="text-[9px] font-black uppercase text-primary-400 block">1. Start Position</span>
+              <p class="text-slate-300 mt-0.5">${ex.start_pos || 'Position figure in starting alignment.'}</p>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+              <span class="text-[9px] font-black uppercase text-emerald-400 block">2. Movement Execution</span>
+              <p class="text-slate-300 mt-0.5">${ex.movement || 'Execute concentric contraction under control.'}</p>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+              <span class="text-[9px] font-black uppercase text-cyan-400 block">3. Peak Contraction</span>
+              <p class="text-slate-300 mt-0.5">${ex.end_pos || 'Squeeze target muscle and return safely.'}</p>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Instructions -->
+          ${instructionsList.length ? `
+            <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800 space-y-1.5">
+              <h5 class="text-[10px] font-bold uppercase tracking-wider text-slate-300">How to Perform:</h5>
+              <ol class="list-decimal list-inside space-y-1 text-xs text-slate-300 leading-relaxed">
+                ${instructionsList.map(step => `<li>${step}</li>`).join('')}
+              </ol>
+            </div>
+          ` : ''}
+
+          <!-- Safety Guidelines -->
+          <div class="p-3 bg-slate-900/40 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 flex items-center gap-2">
+            <span class="text-base shrink-0">🛡️</span>
+            <span><strong>Safety note:</strong> ${ex.safety_notes}</span>
+      const togglePlay = () => {
+        if (video.paused) {
+          video.play().then(() => {
+            this.isPlaying = true;
+            if (toggleLabel) toggleLabel.innerText = '⏸ Pause';
+            flashCenterIndicator('▶');
+          }).catch(() => {});
+        } else {
+          video.pause();
+          this.isPlaying = false;
+          if (toggleLabel) toggleLabel.innerText = '▶ Play';
+          flashCenterIndicator('⏸');
+        }
+      };
+
+      if (btnToggle) btnToggle.onclick = togglePlay;
+      video.onclick = togglePlay;
+
+      if (btnReplay) {
+        btnReplay.onclick = () => {
+          video.currentTime = 0;
+          video.play();
+          this.isPlaying = true;
+          if (toggleLabel) toggleLabel.innerText = '⏸ Pause';
+          flashCenterIndicator('🔁');
+        };
+      }
+
+      const speeds = [1.0, 1.5, 0.5];
+      let speedIdx = 0;
+      if (btnSpeed) {
+        btnSpeed.onclick = () => {
+          speedIdx = (speedIdx + 1) % speeds.length;
+          this.playbackRate = speeds[speedIdx];
+          video.playbackRate = this.playbackRate;
+          if (speedLabel) speedLabel.innerText = `${this.playbackRate.toFixed(1)}x`;
+        };
+      }
+
+      if (btnMute) {
+        btnMute.onclick = () => {
+          video.muted = !video.muted;
+          this.isMuted = video.muted;
+          if (muteLabel) muteLabel.innerText = video.muted ? '🔇 Muted' : '🔊 Sound';
+        };
+      }
+
+      if (btnFullscreen) {
+        btnFullscreen.onclick = () => {
+          if (!document.fullscreenElement) {
+            const wrapper = this.container.querySelector('.fitsync-video-wrapper');
+            if (wrapper && wrapper.requestFullscreen) {
+              wrapper.requestFullscreen();
+            } else if (video.requestFullscreen) {
+              video.requestFullscreen();
+            }
+          } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+          }
+        };
+      }
+
+      this._timeUpdateHandler = () => {
+        if (!video.duration) return;
+        const pct = (video.currentTime / video.duration) * 100;
+        if (progressBar) progressBar.style.width = `${pct}%`;
+        if (timeCurrent) timeCurrent.innerText = formatTime(video.currentTime);
+        if (timeTotal) timeTotal.innerText = formatTime(video.duration);
+      };
+      video.addEventListener('timeupdate', this._timeUpdateHandler);
+
+      video.addEventListener('loadedmetadata', () => {
+        if (timeTotal) timeTotal.innerText = formatTime(video.duration);
+      });
+
+      if (progressTrack) {
+        progressTrack.onclick = (e) => {
+          const rect = progressTrack.getBoundingClientRect();
+          const clickPos = (e.clientX - rect.left) / rect.width;
+          if (video.duration) {
+            video.currentTime = clickPos * video.duration;
+          }
+        };
+      }
+
+      this._errorHandler = () => {
+        console.warn(`[FitSyncPlayer] Video playback failed for ${this.currentEx.name}. Displaying verified fallback.`);
+        this.renderUnavailableFallback('Video file format or asset currently not available on server.');
+      };
+      video.addEventListener('error', this._errorHandler);
+    }
+
+    /**
+     * Render professional, accessible fallback UI when animation video is unavailable.
+     * NEVER substitutes another exercise's video.
+     */
+    renderUnavailableFallback(customReason) {
+      const ex = this.currentEx || {
+        name: 'Selected Exercise',
+        category: 'Fitness',
+        primary_muscles: ['Target Muscle'],
+        secondary_muscles: [],
+        instructions: ['Follow prescribed movement with controlled tempo.'],
+        safety_notes: 'Maintain core stability and proper form.'
+      };
+
+      const primary = ex.primary_muscle || ex.category;
+      const secondaries = ex.secondary_muscles || [];
+      const instructionsList = ex.instructions || [];
+
+      const fallbackHtml = `
+        <div class="fitsync-fallback-card relative w-full bg-slate-950 rounded-2xl border border-slate-800 p-5 shadow-2xl space-y-4 select-none">
+          <!-- Unavailable Notice Banner -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/90 border border-amber-500/30 rounded-xl p-3.5 shadow-inner">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                <span class="text-base">🎬</span>
+              </div>
+              <div>
+                <h4 class="text-xs font-black uppercase tracking-wider text-amber-400">Animation unavailable for this exercise</h4>
+                <p class="text-[11px] text-slate-400 mt-0.5">
+                  ${customReason || 'Exact kinematic video asset is queued for studio capture. Verified biomechanical instructions are provided below.'}
+                </p>
+              </div>
+            </div>
+            
+            <button
+              type="button"
+              onclick="window.initExerciseMotionPlayer('${this.containerId}', ${JSON.stringify(ex).replace(/"/g, '&quot;')})"
+              class="shrink-0 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
+            >
+              <span>🔄 Retry</span>
+            </button>
+          </div>
+
+          <!-- Exercise Identity Header -->
+          <div class="flex items-start justify-between border-b border-slate-800/80 pb-3">
+            <div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-primary-400 bg-primary-500/10 border border-primary-500/20 px-2 py-0.5 rounded">
+                ${ex.category}
+              </span>
+              <h3 class="text-lg font-black text-white mt-1 leading-tight">${ex.name}</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] font-bold text-slate-400 block">Equipment</span>
+              <span class="text-xs font-bold text-slate-200">${ex.equipment || 'Gym Equipment'}</span>
+            </div>
+          </div>
+
+          <!-- Muscle Involvement Chips -->
+          <div class="space-y-1.5">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Target Musculature</span>
+            <div class="flex flex-wrap gap-1.5 items-center">
+              <span class="text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-lg">
+                Primary: ${primary}
+              </span>
+              ${secondaries.map(sec => `
+                <span class="text-xs font-medium bg-slate-900 text-slate-300 border border-slate-800 px-2 py-1 rounded-lg">
+                  ${sec}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Biomechanical Movement Checkpoints -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
+            <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+              <span class="text-[9px] font-black uppercase text-primary-400 block">1. Start Position</span>
+              <p class="text-slate-300 mt-0.5">${ex.start_pos || 'Position figure in starting alignment.'}</p>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+              <span class="text-[9px] font-black uppercase text-emerald-400 block">2. Movement Execution</span>
+              <p class="text-slate-300 mt-0.5">${ex.movement || 'Execute concentric contraction under control.'}</p>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800/90 rounded-xl p-2.5">
+              <span class="text-[9px] font-black uppercase text-cyan-400 block">3. Peak Contraction</span>
+              <p class="text-slate-300 mt-0.5">${ex.end_pos || 'Squeeze target muscle and return safely.'}</p>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Instructions -->
+          ${instructionsList.length ? `
+            <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800 space-y-1.5">
+              <h5 class="text-[10px] font-bold uppercase tracking-wider text-slate-300">How to Perform:</h5>
+              <ol class="list-decimal list-inside space-y-1 text-xs text-slate-300 leading-relaxed">
+                ${instructionsList.map(step => `<li>${step}</li>`).join('')}
+              </ol>
+            </div>
+          ` : ''}
+
+          <!-- Safety Guidelines -->
+          <div class="p-3 bg-slate-900/40 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 flex items-center gap-2">
+            <span class="text-base shrink-0">🛡️</span>
+            <span><strong>Safety note:</strong> ${ex.safety_notes}</span>
+          </div>
+        </div>
+      `;
+
+      this.container.innerHTML = fallbackHtml;
+    }
+  }
+
+  class BiomechanicalPlayer {
+    constructor() {
+      this.isPlaying = true;
+      this.speed = 1.0;
+      this.progress = 0;
+      this.direction = 1;
+      this.animationFrameId = null;
+    }
+
+    renderArmCurl(k) { return '<g id="arm-curl"></g>'; }
+    renderChestPress(k) { return '<g id="chest-press"></g>'; }
+    renderOverheadPress(k) { return '<g id="overhead-press"></g>'; }
+    renderSquat(k) { return '<g id="squat"></g>'; }
+    renderDeadlift(k) { return '<g id="deadlift"></g>'; }
+    renderRowPull(k) { return '<g id="row-pull"></g>'; }
+    renderLunge(k) { return '<g id="lunge"></g>'; }
+    renderLateralRaise(k) { return '<g id="lateral-raise"></g>'; }
+    renderTricepExt(k) { return '<g id="tricep-ext"></g>'; }
+    renderCorePlank(k) { return '<g id="core-plank"></g>'; }
+    renderLegIso(k) { return '<g id="leg-iso"></g>'; }
+
+    mount(containerId, exerciseData) {
+      if (window.initExerciseMotionPlayer) {
+        return window.initExerciseMotionPlayer(containerId, exerciseData);
+      }
     }
 
     destroy() {
@@ -658,14 +734,27 @@
     }
   }
 
-  window.BiomechanicalCanvasPlayer = BiomechanicalCanvasPlayer;
-  window.BiomechanicalPlayer = BiomechanicalCanvasPlayer;
+  // Active singleton player instance tracking
+  window.__activeMotionPlayer = new FitSyncExercisePlayer();
+  window.FitSyncExercisePlayer = FitSyncExercisePlayer;
+  window.BiomechanicalPlayer = BiomechanicalPlayer;
+
+  /**
+   * Main entry point called by templates and exercise components
+   */
   window.initExerciseMotionPlayer = function(containerId, exerciseData) {
     if (!window.__activeMotionPlayer) {
-      window.__activeMotionPlayer = new BiomechanicalCanvasPlayer();
+      window.__activeMotionPlayer = new FitSyncExercisePlayer();
     }
     window.__activeMotionPlayer.mount(containerId, exerciseData);
     return window.__activeMotionPlayer;
+  };
+
+  /**
+   * Dedicated video player helper alias
+   */
+  window.mountExerciseVideoPlayer = function(containerId, exerciseData) {
+    return window.initExerciseMotionPlayer(containerId, exerciseData);
   };
 
 })(window);

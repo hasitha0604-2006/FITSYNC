@@ -819,8 +819,7 @@
 
   function closeDemoModal() {
     if (window.__activeMotionPlayer) {
-      window.__activeMotionPlayer.isPlaying = false;
-      window.__activeMotionPlayer.updatePlayBtnState();
+      window.__activeMotionPlayer.destroy();
     }
     document.getElementById('demo-modal').classList.add('hidden');
   }
