@@ -42,30 +42,36 @@ def _clean_and_parse_json(text_content):
 def _call_gemini_coach_api(prompt_text, user_context, api_key, history=None):
     """
     Calls Google Gemini API with user telemetry context and recent conversation history.
-    Returns natural language coach response or None on failure.
+    Returns structured natural language coach response, intent, and suggested follow-up chips.
     """
     try:
         hist_str = ""
         if history:
-            recent_turns = history[-4:]
+            recent_turns = history[-6:]
             hist_str = "Recent Conversation Context:\n" + "\n".join([f"- {h.get('role', 'user')}: {h.get('message', '')}" for h in recent_turns]) + "\n\n"
 
         user_prompt = (
-            "You are FitSync AI — an expert, friendly, encouraging personal fitness, sports, and nutrition coach. "
-            "Your domain is strictly FITNESS, SPORTS, EXERCISE, and FITNESS NUTRITION. "
-            "Answer the user's question directly and concisely in 2-4 sentences using markdown formatting. "
-            "Use their personal telemetry data and recent conversation history to resolve follow-up queries and personalize advice.\n\n"
+            "You are FitSync AI — an elite, highly intelligent, encouraging personal fitness, sports, and nutrition coach. "
+            "Your domain is strictly FITNESS, SPORTS PERFORMANCE, EXERCISE TECHNIQUE, BIOMECHANICS, and NUTRITION. "
+            "Deliver top-notch, highly structured, expert guidance using clean markdown formatting (bold headings, bullet points, exact set/rep/rest numbers, and calorie/protein targets). "
+            "Personalize your coaching specifically around the user's telemetry (their fitness goal, daily budget in Rupees, equipment setup, target calories/protein, and today's workout focus). "
+            "If the user asks for advice, meal ideas, or exercise form tips, give actionable, highly practical steps tailored for college students and hostel life.\n\n"
             f"{hist_str}"
-            f"User Profile Telemetry: {json.dumps(user_context)}\n"
+            f"User Telemetry & Plan Context: {json.dumps(user_context)}\n"
             f"User Question: \"{prompt_text}\"\n\n"
-            "Return valid JSON matching this schema: {\"coach_reply\": \"string\", \"intent\": \"string\"}"
+            "Return valid JSON matching this schema:\n"
+            "{\n"
+            '  "coach_reply": "Detailed markdown formatted response with bold headers and bullet points",\n'
+            '  "intent": "GENERAL_FITNESS | WORKOUT_ADJUSTMENT | MEAL_SWAP | RECOVERY | SPORTS_WARMUP | PROGRESS | EXERCISE_HELP",\n'
+            '  "suggested_quick_replies": ["Short follow-up prompt 1", "Short follow-up prompt 2"]\n'
+            "}"
         )
 
         model_name = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": user_prompt}]}],
-            "generationConfig": {"temperature": 0.4, "responseMimeType": "application/json"}
+            "generationConfig": {"temperature": 0.35, "responseMimeType": "application/json"}
         }
 
         req = urllib.request.Request(
@@ -664,7 +670,8 @@ def _process_coach_command_inner(user, prompt_text, app_context=None, history=No
             "intent": gemini_res.get("intent", "GENERAL_FITNESS"),
             "coach_reply": gemini_res.get("coach_reply"),
             "explanation": "Answered by Gemini AI Coach using your live telemetry.",
-            "exercises": qa_exercises[:3]
+            "exercises": qa_exercises[:3],
+            "suggested_quick_replies": gemini_res.get("suggested_quick_replies") or ["Explain today's workout", "Suggest a high-protein dinner"]
         }
 
     # Intelligent Offline Knowledge Fallback
@@ -677,5 +684,6 @@ def _process_coach_command_inner(user, prompt_text, app_context=None, history=No
         "intent": intent_type,
         "coach_reply": offline_reply,
         "explanation": "Answered by FitSync AI Knowledge Engine.",
-        "exercises": qa_exercises[:3]
+        "exercises": qa_exercises[:3],
+        "suggested_quick_replies": ["Explain today's workout", "Suggest a high-protein dinner", "I only have 30 minutes"]
     }

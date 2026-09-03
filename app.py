@@ -2154,7 +2154,8 @@ def api_ai_chat():
             "action": result.get("action"),
             "proposed_action": proposed_act,
             "explanation": result.get("explanation"),
-            "redirect_url": result.get("redirect_url")
+            "redirect_url": result.get("redirect_url"),
+            "suggested_quick_replies": result.get("suggested_quick_replies") or []
         }
 
         if reply_text:
@@ -2182,6 +2183,7 @@ def api_ai_chat():
             "results": extra_data["exercises"],
             "food_results": extra_data["foods"],
             "actions": extra_data["actions"],
+            "suggested_quick_replies": extra_data["suggested_quick_replies"],
             "redirect_url": result.get("redirect_url")
         })
     except Exception as e:

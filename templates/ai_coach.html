@@ -60,7 +60,19 @@
       <i data-lucide="trending-up" class="h-3.5 w-3.5 text-emerald-400"></i>
       Progress Check
     </button>
+<<<<<<< HEAD
     <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
+=======
+    <button onclick="sendQuickAction('I am feeling sore and low energy today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="heart-pulse" class="h-3.5 w-3.5 text-emerald-400"></i>
+      Feeling Sore
+    </button>
+    <button onclick="sendQuickAction('I want to train chest today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+      <i data-lucide="flame" class="h-3.5 w-3.5 text-emerald-400"></i>
+      Train Chest
+    </button>
+    <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+>>>>>>> origin/fix/ai-coach-chatbot-improvements
       <i data-lucide="activity" class="h-3.5 w-3.5 text-emerald-400"></i>
       Sports Warm-Up
     </button>
@@ -228,6 +240,43 @@
       `;
     }
 
+    if (extraData.foods && extraData.foods.length > 0) {
+      extraHTML += `<div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">`;
+      extraData.foods.slice(0, 4).forEach(f => {
+        const name = escapeHTML(f.name || f.food_name || 'Food Item');
+        const cals = f.calories || 0;
+        const prot = f.protein || 0;
+        const cost = f.weekly_cost || f.price || f.cost || 20;
+        extraHTML += `
+          <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-3 flex justify-between items-center shadow-sm">
+            <div>
+              <h4 class="font-bold text-xs text-white">${name}</h4>
+              <p class="text-[11px] text-emerald-400 font-medium">${cals} kcal • ${prot}g Protein</p>
+              <span class="text-[10px] text-slate-400">Est. Cost: ₹${cost}</span>
+            </div>
+            <a href="/nutrition" class="text-[10px] font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 transition-colors">
+              Nutrition Plan
+            </a>
+          </div>
+        `;
+      });
+      extraHTML += `</div>`;
+    }
+
+    if (extraData.suggested_quick_replies && extraData.suggested_quick_replies.length > 0) {
+      extraHTML += `<div class="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-slate-700/40">`;
+      extraData.suggested_quick_replies.forEach(chip => {
+        const cleanChip = escapeHTML(chip).replace(/'/g, "\\'");
+        extraHTML += `
+          <button onclick="sendQuickAction('${cleanChip}')" class="px-2.5 py-1 rounded-full bg-slate-900 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 text-[11px] font-medium border border-slate-700 hover:border-emerald-500/40 transition-all flex items-center gap-1">
+            <span>${escapeHTML(chip)}</span>
+            <i data-lucide="chevron-right" class="h-3 w-3"></i>
+          </button>
+        `;
+      });
+      extraHTML += `</div>`;
+    }
+
     if (extraData.redirect_url && !extraData.proposed_action) {
       extraHTML += `
         <div class="mt-3">
@@ -328,7 +377,8 @@
           exercises: data.results || [],
           foods: data.food_results || [],
           proposed_action: (typeof data.proposed_action === 'object' && data.proposed_action !== null) ? data.proposed_action : null,
-          redirect_url: data.redirect_url
+          redirect_url: data.redirect_url,
+          suggested_quick_replies: data.suggested_quick_replies || []
         });
       } else {
         appendCoachMessage("⚠️ " + (data.message || "Please try again."));
@@ -411,7 +461,8 @@
   }
 
   function escapeHTML(str) {
-    return str.replace(/[&<>'"]/g, 
+    if (!str) return "";
+    return String(str).replace(/[&<>'"]/g, 
       tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
     );
   }
@@ -420,28 +471,37 @@
     if (!txt) return "";
     let lines = txt.split('\n');
     let formattedLines = [];
-    let inList = false;
 
     for (let line of lines) {
       let trimmed = line.trim();
       let escaped = escapeHTML(trimmed);
 
+      // Headings
+      if (/^###\s+/.test(trimmed)) {
+        let content = escaped.replace(/^###\s+/, '');
+        formattedLines.push(`<h4 class="font-bold text-emerald-400 mt-2.5 mb-1 text-sm tracking-tight">${content}</h4>`);
+        continue;
+      }
+      if (/^##\s+/.test(trimmed)) {
+        let content = escaped.replace(/^##\s+/, '');
+        formattedLines.push(`<h3 class="font-bold text-white mt-3 mb-1 text-base tracking-tight">${content}</h3>`);
+        continue;
+      }
+
       // Bold & Italic
       escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-emerald-400">$1</strong>');
       escaped = escaped.replace(/\*(.*?)\*/g, '<em class="italic text-slate-300">$1</em>');
 
-      // Unordered list (- or *)
-      if (/^[-*]\s+/.test(trimmed)) {
-        let content = escaped.replace(/^[-*]\s+/, '');
+      // Unordered list (- or * or •)
+      if (/^[-*•]\s+/.test(trimmed)) {
+        let content = escaped.replace(/^[-*•]\s+/, '');
         formattedLines.push(`<li class="flex items-start gap-2 ml-1 my-1"><span class="text-emerald-400 mt-0.5">•</span><span>${content}</span></li>`);
-        inList = true;
       }
       // Ordered list (1. 2. etc.)
       else if (/^\d+\.\s+/.test(trimmed)) {
         let num = trimmed.match(/^(\d+)\.\s+/)[1];
         let content = escaped.replace(/^\d+\.\s+/, '');
         formattedLines.push(`<li class="flex items-start gap-2 ml-1 my-1"><span class="font-bold text-emerald-400">${num}.</span><span>${content}</span></li>`);
-        inList = true;
       }
       else {
         if (trimmed.length > 0) {
