@@ -4526,8 +4526,9 @@
     "id": 89,
     "name": "Burpees",
     "slug": "burpees",
-    "category": "Full Body",
+    "category": "Cardio",
     "primary_muscles": [
+      "Cardio",
       "Full Body",
       "Chest",
       "Quadriceps"

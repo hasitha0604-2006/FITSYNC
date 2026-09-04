@@ -752,10 +752,12 @@ def generate_custom_today_workout(plan, today_day_name, focus_str, duration_mins
     if mode == "yoga":
         desired_poses = cfg["poses"]
         seen_ids = set()
+        yoga_exercises = [ex for ex in all_exercises if (ex.get("category") or "").lower().startswith("yoga")]
         for pose_name in desired_poses:
-            match = next((ex for ex in all_exercises if ex.get("name", "").lower() == pose_name.lower()), None)
+            p_clean = pose_name.lower().replace(" pose", "").replace(" stretch", "").strip()
+            match = next((ex for ex in yoga_exercises if ex.get("name", "").lower() == pose_name.lower()), None)
             if not match:
-                match = next((ex for ex in all_exercises if pose_name.lower() in ex.get("name", "").lower()), None)
+                match = next((ex for ex in yoga_exercises if p_clean in ex.get("name", "").lower() or any(p_clean in a.lower() for a in ex.get("aliases", []))), None)
             if match:
                 ex_id = match.get("id") or match.get("name")
                 if ex_id not in seen_ids:
@@ -763,6 +765,18 @@ def generate_custom_today_workout(plan, today_day_name, focus_str, duration_mins
                     ex_copy = dict(match)
                     ex_copy["target_group"] = "Yoga Pose"
                     selected_exercises.append(ex_copy)
+
+        # If fewer than 4 poses matched, supplement with available Yoga exercises
+        if len(selected_exercises) < 4:
+            for y_ex in yoga_exercises:
+                ex_id = y_ex.get("id") or y_ex.get("name")
+                if ex_id not in seen_ids:
+                    seen_ids.add(ex_id)
+                    ex_copy = dict(y_ex)
+                    ex_copy["target_group"] = "Yoga Pose"
+                    selected_exercises.append(ex_copy)
+                    if len(selected_exercises) >= 5:
+                        break
     else:
         groups = cfg["groups"]
         if cfg.get("combined") and len(groups) == 2:
