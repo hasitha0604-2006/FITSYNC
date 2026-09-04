@@ -5498,12 +5498,287 @@
     "default_reps": "10-12 each side",
     "default_rest": 45,
     "supported_demo": true,
-    "media_type": "animation",
+    "media_type": "3d",
     "media_path": "/static/exercises/single_arm_cable_row/demo.svg",
     "demonstration_asset": "/static/exercises/single_arm_cable_row/demo.svg",
     "thumbnail": "/static/exercises/single_arm_cable_row/thumbnail.png",
     "aliases": [
       "single-arm cable row"
+    ]
+  },
+  {
+    "id": 113,
+    "name": "Downward-Facing Dog",
+    "slug": "downward_dog",
+    "category": "Yoga",
+    "primary_muscles": [
+      "Hamstrings",
+      "Calves",
+      "Shoulders",
+      "Spine"
+    ],
+    "secondary_muscles": [
+      "Lats",
+      "Wrists",
+      "Core"
+    ],
+    "equipment": "Yoga Mat",
+    "difficulty": "Beginner",
+    "environment": "Home & Studio",
+    "goal": "Mobility & Recovery",
+    "instructions": [
+      "Start on all fours with wrists under shoulders and knees under hips.",
+      "Tuck your toes, lift your knees off the mat, and reach your sit bones up toward the ceiling.",
+      "Press firmly into palms, draw your shoulder blades down your back, and extend through your heels.",
+      "Hold for 5-8 steady breaths, relaxing your head between your upper arms."
+    ],
+    "start_pos": "Tabletop position on hands and knees.",
+    "movement": "Push hips up and back into an inverted V-shape.",
+    "end_pos": "Full inverted V with lengthened spine and grounded heels.",
+    "common_mistakes": [
+      "Rounding the upper back",
+      "Locking knees aggressively",
+      "Shrugging shoulders into ears"
+    ],
+    "safety_notes": "Keep slight micro-bend in knees if hamstrings are tight.",
+    "default_sets": 3,
+    "default_reps": "30-60s hold",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "3d",
+    "media_path": "/static/exercises/downward_dog/demo.svg",
+    "demonstration_asset": "/static/exercises/downward_dog/demo.svg",
+    "thumbnail": "/static/exercises/downward_dog/thumbnail.png",
+    "aliases": [
+      "downward dog",
+      "adho mukha svanasana"
+    ]
+  },
+  {
+    "id": 114,
+    "name": "Warrior II",
+    "slug": "warrior_ii",
+    "category": "Yoga",
+    "primary_muscles": [
+      "Quadriceps",
+      "Glutes",
+      "Hip Flexors"
+    ],
+    "secondary_muscles": [
+      "Deltoids",
+      "Core",
+      "Ankles"
+    ],
+    "equipment": "Yoga Mat",
+    "difficulty": "Beginner",
+    "environment": "Home & Studio",
+    "goal": "Mobility & Strength",
+    "instructions": [
+      "Step feet 3-4 feet apart, turn front foot out 90 degrees and back foot in slightly.",
+      "Bend front knee over ankle to 90 degrees while keeping back leg straight and strong.",
+      "Extend arms horizontally parallel to the floor, actively reaching through fingertips.",
+      "Gaze forward over the front middle finger while keeping torso centered over pelvis."
+    ],
+    "start_pos": "Wide standing stance.",
+    "movement": "Deepen front knee to 90 degrees and extend arms.",
+    "end_pos": "Solid warrior stance with level pelvis and horizontal arms.",
+    "common_mistakes": [
+      "Front knee collapsing inward",
+      "Leaning torso too far forward",
+      "Tensing shoulders up to neck"
+    ],
+    "safety_notes": "Stack front knee directly above front heel.",
+    "default_sets": 3,
+    "default_reps": "45s each side",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "3d",
+    "media_path": "/static/exercises/warrior_ii/demo.svg",
+    "demonstration_asset": "/static/exercises/warrior_ii/demo.svg",
+    "thumbnail": "/static/exercises/warrior_ii/thumbnail.png",
+    "aliases": [
+      "warrior 2",
+      "virabhadrasana ii"
+    ]
+  },
+  {
+    "id": 115,
+    "name": "Child's Pose",
+    "slug": "childs_pose",
+    "category": "Yoga",
+    "primary_muscles": [
+      "Lower Back",
+      "Hips",
+      "Glutes"
+    ],
+    "secondary_muscles": [
+      "Shoulders",
+      "Ankles"
+    ],
+    "equipment": "Yoga Mat",
+    "difficulty": "Beginner",
+    "environment": "Home & Studio",
+    "goal": "Recovery & Flexibility",
+    "instructions": [
+      "Kneel on the mat with big toes touching and knees hip-width apart.",
+      "Sit back on your heels and fold forward, extending your torso between your thighs.",
+      "Rest your forehead on the mat and reach arms forward with palms down.",
+      "Breathe deeply into your lower back and hold peacefully."
+    ],
+    "start_pos": "Kneeling on heels.",
+    "movement": "Fold forward extending arms on the mat.",
+    "end_pos": "Resting forward fold with hips on heels.",
+    "common_mistakes": [
+      "Lifting hips high off heels",
+      "Tension in neck or jaw"
+    ],
+    "safety_notes": "Place a bolster or block under hips or forehead if comfortable.",
+    "default_sets": 3,
+    "default_reps": "60s hold",
+    "default_rest": 20,
+    "supported_demo": true,
+    "media_type": "3d",
+    "media_path": "/static/exercises/childs_pose/demo.svg",
+    "demonstration_asset": "/static/exercises/childs_pose/demo.svg",
+    "thumbnail": "/static/exercises/childs_pose/thumbnail.png",
+    "aliases": [
+      "balasana",
+      "childs pose"
+    ]
+  },
+  {
+    "id": 116,
+    "name": "Cobra Pose",
+    "slug": "cobra_pose",
+    "category": "Yoga",
+    "primary_muscles": [
+      "Erector Spinae",
+      "Chest"
+    ],
+    "secondary_muscles": [
+      "Abdominals",
+      "Shoulders",
+      "Glutes"
+    ],
+    "equipment": "Yoga Mat",
+    "difficulty": "Beginner",
+    "environment": "Home & Studio",
+    "goal": "Spinal Mobility",
+    "instructions": [
+      "Lie prone on your stomach with tops of feet flat and hands under shoulders.",
+      "Hug elbows into your ribcage and press pelvic bone gently into the floor.",
+      "Inhale and lift your chest off the mat using your back muscles, keeping neck long.",
+      "Hold for 3-5 breaths, then lower slowly on an exhale."
+    ],
+    "start_pos": "Prone on stomach with hands beside chest.",
+    "movement": "Inhale and lift sternum forward and upward.",
+    "end_pos": "Gentle upper chest extension with soft elbows.",
+    "common_mistakes": [
+      "Pushing too hard with arms and crunching lower back",
+      "Craning neck backwards"
+    ],
+    "safety_notes": "Focus on opening thoracic spine rather than bending lower back.",
+    "default_sets": 3,
+    "default_reps": "30s hold",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "3d",
+    "media_path": "/static/exercises/cobra_pose/demo.svg",
+    "demonstration_asset": "/static/exercises/cobra_pose/demo.svg",
+    "thumbnail": "/static/exercises/cobra_pose/thumbnail.png",
+    "aliases": [
+      "bhujangasana",
+      "cobra stretch"
+    ]
+  },
+  {
+    "id": 117,
+    "name": "Cat-Cow Stretch",
+    "slug": "cat_cow",
+    "category": "Yoga",
+    "primary_muscles": [
+      "Spine",
+      "Core"
+    ],
+    "secondary_muscles": [
+      "Neck",
+      "Shoulders",
+      "Pelvis"
+    ],
+    "equipment": "Yoga Mat",
+    "difficulty": "Beginner",
+    "environment": "Home & Studio",
+    "goal": "Spinal Mobility",
+    "instructions": [
+      "Start on hands and knees with neutral spine.",
+      "Inhale into Cow: drop belly down, lift sit bones and gaze gently upward.",
+      "Exhale into Cat: draw navel to spine, round back toward ceiling, and tuck chin.",
+      "Flow continuously with your breath for 10-12 smooth cycles."
+    ],
+    "start_pos": "Neutral tabletop position.",
+    "movement": "Inhale arching into Cow, exhale rounding into Cat.",
+    "end_pos": "Full spinal flexion and extension rhythm.",
+    "common_mistakes": [
+      "Moving from neck only instead of entire spine",
+      "Holding breath"
+    ],
+    "safety_notes": "Move slowly and honor your spine's natural range.",
+    "default_sets": 3,
+    "default_reps": "12-15 breaths",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "3d",
+    "media_path": "/static/exercises/cat_cow/demo.svg",
+    "demonstration_asset": "/static/exercises/cat_cow/demo.svg",
+    "thumbnail": "/static/exercises/cat_cow/thumbnail.png",
+    "aliases": [
+      "cat cow",
+      "marjaryasana bitilasana"
+    ]
+  },
+  {
+    "id": 118,
+    "name": "Tree Pose",
+    "slug": "tree_pose",
+    "category": "Yoga",
+    "primary_muscles": [
+      "Ankle Stabilizers",
+      "Adductors",
+      "Glutes"
+    ],
+    "secondary_muscles": [
+      "Core",
+      "Deltoids"
+    ],
+    "equipment": "Yoga Mat",
+    "difficulty": "Intermediate",
+    "environment": "Home & Studio",
+    "goal": "Balance & Stability",
+    "instructions": [
+      "Stand tall in Mountain Pose and shift weight onto your left foot.",
+      "Place right sole on inner left calf or inner left thigh (avoiding the knee joint).",
+      "Bring palms together at heart center or reach arms overhead.",
+      "Fix your gaze on an unmoving point (Drishti) and balance steadily."
+    ],
+    "start_pos": "Standing mountain pose.",
+    "movement": "Root standing foot and place sole on inner leg.",
+    "end_pos": "Stable single-leg balance with open hip.",
+    "common_mistakes": [
+      "Placing foot directly on the knee joint",
+      "Tilting pelvis out of alignment"
+    ],
+    "safety_notes": "Use wall support if working on initial balance.",
+    "default_sets": 3,
+    "default_reps": "45s each side",
+    "default_rest": 30,
+    "supported_demo": true,
+    "media_type": "3d",
+    "media_path": "/static/exercises/tree_pose/demo.svg",
+    "demonstration_asset": "/static/exercises/tree_pose/demo.svg",
+    "thumbnail": "/static/exercises/tree_pose/thumbnail.png",
+    "aliases": [
+      "tree pose",
+      "vrikshasana"
     ]
   }
 ]

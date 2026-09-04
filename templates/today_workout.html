@@ -939,8 +939,10 @@
     document.getElementById('modal-ex-working-loc').innerText = ex.working_location || ex.primary_muscle || ex.category;
     document.getElementById('modal-ex-joint-action').innerText = ex.joint_action || 'Joint Flexion & Extension';
 
-    // Mount Interactive Biomechanical Motion Animation Player
-    if (window.initExerciseMotionPlayer) {
+    // Mount 3D Three.js Mannequin Animation Viewer
+    if (window.initFitSync3DViewer && typeof THREE !== 'undefined') {
+      window.initFitSync3DViewer('today-motion-viewport', ex);
+    } else if (window.initExerciseMotionPlayer) {
       window.initExerciseMotionPlayer('today-motion-viewport', ex);
     }
 
@@ -977,6 +979,9 @@
   }
 
   function closeGuideModal() {
+    if (window.__active3DViewer) {
+      window.__active3DViewer.destroy();
+    }
     if (window.__activeMotionPlayer) {
       window.__activeMotionPlayer.destroy();
     }

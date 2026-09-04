@@ -510,9 +510,21 @@
     <!-- Modal Body -->
     <div class="p-4 md:p-6 overflow-y-auto space-y-4 text-xs text-slate-300">
       
-      <!-- Interactive 60fps Biomechanical Motion Player Container -->
-      <div id="workout-plan-motion-container" class="w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner flex items-center justify-center">
-        <!-- FitSyncExercisePlayer mounts here automatically -->
+      <!-- Interactive 3D Biomechanical Demonstration Container -->
+      <div id="workout-plan-motion-container" class="w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner flex items-center justify-center relative">
+        <!-- FitSync3DViewer mounts here automatically -->
+      </div>
+
+      <!-- Quick Action Bar: 3D Demonstration + AI Form Check -->
+      <div class="flex items-center justify-between gap-3 bg-slate-950/80 p-3 rounded-2xl border border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black text-emerald-400 flex items-center gap-1.5">
+            <i data-lucide="box" class="h-4 w-4"></i> 3D Mannequin Active
+          </span>
+        </div>
+        <a id="modal-ai-form-check-link" href="{{ url_for('form_check') }}" class="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-xl shadow transition-all hover:scale-105">
+          <i data-lucide="camera" class="h-3.5 w-3.5"></i> Launch AI Form Check &rarr;
+        </a>
       </div>
 
       <!-- Specs Row: Sets, Reps, Rest, Equipment -->
@@ -604,7 +616,10 @@
     </div>
 
     <!-- Modal Footer -->
-    <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-end">
+    <div class="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between">
+      <a id="modal-footer-ai-form-btn" href="{{ url_for('form_check') }}" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
+        <i data-lucide="video" class="h-4 w-4"></i> Check Form with AI Camera
+      </a>
       <button onclick="closeGuideModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl border border-slate-700 transition-colors">
         Close Demo
       </button>
@@ -623,6 +638,8 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/exercise_3d_config.js') }}"></script>
+<script src="{{ url_for('static', filename='js/exercise_3d_viewer.js') }}"></script>
 <script src="{{ url_for('static', filename='js/exercise_motion_player.js') }}"></script>
 <script>
 let currentGuideExercise = null;
@@ -650,12 +667,21 @@ function openGuideModal(ex) {
   document.getElementById('modal-ex-working-loc').innerText = prim;
   document.getElementById('modal-ex-joint-action').innerText = sec;
 
+  // Set AI Form Check Links
+  const formCheckUrl = `/form-check?exercise=${encodeURIComponent(ex.name)}`;
+  const formCheckLink = document.getElementById('modal-ai-form-check-link');
+  const formCheckFooter = document.getElementById('modal-footer-ai-form-btn');
+  if (formCheckLink) formCheckLink.href = formCheckUrl;
+  if (formCheckFooter) formCheckFooter.href = formCheckUrl;
+
   if (typeof highlightAnatomyMuscles === 'function') {
     highlightAnatomyMuscles(prim, sec, '#modal-anatomy-container');
   }
 
-  // Mount 60fps Playable Biomechanical Motion Player Engine
-  if (window.initExerciseMotionPlayer) {
+  // Mount 3D Three.js Mannequin Animation Viewer
+  if (window.initFitSync3DViewer && typeof THREE !== 'undefined') {
+    window.initFitSync3DViewer('workout-plan-motion-container', ex);
+  } else if (window.initExerciseMotionPlayer) {
     window.initExerciseMotionPlayer('workout-plan-motion-container', ex);
   }
 
@@ -693,6 +719,9 @@ function openGuideModal(ex) {
 
 function closeGuideModal() {
   document.getElementById('guide-modal').classList.add('hidden');
+  if (window.__active3DViewer) {
+    window.__active3DViewer.destroy();
+  }
   if (window.__activeMotionPlayer) {
     window.__activeMotionPlayer.destroy();
   }

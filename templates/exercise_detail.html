@@ -203,7 +203,9 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const exData = {{ ex|tojson|safe }};
-    if (window.initExerciseMotionPlayer) {
+    if (window.initFitSync3DViewer && typeof THREE !== 'undefined') {
+      window.initFitSync3DViewer('detail-motion-viewport', exData);
+    } else if (window.initExerciseMotionPlayer) {
       window.initExerciseMotionPlayer('detail-motion-viewport', exData);
     }
     const prim = "{{ ex.primary_muscle or ex.category }}";

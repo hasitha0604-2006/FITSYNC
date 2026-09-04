@@ -785,8 +785,10 @@
     document.getElementById('demo-modal-primary-bar').style.width = `${pPct}%`;
     document.getElementById('demo-modal-secondary-muscles').innerText = (ex.secondary_muscles && ex.secondary_muscles.length) ? ex.secondary_muscles.join(', ') : 'Stabilizer muscles';
 
-    // Mount Interactive Biomechanical Motion Animation Player
-    if (window.initExerciseMotionPlayer) {
+    // Mount 3D Three.js Mannequin Animation Viewer
+    if (window.initFitSync3DViewer && typeof THREE !== 'undefined') {
+      window.initFitSync3DViewer('demo-motion-viewport', ex);
+    } else if (window.initExerciseMotionPlayer) {
       window.initExerciseMotionPlayer('demo-motion-viewport', ex);
     }
 
@@ -821,6 +823,9 @@
   }
 
   function closeDemoModal() {
+    if (window.__active3DViewer) {
+      window.__active3DViewer.destroy();
+    }
     if (window.__activeMotionPlayer) {
       window.__activeMotionPlayer.destroy();
     }

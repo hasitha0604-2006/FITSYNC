@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#020617"/>
+  <circle cx="200" cy="150" r="120" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
+  <path d="M 120 230 L 200 90 L 280 230" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="200" cy="85" r="12" fill="#38bdf8"/>
+  <line x1="120" y1="230" x2="280" y2="230" stroke="#334155" stroke-width="4"/>
+  <text x="200" y="270" fill="#38bdf8" font-size="14" font-family="sans-serif" font-weight="bold" text-anchor="middle">Downward-Facing Dog (Adho Mukha Svanasana)</text>
+</svg>

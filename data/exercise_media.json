@@ -1118,5 +1118,65 @@
     "media_type": "mp4",
     "status": "missing",
     "license": "FitSync Media Library / CC0"
+  },
+  "113": {
+    "exercise_id": 113,
+    "exercise_name": "Downward-Facing Dog",
+    "slug": "downward_dog",
+    "video": "/static/exercise_media/downward_dog.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/downward_dog.webp",
+    "media_type": "3d",
+    "status": "available",
+    "license": "FitSync 3D Mannequin / CC0"
+  },
+  "114": {
+    "exercise_id": 114,
+    "exercise_name": "Warrior II",
+    "slug": "warrior_ii",
+    "video": "/static/exercise_media/warrior_ii.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/warrior_ii.webp",
+    "media_type": "3d",
+    "status": "available",
+    "license": "FitSync 3D Mannequin / CC0"
+  },
+  "115": {
+    "exercise_id": 115,
+    "exercise_name": "Child's Pose",
+    "slug": "childs_pose",
+    "video": "/static/exercise_media/childs_pose.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/childs_pose.webp",
+    "media_type": "3d",
+    "status": "available",
+    "license": "FitSync 3D Mannequin / CC0"
+  },
+  "116": {
+    "exercise_id": 116,
+    "exercise_name": "Cobra Pose",
+    "slug": "cobra_pose",
+    "video": "/static/exercise_media/cobra_pose.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cobra_pose.webp",
+    "media_type": "3d",
+    "status": "available",
+    "license": "FitSync 3D Mannequin / CC0"
+  },
+  "117": {
+    "exercise_id": 117,
+    "exercise_name": "Cat-Cow Stretch",
+    "slug": "cat_cow",
+    "video": "/static/exercise_media/cat_cow.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/cat_cow.webp",
+    "media_type": "3d",
+    "status": "available",
+    "license": "FitSync 3D Mannequin / CC0"
+  },
+  "118": {
+    "exercise_id": 118,
+    "exercise_name": "Tree Pose",
+    "slug": "tree_pose",
+    "video": "/static/exercise_media/tree_pose.mp4",
+    "thumbnail": "/static/exercise_media/thumbnails/tree_pose.webp",
+    "media_type": "3d",
+    "status": "available",
+    "license": "FitSync 3D Mannequin / CC0"
   }
 }

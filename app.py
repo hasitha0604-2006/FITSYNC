@@ -1887,7 +1887,16 @@ def api_get_exercise(exercise_id):
         "working_location": ex.get("working_location", ex.get("category")),
         "joint_action": ex.get("joint_action", "Joint Flexion & Extension"),
         "muscle_engagement": ex.get("muscle_engagement", {"primary_pct": 80, "secondary_pct": 20}),
-        "coaching_cues": ex.get("coaching_cues", [])
+        "coaching_cues": ex.get("coaching_cues", []),
+        "has_3d_demo": True,
+        "demo_type": "3d",
+        "model_path": f"/static/3d/models/{ex.get('slug')}.glb",
+        "animation_clip": ex.get("slug"),
+        "camera_config": {
+            "preset": "front_3_4" if ex.get("category") in ["Arms", "Chest", "Shoulders"] else "side_3_4",
+            "distance": 4.5,
+            "fov": 45
+        }
     })
 
 
