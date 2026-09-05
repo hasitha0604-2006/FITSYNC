@@ -14,7 +14,7 @@
       <p class="text-xs text-slate-400 mt-1">Enable your webcam to evaluate joint angles, track rep depth, and match side-by-side kinematic motion avatars in real-time.</p>
     </div>
 
-    <!-- Quick Camera Mode Toggles -->
+    <!-- Quick Camera Mode Toggles & Voice Coach -->
     <div class="flex items-center gap-2 flex-wrap">
       <button
         type="button"
@@ -32,6 +32,24 @@
         class="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors"
       >
         <i data-lucide="activity" class="h-4 w-4 text-amber-400"></i> AI Simulator
+      </button>
+
+      <button
+        type="button"
+        id="btn-voice-toggle"
+        onclick="toggleVoiceCoach()"
+        class="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/30 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors"
+        title="Toggle Real-time Spoken Voice Feedback"
+      >
+        <i data-lucide="volume-2" id="voice-icon" class="h-4 w-4"></i> <span id="voice-label">Voice ON</span>
+      </button>
+
+      <button
+        type="button"
+        onclick="openScorecardModal()"
+        class="flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs px-3.5 py-2.5 rounded-xl shadow transition-all active:scale-95"
+      >
+        <i data-lucide="award" class="h-4 w-4"></i> Finish Set
       </button>
     </div>
   </div>
@@ -187,6 +205,99 @@
   </div>
 
 </div>
+
+<!-- SET SCORECARD MODAL -->
+<div id="scorecard-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <i data-lucide="award" class="h-5 w-5"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-black text-white" id="modal-scorecard-title">Set Complete</h3>
+          <p class="text-xs text-slate-400" id="modal-scorecard-ex">Barbell Squat</p>
+        </div>
+      </div>
+      <button onclick="closeScorecardModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg">✕</button>
+    </div>
+
+    <!-- Main Score Badge & Reps Count -->
+    <div class="grid grid-cols-2 gap-3 text-center">
+      <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Reps Completed</p>
+        <h2 class="text-3xl font-black text-emerald-400 mt-1" id="modal-scorecard-reps">12</h2>
+      </div>
+      <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-2xl">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Technique Score</p>
+        <h2 class="text-3xl font-black text-cyan-400 mt-1" id="modal-scorecard-score">96%</h2>
+      </div>
+    </div>
+
+    <!-- 4 Biomechanical Pillar Breakdown -->
+    <div class="space-y-2.5 bg-slate-950/50 p-4 rounded-2xl border border-slate-800/80 text-xs">
+      <h4 class="font-bold text-slate-300 text-[11px] uppercase tracking-wider">Biomechanical Breakdown</h4>
+      
+      <div>
+        <div class="flex justify-between text-[11px] mb-1">
+          <span class="text-slate-400 font-medium">Spine & Neutral Posture</span>
+          <span class="text-emerald-400 font-mono font-bold" id="bar-posture-val">98%</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="bar-posture" class="h-full bg-emerald-400 rounded-full transition-all duration-500" style="width: 98%"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex justify-between text-[11px] mb-1">
+          <span class="text-slate-400 font-medium">Bilateral Arm/Leg Symmetry</span>
+          <span class="text-emerald-400 font-mono font-bold" id="bar-alignment-val">95%</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="bar-alignment" class="h-full bg-emerald-400 rounded-full transition-all duration-500" style="width: 95%"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex justify-between text-[11px] mb-1">
+          <span class="text-slate-400 font-medium">Full Range of Motion Depth</span>
+          <span class="text-cyan-400 font-mono font-bold" id="bar-rom-val">92%</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="bar-rom" class="h-full bg-cyan-400 rounded-full transition-all duration-500" style="width: 92%"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex justify-between text-[11px] mb-1">
+          <span class="text-slate-400 font-medium">Kinematic Stability & Tempo</span>
+          <span class="text-emerald-400 font-mono font-bold" id="bar-stability-val">96%</span>
+        </div>
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="bar-stability" class="h-full bg-emerald-400 rounded-full transition-all duration-500" style="width: 96%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Coaching Set Recommendation -->
+    <div class="bg-emerald-950/20 border border-emerald-500/30 p-3.5 rounded-2xl flex items-start gap-2.5">
+      <span class="text-emerald-400 text-base shrink-0">💡</span>
+      <p class="text-xs text-emerald-300/90 leading-relaxed font-medium" id="modal-scorecard-tip">
+        Excellent depth on the concentric phase. For your next set, focus on bracing the core during eccentric descent.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3 pt-2">
+      <button onclick="closeScorecardModal()" class="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow transition-transform active:scale-95">
+        Start Next Set
+      </button>
+      <a href="{{ url_for('today_workout') }}" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl text-center transition-colors">
+        Workout Hub
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -196,6 +307,84 @@
   let activeSlug = 'squat';
   let activeCategory = 'Legs';
   let isCameraOnline = false;
+  let isVoiceEnabled = true;
+
+  function toggleVoiceCoach() {
+    isVoiceEnabled = !isVoiceEnabled;
+    const vIcon = document.getElementById('voice-icon');
+    const vLabel = document.getElementById('voice-label');
+    const vBtn = document.getElementById('btn-voice-toggle');
+
+    if (window.FitSyncAIFormChecker) {
+      window.FitSyncAIFormChecker.setVoiceFeedback(isVoiceEnabled);
+    }
+
+    if (isVoiceEnabled) {
+      if (vLabel) vLabel.innerText = "Voice ON";
+      if (vBtn) vBtn.className = "flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/30 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors";
+    } else {
+      if (vLabel) vLabel.innerText = "Voice Muted";
+      if (vBtn) vBtn.className = "flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-slate-500 border border-slate-800 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-colors";
+      if (typeof window.speechSynthesis !== 'undefined') window.speechSynthesis.cancel();
+    }
+  }
+
+  function openScorecardModal() {
+    const summary = window.FitSyncAIFormChecker ? window.FitSyncAIFormChecker.getSetSummary() : {
+      exercise: activeEx,
+      reps: 10,
+      avgScore: 95,
+      posture: 98,
+      alignment: 95,
+      rom: 92,
+      stability: 96
+    };
+
+    const modal = document.getElementById('scorecard-modal');
+    if (modal) modal.classList.remove('hidden');
+
+    const exEl = document.getElementById('modal-scorecard-ex');
+    const repsEl = document.getElementById('modal-scorecard-reps');
+    const scoreEl = document.getElementById('modal-scorecard-score');
+    const tipEl = document.getElementById('modal-scorecard-tip');
+
+    if (exEl) exEl.innerText = summary.exercise || activeEx;
+    if (repsEl) repsEl.innerText = summary.reps;
+    if (scoreEl) scoreEl.innerText = `${summary.avgScore}%`;
+
+    const postVal = document.getElementById('bar-posture-val');
+    const postBar = document.getElementById('bar-posture');
+    if (postVal) postVal.innerText = `${summary.posture}%`;
+    if (postBar) postBar.style.width = `${summary.posture}%`;
+
+    const alignVal = document.getElementById('bar-alignment-val');
+    const alignBar = document.getElementById('bar-alignment');
+    if (alignVal) alignVal.innerText = `${summary.alignment}%`;
+    if (alignBar) alignBar.style.width = `${summary.alignment}%`;
+
+    const romVal = document.getElementById('bar-rom-val');
+    const romBar = document.getElementById('bar-rom');
+    if (romVal) romVal.innerText = `${summary.rom}%`;
+    if (romBar) romBar.style.width = `${summary.rom}%`;
+
+    const stabVal = document.getElementById('bar-stability-val');
+    const stabBar = document.getElementById('bar-stability');
+    if (stabVal) stabVal.innerText = `${summary.stability}%`;
+    if (stabBar) stabBar.style.width = `${summary.stability}%`;
+
+    if (summary.avgScore >= 90) {
+      if (tipEl) tipEl.innerText = "Outstanding form! You maintained optimal joint alignment and control throughout the entire set.";
+    } else if (summary.avgScore >= 75) {
+      if (tipEl) tipEl.innerText = "Solid set! Watch your tempo at the bottom inflection point to keep tension on the target muscle.";
+    } else {
+      if (tipEl) tipEl.innerText = "Good effort. Consider lightening the load slightly to ensure full range of motion without joint compensation.";
+    }
+  }
+
+  function closeScorecardModal() {
+    const modal = document.getElementById('scorecard-modal');
+    if (modal) modal.classList.add('hidden');
+  }
 
   function selectExercise(exName, slug, fullName, category) {
     activeEx = exName || 'Squat';

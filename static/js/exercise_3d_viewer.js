@@ -591,19 +591,22 @@
     /**
      * Build Controls, Phase Progress HUD, and Speed Selector
      */
+    /**
+     * Build Controls, Phase Progress HUD, Tempo/Breathing, and Angle Presets
+     */
     buildUIOverlay() {
       const hud = document.createElement('div');
       hud.className = 'absolute inset-0 pointer-events-none flex flex-col justify-between p-2.5 md:p-3 z-10 font-sans';
       hud.innerHTML = `
-        <!-- Top Bar: Phase Progress Indicator & Muscle Target Badge -->
+        <!-- Top Bar: Phase Progress Indicator, Breathing Guide & Camera Presets -->
         <div class="flex items-center justify-between gap-1.5 flex-wrap">
-          <div class="flex items-center gap-1.5 bg-slate-950/75 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded-xl shadow-md pointer-events-auto">
+          <div class="flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded-xl shadow-md pointer-events-auto">
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping"></span>
             <span id="hud-exercise-title" class="text-[11px] font-black text-white">3D Motion</span>
           </div>
 
           <!-- Movement Phase Steps (Synchronized) -->
-          <div id="hud-phase-container" class="flex items-center gap-1 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded-xl shadow-md pointer-events-auto text-[9px] font-black uppercase tracking-wider text-slate-400">
+          <div id="hud-phase-container" class="hidden sm:flex items-center gap-1 bg-slate-950/85 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded-xl shadow-md pointer-events-auto text-[9px] font-black uppercase tracking-wider text-slate-400">
             <span id="phase-step-0" class="px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 transition-all">START</span>
             <span class="text-slate-600">→</span>
             <span id="phase-step-1" class="px-1.5 py-0.5 rounded transition-all">MOVE</span>
@@ -613,10 +616,19 @@
             <span id="phase-step-3" class="px-1.5 py-0.5 rounded transition-all">RETURN</span>
           </div>
 
-          <div class="flex items-center gap-1 pointer-events-auto">
-            <button id="btn-3d-reset-cam" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/80 px-2 py-1 rounded-lg text-[10px] font-bold shadow-md transition-all flex items-center gap-1" title="Reset Camera View">
-              <span>↻ View</span>
-            </button>
+          <!-- Breathing / Tempo Guide Pill -->
+          <div id="hud-breathing-pill" class="flex items-center gap-1 bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-md pointer-events-auto transition-colors">
+            <span id="breathing-icon">🌬️</span>
+            <span id="breathing-text">Inhale (Lower)</span>
+          </div>
+
+          <!-- Camera Angle Presets -->
+          <div class="flex items-center gap-1 pointer-events-auto bg-slate-950/85 backdrop-blur-md border border-slate-800/90 p-0.5 rounded-xl shadow-md">
+            <button data-angle="iso" class="btn-3d-cam px-2 py-0.5 rounded-lg text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition-all" title="45° Isometric (Key: 1)">45°</button>
+            <button data-angle="front" class="btn-3d-cam px-2 py-0.5 rounded-lg text-[9px] font-bold bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition-all" title="Front Coronal (Key: 2)">Front</button>
+            <button data-angle="side" class="btn-3d-cam px-2 py-0.5 rounded-lg text-[9px] font-bold bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition-all" title="Side Sagittal (Key: 3)">Side</button>
+            <button data-angle="top" class="btn-3d-cam px-2 py-0.5 rounded-lg text-[9px] font-bold bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition-all" title="Top Down (Key: 4)">Top</button>
+            <button id="btn-3d-reset-cam" class="bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white px-1.5 py-0.5 rounded-lg text-[9px] font-bold border border-slate-800 transition-all" title="Reset Camera View (Key: R)">↻</button>
           </div>
         </div>
 
@@ -628,7 +640,7 @@
         <!-- Bottom Control Bar -->
         <div class="flex items-center justify-between gap-2 bg-slate-950/85 backdrop-blur-md border border-slate-800/90 p-2 rounded-xl shadow-xl pointer-events-auto">
           <div class="flex items-center gap-1">
-            <button id="btn-3d-play-pause" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] px-2.5 py-1 rounded-lg transition-transform active:scale-95 flex items-center gap-1 shadow">
+            <button id="btn-3d-play-pause" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] px-2.5 py-1 rounded-lg transition-transform active:scale-95 flex items-center gap-1 shadow" title="Play/Pause (Spacebar)">
               <span id="play-pause-icon">⏸</span>
             </button>
             <button id="btn-3d-replay" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 px-2 py-1 rounded-lg text-[11px] font-bold transition-colors" title="Replay">
@@ -638,7 +650,7 @@
 
           <!-- Playback Scrubber -->
           <div class="flex-1 max-w-[180px] sm:max-w-xs flex items-center">
-            <input type="range" id="slider-3d-progress" min="0" max="100" value="0" class="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg">
+            <input type="range" id="slider-3d-progress" min="0" max="100" value="0" class="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg" aria-label="Timeline Scrubber">
           </div>
 
           <!-- Speed Controls -->
@@ -658,6 +670,7 @@
       const resetCamBtn = hud.querySelector('#btn-3d-reset-cam');
       const scrubber = hud.querySelector('#slider-3d-progress');
       const speedBtns = hud.querySelectorAll('.btn-3d-spd');
+      const camBtns = hud.querySelectorAll('.btn-3d-cam');
 
       playBtn.addEventListener('click', () => this.togglePlay());
       replayBtn.addEventListener('click', () => {
@@ -666,6 +679,17 @@
         this.updatePlayBtnText();
       });
       resetCamBtn.addEventListener('click', () => this.resetCameraView());
+
+      camBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const angle = btn.getAttribute('data-angle');
+          this.setCameraAngle(angle);
+          camBtns.forEach(b => {
+            b.className = 'btn-3d-cam px-2 py-0.5 rounded-lg text-[9px] font-bold bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition-all';
+          });
+          btn.className = 'btn-3d-cam px-2 py-0.5 rounded-lg text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition-all';
+        });
+      });
 
       scrubber.addEventListener('input', (e) => {
         this.animationProgress = parseFloat(e.target.value) / 100.0;
@@ -681,6 +705,29 @@
           this.playbackSpeed = parseFloat(btn.getAttribute('data-speed')) || 1.0;
         });
       });
+
+      // Desktop Keyboard Shortcuts Listener
+      this.onKeyDown = (e) => {
+        if (!this.container || !this.container.isConnected) return;
+        // Ignore if user is typing in an input or textarea
+        if (e.target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
+        if (e.code === 'Space') {
+          e.preventDefault();
+          this.togglePlay();
+        } else if (e.key === 'r' || e.key === 'R') {
+          this.resetCameraView();
+        } else if (e.key === '1') {
+          this.setCameraAngle('iso');
+        } else if (e.key === '2') {
+          this.setCameraAngle('front');
+        } else if (e.key === '3') {
+          this.setCameraAngle('side');
+        } else if (e.key === '4') {
+          this.setCameraAngle('top');
+        }
+      };
+      window.addEventListener('keydown', this.onKeyDown);
     }
 
     /**
@@ -805,17 +852,26 @@
      * Reset Camera to Optimal Framing & Focus on Target
      */
     resetCameraView() {
+      this.setCameraAngle('iso');
+    }
+
+    /**
+     * Switch Camera Angle Presets (Isometric, Coronal Front, Sagittal Side, Transverse Top)
+     */
+    setCameraAngle(angleKey = 'iso') {
       const config = this.activeConfig;
-      const preset = (config && config.camera ? config.camera.preset : 'side_3_4');
       const dist = (config && config.camera ? config.camera.distance : 2.8);
       const targetY = (config && config.camera ? config.camera.targetY : 0.65);
 
-      if (preset === 'side_3_4') {
-        this.camera.position.set(dist * 0.72, targetY + dist * 0.38, dist * 0.72);
-      } else if (preset === 'front_3_4') {
-        this.camera.position.set(dist * 0.38, targetY + dist * 0.32, dist * 0.88);
+      if (angleKey === 'front') {
+        this.camera.position.set(0, targetY + dist * 0.15, dist * 0.95);
+      } else if (angleKey === 'side') {
+        this.camera.position.set(dist * 0.95, targetY + dist * 0.15, 0.05);
+      } else if (angleKey === 'top') {
+        this.camera.position.set(0, targetY + dist * 1.15, dist * 0.20);
       } else {
-        this.camera.position.set(0, targetY + dist * 0.25, dist);
+        // default 45° isometric
+        this.camera.position.set(dist * 0.72, targetY + dist * 0.38, dist * 0.72);
       }
 
       if (this.controls) {
@@ -843,6 +899,7 @@
       const anim = (this.activeConfig ? this.activeConfig.animation : 'squat');
       const j = this.joints;
       const eq = this.equipmentParts;
+      const isYoga = (this.activeExercise && (this.activeExercise.category || '').toLowerCase() === 'yoga') || (anim.startsWith('yoga_'));
 
       // Update Phase HUD
       let phaseIdx = 0;
@@ -862,6 +919,34 @@
               stepEl.className = 'px-1.5 py-0.5 rounded transition-all text-slate-400';
             }
           }
+        }
+      }
+
+      // Update Breathing / Tempo Guide
+      const breathIcon = this.container.querySelector('#breathing-icon');
+      const breathText = this.container.querySelector('#breathing-text');
+      const breathPill = this.container.querySelector('#hud-breathing-pill');
+      if (breathText && breathIcon) {
+        if (isYoga) {
+          breathIcon.innerText = '🧘';
+          breathText.innerText = 'Deep Pranic Breath';
+          if (breathPill) breathPill.className = 'flex items-center gap-1 bg-purple-950/80 border border-purple-500/40 text-purple-300 px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-md pointer-events-auto transition-colors';
+        } else if (phaseIdx === 0) {
+          breathIcon.innerText = '🛡️';
+          breathText.innerText = 'Brace Core';
+          if (breathPill) breathPill.className = 'flex items-center gap-1 bg-amber-950/80 border border-amber-500/40 text-amber-300 px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-md pointer-events-auto transition-colors';
+        } else if (phaseIdx === 1) {
+          breathIcon.innerText = '🌬️';
+          breathText.innerText = 'Inhale (Lower)';
+          if (breathPill) breathPill.className = 'flex items-center gap-1 bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-md pointer-events-auto transition-colors';
+        } else if (phaseIdx === 2) {
+          breathIcon.innerText = '⚡';
+          breathText.innerText = 'Transition';
+          if (breathPill) breathPill.className = 'flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-md pointer-events-auto transition-colors';
+        } else {
+          breathIcon.innerText = '💥';
+          breathText.innerText = 'Exhale (Drive)';
+          if (breathPill) breathPill.className = 'flex items-center gap-1 bg-rose-950/80 border border-rose-500/40 text-rose-300 px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-md pointer-events-auto transition-colors';
         }
       }
 
@@ -1421,6 +1506,10 @@
         this.rafId = null;
       }
       window.removeEventListener('resize', this.onWindowResize);
+      if (this.onKeyDown) {
+        window.removeEventListener('keydown', this.onKeyDown);
+        this.onKeyDown = null;
+      }
 
       if (this.resizeObserver) {
         this.resizeObserver.disconnect();

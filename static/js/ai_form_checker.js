@@ -1452,6 +1452,10 @@ window.FitSyncAIFormChecker = (function() {
       this.simAngle = 180;
       this.simDir = -1;
       this.simInterval = null;
+      this.scoreHistory = [];
+      this.voiceFeedbackEnabled = true;
+      this.lastSpeechTime = 0;
+      this.lastSpeechText = '';
     }
 
     setExercise(exerciseName, category) {
@@ -1748,21 +1752,32 @@ window.FitSyncAIFormChecker = (function() {
         displayReps = this.repCount;
       }
 
+      // Draw Silhouette Framing Guide when searching or occlusion
+      if (lowVisibilityCount > 0) {
+        this.drawFramingSilhouette(ctx, canvas.width, canvas.height);
+      }
+
       // Draw Color-Coded Pose Skeleton
       const skeletonColor = analysis.score >= 85 ? "#10b981" : (analysis.score >= 70 ? "#f59e0b" : "#ef4444");
       this.drawSkeleton(ctx, lm, canvas.width, canvas.height, skeletonColor);
 
       if (ctx) ctx.restore();
 
-      // Emit Telemetry
+      // Emit Telemetry & Audio Feedback
       if (this.onTelemetryUpdate) {
         const roundedScore = Math.max(50, Math.min(100, Math.round(analysis.score)));
+        this.scoreHistory.push(roundedScore);
+        if (this.scoreHistory.length > 300) this.scoreHistory.shift();
+
         const defaultBreakdown = {
           posture: Math.max(50, Math.min(100, Math.round(roundedScore * 0.98))),
           alignment: Math.max(50, Math.min(100, Math.round(roundedScore * 0.96))),
           rom: Math.max(50, Math.min(100, Math.round(roundedScore * 0.94))),
           stability: Math.max(50, Math.min(100, Math.round(roundedScore * 0.97)))
         };
+
+        const primaryTip = analysis.feedback && analysis.feedback.length > 0 ? analysis.feedback[0] : "Good form";
+        this.triggerVoiceFeedback(primaryTip);
 
         this.onTelemetryUpdate({
           status: "success",
@@ -1773,12 +1788,72 @@ window.FitSyncAIFormChecker = (function() {
           phase: analysis.phase,
           reps: displayReps,
           feedback: analysis.feedback,
-          primaryCorrection: analysis.feedback && analysis.feedback.length > 0 ? analysis.feedback[0] : "● Good alignment",
+          primaryCorrection: primaryTip,
           disclaimer: "FitSync Estimated Form Score is a technique guidance tool and fitness coaching aid, not a medical diagnosis.",
           simulated: false,
           landmarkWarning: null
         });
       }
+    }
+
+    // Voice Coaching synthesis with throttle
+    triggerVoiceFeedback(text) {
+      if (!this.voiceFeedbackEnabled || !text || typeof window.speechSynthesis === 'undefined') return;
+      const cleanText = text.replace(/^[●⚠💡]\s*/, '').trim();
+      if (!cleanText) return;
+
+      const now = Date.now();
+      if (now - this.lastSpeechTime < 4000) return; // 4s cooldown
+      if (cleanText === this.lastSpeechText && now - this.lastSpeechTime < 10000) return;
+
+      this.lastSpeechTime = now;
+      this.lastSpeechText = cleanText;
+
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.rate = 1.05;
+        utterance.pitch = 1.0;
+        utterance.volume = 0.9;
+        window.speechSynthesis.speak(utterance);
+      } catch(e) {}
+    }
+
+    setVoiceFeedback(enabled) {
+      this.voiceFeedbackEnabled = !!enabled;
+    }
+
+    // Render semi-transparent athletic silhouette guide
+    drawFramingSilhouette(ctx, width, height) {
+      if (!ctx) return;
+      ctx.save();
+      ctx.strokeStyle = "rgba(16, 185, 129, 0.25)";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 6]);
+
+      // Head circle
+      ctx.beginPath();
+      ctx.arc(width * 0.5, height * 0.22, height * 0.08, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      // Torso box
+      ctx.strokeRect(width * 0.40, height * 0.32, width * 0.20, height * 0.30);
+
+      // Limbs lines
+      ctx.beginPath();
+      // Arms
+      ctx.moveTo(width * 0.40, height * 0.34);
+      ctx.lineTo(width * 0.30, height * 0.52);
+      ctx.moveTo(width * 0.60, height * 0.34);
+      ctx.lineTo(width * 0.70, height * 0.52);
+      // Legs
+      ctx.moveTo(width * 0.44, height * 0.62);
+      ctx.lineTo(width * 0.42, height * 0.90);
+      ctx.moveTo(width * 0.56, height * 0.62);
+      ctx.lineTo(width * 0.58, height * 0.90);
+      ctx.stroke();
+
+      ctx.restore();
     }
 
     // Render skeleton joints & connections on video overlay
@@ -1823,6 +1898,22 @@ window.FitSyncAIFormChecker = (function() {
           ctx.stroke();
         }
       });
+    }
+
+    getSetSummary() {
+      const avgScore = this.scoreHistory.length > 0 
+        ? Math.round(this.scoreHistory.reduce((a, b) => a + b, 0) / this.scoreHistory.length)
+        : 95;
+
+      return {
+        exercise: this.activeConfig ? this.activeConfig.name : 'Exercise',
+        reps: this.activeConfig && this.activeConfig.is_hold_exercise ? `${Math.round(this.holdSeconds || 0)}s` : this.repCount,
+        avgScore: avgScore,
+        posture: Math.max(50, Math.min(100, Math.round(avgScore * 0.98))),
+        alignment: Math.max(50, Math.min(100, Math.round(avgScore * 0.96))),
+        rom: Math.max(50, Math.min(100, Math.round(avgScore * 0.94))),
+        stability: Math.max(50, Math.min(100, Math.round(avgScore * 0.97)))
+      };
     }
   }
 

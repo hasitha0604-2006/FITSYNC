@@ -60,19 +60,15 @@
       <i data-lucide="trending-up" class="h-3.5 w-3.5 text-emerald-400"></i>
       Progress Check
     </button>
-<<<<<<< HEAD
-    <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
-=======
-    <button onclick="sendQuickAction('I am feeling sore and low energy today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('I am feeling sore and low energy today')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="heart-pulse" class="h-3.5 w-3.5 text-emerald-400"></i>
       Feeling Sore
     </button>
-    <button onclick="sendQuickAction('I want to train chest today')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
+    <button onclick="sendQuickAction('I want to train chest today')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="flame" class="h-3.5 w-3.5 text-emerald-400"></i>
       Train Chest
     </button>
-    <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3 py-1.5 rounded-full bg-slate-800/80 hover:bg-emerald-600/20 hover:border-emerald-500/40 text-xs font-medium text-slate-200 border border-slate-700 shrink-0 flex items-center gap-1.5 transition-all">
->>>>>>> origin/fix/ai-coach-chatbot-improvements
+    <button onclick="sendQuickAction('Give me a warm-up for football')" class="quick-btn px-3.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-emerald-500/20 hover:border-emerald-500/40 text-xs font-bold text-slate-200 border border-slate-800 shrink-0 flex items-center gap-1.5 transition-all shadow-sm">
       <i data-lucide="activity" class="h-3.5 w-3.5 text-emerald-400"></i>
       Sports Warm-Up
     </button>
@@ -238,6 +234,36 @@
           </div>
         </div>
       `;
+    }
+
+    if (extraData.exercises && extraData.exercises.length > 0) {
+      extraHTML += `<div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">`;
+      extraData.exercises.slice(0, 4).forEach(ex => {
+        const name = escapeHTML(ex.name || 'Exercise');
+        const cat = escapeHTML(ex.category || 'Movement');
+        const sets = ex.sets || 3;
+        const reps = ex.reps || '10-12';
+        extraHTML += `
+          <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between gap-2 shadow-md">
+            <div>
+              <div class="flex items-center justify-between">
+                <h4 class="font-extrabold text-xs text-white">${name}</h4>
+                <span class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">${cat}</span>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1 font-mono">${sets} sets × ${reps} reps</p>
+            </div>
+            <div class="flex items-center gap-1.5 pt-1">
+              <a href="/form-check?exercise=${encodeURIComponent(name)}" class="flex-1 text-center py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-[10px] font-black rounded-lg transition-colors">
+                AI Form Check
+              </a>
+              <a href="/exercises?search=${encodeURIComponent(name)}" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-bold rounded-lg transition-colors">
+                3D Demo
+              </a>
+            </div>
+          </div>
+        `;
+      });
+      extraHTML += `</div>`;
     }
 
     if (extraData.foods && extraData.foods.length > 0) {
