@@ -244,24 +244,15 @@
       "phases": ["SUPINE START", "RIB TO PELVIS CRUNCH", "PEAK ABDOMINAL SQUEEZE", "SLOW RETURN"]
     },
 
-    // ── YOGA & MOBILITY ASANAS (Requested by user) ──
-    "downward_dog": {
-      "animation": "yoga_downward_dog",
+    // ── 20 YOGA & MOBILITY ASANAS (Complete System) ──
+    "mountain_pose": {
+      "animation": "yoga_mountain",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.5, "fov": 45, "targetY": 0.6 },
-      "primary_muscles": ["Hamstrings", "Calves", "Shoulders", "Spine"],
-      "secondary_muscles": ["Lats", "Wrists", "Core"],
-      "phases": ["INVERTED V-SHAPE", "PRESS HEELS DOWN", "LENGTHEN SPINE", "DEEP PRANAYAMA BREATH"]
-    },
-    "warrior_ii": {
-      "animation": "yoga_warrior_ii",
-      "category": "Yoga",
-      "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
-      "primary_muscles": ["Quadriceps", "Glutes", "Hip Flexors"],
-      "secondary_muscles": ["Deltoids", "Core", "Ankles"],
-      "phases": ["WIDE STANCE", "90° FRONT KNEE BEND", "EXTEND ARMS HORIZONTALLY", "GAZE OVER FRONT FINGER"]
+      "camera": { "preset": "front_3_4", "distance": 4.5, "fov": 45, "targetY": 1.0 },
+      "primary_muscles": ["Spinal Erectors", "Quadriceps", "Core"],
+      "secondary_muscles": ["Calves", "Glutes", "Shoulders"],
+      "phases": ["FEET GROUNDED", "ENGAGE THIGHS & CORE", "ROLL SHOULDERS BACK", "STEADY PRANAYAMA"]
     },
     "childs_pose": {
       "animation": "yoga_childs_pose",
@@ -272,15 +263,6 @@
       "secondary_muscles": ["Shoulders", "Ankles"],
       "phases": ["KNEEL & BIG TOES TOUCH", "HIPS SINK TO HEELS", "REACH ARMS FORWARD", "REST FOREHEAD TO MAT"]
     },
-    "cobra_pose": {
-      "animation": "yoga_cobra",
-      "category": "Yoga",
-      "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.3, "fov": 45, "targetY": 0.5 },
-      "primary_muscles": ["Erector Spinae", "Chest (Pectorals)"],
-      "secondary_muscles": ["Abdominals", "Shoulders", "Glutes"],
-      "phases": ["PRONE POSITION", "PALMS UNDER SHOULDERS", "GENTLY LIFT CHEST", "OPEN HEART & BREATHE"]
-    },
     "cat_cow": {
       "animation": "yoga_cat_cow",
       "category": "Yoga",
@@ -290,6 +272,60 @@
       "secondary_muscles": ["Neck", "Shoulders", "Pelvis"],
       "phases": ["TABLETOP POSE", "INHALE: COW (ARCH SPINE)", "EXHALE: CAT (ROUND SPINE)", "SYNCHRONIZE FLOW"]
     },
+    "downward_dog": {
+      "animation": "yoga_downward_dog",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.5, "fov": 45, "targetY": 0.6 },
+      "primary_muscles": ["Hamstrings", "Calves", "Shoulders", "Spine"],
+      "secondary_muscles": ["Lats", "Wrists", "Core"],
+      "phases": ["INVERTED V-SHAPE", "PRESS HEELS DOWN", "LENGTHEN SPINE", "DEEP PRANAYAMA BREATH"]
+    },
+    "cobra_pose": {
+      "animation": "yoga_cobra",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.3, "fov": 45, "targetY": 0.5 },
+      "primary_muscles": ["Erector Spinae", "Chest (Pectorals)"],
+      "secondary_muscles": ["Abdominals", "Shoulders", "Glutes"],
+      "phases": ["PRONE POSITION", "PALMS UNDER SHOULDERS", "GENTLY LIFT CHEST", "OPEN HEART & BREATHE"]
+    },
+    "upward_facing_dog": {
+      "animation": "yoga_upward_dog",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.6 },
+      "primary_muscles": ["Erector Spinae", "Chest", "Triceps"],
+      "secondary_muscles": ["Quadriceps", "Wrists", "Shoulders"],
+      "phases": ["TOPS OF FEET ON MAT", "STRAIGHTEN ARMS", "THIGHS LIFTED", "COLLARBONE BROAD"]
+    },
+    "warrior_i": {
+      "animation": "yoga_warrior_i",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "front_3_4", "distance": 4.8, "fov": 45, "targetY": 1.1 },
+      "primary_muscles": ["Quadriceps", "Glutes", "Hip Flexors"],
+      "secondary_muscles": ["Deltoids", "Upper Back", "Core"],
+      "phases": ["SQUARE HIPS FORWARD", "90° FRONT KNEE BEND", "SWEEP ARMS OVERHEAD", "LIFT STERNUM"]
+    },
+    "warrior_ii": {
+      "animation": "yoga_warrior_ii",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "front_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
+      "primary_muscles": ["Quadriceps", "Glutes", "Hip Flexors"],
+      "secondary_muscles": ["Deltoids", "Core", "Ankles"],
+      "phases": ["WIDE STANCE", "90° FRONT KNEE BEND", "EXTEND ARMS HORIZONTALLY", "GAZE OVER FRONT FINGER"]
+    },
+    "triangle_pose": {
+      "animation": "yoga_triangle",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "front_3_4", "distance": 4.7, "fov": 45, "targetY": 0.8 },
+      "primary_muscles": ["Hamstrings", "Obliques", "Adductors"],
+      "secondary_muscles": ["Deltoids", "Spine", "Ankles"],
+      "phases": ["WIDE LEGS & STRAIGHT KNEES", "LATERAL HIP HINGE", "STACK SHOULDERS VERTICALLY", "GAZE UP TO TOP HAND"]
+    },
     "tree_pose": {
       "animation": "yoga_tree",
       "category": "Yoga",
@@ -298,6 +334,87 @@
       "primary_muscles": ["Ankle Stabilizers", "Adductors", "Glutes"],
       "secondary_muscles": ["Core", "Deltoids", "Hip Rotators"],
       "phases": ["ROOT STANDING FOOT", "PLACE SOLE ON INNER THIGH", "HANDS IN ANJALI MUDRA", "FIND DRISHTI FOCUS"]
+    },
+    "chair_pose": {
+      "animation": "yoga_chair",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.6, "fov": 45, "targetY": 0.9 },
+      "primary_muscles": ["Quadriceps", "Gluteus Maximus"],
+      "secondary_muscles": ["Spinal Erectors", "Deltoids", "Calves"],
+      "phases": ["SINK HIPS BACK", "THIGHS TOWARD PARALLEL", "REACH ARMS BICEPS BY EARS", "DRAW NAVEL TO SPINE"]
+    },
+    "bridge_pose": {
+      "animation": "yoga_bridge",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.5 },
+      "primary_muscles": ["Gluteus Maximus", "Hamstrings"],
+      "secondary_muscles": ["Lower Back", "Quadriceps", "Chest"],
+      "phases": ["FEET FLAT UNDER KNEES", "DRIVE THROUGH HEELS", "LIFT PELVIS TO CEILING", "INTERLACE HANDS UNDER BACK"]
+    },
+    "boat_pose": {
+      "animation": "yoga_boat",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.6 },
+      "primary_muscles": ["Rectus Abdominis", "Hip Flexors"],
+      "secondary_muscles": ["Erector Spinae", "Quadriceps"],
+      "phases": ["BALANCE ON SIT BONES", "LIFT SHINS PARALLEL TO FLOOR", "REACH ARMS FORWARD", "LIFT CHEST TALL"]
+    },
+    "seated_forward_fold": {
+      "animation": "yoga_seated_forward_fold",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.5 },
+      "primary_muscles": ["Hamstrings", "Erector Spinae"],
+      "secondary_muscles": ["Calves", "Glutes"],
+      "phases": ["LEGS EXTENDED STRAIGHT", "INHALE: LENGTHEN SPINE", "EXHALE: HINGE AT HIPS", "REACH FOR FEET"]
+    },
+    "butterfly_pose": {
+      "animation": "yoga_butterfly",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "front_3_4", "distance": 4.3, "fov": 45, "targetY": 0.6 },
+      "primary_muscles": ["Adductors (Inner Thighs)", "Groin"],
+      "secondary_muscles": ["Hips", "Lower Back"],
+      "phases": ["SOLES OF FEET TOGETHER", "KNEES DROP WIDE", "TALL SPINE", "GENTLE FORWARD HINGE"]
+    },
+    "low_lunge": {
+      "animation": "yoga_low_lunge",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.6, "fov": 45, "targetY": 0.7 },
+      "primary_muscles": ["Hip Flexors (Psoas)", "Quadriceps"],
+      "secondary_muscles": ["Glutes", "Hamstrings", "Chest"],
+      "phases": ["BACK KNEE DOWN", "FRONT KNEE OVER ANKLE", "SWEEP ARMS UPWARD", "SINK HIPS FORWARD"]
+    },
+    "crescent_lunge": {
+      "animation": "yoga_crescent_lunge",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 1.0 },
+      "primary_muscles": ["Quadriceps", "Glutes", "Hip Flexors"],
+      "secondary_muscles": ["Calves", "Deltoids", "Core"],
+      "phases": ["HIGH BACK HEEL", "FRONT KNEE AT 90°", "TORSO VERTICAL", "ARMS EXTENDED OVERHEAD"]
+    },
+    "side_plank": {
+      "animation": "yoga_side_plank",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "front_3_4", "distance": 4.5, "fov": 45, "targetY": 0.5 },
+      "primary_muscles": ["Obliques", "Transverse Abdominis"],
+      "secondary_muscles": ["Deltoids", "Glute Medius", "Lats"],
+      "phases": ["STACK FEET & HIPS", "LIFT HIPS IN STRAIGHT LINE", "REACH TOP ARM UP", "HOLD WITH FOCUS"]
+    },
+    "corpse_pose": {
+      "animation": "yoga_corpse",
+      "category": "Yoga",
+      "equipment": "yoga_mat",
+      "camera": { "preset": "side_3_4", "distance": 4.2, "fov": 45, "targetY": 0.3 },
+      "primary_muscles": ["Total Body Relaxation"],
+      "secondary_muscles": ["Nervous System Reset"],
+      "phases": ["LIE FLAT ON BACK", "ARMS RELAXED AT SIDES", "CLOSE EYES", "DEEP RESTORATIVE BREATH"]
     }
   };
 
@@ -317,7 +434,28 @@
       return { ...EXERCISE_3D_CONFIG[slug], matched_slug: slug };
     }
 
-    // Keyword heuristics
+    // Exact Yoga Matchers
+    if (slug.includes('mountain') || slug.includes('tadasana')) return { ...EXERCISE_3D_CONFIG['mountain_pose'], matched_slug: 'mountain_pose' };
+    if (slug.includes('child') || slug.includes('balasana')) return { ...EXERCISE_3D_CONFIG['childs_pose'], matched_slug: 'childs_pose' };
+    if (slug.includes('cat') || slug.includes('cow') || slug.includes('marjaryasana')) return { ...EXERCISE_3D_CONFIG['cat_cow'], matched_slug: 'cat_cow' };
+    if (slug.includes('downward') || slug.includes('adho_mukha')) return { ...EXERCISE_3D_CONFIG['downward_dog'], matched_slug: 'downward_dog' };
+    if (slug.includes('cobra') || slug.includes('bhujangasana')) return { ...EXERCISE_3D_CONFIG['cobra_pose'], matched_slug: 'cobra_pose' };
+    if (slug.includes('upward') || slug.includes('urdhva')) return { ...EXERCISE_3D_CONFIG['upward_facing_dog'], matched_slug: 'upward_facing_dog' };
+    if (slug.includes('warrior_i') || slug.includes('warrior_1')) return { ...EXERCISE_3D_CONFIG['warrior_i'], matched_slug: 'warrior_i' };
+    if (slug.includes('warrior_ii') || slug.includes('warrior_2') || slug.includes('warrior')) return { ...EXERCISE_3D_CONFIG['warrior_ii'], matched_slug: 'warrior_ii' };
+    if (slug.includes('triangle') || slug.includes('trikonasana')) return { ...EXERCISE_3D_CONFIG['triangle_pose'], matched_slug: 'triangle_pose' };
+    if (slug.includes('tree') || slug.includes('vrikshasana') || slug.includes('vrksasana')) return { ...EXERCISE_3D_CONFIG['tree_pose'], matched_slug: 'tree_pose' };
+    if (slug.includes('chair') || slug.includes('utkatasana')) return { ...EXERCISE_3D_CONFIG['chair_pose'], matched_slug: 'chair_pose' };
+    if (slug.includes('bridge') || slug.includes('setu')) return { ...EXERCISE_3D_CONFIG['bridge_pose'], matched_slug: 'bridge_pose' };
+    if (slug.includes('boat') || slug.includes('navasana')) return { ...EXERCISE_3D_CONFIG['boat_pose'], matched_slug: 'boat_pose' };
+    if (slug.includes('seated_forward') || slug.includes('paschimottanasana')) return { ...EXERCISE_3D_CONFIG['seated_forward_fold'], matched_slug: 'seated_forward_fold' };
+    if (slug.includes('butterfly') || slug.includes('baddha')) return { ...EXERCISE_3D_CONFIG['butterfly_pose'], matched_slug: 'butterfly_pose' };
+    if (slug.includes('low_lunge') || slug.includes('anjaneyasana')) return { ...EXERCISE_3D_CONFIG['low_lunge'], matched_slug: 'low_lunge' };
+    if (slug.includes('crescent') || slug.includes('high_lunge')) return { ...EXERCISE_3D_CONFIG['crescent_lunge'], matched_slug: 'crescent_lunge' };
+    if (slug.includes('side_plank') || slug.includes('vasisthasana')) return { ...EXERCISE_3D_CONFIG['side_plank'], matched_slug: 'side_plank' };
+    if (slug.includes('corpse') || slug.includes('savasana')) return { ...EXERCISE_3D_CONFIG['corpse_pose'], matched_slug: 'corpse_pose' };
+
+    // Resistance movements keyword heuristics
     if (slug.includes('bench') && slug.includes('incline')) return { ...EXERCISE_3D_CONFIG['incline_bench_press'], matched_slug: 'incline_bench_press' };
     if (slug.includes('bench') && slug.includes('dumbbell')) return { ...EXERCISE_3D_CONFIG['dumbbell_bench_press'], matched_slug: 'dumbbell_bench_press' };
     if (slug.includes('bench')) return { ...EXERCISE_3D_CONFIG['bench_press'], matched_slug: 'bench_press' };
@@ -332,12 +470,6 @@
     if (slug.includes('lunge')) return { ...EXERCISE_3D_CONFIG['lunge'], matched_slug: 'lunge' };
     if (slug.includes('pull_up') || slug.includes('pullup')) return { ...EXERCISE_3D_CONFIG['pull_up'], matched_slug: 'pull_up' };
     if (slug.includes('plank')) return { ...EXERCISE_3D_CONFIG['plank'], matched_slug: 'plank' };
-    if (slug.includes('downward') || slug.includes('dog')) return { ...EXERCISE_3D_CONFIG['downward_dog'], matched_slug: 'downward_dog' };
-    if (slug.includes('warrior')) return { ...EXERCISE_3D_CONFIG['warrior_ii'], matched_slug: 'warrior_ii' };
-    if (slug.includes('child')) return { ...EXERCISE_3D_CONFIG['childs_pose'], matched_slug: 'childs_pose' };
-    if (slug.includes('cobra')) return { ...EXERCISE_3D_CONFIG['cobra_pose'], matched_slug: 'cobra_pose' };
-    if (slug.includes('cat') || slug.includes('cow')) return { ...EXERCISE_3D_CONFIG['cat_cow'], matched_slug: 'cat_cow' };
-    if (slug.includes('tree')) return { ...EXERCISE_3D_CONFIG['tree_pose'], matched_slug: 'tree_pose' };
 
     // Generic category fallback
     const cat = typeof exerciseOrSlug === 'object' ? (exerciseOrSlug.category || '').toLowerCase() : '';

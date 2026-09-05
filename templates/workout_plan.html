@@ -668,7 +668,8 @@ function openGuideModal(ex) {
   document.getElementById('modal-ex-joint-action').innerText = sec;
 
   // Set AI Form Check Links
-  const formCheckUrl = `/form-check?exercise=${encodeURIComponent(ex.name)}`;
+  const exId = ex.exercise_id || ex.id || '';
+  const formCheckUrl = `/form-check?exercise_id=${encodeURIComponent(exId)}&exercise=${encodeURIComponent(ex.name)}`;
   const formCheckLink = document.getElementById('modal-ai-form-check-link');
   const formCheckFooter = document.getElementById('modal-footer-ai-form-btn');
   if (formCheckLink) formCheckLink.href = formCheckUrl;

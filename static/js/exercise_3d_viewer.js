@@ -1081,18 +1081,121 @@
         j.head.rotation.x = -curve * 0.3;
       }
 
-      else if (anim === 'yoga_tree') {
-        const balance = Math.sin(t * 2 * Math.PI) * 0.02;
-        j.hips.position.set(balance, 0.95, 0);
-        j.thigh_right.rotation.z = -1.2; // turn out knee
-        j.thigh_right.rotation.x = -0.6;
-        j.knee_right.rotation.x = 2.1;   // foot on inner thigh
+      else if (anim === 'yoga_mountain') {
+        const breath = Math.sin(t * 2 * Math.PI) * 0.01;
+        j.hips.position.set(0, 0.95 + breath, 0);
+        j.shoulder_left.rotation.z = 0.15;
+        j.shoulder_right.rotation.z = -0.15;
+      }
 
-        // Hands in prayer above chest/head
-        j.shoulder_left.rotation.z = 0.8;
-        j.shoulder_right.rotation.z = -0.8;
-        j.elbow_left.rotation.x = 1.8;
-        j.elbow_right.rotation.x = 1.8;
+      else if (anim === 'yoga_upward_dog') {
+        j.hips.position.set(0, 0.35, 0);
+        j.hips.rotation.x = -Math.PI / 2 + 0.4;
+        j.spine.rotation.x = -0.65;
+        j.shoulder_left.rotation.x = 0.2;
+        j.shoulder_right.rotation.x = 0.2;
+        j.thigh_left.rotation.x = 0.2;
+        j.thigh_right.rotation.x = 0.2;
+      }
+
+      else if (anim === 'yoga_warrior_i') {
+        j.hips.position.set(0, 0.75, 0);
+        j.thigh_left.rotation.x = -1.35; // 90 deg front knee
+        j.knee_left.rotation.x = 1.35;
+        j.thigh_right.rotation.x = 0.4;  // rear leg extended back
+        j.shoulder_left.rotation.x = -2.9; // arms sweeping high overhead
+        j.shoulder_right.rotation.x = -2.9;
+      }
+
+      else if (anim === 'yoga_triangle') {
+        j.hips.position.set(0, 0.85, 0);
+        j.thigh_left.rotation.z = 0.5;
+        j.thigh_right.rotation.z = -0.5;
+        j.spine.rotation.z = 0.85; // lateral torso fold
+        j.shoulder_left.rotation.z = 1.55;  // bottom arm down to shin
+        j.shoulder_right.rotation.z = 1.55; // top arm reaching to sky
+      }
+
+      else if (anim === 'yoga_chair') {
+        j.hips.position.set(0, 0.65, -0.2);
+        j.thigh_left.rotation.x = -1.1;
+        j.thigh_right.rotation.x = -1.1;
+        j.knee_left.rotation.x = 1.3;
+        j.knee_right.rotation.x = 1.3;
+        j.spine.rotation.x = 0.5;
+        j.shoulder_left.rotation.x = -2.6;
+        j.shoulder_right.rotation.x = -2.6;
+      }
+
+      else if (anim === 'yoga_bridge') {
+        const bridgeLift = 0.25 + Math.sin(t * 2 * Math.PI) * 0.05;
+        j.hips.position.set(0, 0.35 + bridgeLift, 0);
+        j.hips.rotation.x = -Math.PI / 2 + 0.35;
+        j.thigh_left.rotation.x = -0.7;
+        j.thigh_right.rotation.x = -0.7;
+        j.knee_left.rotation.x = 1.8;
+        j.knee_right.rotation.x = 1.8;
+      }
+
+      else if (anim === 'yoga_boat') {
+        j.hips.position.set(0, 0.35, 0);
+        j.spine.rotation.x = 0.7; // torso leaned back
+        j.thigh_left.rotation.x = -1.1; // legs lifted at 45 deg
+        j.thigh_right.rotation.x = -1.1;
+        j.shoulder_left.rotation.x = -1.57; // arms reaching forward parallel
+        j.shoulder_right.rotation.x = -1.57;
+      }
+
+      else if (anim === 'yoga_seated_forward_fold') {
+        j.hips.position.set(0, 0.25, 0);
+        j.thigh_left.rotation.x = -1.57;
+        j.thigh_right.rotation.x = -1.57;
+        j.spine.rotation.x = 1.3; // folding deep over legs
+        j.shoulder_left.rotation.x = -1.7;
+        j.shoulder_right.rotation.x = -1.7;
+      }
+
+      else if (anim === 'yoga_butterfly') {
+        j.hips.position.set(0, 0.25, 0);
+        j.thigh_left.rotation.z = 1.2;
+        j.thigh_right.rotation.z = -1.2;
+        j.knee_left.rotation.x = 2.1;
+        j.knee_right.rotation.x = 2.1;
+        j.spine.rotation.x = 0.3;
+      }
+
+      else if (anim === 'yoga_low_lunge') {
+        j.hips.position.set(0, 0.55, 0);
+        j.thigh_left.rotation.x = -1.4;
+        j.knee_left.rotation.x = 1.4;
+        j.thigh_right.rotation.x = 0.6;
+        j.knee_right.rotation.x = 1.6; // rear knee grounded
+        j.shoulder_left.rotation.x = -2.7;
+        j.shoulder_right.rotation.x = -2.7;
+      }
+
+      else if (anim === 'yoga_crescent_lunge') {
+        j.hips.position.set(0, 0.70, 0);
+        j.thigh_left.rotation.x = -1.35;
+        j.knee_left.rotation.x = 1.35;
+        j.thigh_right.rotation.x = 0.3; // high back leg
+        j.knee_right.rotation.x = 0.1;
+        j.shoulder_left.rotation.x = -2.9;
+        j.shoulder_right.rotation.x = -2.9;
+      }
+
+      else if (anim === 'yoga_side_plank') {
+        j.hips.position.set(0, 0.45, 0);
+        j.hips.rotation.z = 0.5; // diagonal side plank line
+        j.shoulder_left.rotation.z = 1.4; // supporting bottom arm
+        j.shoulder_right.rotation.z = -1.57; // reaching top arm to sky
+      }
+
+      else if (anim === 'yoga_corpse') {
+        j.hips.position.set(0, 0.15, 0);
+        j.hips.rotation.x = -Math.PI / 2;
+        j.shoulder_left.rotation.z = 0.35;
+        j.shoulder_right.rotation.z = -0.35;
       }
     }
 

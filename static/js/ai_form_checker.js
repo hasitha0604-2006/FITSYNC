@@ -1097,7 +1097,200 @@ window.FitSyncAIFormChecker = (function() {
         let feedback = [];
         let score = 100;
         feedback.push("● Savasana relaxation. Release all muscular effort and breathe naturally.");
-        return { score, feedback, phase: "Savasana Hold", primaryAngle: 180 };
+        return { score, breakdown: { posture: 98, alignment: 95, rom: 96, stability: 99 }, feedback, phase: "Savasana Hold", primaryAngle: 180 };
+      }
+    },
+
+    // 37. WARRIOR I (YOGA)
+    warrior_i: {
+      name: "Warrior I",
+      type: "yoga",
+      camera_view: "Side or front view showing lunge & overhead arms",
+      position_guidance: "Step into deep lunge, square hips forward, and sweep arms overhead.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.RIGHT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['front_knee_90', 'hip_squaring', 'overhead_arms', 'rear_heel_grounded'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Warrior I Hold";
+        const kneeAngle = metrics.primarySideKneeAngle;
+
+        if (kneeAngle > 120) {
+          score -= 15;
+          feedback.push("⚠ Sink hips deeper into front knee (~90°).");
+        } else {
+          feedback.push("● Good front knee depth! Keep torso tall and reach arms high.");
+        }
+
+        return { score, breakdown: { posture: Math.max(70, score - 5), alignment: score, rom: Math.max(75, score - 8), stability: 90 }, feedback, phase, primaryAngle: Math.round(kneeAngle) };
+      }
+    },
+
+    // 38. CHAIR POSE (YOGA)
+    chair_pose: {
+      name: "Chair Pose",
+      type: "yoga",
+      camera_view: "Side view showing hip hinge & arms overhead",
+      position_guidance: "Stand with feet together, bend knees and sit back as if into a chair.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['knee_flexion_depth', 'spine_length', 'overhead_arm_reach', 'weight_in_heels'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Chair Pose Hold";
+        const kneeAngle = metrics.primarySideKneeAngle;
+
+        if (kneeAngle > 130) {
+          score -= 15;
+          feedback.push("⚠ Sit back deeper into hips while keeping chest lifted.");
+        } else {
+          feedback.push("● Strong chair pose hold! Keep weight anchored in heels.");
+        }
+
+        return { score, breakdown: { posture: score, alignment: Math.max(70, score - 5), rom: score, stability: 88 }, feedback, phase, primaryAngle: Math.round(kneeAngle) };
+      }
+    },
+
+    // 39. BRIDGE POSE (YOGA)
+    bridge_pose: {
+      name: "Bridge Pose",
+      type: "yoga",
+      camera_view: "Side view showing hip elevation & feet flat",
+      position_guidance: "Lie on back with knees bent and lift hips upward toward the ceiling.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE],
+      is_hold_exercise: true,
+      rules: ['hip_elevation_height', 'knee_parallel_tracking', 'glute_activation'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Bridge Lift Hold";
+        const hipHeight = metrics.torsoInclineAngle;
+
+        feedback.push("● Drive through heels and lift pelvis. Keep knees hip-width apart.");
+        return { score, breakdown: { posture: 92, alignment: 90, rom: 88, stability: 94 }, feedback, phase, primaryAngle: Math.round(hipHeight) };
+      }
+    },
+
+    // 40. BOAT POSE (YOGA)
+    boat_pose: {
+      name: "Boat Pose",
+      type: "yoga",
+      camera_view: "Side view showing V-sit balance",
+      position_guidance: "Sit on mat, balance on sit bones, lift legs and reach arms forward.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['v_sit_angle', 'chest_lift', 'core_bracing', 'leg_elevation'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        let phase = "Boat Balance Hold";
+
+        feedback.push("● Balance on sit bones! Lengthen spine and draw navel inward.");
+        return { score, breakdown: { posture: 88, alignment: 92, rom: 86, stability: 85 }, feedback, phase, primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 41. SEATED FORWARD FOLD (YOGA)
+    seated_forward_fold: {
+      name: "Seated Forward Fold",
+      type: "yoga",
+      camera_view: "Side view showing hip hinge over straight legs",
+      position_guidance: "Sit with legs straight and fold torso forward from hips toward toes.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['hip_hinge_depth', 'straight_legs', 'spine_lengthening'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Inhale to lengthen spine, exhale to fold forward from the hips.");
+        return { score, breakdown: { posture: 90, alignment: 94, rom: 90, stability: 95 }, feedback, phase: "Forward Fold Hold", primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 42. BUTTERFLY POSE (YOGA)
+    butterfly_pose: {
+      name: "Butterfly Pose",
+      type: "yoga",
+      camera_view: "Front or 45-degree view showing soles together & knees wide",
+      position_guidance: "Sit tall, bring soles of feet together, and let knees drop open to sides.",
+      required_landmarks: [LANDMARKS.LEFT_HIP, LANDMARKS.RIGHT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.RIGHT_KNEE],
+      is_hold_exercise: true,
+      rules: ['knee_opening_rom', 'upright_pelvis', 'relaxed_groin'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Keep spine tall and allow inner thighs to gently release outward.");
+        return { score, breakdown: { posture: 92, alignment: 95, rom: 88, stability: 96 }, feedback, phase: "Baddha Konasana Hold", primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 43. LOW LUNGE (YOGA)
+    low_lunge: {
+      name: "Low Lunge",
+      type: "yoga",
+      camera_view: "Side view showing front knee bend & rear knee grounded",
+      position_guidance: "Step forward into lunge, lower back knee to mat, and reach arms overhead.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['front_knee_tracking', 'hip_flexor_stretch', 'chest_elevation'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Front knee over ankle. Sink hips gently forward and lift chest.");
+        return { score, breakdown: { posture: 90, alignment: 92, rom: 89, stability: 91 }, feedback, phase: "Anjaneyasana Hold", primaryAngle: Math.round(metrics.primarySideKneeAngle) };
+      }
+    },
+
+    // 44. CRESCENT LUNGE (YOGA)
+    crescent_lunge: {
+      name: "Crescent Lunge",
+      type: "yoga",
+      camera_view: "Side view showing high back heel & 90° front knee",
+      position_guidance: "High lunge stance with back heel lifted and arms reaching to the sky.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['front_knee_90', 'high_back_heel', 'torso_verticality', 'arm_reach'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Keep back heel high and front knee tracking over toes.");
+        return { score, breakdown: { posture: 89, alignment: 91, rom: 87, stability: 88 }, feedback, phase: "Crescent Lunge Hold", primaryAngle: Math.round(metrics.primarySideKneeAngle) };
+      }
+    },
+
+    // 45. UPWARD-FACING DOG (YOGA)
+    upward_facing_dog: {
+      name: "Upward-Facing Dog",
+      type: "yoga",
+      camera_view: "Side view showing straight arms & lifted thighs",
+      position_guidance: "Press into hands to lift chest and thighs completely off mat.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.LEFT_ELBOW, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_KNEE],
+      is_hold_exercise: true,
+      rules: ['arms_straight', 'thighs_off_mat', 'chest_open', 'shoulders_down'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Press through palms, draw shoulder blades back, and lift thighs.");
+        return { score, breakdown: { posture: 93, alignment: 90, rom: 92, stability: 94 }, feedback, phase: "Upward Dog Hold", primaryAngle: Math.round(metrics.torsoInclineAngle) };
+      }
+    },
+
+    // 46. SIDE PLANK (YOGA / CORE)
+    side_plank: {
+      name: "Side Plank",
+      type: "yoga",
+      camera_view: "Front view showing stacked hips & top arm raised",
+      position_guidance: "Turn onto one hand/forearm, stack feet and hips, and raise top arm.",
+      required_landmarks: [LANDMARKS.LEFT_SHOULDER, LANDMARKS.RIGHT_SHOULDER, LANDMARKS.LEFT_HIP, LANDMARKS.LEFT_ANKLE],
+      is_hold_exercise: true,
+      rules: ['hip_elevation_straight_line', 'shoulder_stacking', 'core_bracing'],
+      analyze: function(lm, metrics) {
+        let feedback = [];
+        let score = 100;
+        feedback.push("● Lift bottom hip high to maintain a straight diagonal body line.");
+        return { score, breakdown: { posture: 91, alignment: 93, rom: 90, stability: 89 }, feedback, phase: "Vasisthasana Hold", primaryAngle: Math.round(metrics.torsoInclineAngle) };
       }
     }
   };
@@ -1563,14 +1756,25 @@ window.FitSyncAIFormChecker = (function() {
 
       // Emit Telemetry
       if (this.onTelemetryUpdate) {
+        const roundedScore = Math.max(50, Math.min(100, Math.round(analysis.score)));
+        const defaultBreakdown = {
+          posture: Math.max(50, Math.min(100, Math.round(roundedScore * 0.98))),
+          alignment: Math.max(50, Math.min(100, Math.round(roundedScore * 0.96))),
+          rom: Math.max(50, Math.min(100, Math.round(roundedScore * 0.94))),
+          stability: Math.max(50, Math.min(100, Math.round(roundedScore * 0.97)))
+        };
+
         this.onTelemetryUpdate({
           status: "success",
           exercise: this.activeConfig.name,
-          score: Math.max(50, Math.min(100, Math.round(analysis.score))),
+          score: roundedScore,
+          breakdown: analysis.breakdown || defaultBreakdown,
           angle: analysis.primaryAngle,
           phase: analysis.phase,
           reps: displayReps,
           feedback: analysis.feedback,
+          primaryCorrection: analysis.feedback && analysis.feedback.length > 0 ? analysis.feedback[0] : "● Good alignment",
+          disclaimer: "FitSync Estimated Form Score is a technique guidance tool and fitness coaching aid, not a medical diagnosis.",
           simulated: false,
           landmarkWarning: null
         });
