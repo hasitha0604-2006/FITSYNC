@@ -30,6 +30,7 @@
       this.activeConfig = null;
       this.clock = null;
       this.rafId = null;
+      this.resizeObserver = null;
 
       // Three.js instances
       this.scene = null;
@@ -56,17 +57,17 @@
       this.container.style.overflow = 'hidden';
       this.container.style.userSelect = 'none';
 
-      const width = this.container.clientWidth || 640;
-      const height = this.container.clientHeight || 360;
+      const width = Math.max(this.container.clientWidth || 0, 480);
+      const height = Math.max(this.container.clientHeight || 0, 320);
 
       // 1. Scene
       this.scene = new THREE.Scene();
       this.scene.background = new THREE.Color(0x020617); // Slate-950
-      this.scene.fog = new THREE.FogExp2(0x020617, 0.06);
+      this.scene.fog = new THREE.FogExp2(0x020617, 0.05);
 
       // 2. Camera
       this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-      this.camera.position.set(2.8, 2.0, 3.8);
+      this.camera.position.set(2.0, 1.4, 2.5);
 
       // 3. WebGL Renderer
       this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
@@ -77,6 +78,9 @@
       if (this.renderer.outputColorSpace) {
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
       }
+      this.renderer.domElement.style.width = '100%';
+      this.renderer.domElement.style.height = '100%';
+      this.renderer.domElement.style.display = 'block';
       this.container.appendChild(this.renderer.domElement);
 
       // 4. OrbitControls
@@ -85,9 +89,9 @@
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.06;
         this.controls.maxPolarAngle = Math.PI / 2 - 0.03; // don't go below floor
-        this.controls.minDistance = 1.5;
-        this.controls.maxDistance = 9.0;
-        this.controls.target.set(0, 0.9, 0);
+        this.controls.minDistance = 1.2;
+        this.controls.maxDistance = 8.0;
+        this.controls.target.set(0, 0.75, 0);
       }
 
       // 5. Studio Lighting
@@ -103,27 +107,39 @@
       // 8. Build UI Overlay (Controls, Phase HUD, Speed, Fullscreen)
       this.buildUIOverlay();
 
-      // 9. Clock & Resize Listener
+      // 9. Clock & Resize Listeners
       this.clock = new THREE.Clock();
       this.onWindowResize = this.handleResize.bind(this);
       window.addEventListener('resize', this.onWindowResize);
 
+      if (typeof ResizeObserver !== 'undefined' && this.container) {
+        this.resizeObserver = new ResizeObserver(() => {
+          this.handleResize();
+        });
+        this.resizeObserver.observe(this.container);
+      }
+
       // 10. Start Animation Loop
       this.animate = this.animate.bind(this);
       this.rafId = requestAnimationFrame(this.animate);
+
+      // Force an immediate next-frame resize check for dynamically opened modals
+      requestAnimationFrame(() => this.handleResize());
+      setTimeout(() => this.handleResize(), 80);
+      setTimeout(() => this.handleResize(), 250);
     }
 
     /**
      * Professional Studio Lighting Setup
      */
     setupStudioLighting() {
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
       this.scene.add(ambientLight);
 
-      const hemiLight = new THREE.HemisphereLight(0x38bdf8, 0x0f172a, 0.55);
+      const hemiLight = new THREE.HemisphereLight(0x38bdf8, 0x0f172a, 0.6);
       this.scene.add(hemiLight);
 
-      const keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
       keyLight.position.set(3.5, 7.0, 4.5);
       keyLight.castShadow = true;
       keyLight.shadow.mapSize.width = 1024;
@@ -138,11 +154,11 @@
       keyLight.shadow.camera.bottom = -d;
       this.scene.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0x10b981, 0.95);
+      const rimLight = new THREE.DirectionalLight(0x10b981, 1.0);
       rimLight.position.set(-4.0, 4.0, -3.5);
       this.scene.add(rimLight);
 
-      const fillLight = new THREE.PointLight(0x06b6d4, 0.8, 10);
+      const fillLight = new THREE.PointLight(0x06b6d4, 0.9, 10);
       fillLight.position.set(0, 1.2, 3.0);
       this.scene.add(fillLight);
     }
@@ -257,7 +273,7 @@
       const visorMat = new THREE.MeshStandardMaterial({
         color: 0x38bdf8,
         emissive: 0x0284c7,
-        emissiveIntensity: 0.8
+        emissiveIntensity: 0.85
       });
       const visor = new THREE.Mesh(visorGeo, visorMat);
       visor.position.set(0, 0.02, 0.09);
@@ -577,61 +593,59 @@
      */
     buildUIOverlay() {
       const hud = document.createElement('div');
-      hud.className = 'absolute inset-0 pointer-events-none flex flex-col justify-between p-3 md:p-4 z-10 font-sans';
+      hud.className = 'absolute inset-0 pointer-events-none flex flex-col justify-between p-2.5 md:p-3 z-10 font-sans';
       hud.innerHTML = `
         <!-- Top Bar: Phase Progress Indicator & Muscle Target Badge -->
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <div class="flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-2xl shadow-lg pointer-events-auto">
-            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span id="hud-exercise-title" class="text-xs font-black text-white">3D Kinematics</span>
+        <div class="flex items-center justify-between gap-1.5 flex-wrap">
+          <div class="flex items-center gap-1.5 bg-slate-950/75 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded-xl shadow-md pointer-events-auto">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <span id="hud-exercise-title" class="text-[11px] font-black text-white">3D Motion</span>
           </div>
 
           <!-- Movement Phase Steps (Synchronized) -->
-          <div id="hud-phase-container" class="flex items-center gap-1 bg-slate-950/85 backdrop-blur-md border border-slate-800 px-3 py-1 rounded-2xl shadow-lg pointer-events-auto text-[10px] font-black uppercase tracking-wider text-slate-400">
-            <span id="phase-step-0" class="px-2 py-0.5 rounded-lg bg-emerald-500 text-slate-950 transition-all">START</span>
+          <div id="hud-phase-container" class="flex items-center gap-1 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded-xl shadow-md pointer-events-auto text-[9px] font-black uppercase tracking-wider text-slate-400">
+            <span id="phase-step-0" class="px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 transition-all">START</span>
             <span class="text-slate-600">→</span>
-            <span id="phase-step-1" class="px-2 py-0.5 rounded-lg transition-all">MOVE</span>
+            <span id="phase-step-1" class="px-1.5 py-0.5 rounded transition-all">MOVE</span>
             <span class="text-slate-600">→</span>
-            <span id="phase-step-2" class="px-2 py-0.5 rounded-lg transition-all">PEAK</span>
+            <span id="phase-step-2" class="px-1.5 py-0.5 rounded transition-all">PEAK</span>
             <span class="text-slate-600">→</span>
-            <span id="phase-step-3" class="px-2 py-0.5 rounded-lg transition-all">RETURN</span>
+            <span id="phase-step-3" class="px-1.5 py-0.5 rounded transition-all">RETURN</span>
           </div>
 
           <div class="flex items-center gap-1 pointer-events-auto">
-            <button id="btn-3d-reset-cam" class="bg-slate-900/90 hover:bg-slate-800 text-slate-300 border border-slate-700/80 px-2.5 py-1.5 rounded-xl text-[11px] font-bold shadow-md transition-all flex items-center gap-1" title="Reset Camera View">
-              <span>↻ Reset View</span>
+            <button id="btn-3d-reset-cam" class="bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/80 px-2 py-1 rounded-lg text-[10px] font-bold shadow-md transition-all flex items-center gap-1" title="Reset Camera View">
+              <span>↻ View</span>
             </button>
           </div>
         </div>
 
         <!-- Center Inactive / Loading Badge -->
-        <div id="hud-fallback-msg" class="hidden self-center bg-slate-900/90 border border-amber-500/40 p-4 rounded-2xl text-center max-w-sm pointer-events-auto shadow-2xl">
+        <div id="hud-fallback-msg" class="hidden self-center bg-slate-900/90 border border-amber-500/40 p-3 rounded-xl text-center max-w-xs pointer-events-auto shadow-2xl">
           <p class="text-xs font-bold text-amber-400">3D Demonstration in Standby</p>
-          <p class="text-[10px] text-slate-300 mt-1">Movement instructions and form checkpoints are active below.</p>
         </div>
 
         <!-- Bottom Control Bar -->
-        <div class="flex items-center justify-between gap-3 bg-slate-950/90 backdrop-blur-xl border border-slate-800/90 p-2.5 rounded-2xl shadow-2xl pointer-events-auto">
-          <div class="flex items-center gap-1.5">
-            <button id="btn-3d-play-pause" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-xl transition-transform active:scale-95 flex items-center gap-1 shadow-md shadow-emerald-500/20">
-              <span id="play-pause-icon">⏸ Pause</span>
+        <div class="flex items-center justify-between gap-2 bg-slate-950/85 backdrop-blur-md border border-slate-800/90 p-2 rounded-xl shadow-xl pointer-events-auto">
+          <div class="flex items-center gap-1">
+            <button id="btn-3d-play-pause" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[11px] px-2.5 py-1 rounded-lg transition-transform active:scale-95 flex items-center gap-1 shadow">
+              <span id="play-pause-icon">⏸</span>
             </button>
-            <button id="btn-3d-replay" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors" title="Replay from start">
+            <button id="btn-3d-replay" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 px-2 py-1 rounded-lg text-[11px] font-bold transition-colors" title="Replay">
               ↻
             </button>
           </div>
 
           <!-- Playback Scrubber -->
-          <div class="flex-1 max-w-xs flex items-center gap-2">
+          <div class="flex-1 max-w-[180px] sm:max-w-xs flex items-center">
             <input type="range" id="slider-3d-progress" min="0" max="100" value="0" class="w-full accent-emerald-400 cursor-pointer h-1.5 bg-slate-800 rounded-lg">
           </div>
 
           <!-- Speed Controls -->
-          <div class="flex items-center gap-1 text-[10px] font-bold">
-            <button data-speed="0.5" class="btn-3d-spd px-2 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-slate-800">0.5x</button>
-            <button data-speed="0.75" class="btn-3d-spd px-2 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-slate-800">0.75x</button>
-            <button data-speed="1.0" class="btn-3d-spd px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">1x</button>
-            <button data-speed="1.25" class="btn-3d-spd px-2 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-slate-800">1.25x</button>
+          <div class="flex items-center gap-1 text-[9px] font-bold">
+            <button data-speed="0.5" class="btn-3d-spd px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white border border-slate-800">0.5x</button>
+            <button data-speed="1.0" class="btn-3d-spd px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">1x</button>
+            <button data-speed="1.25" class="btn-3d-spd px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white border border-slate-800">1.25x</button>
           </div>
         </div>
       `;
@@ -661,9 +675,9 @@
       speedBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           speedBtns.forEach(b => {
-            b.className = 'btn-3d-spd px-2 py-1 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-slate-800';
+            b.className = 'btn-3d-spd px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 hover:text-white border border-slate-800';
           });
-          btn.className = 'btn-3d-spd px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+          btn.className = 'btn-3d-spd px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
           this.playbackSpeed = parseFloat(btn.getAttribute('data-speed')) || 1.0;
         });
       });
@@ -728,12 +742,18 @@
       // Highlight target muscles
       this.highlightMuscles(exercise.primary_muscles || (config ? config.primary_muscles : []), exercise.secondary_muscles || (config ? config.secondary_muscles : []));
 
-      // Camera Preset
+      // Reset Camera Preset
       this.resetCameraView();
 
       this.animationProgress = 0.0;
       this.isPlaying = true;
       this.updatePlayBtnText();
+
+      // Trigger multi-stage resize to catch modal layout transitions
+      this.handleResize();
+      requestAnimationFrame(() => this.handleResize());
+      setTimeout(() => this.handleResize(), 60);
+      setTimeout(() => this.handleResize(), 200);
     }
 
     /**
@@ -782,20 +802,20 @@
     }
 
     /**
-     * Reset Camera to Optimal Angle
+     * Reset Camera to Optimal Framing & Focus on Target
      */
     resetCameraView() {
       const config = this.activeConfig;
-      const preset = (config && config.camera ? config.camera.preset : 'front_3_4');
-      const dist = (config && config.camera ? config.camera.distance : 4.5);
-      const targetY = (config && config.camera ? config.camera.targetY : 0.9);
+      const preset = (config && config.camera ? config.camera.preset : 'side_3_4');
+      const dist = (config && config.camera ? config.camera.distance : 2.8);
+      const targetY = (config && config.camera ? config.camera.targetY : 0.65);
 
       if (preset === 'side_3_4') {
-        this.camera.position.set(dist * 0.8, 1.8, dist * 0.6);
+        this.camera.position.set(dist * 0.72, targetY + dist * 0.38, dist * 0.72);
       } else if (preset === 'front_3_4') {
-        this.camera.position.set(dist * 0.5, 1.9, dist * 0.85);
+        this.camera.position.set(dist * 0.38, targetY + dist * 0.32, dist * 0.88);
       } else {
-        this.camera.position.set(0, 1.8, dist);
+        this.camera.position.set(0, targetY + dist * 0.25, dist);
       }
 
       if (this.controls) {
@@ -812,7 +832,7 @@
     updatePlayBtnText() {
       const icon = this.container.querySelector('#play-pause-icon');
       if (icon) {
-        icon.innerText = this.isPlaying ? '⏸ Pause' : '▶ Play';
+        icon.innerText = this.isPlaying ? '⏸' : '▶';
       }
     }
 
@@ -837,9 +857,9 @@
           const stepEl = this.container.querySelector(`#phase-step-${i}`);
           if (stepEl) {
             if (i === phaseIdx) {
-              stepEl.className = 'px-2 py-0.5 rounded-lg bg-emerald-500 text-slate-950 font-black shadow-sm';
+              stepEl.className = 'px-1.5 py-0.5 rounded bg-emerald-500 text-slate-950 font-black shadow-sm';
             } else {
-              stepEl.className = 'px-2 py-0.5 rounded-lg transition-all text-slate-400';
+              stepEl.className = 'px-1.5 py-0.5 rounded transition-all text-slate-400';
             }
           }
         }
@@ -1394,6 +1414,11 @@
         this.rafId = null;
       }
       window.removeEventListener('resize', this.onWindowResize);
+
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect();
+        this.resizeObserver = null;
+      }
 
       if (this.controls) {
         this.controls.dispose();

@@ -410,8 +410,8 @@
               </span>
               <span class="text-[9px] font-bold text-slate-400">Interactive Controls</span>
             </div>
-            <div id="demo-motion-viewport" class="w-full">
-              <!-- Rendered dynamically by window.initExerciseMotionPlayer -->
+            <div id="demo-motion-viewport" class="w-full h-[360px] sm:h-[400px] min-h-[340px] relative rounded-2xl overflow-hidden bg-slate-950 shadow-inner">
+              <!-- Rendered dynamically by window.initFitSync3DViewer -->
             </div>
           </div>
 
@@ -785,41 +785,48 @@
     document.getElementById('demo-modal-primary-bar').style.width = `${pPct}%`;
     document.getElementById('demo-modal-secondary-muscles').innerText = (ex.secondary_muscles && ex.secondary_muscles.length) ? ex.secondary_muscles.join(', ') : 'Stabilizer muscles';
 
+    // Populate instructions list
+    const ol = document.getElementById('demo-modal-instructions');
+    if (ol) {
+      ol.innerHTML = '';
+      (ex.instructions || []).forEach(step => {
+        if (step.trim()) {
+          const li = document.createElement('li');
+          li.innerText = step;
+          ol.appendChild(li);
+        }
+      });
+    }
+
+    // Populate common mistakes
+    const mBox = document.getElementById('demo-modal-mistakes-box');
+    const ul = document.getElementById('demo-modal-mistakes');
+    if (mBox && ul) {
+      ul.innerHTML = '';
+      if (ex.common_mistakes && ex.common_mistakes.length > 0) {
+        mBox.classList.remove('hidden');
+        ex.common_mistakes.forEach(m => {
+          if (m.trim()) {
+            const li = document.createElement('li');
+            li.innerText = m;
+            ul.appendChild(li);
+          }
+        });
+      } else {
+        mBox.classList.add('hidden');
+      }
+    }
+
+    // Unhide modal first so container has actual DOM dimensions
+    document.getElementById('demo-modal').classList.remove('hidden');
+    highlightAnatomyMuscles([ex.primary_muscle || ex.category], ex.secondary_muscles || [], '#modal-anatomy-container');
+
     // Mount 3D Three.js Mannequin Animation Viewer
     if (window.initFitSync3DViewer && typeof THREE !== 'undefined') {
       window.initFitSync3DViewer('demo-motion-viewport', ex);
     } else if (window.initExerciseMotionPlayer) {
       window.initExerciseMotionPlayer('demo-motion-viewport', ex);
     }
-
-    const ol = document.getElementById('demo-modal-instructions');
-    ol.innerHTML = '';
-    (ex.instructions || []).forEach(step => {
-      if (step.trim()) {
-        const li = document.createElement('li');
-        li.innerText = step;
-        ol.appendChild(li);
-      }
-    });
-
-    const mBox = document.getElementById('demo-modal-mistakes-box');
-    const ul = document.getElementById('demo-modal-mistakes');
-    ul.innerHTML = '';
-    if (ex.common_mistakes && ex.common_mistakes.length > 0) {
-      mBox.classList.remove('hidden');
-      ex.common_mistakes.forEach(m => {
-        if (m.trim()) {
-          const li = document.createElement('li');
-          li.innerText = m;
-          ul.appendChild(li);
-        }
-      });
-    } else {
-      mBox.classList.add('hidden');
-    }
-
-    highlightAnatomyMuscles([ex.primary_muscle || ex.category], ex.secondary_muscles || [], '#modal-anatomy-container');
-    document.getElementById('demo-modal').classList.remove('hidden');
   }
 
   function closeDemoModal() {

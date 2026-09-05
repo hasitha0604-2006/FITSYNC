@@ -511,7 +511,7 @@
     <div class="p-4 md:p-6 overflow-y-auto space-y-4 text-xs text-slate-300">
       
       <!-- Interactive 3D Biomechanical Demonstration Container -->
-      <div id="workout-plan-motion-container" class="w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner flex items-center justify-center relative">
+      <div id="workout-plan-motion-container" class="w-full h-[360px] sm:h-[400px] min-h-[340px] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner relative">
         <!-- FitSync3DViewer mounts here automatically -->
       </div>
 
@@ -679,43 +679,47 @@ function openGuideModal(ex) {
     highlightAnatomyMuscles(prim, sec, '#modal-anatomy-container');
   }
 
+  const ol = document.getElementById('modal-ex-instructions');
+  if (ol) {
+    ol.innerHTML = '';
+    const instStr = Array.isArray(ex.instructions) ? ex.instructions.join('\n') : (ex.instructions || '');
+    instStr.split('\n').forEach(step => {
+      if (step.trim()) {
+        const li = document.createElement('li');
+        li.innerText = step;
+        ol.appendChild(li);
+      }
+    });
+  }
+
+  const mDiv = document.getElementById('modal-ex-mistakes-container');
+  const ul = document.getElementById('modal-ex-mistakes');
+  if (mDiv && ul) {
+    ul.innerHTML = '';
+    const mistStr = Array.isArray(ex.common_mistakes) ? ex.common_mistakes.join('\n') : (ex.common_mistakes || '');
+    if (mistStr.trim()) {
+      mDiv.classList.remove('hidden');
+      mistStr.split('\n').forEach(m => {
+        if (m.trim()) {
+          const li = document.createElement('li');
+          li.innerText = m;
+          ul.appendChild(li);
+        }
+      });
+    } else {
+      mDiv.classList.add('hidden');
+    }
+  }
+
+  document.getElementById('guide-modal').classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+
   // Mount 3D Three.js Mannequin Animation Viewer
   if (window.initFitSync3DViewer && typeof THREE !== 'undefined') {
     window.initFitSync3DViewer('workout-plan-motion-container', ex);
   } else if (window.initExerciseMotionPlayer) {
     window.initExerciseMotionPlayer('workout-plan-motion-container', ex);
   }
-
-  const ol = document.getElementById('modal-ex-instructions');
-  ol.innerHTML = '';
-  const instStr = Array.isArray(ex.instructions) ? ex.instructions.join('\n') : (ex.instructions || '');
-  instStr.split('\n').forEach(step => {
-    if (step.trim()) {
-      const li = document.createElement('li');
-      li.innerText = step;
-      ol.appendChild(li);
-    }
-  });
-
-  const mDiv = document.getElementById('modal-ex-mistakes-container');
-  const ul = document.getElementById('modal-ex-mistakes');
-  ul.innerHTML = '';
-  const mistStr = Array.isArray(ex.common_mistakes) ? ex.common_mistakes.join('\n') : (ex.common_mistakes || '');
-  if (mistStr.trim()) {
-    mDiv.classList.remove('hidden');
-    mistStr.split('\n').forEach(m => {
-      if (m.trim()) {
-        const li = document.createElement('li');
-        li.innerText = m;
-        ul.appendChild(li);
-      }
-    });
-  } else {
-    mDiv.classList.add('hidden');
-  }
-
-  document.getElementById('guide-modal').classList.remove('hidden');
-  if (window.lucide) lucide.createIcons();
 }
 
 function closeGuideModal() {

@@ -11,7 +11,7 @@
       "animation": "bench_press",
       "category": "Chest",
       "equipment": "barbell_bench",
-      "camera": { "preset": "side_3_4", "distance": 4.6, "fov": 45, "targetY": 0.8 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.55 },
       "primary_muscles": ["Pectoralis Major", "Chest"],
       "secondary_muscles": ["Triceps Brachii", "Anterior Deltoids"],
       "phases": ["RACK START", "DESCENT (ECCENTRIC)", "CHEST CONTACT", "PRESS (CONCENTRIC)"]
@@ -20,7 +20,7 @@
       "animation": "incline_bench_press",
       "category": "Chest",
       "equipment": "incline_bench",
-      "camera": { "preset": "side_3_4", "distance": 4.6, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.65 },
       "primary_muscles": ["Clavicular Pectorals (Upper Chest)"],
       "secondary_muscles": ["Anterior Deltoids", "Triceps Brachii"],
       "phases": ["START POSITION", "CONTROLLED DESCENT", "TOUCH UPPER CHEST", "DRIVE UPWARD"]
@@ -29,7 +29,7 @@
       "animation": "dumbbell_bench_press",
       "category": "Chest",
       "equipment": "dumbbell_bench",
-      "camera": { "preset": "side_3_4", "distance": 4.5, "fov": 45, "targetY": 0.8 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.55 },
       "primary_muscles": ["Pectoralis Major", "Inner Chest"],
       "secondary_muscles": ["Triceps", "Anterior Deltoids", "Rotator Cuff"],
       "phases": ["ARMS EXTENDED", "DEEP STRETCH", "PEAK CHEST SQUEEZE", "CONTROLLED RETURN"]
@@ -38,7 +38,7 @@
       "animation": "incline_bench_press",
       "category": "Chest",
       "equipment": "incline_bench",
-      "camera": { "preset": "side_3_4", "distance": 4.6, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.65 },
       "primary_muscles": ["Upper Chest"],
       "secondary_muscles": ["Shoulders", "Triceps"],
       "phases": ["START POSITION", "CONTROLLED DESCENT", "PEAK SQUEEZE", "CONCENTRIC PRESS"]
@@ -47,7 +47,7 @@
       "animation": "push_up",
       "category": "Chest",
       "equipment": "studio_floor",
-      "camera": { "preset": "side_3_4", "distance": 4.2, "fov": 45, "targetY": 0.5 },
+      "camera": { "preset": "side_3_4", "distance": 2.7, "fov": 45, "targetY": 0.40 },
       "primary_muscles": ["Pectoralis Major", "Chest"],
       "secondary_muscles": ["Triceps Brachii", "Anterior Deltoid", "Core Stabilizers"],
       "phases": ["RIGID PLANK", "DESCENT (45° ELBOWS)", "CHEST HOVER", "EXPLOSIVE PUSH"]
@@ -56,7 +56,7 @@
       "animation": "lat_pulldown",
       "category": "Back",
       "equipment": "lat_pulldown_machine",
-      "camera": { "preset": "front_3_4", "distance": 4.8, "fov": 45, "targetY": 1.1 },
+      "camera": { "preset": "front_3_4", "distance": 3.1, "fov": 45, "targetY": 0.95 },
       "primary_muscles": ["Latissimus Dorsi", "Lats"],
       "secondary_muscles": ["Biceps Brachii", "Rhomboids", "Middle Trapezius"],
       "phases": ["FULL OVERHEAD REACH", "SCAPULAR RETRACTION", "PULL TO CLAVICLE", "CONTROLLED ECCENTRIC"]
@@ -65,7 +65,7 @@
       "animation": "seated_cable_row",
       "category": "Back",
       "equipment": "cable_row_station",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.8 },
+      "camera": { "preset": "side_3_4", "distance": 2.9, "fov": 45, "targetY": 0.60 },
       "primary_muscles": ["Latissimus Dorsi", "Rhomboids", "Mid-Back"],
       "secondary_muscles": ["Biceps Brachii", "Posterior Deltoids", "Trapezius"],
       "phases": ["ARMS EXTENDED", "DRIVE ELBOWS BACK", "SCAPULAR PINCH", "SMOOTH EXTENSION"]
@@ -74,7 +74,7 @@
       "animation": "bicep_curl",
       "category": "Arms",
       "equipment": "dumbbells",
-      "camera": { "preset": "front_3_4", "distance": 4.2, "fov": 45, "targetY": 1.0 },
+      "camera": { "preset": "front_3_4", "distance": 2.8, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Biceps Brachii (Short & Long Heads)"],
       "secondary_muscles": ["Brachialis", "Brachioradialis", "Forearm Flexors"],
       "phases": ["FULL EXTENSION", "SUPINATED CURL", "PEAK BICEP CONTRACTION", "3-SEC ECCENTRIC"]
@@ -83,7 +83,7 @@
       "animation": "bicep_curl",
       "category": "Arms",
       "equipment": "barbell",
-      "camera": { "preset": "front_3_4", "distance": 4.2, "fov": 45, "targetY": 1.0 },
+      "camera": { "preset": "front_3_4", "distance": 2.8, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Biceps Brachii"],
       "secondary_muscles": ["Forearms", "Brachialis"],
       "phases": ["ARMS EXTENDED", "CONCENTRIC CURL", "PEAK CONTRACTION", "LOWER SLOWLY"]
@@ -92,7 +92,7 @@
       "animation": "bicep_curl",
       "category": "Arms",
       "equipment": "dumbbells",
-      "camera": { "preset": "front_3_4", "distance": 4.2, "fov": 45, "targetY": 1.0 },
+      "camera": { "preset": "front_3_4", "distance": 2.8, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Brachioradialis", "Brachialis"],
       "secondary_muscles": ["Biceps Brachii"],
       "phases": ["NEUTRAL GRIP", "CURL UPWARD", "SQUEEZE TOP", "CONTROLLED DESCENT"]
@@ -101,7 +101,7 @@
       "animation": "tricep_pushdown",
       "category": "Arms",
       "equipment": "cable_station",
-      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 1.1 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Triceps Brachii (Lateral & Medial Heads)"],
       "secondary_muscles": ["Anconeus", "Forearm Stabilizers"],
       "phases": ["90° ELBOW FLEXION", "DRIVE DOWNWARD", "FULL TRICEP LOCKOUT", "CONTROLLED RESET"]
@@ -110,7 +110,7 @@
       "animation": "shoulder_press",
       "category": "Shoulders",
       "equipment": "dumbbells",
-      "camera": { "preset": "front_3_4", "distance": 4.4, "fov": 45, "targetY": 1.1 },
+      "camera": { "preset": "front_3_4", "distance": 2.9, "fov": 45, "targetY": 0.95 },
       "primary_muscles": ["Anterior & Lateral Deltoids"],
       "secondary_muscles": ["Triceps Brachii", "Upper Trapezius", "Clavicular Pectorals"],
       "phases": ["SHOULDER RACK", "VERTICAL PRESS", "OVERHEAD LOCKOUT", "SMOOTH LOWERING"]
@@ -119,7 +119,7 @@
       "animation": "shoulder_press",
       "category": "Shoulders",
       "equipment": "barbell",
-      "camera": { "preset": "front_3_4", "distance": 4.5, "fov": 45, "targetY": 1.2 },
+      "camera": { "preset": "front_3_4", "distance": 2.9, "fov": 45, "targetY": 0.95 },
       "primary_muscles": ["Deltoids (Shoulders)"],
       "secondary_muscles": ["Triceps", "Upper Trapezius", "Core"],
       "phases": ["CLAVICLE STANCE", "DRIVE OVERHEAD", "HEAD THROUGH WINDOW", "RETURN TO CHEST"]
@@ -128,7 +128,7 @@
       "animation": "squat",
       "category": "Legs",
       "equipment": "barbell",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.80 },
       "primary_muscles": ["Quadriceps", "Gluteus Maximus"],
       "secondary_muscles": ["Hamstrings", "Calves (Gastrocnemius)", "Core Stabilizers"],
       "phases": ["UPRIGHT STANCE", "HIP HINGE & DESCENT", "PARALLEL DEPTH", "DRIVE THROUGH HEELS"]
@@ -137,7 +137,7 @@
       "animation": "squat",
       "category": "Legs",
       "equipment": "barbell",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.80 },
       "primary_muscles": ["Quadriceps", "Gluteus Maximus"],
       "secondary_muscles": ["Hamstrings", "Erector Spinae", "Adductors"],
       "phases": ["BRACED STANCE", "CONTROLLED DESCENT", "BELOW PARALLEL DEPTH", "STAND & SQUEEZE GLUTES"]
@@ -146,7 +146,7 @@
       "animation": "squat",
       "category": "Legs",
       "equipment": "dumbbells",
-      "camera": { "preset": "front_3_4", "distance": 4.6, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "front_3_4", "distance": 2.9, "fov": 45, "targetY": 0.80 },
       "primary_muscles": ["Quadriceps", "Glutes"],
       "secondary_muscles": ["Upper Back", "Core"],
       "phases": ["CHEST HELD WEIGHT", "SIT BETWEEN HIPS", "DEEP SQUAT", "DRIVE UP"]
@@ -157,7 +157,7 @@
       "animation": "deadlift",
       "category": "Back",
       "equipment": "barbell",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.8 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Gluteus Maximus", "Hamstrings", "Erector Spinae"],
       "secondary_muscles": ["Latissimus Dorsi", "Trapezius", "Forearms", "Quadriceps"],
       "phases": ["LOCKED SHINS AT BAR", "LEG DRIVE OFF FLOOR", "HIP HINGE LOCKOUT", "CONTROLLED RETURN"]
@@ -166,7 +166,7 @@
       "animation": "deadlift",
       "category": "Back",
       "equipment": "barbell",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.8 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Posterior Chain", "Hamstrings", "Glutes"],
       "secondary_muscles": ["Back", "Core", "Grip"],
       "phases": ["SETUP & HINGE", "PULL SLACK", "STAND TALL", "LOWER TO FLOOR"]
@@ -175,7 +175,7 @@
       "animation": "deadlift",
       "category": "Legs",
       "equipment": "barbell",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Hamstrings", "Gluteus Maximus"],
       "secondary_muscles": ["Lower Back", "Forearms"],
       "phases": ["SOFT KNEES", "PUSH HIPS BACK", "HAMSTRING STRETCH", "HIP EXTENSION"]
@@ -184,7 +184,7 @@
       "animation": "lunge",
       "category": "Legs",
       "equipment": "dumbbells",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Quadriceps", "Gluteus Maximus"],
       "secondary_muscles": ["Hamstrings", "Calves", "Core"],
       "phases": ["FORWARD STRIDE", "90° KNEE DROP", "TORSO UPRIGHT", "PUSH BACK TO START"]
@@ -193,7 +193,7 @@
       "animation": "lunge",
       "category": "Legs",
       "equipment": "dumbbells",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Quads", "Glutes"],
       "secondary_muscles": ["Hamstrings", "Calves"],
       "phases": ["FORWARD STEP", "LOWER BACK KNEE", "DRIVE FORWARD", "CONTINUOUS STRIDE"]
@@ -202,7 +202,7 @@
       "animation": "pull_up",
       "category": "Back",
       "equipment": "lat_pulldown_machine",
-      "camera": { "preset": "front_3_4", "distance": 4.8, "fov": 45, "targetY": 1.2 },
+      "camera": { "preset": "front_3_4", "distance": 3.2, "fov": 45, "targetY": 1.1 },
       "primary_muscles": ["Latissimus Dorsi", "Upper Back"],
       "secondary_muscles": ["Biceps Brachii", "Core", "Posterior Deltoids"],
       "phases": ["DEAD HANG", "ENGAGE LATS", "CHIN OVER BAR", "CONTROLLED LOWERING"]
@@ -211,7 +211,7 @@
       "animation": "tricep_pushdown",
       "category": "Chest",
       "equipment": "studio_floor",
-      "camera": { "preset": "side_3_4", "distance": 4.5, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.80 },
       "primary_muscles": ["Triceps Brachii", "Lower Pectorals"],
       "secondary_muscles": ["Anterior Deltoids", "Core"],
       "phases": ["TOP SUPPORT", "LOWER TO 90°", "PRESS UPWARD", "LOCKOUT"]
@@ -220,7 +220,7 @@
       "animation": "shoulder_press",
       "category": "Shoulders",
       "equipment": "dumbbells",
-      "camera": { "preset": "front_3_4", "distance": 4.2, "fov": 45, "targetY": 1.0 },
+      "camera": { "preset": "front_3_4", "distance": 2.8, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Lateral Deltoid"],
       "secondary_muscles": ["Anterior Deltoid", "Trapezius"],
       "phases": ["WEIGHTS AT SIDES", "RAISE TO PARALLEL", "PAUSE AT PEAK", "SLOW LOWERING"]
@@ -229,7 +229,7 @@
       "animation": "plank",
       "category": "Core",
       "equipment": "studio_floor",
-      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.4 },
+      "camera": { "preset": "side_3_4", "distance": 2.7, "fov": 45, "targetY": 0.35 },
       "primary_muscles": ["Rectus Abdominis", "Transverse Abdominis"],
       "secondary_muscles": ["Glutes", "Shoulders", "Quadriceps"],
       "phases": ["FOREARM ALIGNMENT", "PELVIC TUCK", "STEADY ISOMETRIC BRACE", "NEUTRAL BREATHING"]
@@ -238,7 +238,7 @@
       "animation": "plank",
       "category": "Core",
       "equipment": "studio_floor",
-      "camera": { "preset": "side_3_4", "distance": 4.2, "fov": 45, "targetY": 0.5 },
+      "camera": { "preset": "side_3_4", "distance": 2.7, "fov": 45, "targetY": 0.35 },
       "primary_muscles": ["Rectus Abdominis"],
       "secondary_muscles": ["Obliques"],
       "phases": ["SUPINE START", "RIB TO PELVIS CRUNCH", "PEAK ABDOMINAL SQUEEZE", "SLOW RETURN"]
@@ -249,7 +249,7 @@
       "animation": "yoga_mountain",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.5, "fov": 45, "targetY": 1.0 },
+      "camera": { "preset": "front_3_4", "distance": 2.9, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Spinal Erectors", "Quadriceps", "Core"],
       "secondary_muscles": ["Calves", "Glutes", "Shoulders"],
       "phases": ["FEET GROUNDED", "ENGAGE THIGHS & CORE", "ROLL SHOULDERS BACK", "STEADY PRANAYAMA"]
@@ -258,7 +258,7 @@
       "animation": "yoga_childs_pose",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.2, "fov": 45, "targetY": 0.4 },
+      "camera": { "preset": "side_3_4", "distance": 2.6, "fov": 45, "targetY": 0.30 },
       "primary_muscles": ["Lower Back (Erector Spinae)", "Hips", "Glutes"],
       "secondary_muscles": ["Shoulders", "Ankles"],
       "phases": ["KNEEL & BIG TOES TOUCH", "HIPS SINK TO HEELS", "REACH ARMS FORWARD", "REST FOREHEAD TO MAT"]
@@ -267,7 +267,7 @@
       "animation": "yoga_cat_cow",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.6 },
+      "camera": { "preset": "side_3_4", "distance": 2.7, "fov": 45, "targetY": 0.45 },
       "primary_muscles": ["Entire Spinal Column", "Core"],
       "secondary_muscles": ["Neck", "Shoulders", "Pelvis"],
       "phases": ["TABLETOP POSE", "INHALE: COW (ARCH SPINE)", "EXHALE: CAT (ROUND SPINE)", "SYNCHRONIZE FLOW"]
@@ -276,7 +276,7 @@
       "animation": "yoga_downward_dog",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.5, "fov": 45, "targetY": 0.6 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.55 },
       "primary_muscles": ["Hamstrings", "Calves", "Shoulders", "Spine"],
       "secondary_muscles": ["Lats", "Wrists", "Core"],
       "phases": ["INVERTED V-SHAPE", "PRESS HEELS DOWN", "LENGTHEN SPINE", "DEEP PRANAYAMA BREATH"]
@@ -285,7 +285,7 @@
       "animation": "yoga_cobra",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.3, "fov": 45, "targetY": 0.5 },
+      "camera": { "preset": "side_3_4", "distance": 2.6, "fov": 45, "targetY": 0.30 },
       "primary_muscles": ["Erector Spinae", "Chest (Pectorals)"],
       "secondary_muscles": ["Abdominals", "Shoulders", "Glutes"],
       "phases": ["PRONE POSITION", "PALMS UNDER SHOULDERS", "GENTLY LIFT CHEST", "OPEN HEART & BREATHE"]
@@ -294,7 +294,7 @@
       "animation": "yoga_upward_dog",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.6 },
+      "camera": { "preset": "side_3_4", "distance": 2.7, "fov": 45, "targetY": 0.40 },
       "primary_muscles": ["Erector Spinae", "Chest", "Triceps"],
       "secondary_muscles": ["Quadriceps", "Wrists", "Shoulders"],
       "phases": ["TOPS OF FEET ON MAT", "STRAIGHTEN ARMS", "THIGHS LIFTED", "COLLARBONE BROAD"]
@@ -303,7 +303,7 @@
       "animation": "yoga_warrior_i",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.8, "fov": 45, "targetY": 1.1 },
+      "camera": { "preset": "front_3_4", "distance": 3.0, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Quadriceps", "Glutes", "Hip Flexors"],
       "secondary_muscles": ["Deltoids", "Upper Back", "Core"],
       "phases": ["SQUARE HIPS FORWARD", "90° FRONT KNEE BEND", "SWEEP ARMS OVERHEAD", "LIFT STERNUM"]
@@ -312,7 +312,7 @@
       "animation": "yoga_warrior_ii",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.8, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "front_3_4", "distance": 3.0, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Quadriceps", "Glutes", "Hip Flexors"],
       "secondary_muscles": ["Deltoids", "Core", "Ankles"],
       "phases": ["WIDE STANCE", "90° FRONT KNEE BEND", "EXTEND ARMS HORIZONTALLY", "GAZE OVER FRONT FINGER"]
@@ -321,7 +321,7 @@
       "animation": "yoga_triangle",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.7, "fov": 45, "targetY": 0.8 },
+      "camera": { "preset": "front_3_4", "distance": 2.9, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Hamstrings", "Obliques", "Adductors"],
       "secondary_muscles": ["Deltoids", "Spine", "Ankles"],
       "phases": ["WIDE LEGS & STRAIGHT KNEES", "LATERAL HIP HINGE", "STACK SHOULDERS VERTICALLY", "GAZE UP TO TOP HAND"]
@@ -330,7 +330,7 @@
       "animation": "yoga_tree",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.4, "fov": 45, "targetY": 1.0 },
+      "camera": { "preset": "front_3_4", "distance": 2.8, "fov": 45, "targetY": 0.85 },
       "primary_muscles": ["Ankle Stabilizers", "Adductors", "Glutes"],
       "secondary_muscles": ["Core", "Deltoids", "Hip Rotators"],
       "phases": ["ROOT STANDING FOOT", "PLACE SOLE ON INNER THIGH", "HANDS IN ANJALI MUDRA", "FIND DRISHTI FOCUS"]
@@ -339,7 +339,7 @@
       "animation": "yoga_chair",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.6, "fov": 45, "targetY": 0.9 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.75 },
       "primary_muscles": ["Quadriceps", "Gluteus Maximus"],
       "secondary_muscles": ["Spinal Erectors", "Deltoids", "Calves"],
       "phases": ["SINK HIPS BACK", "THIGHS TOWARD PARALLEL", "REACH ARMS BICEPS BY EARS", "DRAW NAVEL TO SPINE"]
@@ -348,7 +348,7 @@
       "animation": "yoga_bridge",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.5 },
+      "camera": { "preset": "side_3_4", "distance": 2.7, "fov": 45, "targetY": 0.35 },
       "primary_muscles": ["Gluteus Maximus", "Hamstrings"],
       "secondary_muscles": ["Lower Back", "Quadriceps", "Chest"],
       "phases": ["FEET FLAT UNDER KNEES", "DRIVE THROUGH HEELS", "LIFT PELVIS TO CEILING", "INTERLACE HANDS UNDER BACK"]
@@ -357,7 +357,7 @@
       "animation": "yoga_boat",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.6 },
+      "camera": { "preset": "side_3_4", "distance": 2.7, "fov": 45, "targetY": 0.45 },
       "primary_muscles": ["Rectus Abdominis", "Hip Flexors"],
       "secondary_muscles": ["Erector Spinae", "Quadriceps"],
       "phases": ["BALANCE ON SIT BONES", "LIFT SHINS PARALLEL TO FLOOR", "REACH ARMS FORWARD", "LIFT CHEST TALL"]
@@ -366,7 +366,7 @@
       "animation": "yoga_seated_forward_fold",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.4, "fov": 45, "targetY": 0.5 },
+      "camera": { "preset": "side_3_4", "distance": 2.6, "fov": 45, "targetY": 0.35 },
       "primary_muscles": ["Hamstrings", "Erector Spinae"],
       "secondary_muscles": ["Calves", "Glutes"],
       "phases": ["LEGS EXTENDED STRAIGHT", "INHALE: LENGTHEN SPINE", "EXHALE: HINGE AT HIPS", "REACH FOR FEET"]
@@ -375,7 +375,7 @@
       "animation": "yoga_butterfly",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.3, "fov": 45, "targetY": 0.6 },
+      "camera": { "preset": "front_3_4", "distance": 2.6, "fov": 45, "targetY": 0.40 },
       "primary_muscles": ["Adductors (Inner Thighs)", "Groin"],
       "secondary_muscles": ["Hips", "Lower Back"],
       "phases": ["SOLES OF FEET TOGETHER", "KNEES DROP WIDE", "TALL SPINE", "GENTLE FORWARD HINGE"]
@@ -384,7 +384,7 @@
       "animation": "yoga_low_lunge",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.6, "fov": 45, "targetY": 0.7 },
+      "camera": { "preset": "side_3_4", "distance": 2.8, "fov": 45, "targetY": 0.60 },
       "primary_muscles": ["Hip Flexors (Psoas)", "Quadriceps"],
       "secondary_muscles": ["Glutes", "Hamstrings", "Chest"],
       "phases": ["BACK KNEE DOWN", "FRONT KNEE OVER ANKLE", "SWEEP ARMS UPWARD", "SINK HIPS FORWARD"]
@@ -393,7 +393,7 @@
       "animation": "yoga_crescent_lunge",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.8, "fov": 45, "targetY": 1.0 },
+      "camera": { "preset": "side_3_4", "distance": 3.0, "fov": 45, "targetY": 0.80 },
       "primary_muscles": ["Quadriceps", "Glutes", "Hip Flexors"],
       "secondary_muscles": ["Calves", "Deltoids", "Core"],
       "phases": ["HIGH BACK HEEL", "FRONT KNEE AT 90°", "TORSO VERTICAL", "ARMS EXTENDED OVERHEAD"]
@@ -402,7 +402,7 @@
       "animation": "yoga_side_plank",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "front_3_4", "distance": 4.5, "fov": 45, "targetY": 0.5 },
+      "camera": { "preset": "front_3_4", "distance": 2.8, "fov": 45, "targetY": 0.45 },
       "primary_muscles": ["Obliques", "Transverse Abdominis"],
       "secondary_muscles": ["Deltoids", "Glute Medius", "Lats"],
       "phases": ["STACK FEET & HIPS", "LIFT HIPS IN STRAIGHT LINE", "REACH TOP ARM UP", "HOLD WITH FOCUS"]
@@ -411,7 +411,7 @@
       "animation": "yoga_corpse",
       "category": "Yoga",
       "equipment": "yoga_mat",
-      "camera": { "preset": "side_3_4", "distance": 4.2, "fov": 45, "targetY": 0.3 },
+      "camera": { "preset": "side_3_4", "distance": 2.6, "fov": 45, "targetY": 0.25 },
       "primary_muscles": ["Total Body Relaxation"],
       "secondary_muscles": ["Nervous System Reset"],
       "phases": ["LIE FLAT ON BACK", "ARMS RELAXED AT SIDES", "CLOSE EYES", "DEEP RESTORATIVE BREATH"]

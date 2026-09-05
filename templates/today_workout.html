@@ -273,8 +273,8 @@
               </span>
               <span class="text-[9px] font-bold text-slate-400">Interactive Controls</span>
             </div>
-            <div id="today-motion-viewport" class="w-full">
-              <!-- Rendered dynamically by window.initExerciseMotionPlayer -->
+            <div id="today-motion-viewport" class="w-full h-[360px] sm:h-[400px] min-h-[340px] relative rounded-2xl overflow-hidden bg-slate-950 shadow-inner">
+              <!-- Rendered dynamically by window.initFitSync3DViewer -->
             </div>
           </div>
 
@@ -939,43 +939,47 @@
     document.getElementById('modal-ex-working-loc').innerText = ex.working_location || ex.primary_muscle || ex.category;
     document.getElementById('modal-ex-joint-action').innerText = ex.joint_action || 'Joint Flexion & Extension';
 
+    const ol = document.getElementById('modal-ex-instructions');
+    if (ol) {
+      ol.innerHTML = '';
+      const instStr = Array.isArray(ex.instructions) ? ex.instructions.join('\n') : (ex.instructions || '');
+      instStr.split('\n').forEach(step => {
+        if (step.trim()) {
+          const li = document.createElement('li');
+          li.innerText = step;
+          ol.appendChild(li);
+        }
+      });
+    }
+
+    const mDiv = document.getElementById('modal-ex-mistakes-container');
+    const ul = document.getElementById('modal-ex-mistakes');
+    if (mDiv && ul) {
+      ul.innerHTML = '';
+      const mistStr = Array.isArray(ex.common_mistakes) ? ex.common_mistakes.join('\n') : (ex.common_mistakes || '');
+      if (mistStr.trim()) {
+        mDiv.classList.remove('hidden');
+        mistStr.split('\n').forEach(m => {
+          if (m.trim()) {
+            const li = document.createElement('li');
+            li.innerText = m;
+            ul.appendChild(li);
+          }
+        });
+      } else {
+        mDiv.classList.add('hidden');
+      }
+    }
+
+    highlightAnatomyMuscles([ex.primary_muscle || ex.category], ex.secondary_muscles || [], '#today-modal-anatomy-container');
+    document.getElementById('guide-modal').classList.remove('hidden');
+
     // Mount 3D Three.js Mannequin Animation Viewer
     if (window.initFitSync3DViewer && typeof THREE !== 'undefined') {
       window.initFitSync3DViewer('today-motion-viewport', ex);
     } else if (window.initExerciseMotionPlayer) {
       window.initExerciseMotionPlayer('today-motion-viewport', ex);
     }
-
-    const ol = document.getElementById('modal-ex-instructions');
-    ol.innerHTML = '';
-    const instStr = Array.isArray(ex.instructions) ? ex.instructions.join('\n') : (ex.instructions || '');
-    instStr.split('\n').forEach(step => {
-      if (step.trim()) {
-        const li = document.createElement('li');
-        li.innerText = step;
-        ol.appendChild(li);
-      }
-    });
-
-    const mDiv = document.getElementById('modal-ex-mistakes-container');
-    const ul = document.getElementById('modal-ex-mistakes');
-    ul.innerHTML = '';
-    const mistStr = Array.isArray(ex.common_mistakes) ? ex.common_mistakes.join('\n') : (ex.common_mistakes || '');
-    if (mistStr.trim()) {
-      mDiv.classList.remove('hidden');
-      mistStr.split('\n').forEach(m => {
-        if (m.trim()) {
-          const li = document.createElement('li');
-          li.innerText = m;
-          ul.appendChild(li);
-        }
-      });
-    } else {
-      mDiv.classList.add('hidden');
-    }
-
-    highlightAnatomyMuscles([ex.primary_muscle || ex.category], ex.secondary_muscles || [], '#today-modal-anatomy-container');
-    document.getElementById('guide-modal').classList.remove('hidden');
   }
 
   function closeGuideModal() {
