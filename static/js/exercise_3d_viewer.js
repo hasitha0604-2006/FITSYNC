@@ -1,7 +1,7 @@
 /**
  * FitSync AI — Premium 3D Exercise & Yoga Demonstration Engine
  * Powered by Three.js with Articulated Athletic Mannequin, Dynamic Grip Sockets,
- * Anatomically Locked Equipment Tracking, Dynamic Muscle Shaders, and Phase Telemetry.
+ * Mathematically Calibrated Biomechanical Joint Kinematics, and Locked Equipment Tracking.
  */
 (function(window) {
   'use strict';
@@ -123,10 +123,10 @@
       this.animate = this.animate.bind(this);
       this.rafId = requestAnimationFrame(this.animate);
 
-      // Force an immediate next-frame resize check for dynamically opened modals
+      // Multi-stage resize check for modal transitions
       requestAnimationFrame(() => this.handleResize());
-      setTimeout(() => this.handleResize(), 80);
-      setTimeout(() => this.handleResize(), 250);
+      setTimeout(() => this.handleResize(), 60);
+      setTimeout(() => this.handleResize(), 200);
     }
 
     /**
@@ -888,186 +888,190 @@
 
       // ── 1. SQUAT / BARBELL SQUAT ──
       if (anim === 'squat') {
-        const depth = easeWave * 0.45;
-        j.hips.position.y = 0.95 - depth;
-        j.hips.position.z = -depth * 0.35;
-        j.spine.rotation.x = depth * 0.65; // athletic torso hip-hinge incline
+        const depth = easeWave * 0.42;
+        j.hips.position.set(0, 0.95 - depth, -depth * 0.35);
+        j.spine.rotation.set(depth * 0.65, 0, 0); // Neutral hip-hinge forward incline
+        j.head.rotation.set(-depth * 0.35, 0, 0); // Gaze forward
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`thigh_${s}`].rotation.x = -depth * 2.3; // hip flexion
-          j[`knee_${s}`].rotation.x = depth * 2.7;   // knee flexion to parallel
-          // Hands firmly gripping bar on traps
-          j[`shoulder_${s}`].rotation.set(-0.35, sign * 0.2, sign * 0.95);
-          j[`elbow_${s}`].rotation.set(1.95, 0, sign * -0.2);
+          j[`thigh_${s}`].rotation.set(-depth * 2.35, sign * 0.15, sign * depth * 0.25);
+          j[`knee_${s}`].rotation.set(depth * 2.75, 0, 0);
+          j[`shin_${s}`].rotation.set(-depth * 0.40, 0, 0);
+
+          // Hands securely gripping bar on trapezius
+          j[`shoulder_${s}`].rotation.set(0.20, sign * -0.35, sign * 1.25);
+          j[`elbow_${s}`].rotation.set(2.15, 0, sign * -0.20);
           j[`hand_${s}`].rotation.set(0.3, 0, 0);
         });
       }
 
       // ── 2. BENCH PRESS (FLAT) ──
       else if (anim === 'bench_press') {
-        j.hips.position.set(0, 0.48, -0.05);
-        j.hips.rotation.x = -Math.PI / 2; // Lie flat on bench
-        j.spine.rotation.x = 0.05; // natural slight arch
+        j.hips.position.set(0, 0.48, -0.08);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0); // Lie flat on back along bench
+        j.spine.rotation.set(0.04, 0, 0); // Solid bench arch
 
-        // Feet planted firmly on floor
+        // Feet planted on floor beside bench
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`thigh_${s}`].rotation.set(0.55, sign * 0.25, 0);
-          j[`knee_${s}`].rotation.set(1.45, 0, 0);
+          j[`thigh_${s}`].rotation.set(0.70, sign * 0.35, 0);
+          j[`knee_${s}`].rotation.set(1.50, 0, 0);
 
-          // Barbell press trajectory: 75° tucked elbows, vertical press
-          const press = easeWave; // 0 = lockout at top, 1 = touching chest
+          // Biomechanical bench press trajectory: 75° tucked elbows, vertical press
+          const press = easeWave; // 0 = lockout overhead, 1 = touching lower-mid chest
           j[`shoulder_${s}`].rotation.set(
-            -(0.6 + press * 0.5),
-            sign * (0.2 + press * 0.3),
-            sign * (0.85 - press * 0.45)
+            -1.57 + press * 0.42,
+            sign * press * 0.25,
+            sign * (0.25 + press * 0.50)
           );
-          j[`elbow_${s}`].rotation.set((1 - press) * 0.2 + press * 1.55, 0, 0);
-          j[`hand_${s}`].rotation.set(press * 0.3, 0, 0);
+          j[`elbow_${s}`].rotation.set(0.05 + press * 1.40, 0, 0);
+          j[`hand_${s}`].rotation.set(press * 0.25, 0, 0);
         });
       }
 
       // ── 3. INCLINE BENCH PRESS ──
       else if (anim === 'incline_bench_press') {
-        j.hips.position.set(0, 0.50, 0.18);
-        j.hips.rotation.x = -Math.PI / 2 + 0.55; // 32 deg incline
+        j.hips.position.set(0, 0.50, 0.16);
+        j.hips.rotation.set(-Math.PI / 2 + 0.55, 0, 0); // 32 deg incline
+        j.spine.rotation.set(0.04, 0, 0);
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`thigh_${s}`].rotation.set(0.4, sign * 0.2, 0);
-          j[`knee_${s}`].rotation.set(1.2, 0, 0);
+          j[`thigh_${s}`].rotation.set(0.50, sign * 0.25, 0);
+          j[`knee_${s}`].rotation.set(1.30, 0, 0);
 
           const press = easeWave;
           j[`shoulder_${s}`].rotation.set(
-            -(0.5 + press * 0.45),
-            sign * (0.2 + press * 0.25),
-            sign * (0.8 - press * 0.4)
+            -1.57 + press * 0.40,
+            sign * press * 0.25,
+            sign * (0.25 + press * 0.45)
           );
-          j[`elbow_${s}`].rotation.set((1 - press) * 0.2 + press * 1.5, 0, 0);
+          j[`elbow_${s}`].rotation.set(0.05 + press * 1.40, 0, 0);
+          j[`hand_${s}`].rotation.set(press * 0.25, 0, 0);
         });
       }
 
       // ── 4. DUMBBELL BENCH PRESS ──
       else if (anim === 'dumbbell_bench_press') {
-        j.hips.position.set(0, 0.48, -0.05);
-        j.hips.rotation.x = -Math.PI / 2;
+        j.hips.position.set(0, 0.48, -0.08);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0);
 
         const press = easeWave;
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`thigh_${s}`].rotation.set(0.55, sign * 0.25, 0);
-          j[`knee_${s}`].rotation.set(1.45, 0, 0);
+          j[`thigh_${s}`].rotation.set(0.70, sign * 0.35, 0);
+          j[`knee_${s}`].rotation.set(1.50, 0, 0);
 
           j[`shoulder_${s}`].rotation.set(
-            -(0.6 + press * 0.45),
-            sign * (0.2 + press * 0.3),
-            sign * (0.9 - press * 0.4)
+            -1.57 + press * 0.42,
+            sign * press * 0.20,
+            sign * (0.15 + press * 0.70)
           );
-          j[`elbow_${s}`].rotation.set((1 - press) * 0.2 + press * 1.55, 0, 0);
-          j[`hand_${s}`].rotation.set(0, 0, sign * (0.2 - press * 0.1));
+          j[`elbow_${s}`].rotation.set(0.08 + press * 1.42, 0, 0);
+          j[`hand_${s}`].rotation.set(0, 0, sign * (0.15 - press * 0.05));
         });
       }
 
       // ── 5. PUSH-UP ──
       else if (anim === 'push_up') {
-        const descent = easeWave * 0.26;
-        j.hips.position.set(0, 0.42 - descent, 0);
-        j.hips.rotation.x = -Math.PI / 2 + 0.12; // straight plank line
+        const descent = easeWave * 0.24;
+        j.hips.position.set(0, 0.40 - descent, 0);
+        j.hips.rotation.set(-Math.PI / 2 + 0.12, 0, 0); // Rigid plank line
 
+        const p = easeWave;
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(
-            -(0.7 + easeWave * 0.35),
-            sign * 0.2,
-            sign * (0.65 + easeWave * 0.35)
+            -1.45 + p * 0.50,
+            sign * (0.15 + p * 0.10),
+            sign * (0.35 + p * 0.35)
           );
-          j[`elbow_${s}`].rotation.set(easeWave * 1.6, 0, 0);
-          j[`hand_${s}`].rotation.set(-1.4, 0, 0); // hands flat on floor
+          j[`elbow_${s}`].rotation.set(0.15 + p * 1.50, 0, 0);
+          j[`hand_${s}`].rotation.set(-1.4, 0, 0); // Flat on floor
         });
       }
 
       // ── 6. LAT PULLDOWN ──
       else if (anim === 'lat_pulldown') {
-        j.hips.position.set(0, 0.55, 0.1);
-        j.thigh_left.rotation.x = -1.5;
-        j.thigh_right.rotation.x = -1.5;
-        j.knee_left.rotation.x = 1.5;
-        j.knee_right.rotation.x = 1.5;
+        j.hips.position.set(0, 0.52, 0.10);
+        j.thigh_left.rotation.set(-1.50, 0.15, 0);
+        j.thigh_right.rotation.set(-1.50, -0.15, 0);
+        j.knee_left.rotation.set(1.50, 0, 0);
+        j.knee_right.rotation.set(1.50, 0, 0);
 
         const pull = easeWave;
-        j.spine.rotation.x = -pull * 0.22; // slight upper back arch
+        j.spine.rotation.set(-pull * 0.22, 0, 0); // Slight 12° lean, proud chest
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          // Overhead reach to collarbone pull
           j[`shoulder_${s}`].rotation.set(
-            -(2.6 - pull * 1.7),
-            sign * 0.2,
-            sign * (1.1 - pull * 0.4)
+            -pull * 0.35,
+            sign * pull * 0.20,
+            sign * (2.75 - pull * 1.80)
           );
-          j[`elbow_${s}`].rotation.set(pull * 1.95, 0, 0);
+          j[`elbow_${s}`].rotation.set(0.15 + pull * 1.90, 0, 0);
           j[`hand_${s}`].rotation.set(0.3, 0, 0);
         });
       }
 
       // ── 7. SEATED CABLE ROW ──
       else if (anim === 'seated_cable_row') {
-        j.hips.position.set(0, 0.32, 0.2);
-        j.thigh_left.rotation.x = -1.45;
-        j.thigh_right.rotation.x = -1.45;
-        j.knee_left.rotation.x = 0.3;
-        j.knee_right.rotation.x = 0.3;
+        j.hips.position.set(0, 0.32, 0.20);
+        j.thigh_left.rotation.set(-1.45, 0.12, 0);
+        j.thigh_right.rotation.set(-1.45, -0.12, 0);
+        j.knee_left.rotation.set(0.35, 0, 0);
+        j.knee_right.rotation.set(0.35, 0, 0);
 
         const row = easeWave;
-        j.spine.rotation.x = (0.5 - row) * 0.22;
+        j.spine.rotation.set((0.45 - row) * 0.25, 0, 0);
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(
-            (1 - row) * -1.2 + row * 0.35,
-            sign * 0.1,
-            sign * 0.25
+            -1.35 + row * 1.70,
+            0,
+            sign * (0.18 + row * 0.04)
           );
-          j[`elbow_${s}`].rotation.set(row * 1.85, 0, 0);
+          j[`elbow_${s}`].rotation.set(0.10 + row * 1.80, 0, 0);
         });
       }
 
       // ── 8. BICEP CURL / BARBELL CURL ──
       else if (anim === 'bicep_curl') {
-        const curl = easeWave * 2.15;
+        const curl = easeWave * 2.25;
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.set(0.08, 0, sign * 0.1); // upper arms pinned to sides
-          j[`elbow_${s}`].rotation.set(curl, 0, 0);             // forearm supinated curl
-          j[`hand_${s}`].rotation.set(0.2, 0, 0);
+          j[`shoulder_${s}`].rotation.set(0.05, 0, sign * 0.08); // Upper arms pinned to sides
+          j[`elbow_${s}`].rotation.set(curl, 0, 0);             // Full bicep flexion
+          j[`hand_${s}`].rotation.set(0.25, 0, 0);
         });
       }
 
       // ── 9. TRICEP PUSHDOWN ──
       else if (anim === 'tricep_pushdown') {
-        j.spine.rotation.x = 0.22; // athletic hip hinge
+        j.spine.rotation.set(0.25, 0, 0); // Athletic hip hinge
         const push = easeWave;
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.set(0.28, 0, sign * 0.15); // upper arms locked at torso
-          j[`elbow_${s}`].rotation.set((1 - push) * 1.75, 0, 0); // extends downwards
+          j[`shoulder_${s}`].rotation.set(0.35, 0, sign * 0.12); // Pinned at ribs
+          j[`elbow_${s}`].rotation.set((1 - push) * 1.75, 0, 0); // Downward extension
           j[`hand_${s}`].rotation.set(-0.2, 0, 0);
         });
       }
 
       // ── 10. SHOULDER PRESS / OVERHEAD PRESS ──
       else if (anim === 'shoulder_press') {
-        const press = easeWave; // 0 = at shoulders, 1 = locked overhead
+        const press = easeWave; // 0 = at collarbone, 1 = locked overhead
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(
-            -(0.4 + press * 2.2),
-            sign * 0.2,
-            sign * (0.8 - press * 0.45)
+            -0.35 * (1 - press),
+            sign * 0.20 * (1 - press),
+            sign * (0.95 + press * 2.00)
           );
-          j[`elbow_${s}`].rotation.set((1 - press) * 1.6, 0, 0);
+          j[`elbow_${s}`].rotation.set(1.85 - press * 1.75, 0, 0);
           j[`hand_${s}`].rotation.set(0.2, 0, 0);
         });
       }
@@ -1075,15 +1079,15 @@
       // ── 11. DEADLIFT / ROMANIAN DEADLIFT ──
       else if (anim === 'deadlift') {
         const hinge = easeWave;
-        j.hips.position.y = 0.95 - hinge * 0.25;
-        j.hips.position.z = -hinge * 0.35;
-        j.spine.rotation.x = hinge * 1.1; // deep neutral hip hinge
+        j.hips.position.set(0, 0.95 - hinge * 0.22, -hinge * 0.42);
+        j.spine.rotation.set(hinge * 1.15, 0, 0); // Deep flat back hip hinge
+        j.head.rotation.set(-hinge * 0.65, 0, 0);
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`thigh_${s}`].rotation.x = -hinge * 1.1;
-          j[`knee_${s}`].rotation.x = hinge * 0.6; // soft athletic knees
-          j[`shoulder_${s}`].rotation.set(-hinge * 0.65, 0, sign * 0.3); // arms hang straight down
+          j[`thigh_${s}`].rotation.set(-hinge * 1.10, sign * 0.10, 0);
+          j[`knee_${s}`].rotation.set(hinge * 0.60, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-hinge * 1.10, 0, sign * 0.12);
           j[`elbow_${s}`].rotation.set(0.05, 0, 0);
           j[`hand_${s}`].rotation.set(0.2, 0, 0);
         });
@@ -1091,12 +1095,12 @@
 
       // ── 12. LUNGE ──
       else if (anim === 'lunge') {
-        const drop = easeWave * 0.35;
-        j.hips.position.y = 0.95 - drop;
-        j.thigh_left.rotation.x = -easeWave * 1.45; // front knee 90°
-        j.knee_left.rotation.x = easeWave * 1.45;
-        j.thigh_right.rotation.x = easeWave * 0.6;  // rear knee dropping
-        j.knee_right.rotation.x = easeWave * 1.5;
+        const drop = easeWave * 0.38;
+        j.hips.position.set(0, 0.95 - drop, 0);
+        j.thigh_left.rotation.set(-easeWave * 1.45, 0.10, 0); // 90° front knee
+        j.knee_left.rotation.set(easeWave * 1.45, 0, 0);
+        j.thigh_right.rotation.set(easeWave * 0.65, -0.10, 0); // Rear knee dropping
+        j.knee_right.rotation.set(easeWave * 1.55, 0, 0);
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
@@ -1107,215 +1111,218 @@
       // ── 13. PULL-UP ──
       else if (anim === 'pull_up') {
         const pull = easeWave * 0.45;
-        j.hips.position.y = 1.15 + pull;
+        j.hips.position.set(0, 1.15 + pull, 0);
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(
-            -(2.7 - easeWave * 1.6),
-            sign * 0.2,
-            sign * (0.9 - easeWave * 0.3)
+            -easeWave * 0.35,
+            sign * 0.20,
+            sign * (2.75 - easeWave * 1.80)
           );
-          j[`elbow_${s}`].rotation.set(easeWave * 2.1, 0, 0);
-          j[`thigh_${s}`].rotation.x = -0.3; // crossed knees
-          j[`knee_${s}`].rotation.x = 0.7;
+          j[`elbow_${s}`].rotation.set(0.15 + easeWave * 1.95, 0, 0);
+          j[`thigh_${s}`].rotation.set(-0.35, 0, 0);
+          j[`knee_${s}`].rotation.set(0.70, 0, 0);
         });
       }
 
       // ── 14. PLANK ──
       else if (anim === 'plank') {
         j.hips.position.set(0, 0.35, 0);
-        j.hips.rotation.x = -Math.PI / 2 + 0.08;
+        j.hips.rotation.set(-Math.PI / 2 + 0.08, 0, 0);
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(-1.57, sign * 0.1, sign * 0.2);
-          j[`elbow_${s}`].rotation.set(1.57, 0, 0); // 90° forearm resting on floor
+          j[`elbow_${s}`].rotation.set(1.57, 0, 0);
         });
       }
 
       // ── YOGA ASANAS (20 POSTURES) ──
+      else if (anim === 'yoga_mountain') {
+        const breath = Math.sin(t * 2 * Math.PI) * 0.01;
+        j.hips.position.set(0, 0.95 + breath, 0);
+        j.shoulder_left.rotation.set(0, 0, 0.12);
+        j.shoulder_right.rotation.set(0, 0, -0.12);
+      }
+
       else if (anim === 'yoga_downward_dog') {
         const sway = Math.sin(t * 2 * Math.PI) * 0.02;
         j.hips.position.set(0, 0.88 + sway, 0.05);
-        j.hips.rotation.x = 1.65; // inverted V apex
-        j.spine.rotation.x = 0.15;
+        j.hips.rotation.set(1.70, 0, 0); // Inverted V apex
         ['left', 'right'].forEach(s => {
-          j[`shoulder_${s}`].rotation.set(-2.8, 0, s === 'left' ? 0.2 : -0.2);
-          j[`thigh_${s}`].rotation.set(-1.4, 0, 0);
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(-2.85, 0, sign * 0.15);
+          j[`thigh_${s}`].rotation.set(-1.45, 0, 0);
           j[`knee_${s}`].rotation.set(0.05, 0, 0);
         });
       }
 
-      else if (anim === 'yoga_warrior_ii') {
-        j.hips.position.set(0, 0.75, 0);
-        j.thigh_left.rotation.set(-1.35, 0.2, 0); // 90 deg front knee
-        j.knee_left.rotation.set(1.35, 0, 0);
-        j.thigh_right.rotation.set(0.2, -0.3, 0); // straight rear leg
+      else if (anim === 'yoga_warrior_i') {
+        j.hips.position.set(0, 0.72, 0);
+        j.thigh_left.rotation.set(-1.40, 0.10, 0);
+        j.knee_left.rotation.set(1.40, 0, 0);
+        j.thigh_right.rotation.set(0.35, -0.15, 0);
         j.knee_right.rotation.set(0.05, 0, 0);
-        j.shoulder_left.rotation.set(0, 0, 1.55);  // horizontal arms
-        j.shoulder_right.rotation.set(0, 0, -1.55);
-        j.head.rotation.y = 0.6; // gaze over front hand
+        j.shoulder_left.rotation.set(0, 0, 2.95);
+        j.shoulder_right.rotation.set(0, 0, -2.95);
+      }
+
+      else if (anim === 'yoga_warrior_ii') {
+        j.hips.position.set(0, 0.72, 0);
+        j.thigh_left.rotation.set(-1.40, 0.20, 0); // 90 deg front knee
+        j.knee_left.rotation.set(1.40, 0, 0);
+        j.thigh_right.rotation.set(0.20, -0.30, 0); // Straight rear leg
+        j.knee_right.rotation.set(0.05, 0, 0);
+        j.shoulder_left.rotation.set(0, 0, 1.57);  // Horizontal arms
+        j.shoulder_right.rotation.set(0, 0, -1.57);
+        j.head.rotation.set(0, 0.65, 0); // Gaze over front hand
       }
 
       else if (anim === 'yoga_childs_pose') {
-        j.hips.position.set(0, 0.25, 0.2);
-        j.thigh_left.rotation.set(-2.2, 0.3, 0);
-        j.thigh_right.rotation.set(-2.2, -0.3, 0);
-        j.knee_left.rotation.set(2.4, 0, 0);
-        j.knee_right.rotation.set(2.4, 0, 0);
-        j.spine.rotation.set(1.2, 0, 0); // folded over thighs
-        j.shoulder_left.rotation.set(-2.6, 0, 0.2);
-        j.shoulder_right.rotation.set(-2.6, 0, -0.2);
+        j.hips.position.set(0, 0.22, 0.25);
+        j.thigh_left.rotation.set(-2.25, 0.25, 0);
+        j.thigh_right.rotation.set(-2.25, -0.25, 0);
+        j.knee_left.rotation.set(2.45, 0, 0);
+        j.knee_right.rotation.set(2.45, 0, 0);
+        j.spine.rotation.set(1.25, 0, 0); // Folded over thighs
+        j.shoulder_left.rotation.set(-2.65, 0, 0.18);
+        j.shoulder_right.rotation.set(-2.65, 0, -0.18);
       }
 
       else if (anim === 'yoga_cobra') {
         const breath = Math.sin(t * 2 * Math.PI) * 0.08;
         j.hips.position.set(0, 0.15, 0);
-        j.hips.rotation.x = -Math.PI / 2;
-        j.spine.rotation.x = -0.7 - breath;
-        j.shoulder_left.rotation.set(0.4, 0, 0.3);
-        j.shoulder_right.rotation.set(0.4, 0, -0.3);
-        j.elbow_left.rotation.set(0.6, 0, 0);
-        j.elbow_right.rotation.set(0.6, 0, 0);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0);
+        j.spine.rotation.set(-0.75 - breath, 0, 0);
+        j.shoulder_left.rotation.set(-0.85, 0.20, 0.45);
+        j.shoulder_right.rotation.set(-0.85, -0.20, -0.45);
+        j.elbow_left.rotation.set(0.85, 0, 0);
+        j.elbow_right.rotation.set(0.85, 0, 0);
       }
 
       else if (anim === 'yoga_cat_cow') {
         j.hips.position.set(0, 0.45, 0);
-        j.thigh_left.rotation.set(-1.57, 0.1, 0);
-        j.thigh_right.rotation.set(-1.57, -0.1, 0);
+        j.thigh_left.rotation.set(-1.57, 0.10, 0);
+        j.thigh_right.rotation.set(-1.57, -0.10, 0);
         j.knee_left.rotation.set(1.57, 0, 0);
         j.knee_right.rotation.set(1.57, 0, 0);
-        j.shoulder_left.rotation.set(-1.57, 0, 0.2);
-        j.shoulder_right.rotation.set(-1.57, 0, -0.2);
+        j.shoulder_left.rotation.set(-1.57, 0, 0.18);
+        j.shoulder_right.rotation.set(-1.57, 0, -0.18);
         const curve = Math.sin(t * 2 * Math.PI);
-        j.spine.rotation.x = curve * 0.35;
-        j.head.rotation.x = -curve * 0.3;
-      }
-
-      else if (anim === 'yoga_mountain') {
-        const breath = Math.sin(t * 2 * Math.PI) * 0.01;
-        j.hips.position.set(0, 0.95 + breath, 0);
-        j.shoulder_left.rotation.set(0, 0, 0.15);
-        j.shoulder_right.rotation.set(0, 0, -0.15);
+        j.spine.rotation.set(curve * 0.35, 0, 0);
+        j.head.rotation.set(-curve * 0.35, 0, 0);
       }
 
       else if (anim === 'yoga_upward_dog') {
         j.hips.position.set(0, 0.35, 0);
-        j.hips.rotation.x = -Math.PI / 2 + 0.4;
-        j.spine.rotation.x = -0.65;
-        j.shoulder_left.rotation.set(0.2, 0, 0.25);
-        j.shoulder_right.rotation.set(0.2, 0, -0.25);
-        j.thigh_left.rotation.x = 0.2;
-        j.thigh_right.rotation.x = 0.2;
-      }
-
-      else if (anim === 'yoga_warrior_i') {
-        j.hips.position.set(0, 0.75, 0);
-        j.thigh_left.rotation.set(-1.35, 0.1, 0);
-        j.knee_left.rotation.set(1.35, 0, 0);
-        j.thigh_right.rotation.set(0.4, -0.2, 0);
-        j.shoulder_left.rotation.set(-2.9, 0, 0.15);
-        j.shoulder_right.rotation.set(-2.9, 0, -0.15);
+        j.hips.rotation.set(-Math.PI / 2 + 0.35, 0, 0);
+        j.spine.rotation.set(-0.70, 0, 0);
+        j.shoulder_left.rotation.set(-1.35, 0, 0.25);
+        j.shoulder_right.rotation.set(-1.35, 0, -0.25);
+        j.elbow_left.rotation.set(0.05, 0, 0);
+        j.elbow_right.rotation.set(0.05, 0, 0);
+        j.thigh_left.rotation.set(0.20, 0, 0);
+        j.thigh_right.rotation.set(0.20, 0, 0);
       }
 
       else if (anim === 'yoga_triangle') {
         j.hips.position.set(0, 0.85, 0);
-        j.thigh_left.rotation.z = 0.5;
-        j.thigh_right.rotation.z = -0.5;
-        j.spine.rotation.z = 0.85;
-        j.shoulder_left.rotation.z = 1.55;
-        j.shoulder_right.rotation.z = 1.55;
+        j.thigh_left.rotation.set(0, 0, 0.55);
+        j.thigh_right.rotation.set(0, 0, -0.55);
+        j.spine.rotation.set(0, 0, 0.85);
+        j.shoulder_left.rotation.set(0, 0, 1.57);
+        j.shoulder_right.rotation.set(0, 0, 1.57);
       }
 
       else if (anim === 'yoga_tree') {
         j.hips.position.set(0, 0.95, 0);
-        j.thigh_right.rotation.set(-0.9, -0.8, -0.7);
-        j.knee_right.rotation.set(2.2, 0, 0);
-        j.shoulder_left.rotation.set(-1.2, 0, 0.6);
-        j.shoulder_right.rotation.set(-1.2, 0, -0.6);
-        j.elbow_left.rotation.set(1.6, 0, 0);
-        j.elbow_right.rotation.set(1.6, 0, 0);
+        j.thigh_right.rotation.set(-0.85, -0.85, -0.65);
+        j.knee_right.rotation.set(2.25, 0, 0);
+        j.shoulder_left.rotation.set(-1.15, 0, 0.55);
+        j.shoulder_right.rotation.set(-1.15, 0, -0.55);
+        j.elbow_left.rotation.set(1.65, 0, 0);
+        j.elbow_right.rotation.set(1.65, 0, 0);
       }
 
       else if (anim === 'yoga_chair') {
-        j.hips.position.set(0, 0.65, -0.2);
-        j.thigh_left.rotation.set(-1.1, 0, 0);
-        j.thigh_right.rotation.set(-1.1, 0, 0);
-        j.knee_left.rotation.set(1.3, 0, 0);
-        j.knee_right.rotation.set(1.3, 0, 0);
-        j.spine.rotation.set(0.5, 0, 0);
-        j.shoulder_left.rotation.set(-2.6, 0, 0.2);
-        j.shoulder_right.rotation.set(-2.6, 0, -0.2);
+        j.hips.position.set(0, 0.65, -0.20);
+        j.thigh_left.rotation.set(-1.15, 0, 0);
+        j.thigh_right.rotation.set(-1.15, 0, 0);
+        j.knee_left.rotation.set(1.35, 0, 0);
+        j.knee_right.rotation.set(1.35, 0, 0);
+        j.spine.rotation.set(0.50, 0, 0);
+        j.shoulder_left.rotation.set(0, 0, 2.75);
+        j.shoulder_right.rotation.set(0, 0, -2.75);
       }
 
       else if (anim === 'yoga_bridge') {
         const bridgeLift = 0.25 + Math.sin(t * 2 * Math.PI) * 0.05;
-        j.hips.position.set(0, 0.35 + bridgeLift, 0);
-        j.hips.rotation.x = -Math.PI / 2 + 0.35;
-        j.thigh_left.rotation.x = -0.7;
-        j.thigh_right.rotation.x = -0.7;
-        j.knee_left.rotation.x = 1.8;
-        j.knee_right.rotation.x = 1.8;
+        j.hips.position.set(0, 0.48 + bridgeLift, 0);
+        j.hips.rotation.set(-Math.PI / 2 + 0.38, 0, 0);
+        j.thigh_left.rotation.set(-0.75, 0, 0);
+        j.thigh_right.rotation.set(-0.75, 0, 0);
+        j.knee_left.rotation.set(1.85, 0, 0);
+        j.knee_right.rotation.set(1.85, 0, 0);
       }
 
       else if (anim === 'yoga_boat') {
         j.hips.position.set(0, 0.35, 0);
-        j.spine.rotation.x = 0.7;
-        j.thigh_left.rotation.x = -1.1;
-        j.thigh_right.rotation.x = -1.1;
-        j.shoulder_left.rotation.set(-1.57, 0, 0.2);
-        j.shoulder_right.rotation.set(-1.57, 0, -0.2);
+        j.spine.rotation.set(0.70, 0, 0);
+        j.thigh_left.rotation.set(-1.15, 0, 0);
+        j.thigh_right.rotation.set(-1.15, 0, 0);
+        j.shoulder_left.rotation.set(-1.50, 0, 0.15);
+        j.shoulder_right.rotation.set(-1.50, 0, -0.15);
       }
 
       else if (anim === 'yoga_seated_forward_fold') {
         j.hips.position.set(0, 0.25, 0);
-        j.thigh_left.rotation.x = -1.57;
-        j.thigh_right.rotation.x = -1.57;
-        j.spine.rotation.x = 1.3;
-        j.shoulder_left.rotation.set(-1.7, 0, 0.2);
-        j.shoulder_right.rotation.set(-1.7, 0, -0.2);
+        j.thigh_left.rotation.set(-1.57, 0, 0);
+        j.thigh_right.rotation.set(-1.57, 0, 0);
+        j.spine.rotation.set(1.30, 0, 0);
+        j.shoulder_left.rotation.set(-1.65, 0, 0.15);
+        j.shoulder_right.rotation.set(-1.65, 0, -0.15);
       }
 
       else if (anim === 'yoga_butterfly') {
         j.hips.position.set(0, 0.25, 0);
-        j.thigh_left.rotation.z = 1.2;
-        j.thigh_right.rotation.z = -1.2;
-        j.knee_left.rotation.x = 2.1;
-        j.knee_right.rotation.x = 2.1;
-        j.spine.rotation.x = 0.3;
+        j.thigh_left.rotation.set(0, 0, 1.25);
+        j.thigh_right.rotation.set(0, 0, -1.25);
+        j.knee_left.rotation.set(2.15, 0, 0);
+        j.knee_right.rotation.set(2.15, 0, 0);
+        j.spine.rotation.set(0.30, 0, 0);
       }
 
       else if (anim === 'yoga_low_lunge') {
         j.hips.position.set(0, 0.55, 0);
-        j.thigh_left.rotation.x = -1.4;
-        j.knee_left.rotation.x = 1.4;
-        j.thigh_right.rotation.x = 0.6;
-        j.knee_right.rotation.x = 1.6;
-        j.shoulder_left.rotation.set(-2.7, 0, 0.2);
-        j.shoulder_right.rotation.set(-2.7, 0, -0.2);
+        j.thigh_left.rotation.set(-1.40, 0, 0);
+        j.knee_left.rotation.set(1.40, 0, 0);
+        j.thigh_right.rotation.set(0.60, 0, 0);
+        j.knee_right.rotation.set(1.60, 0, 0);
+        j.shoulder_left.rotation.set(0, 0, 2.85);
+        j.shoulder_right.rotation.set(0, 0, -2.85);
       }
 
       else if (anim === 'yoga_crescent_lunge') {
         j.hips.position.set(0, 0.70, 0);
-        j.thigh_left.rotation.x = -1.35;
-        j.knee_left.rotation.x = 1.35;
-        j.thigh_right.rotation.x = 0.3;
-        j.knee_right.rotation.x = 0.1;
-        j.shoulder_left.rotation.set(-2.9, 0, 0.2);
-        j.shoulder_right.rotation.set(-2.9, 0, -0.2);
+        j.thigh_left.rotation.set(-1.35, 0, 0);
+        j.knee_left.rotation.set(1.35, 0, 0);
+        j.thigh_right.rotation.set(0.30, 0, 0);
+        j.knee_right.rotation.set(0.10, 0, 0);
+        j.shoulder_left.rotation.set(0, 0, 2.95);
+        j.shoulder_right.rotation.set(0, 0, -2.95);
       }
 
       else if (anim === 'yoga_side_plank') {
         j.hips.position.set(0, 0.45, 0);
-        j.hips.rotation.z = 0.5;
-        j.shoulder_left.rotation.z = 1.4;
-        j.shoulder_right.rotation.z = -1.57;
+        j.hips.rotation.set(0, 0, 0.55);
+        j.shoulder_left.rotation.set(0, 0, 1.45);
+        j.shoulder_right.rotation.set(0, 0, -1.57);
       }
 
       else if (anim === 'yoga_corpse') {
         j.hips.position.set(0, 0.15, 0);
-        j.hips.rotation.x = -Math.PI / 2;
-        j.shoulder_left.rotation.z = 0.35;
-        j.shoulder_right.rotation.z = -0.35;
+        j.hips.rotation.set(-Math.PI / 2, 0, 0);
+        j.shoulder_left.rotation.set(0, 0, 0.35);
+        j.shoulder_right.rotation.set(0, 0, -0.35);
       }
 
       // ── DYNAMIC EQUIPMENT-TO-HAND LOCKING (100% Guaranteed Physical Grip) ──
