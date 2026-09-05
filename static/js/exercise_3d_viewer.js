@@ -1,7 +1,7 @@
 /**
  * FitSync AI — Premium 3D Exercise & Yoga Demonstration Engine
- * Powered by Three.js with Articulated Athletic Mannequin, Equipment Rigs,
- * Dynamic Muscle Activation Shaders, and Seamless Phase Telemetry.
+ * Powered by Three.js with Articulated Athletic Mannequin, Dynamic Grip Sockets,
+ * Anatomically Locked Equipment Tracking, Dynamic Muscle Shaders, and Phase Telemetry.
  */
 (function(window) {
   'use strict';
@@ -51,7 +51,6 @@
      * Build Three.js scene, lighting, studio environment and control overlay
      */
     init() {
-      // Ensure container is styled appropriately
       this.container.innerHTML = '';
       this.container.style.position = 'relative';
       this.container.style.overflow = 'hidden';
@@ -63,7 +62,7 @@
       // 1. Scene
       this.scene = new THREE.Scene();
       this.scene.background = new THREE.Color(0x020617); // Slate-950
-      this.scene.fog = new THREE.FogExp2(0x020617, 0.07);
+      this.scene.fog = new THREE.FogExp2(0x020617, 0.06);
 
       // 2. Camera
       this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -118,16 +117,13 @@
      * Professional Studio Lighting Setup
      */
     setupStudioLighting() {
-      // Soft Ambient
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
       this.scene.add(ambientLight);
 
-      // Hemisphere Fill (Teal to Dark Slate)
-      const hemiLight = new THREE.HemisphereLight(0x38bdf8, 0x0f172a, 0.5);
+      const hemiLight = new THREE.HemisphereLight(0x38bdf8, 0x0f172a, 0.55);
       this.scene.add(hemiLight);
 
-      // Key Directional Light with Shadows
-      const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
       keyLight.position.set(3.5, 7.0, 4.5);
       keyLight.castShadow = true;
       keyLight.shadow.mapSize.width = 1024;
@@ -142,12 +138,10 @@
       keyLight.shadow.camera.bottom = -d;
       this.scene.add(keyLight);
 
-      // Emerald Rim Accent Light
-      const rimLight = new THREE.DirectionalLight(0x10b981, 0.9);
+      const rimLight = new THREE.DirectionalLight(0x10b981, 0.95);
       rimLight.position.set(-4.0, 4.0, -3.5);
       this.scene.add(rimLight);
 
-      // Subtle Cyan Accent Light
       const fillLight = new THREE.PointLight(0x06b6d4, 0.8, 10);
       fillLight.position.set(0, 1.2, 3.0);
       this.scene.add(fillLight);
@@ -174,7 +168,7 @@
     }
 
     /**
-     * Procedural Rigged Humanoid Athletic Mannequin
+     * Procedural Rigged Humanoid Athletic Mannequin with Anatomical Hands and Grip Sockets
      */
     buildAthleticMannequin() {
       this.mannequinRoot = new THREE.Group();
@@ -192,11 +186,10 @@
         roughness: 0.3,
         metalness: 0.5
       });
-      const accentMat = new THREE.MeshStandardMaterial({
-        color: 0x10b981,
-        emissive: 0x10b981,
-        emissiveIntensity: 0.3,
-        roughness: 0.2
+      const gloveMat = new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        roughness: 0.4,
+        metalness: 0.4
       });
 
       // ── HIPS / PELVIS ──
@@ -270,7 +263,7 @@
       visor.position.set(0, 0.02, 0.09);
       head.add(visor);
 
-      // ── ARMS (LEFT & RIGHT) ──
+      // ── ARMS & ANATOMICAL GRIP HANDS ──
       const buildArm = (side) => {
         const sign = side === 'left' ? 1 : -1;
         const shoulderJoint = new THREE.Group();
@@ -320,15 +313,38 @@
         forearmMesh.castShadow = true;
         forearm.add(forearmMesh);
 
-        // Hand
+        // Hand Wrist & Palm
         const hand = new THREE.Group();
         hand.position.set(0, -0.24, 0);
         forearm.add(hand);
         this.joints[`hand_${side}`] = hand;
 
-        const handMesh = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.08, 0.05), jointMat);
-        handMesh.position.set(0, -0.04, 0);
-        hand.add(handMesh);
+        // Palm Mesh (Gloved Athletic Palm)
+        const palmGeo = new THREE.BoxGeometry(0.045, 0.065, 0.038);
+        const palmMesh = new THREE.Mesh(palmGeo, gloveMat);
+        palmMesh.position.set(0, -0.03, 0);
+        hand.add(palmMesh);
+
+        // Curved Gripping Fingers (wrapping securely around bar/handle)
+        const fingerCuffGeo = new THREE.CylinderGeometry(0.024, 0.024, 0.045, 12, 1, false, 0, Math.PI * 1.3);
+        const fingerCuffMesh = new THREE.Mesh(fingerCuffGeo, gloveMat);
+        fingerCuffMesh.rotation.z = Math.PI / 2;
+        fingerCuffMesh.position.set(0, -0.035, 0.015);
+        hand.add(fingerCuffMesh);
+
+        // Thumb wrapping counter-opposed
+        const thumbGeo = new THREE.CylinderGeometry(0.012, 0.012, 0.035, 8);
+        const thumbMesh = new THREE.Mesh(thumbGeo, gloveMat);
+        thumbMesh.position.set(sign * -0.025, -0.02, 0.012);
+        thumbMesh.rotation.z = sign * -0.6;
+        hand.add(thumbMesh);
+
+        // Grip reference socket (exact geometric center where bar/handle passes through palm)
+        const gripSocket = new THREE.Group();
+        gripSocket.name = `grip_${side}`;
+        gripSocket.position.set(0, -0.035, 0.015);
+        hand.add(gripSocket);
+        this.joints[`grip_${side}`] = gripSocket;
       };
 
       buildArm('left');
@@ -403,7 +419,7 @@
     }
 
     /**
-     * Equipment Rigs: Barbell, Benches, Dumbbells, Cable Pulley Stations, Yoga Mat
+     * Equipment Rigs: Olympic Barbell, Benches, Dumbbells, Cable Stations, Yoga Mat
      */
     buildEquipmentRig() {
       this.equipmentRoot = new THREE.Group();
@@ -411,19 +427,19 @@
       this.scene.add(this.equipmentRoot);
 
       const metalMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.85, roughness: 0.2 });
-      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.1 });
+      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.95, roughness: 0.1 });
       const plateMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.4, roughness: 0.5 });
       const benchMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 });
       const benchLeather = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.4 });
 
-      // ── 1. BARBELL ──
+      // ── 1. OLYMPIC BARBELL ──
       const barbell = new THREE.Group();
       const barGeo = new THREE.CylinderGeometry(0.015, 0.015, 2.1, 16);
       const bar = new THREE.Mesh(barGeo, chromeMat);
-      bar.rotation.z = Math.PI / 2;
+      bar.rotation.z = Math.PI / 2; // Lie along X axis by default
       barbell.add(bar);
 
-      // Weight Plates (Left & Right)
+      // Weight Plates (Left & Right Sleeves)
       [-0.85, 0.85].forEach(x => {
         const plateGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.04, 24);
         const plate = new THREE.Mesh(plateGeo, plateMat);
@@ -444,13 +460,12 @@
 
       // ── 2. FLAT BENCH ──
       const flatBench = new THREE.Group();
-      const padGeo = new THREE.BoxGeometry(0.32, 0.08, 1.2);
+      const padGeo = new THREE.BoxGeometry(0.32, 0.08, 1.25);
       const pad = new THREE.Mesh(padGeo, benchLeather);
       pad.position.set(0, 0.45, 0);
       pad.castShadow = true;
       flatBench.add(pad);
 
-      // Bench Frame Legs
       [-0.45, 0.45].forEach(z => {
         const legGeo = new THREE.BoxGeometry(0.28, 0.42, 0.06);
         const leg = new THREE.Mesh(legGeo, benchMat);
@@ -464,7 +479,7 @@
 
       // ── 3. INCLINE BENCH ──
       const inclineBench = new THREE.Group();
-      const incPad = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.08, 0.9), benchLeather);
+      const incPad = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.08, 0.92), benchLeather);
       incPad.position.set(0, 0.65, -0.15);
       incPad.rotation.x = 0.55; // ~32 degree incline
       incPad.castShadow = true;
@@ -509,7 +524,7 @@
       topArm.position.set(0, 2.45, -0.35);
       latTower.add(topArm);
 
-      const latBar = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.3, 16), chromeMat);
+      const latBar = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.35, 16), chromeMat);
       latBar.rotation.z = Math.PI / 2;
       latBar.position.set(0, 2.0, 0);
       latTower.add(latBar);
@@ -533,7 +548,7 @@
       footPlates.position.set(0, 0.35, -0.55);
       cableRow.add(footPlates);
 
-      const rowHandle = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.012, 8, 16), chromeMat);
+      const rowHandle = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.014, 8, 16), chromeMat);
       rowHandle.position.set(0, 0.8, -0.3);
       cableRow.add(rowHandle);
       this.equipmentParts['row_handle'] = rowHandle;
@@ -711,7 +726,7 @@
       }
 
       // Highlight target muscles
-      this.highlightMuscles(exercise.primary_muscles || config.primary_muscles, exercise.secondary_muscles || config.secondary_muscles);
+      this.highlightMuscles(exercise.primary_muscles || (config ? config.primary_muscles : []), exercise.secondary_muscles || (config ? config.secondary_muscles : []));
 
       // Camera Preset
       this.resetCameraView();
@@ -735,12 +750,12 @@
         let isPrimary = false;
         let isSecondary = false;
 
-        if (key.includes('chest') && primStr.includes('chest')) isPrimary = true;
+        if (key.includes('chest') && (primStr.includes('chest') || primStr.includes('pectoral'))) isPrimary = true;
         if (key.includes('lats') && (primStr.includes('lat') || primStr.includes('back'))) isPrimary = true;
         if (key.includes('bicep') && primStr.includes('bicep')) isPrimary = true;
         if (key.includes('tricep') && primStr.includes('tricep')) isPrimary = true;
         if (key.includes('deltoid') && (primStr.includes('deltoid') || primStr.includes('shoulder'))) isPrimary = true;
-        if (key.includes('quad') && (primStr.includes('quad') || primStr.includes('leg'))) isPrimary = true;
+        if (key.includes('quad') && (primStr.includes('quad') || primStr.includes('leg') || primStr.includes('thigh'))) isPrimary = true;
         if (key.includes('glute') && (primStr.includes('glute') || primStr.includes('hip'))) isPrimary = true;
 
         if (!isPrimary) {
@@ -753,7 +768,7 @@
         if (isPrimary) {
           mesh.material.color.setHex(0x10b981);
           mesh.material.emissive = new THREE.Color(0x10b981);
-          mesh.material.emissiveIntensity = 0.6;
+          mesh.material.emissiveIntensity = 0.65;
         } else if (isSecondary) {
           mesh.material.color.setHex(0x06b6d4);
           mesh.material.emissive = new THREE.Color(0x06b6d4);
@@ -802,7 +817,7 @@
     }
 
     /**
-     * Mathematical Articulation Engine for All Exercises & Yoga Poses
+     * Mathematical Articulation Engine for All Exercises & Yoga Poses with Dynamic Equipment Grasping
      */
     evaluateKinematics(t) {
       const anim = (this.activeConfig ? this.activeConfig.animation : 'squat');
@@ -831,109 +846,124 @@
       }
 
       // Smooth wave progression (0 -> 1 -> 0)
-      const wave = Math.sin(t * Math.PI);
       const easeWave = (1 - Math.cos(t * 2 * Math.PI)) / 2;
 
       // Reset base roots
       j.hips.position.set(0, 0.95, 0);
       j.hips.rotation.set(0, 0, 0);
       j.spine.rotation.set(0, 0, 0);
+      j.head.rotation.set(0, 0, 0);
       ['left', 'right'].forEach(s => {
         j[`shoulder_${s}`].rotation.set(0, 0, 0);
         j[`upper_arm_${s}`].rotation.set(0, 0, 0);
         j[`elbow_${s}`].rotation.set(0, 0, 0);
+        j[`forearm_${s}`].rotation.set(0, 0, 0);
+        j[`hand_${s}`].rotation.set(0, 0, 0);
         j[`hip_${s}`].rotation.set(0, 0, 0);
         j[`thigh_${s}`].rotation.set(0, 0, 0);
         j[`knee_${s}`].rotation.set(0, 0, 0);
+        j[`shin_${s}`].rotation.set(0, 0, 0);
+        j[`foot_${s}`].rotation.set(0, 0, 0);
       });
 
       // ── 1. SQUAT / BARBELL SQUAT ──
       if (anim === 'squat') {
         const depth = easeWave * 0.45;
         j.hips.position.y = 0.95 - depth;
-        j.hips.position.z = -depth * 0.4;
-        j.spine.rotation.x = depth * 0.7; // slight forward torso incline
+        j.hips.position.z = -depth * 0.35;
+        j.spine.rotation.x = depth * 0.65; // athletic torso hip-hinge incline
 
         ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
           j[`thigh_${s}`].rotation.x = -depth * 2.3; // hip flexion
-          j[`knee_${s}`].rotation.x = depth * 2.7;   // knee flexion
-          j[`shoulder_${s}`].rotation.x = -0.4;
-          j[`shoulder_${s}`].rotation.z = s === 'left' ? 0.9 : -0.9;
-          j[`elbow_${s}`].rotation.x = 2.0; // hands holding bar on traps
+          j[`knee_${s}`].rotation.x = depth * 2.7;   // knee flexion to parallel
+          // Hands firmly gripping bar on traps
+          j[`shoulder_${s}`].rotation.set(-0.35, sign * 0.2, sign * 0.95);
+          j[`elbow_${s}`].rotation.set(1.95, 0, sign * -0.2);
+          j[`hand_${s}`].rotation.set(0.3, 0, 0);
         });
-
-        if (eq.barbell) {
-          eq.barbell.position.set(0, j.hips.position.y + 0.50, j.hips.position.z - 0.05);
-          eq.barbell.rotation.set(0, 0, 0);
-        }
       }
 
       // ── 2. BENCH PRESS (FLAT) ──
       else if (anim === 'bench_press') {
-        j.hips.position.set(0, 0.52, 0);
-        j.hips.rotation.x = -Math.PI / 2; // lie flat on bench
+        j.hips.position.set(0, 0.48, -0.05);
+        j.hips.rotation.x = -Math.PI / 2; // Lie flat on bench
+        j.spine.rotation.x = 0.05; // natural slight arch
 
-        const pressTravel = (1 - easeWave) * 0.32;
+        // Feet planted firmly on floor
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.z = sign * (0.8 - pressTravel * 0.6);
-          j[`shoulder_${s}`].rotation.y = (1 - easeWave) * 0.5;
-          j[`elbow_${s}`].rotation.x = (1 - easeWave) * 1.5;
-        });
+          j[`thigh_${s}`].rotation.set(0.55, sign * 0.25, 0);
+          j[`knee_${s}`].rotation.set(1.45, 0, 0);
 
-        if (eq.barbell) {
-          eq.barbell.position.set(0, 0.72 + pressTravel, 0.05);
-          eq.barbell.rotation.set(0, 0, 0);
-        }
+          // Barbell press trajectory: 75° tucked elbows, vertical press
+          const press = easeWave; // 0 = lockout at top, 1 = touching chest
+          j[`shoulder_${s}`].rotation.set(
+            -(0.6 + press * 0.5),
+            sign * (0.2 + press * 0.3),
+            sign * (0.85 - press * 0.45)
+          );
+          j[`elbow_${s}`].rotation.set((1 - press) * 0.2 + press * 1.55, 0, 0);
+          j[`hand_${s}`].rotation.set(press * 0.3, 0, 0);
+        });
       }
 
       // ── 3. INCLINE BENCH PRESS ──
       else if (anim === 'incline_bench_press') {
-        j.hips.position.set(0, 0.52, 0.15);
+        j.hips.position.set(0, 0.50, 0.18);
         j.hips.rotation.x = -Math.PI / 2 + 0.55; // 32 deg incline
 
-        const pressTravel = (1 - easeWave) * 0.30;
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.z = sign * (0.7 - pressTravel * 0.5);
-          j[`elbow_${s}`].rotation.x = (1 - easeWave) * 1.4;
-        });
+          j[`thigh_${s}`].rotation.set(0.4, sign * 0.2, 0);
+          j[`knee_${s}`].rotation.set(1.2, 0, 0);
 
-        if (eq.barbell) {
-          eq.barbell.position.set(0, 0.85 + pressTravel * 0.8, -0.1 + pressTravel * 0.5);
-          eq.barbell.rotation.set(0.55, 0, 0);
-        }
+          const press = easeWave;
+          j[`shoulder_${s}`].rotation.set(
+            -(0.5 + press * 0.45),
+            sign * (0.2 + press * 0.25),
+            sign * (0.8 - press * 0.4)
+          );
+          j[`elbow_${s}`].rotation.set((1 - press) * 0.2 + press * 1.5, 0, 0);
+        });
       }
 
       // ── 4. DUMBBELL BENCH PRESS ──
       else if (anim === 'dumbbell_bench_press') {
-        j.hips.position.set(0, 0.52, 0);
+        j.hips.position.set(0, 0.48, -0.05);
         j.hips.rotation.x = -Math.PI / 2;
 
-        const press = (1 - easeWave);
+        const press = easeWave;
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.z = sign * (0.9 - press * 0.7);
-          j[`elbow_${s}`].rotation.x = press * 1.6;
+          j[`thigh_${s}`].rotation.set(0.55, sign * 0.25, 0);
+          j[`knee_${s}`].rotation.set(1.45, 0, 0);
 
-          const db = eq[`dumbbell_${s}`];
-          if (db) {
-            db.position.set(sign * (0.28 - press * 0.12), 0.72 + (1 - press) * 0.32, 0.05);
-            db.rotation.set(0, 0, sign * 0.2);
-          }
+          j[`shoulder_${s}`].rotation.set(
+            -(0.6 + press * 0.45),
+            sign * (0.2 + press * 0.3),
+            sign * (0.9 - press * 0.4)
+          );
+          j[`elbow_${s}`].rotation.set((1 - press) * 0.2 + press * 1.55, 0, 0);
+          j[`hand_${s}`].rotation.set(0, 0, sign * (0.2 - press * 0.1));
         });
       }
 
       // ── 5. PUSH-UP ──
       else if (anim === 'push_up') {
         const descent = easeWave * 0.26;
-        j.hips.position.set(0, 0.40 - descent, 0);
-        j.hips.rotation.x = -Math.PI / 2 + 0.12; // straight plank angle
+        j.hips.position.set(0, 0.42 - descent, 0);
+        j.hips.rotation.x = -Math.PI / 2 + 0.12; // straight plank line
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.z = sign * (0.6 + easeWave * 0.4);
-          j[`elbow_${s}`].rotation.x = easeWave * 1.6; // 45 deg elbow bend
+          j[`shoulder_${s}`].rotation.set(
+            -(0.7 + easeWave * 0.35),
+            sign * 0.2,
+            sign * (0.65 + easeWave * 0.35)
+          );
+          j[`elbow_${s}`].rotation.set(easeWave * 1.6, 0, 0);
+          j[`hand_${s}`].rotation.set(-1.4, 0, 0); // hands flat on floor
         });
       }
 
@@ -945,137 +975,197 @@
         j.knee_left.rotation.x = 1.5;
         j.knee_right.rotation.x = 1.5;
 
-        const pull = easeWave * 0.35;
-        j.spine.rotation.x = -pull * 0.25; // slight upper back arch
+        const pull = easeWave;
+        j.spine.rotation.x = -pull * 0.22; // slight upper back arch
 
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.z = sign * (2.6 - pull * 1.8);
-          j[`elbow_${s}`].rotation.x = pull * 2.1;
+          // Overhead reach to collarbone pull
+          j[`shoulder_${s}`].rotation.set(
+            -(2.6 - pull * 1.7),
+            sign * 0.2,
+            sign * (1.1 - pull * 0.4)
+          );
+          j[`elbow_${s}`].rotation.set(pull * 1.95, 0, 0);
+          j[`hand_${s}`].rotation.set(0.3, 0, 0);
         });
-
-        if (eq.lat_bar) {
-          eq.lat_bar.position.set(0, 2.1 - pull * 0.6, 0.05);
-        }
       }
 
       // ── 7. SEATED CABLE ROW ──
       else if (anim === 'seated_cable_row') {
         j.hips.position.set(0, 0.32, 0.2);
-        j.thigh_left.rotation.x = -1.5;
-        j.thigh_right.rotation.x = -1.5;
+        j.thigh_left.rotation.x = -1.45;
+        j.thigh_right.rotation.x = -1.45;
+        j.knee_left.rotation.x = 0.3;
+        j.knee_right.rotation.x = 0.3;
 
         const row = easeWave;
-        j.spine.rotation.x = (0.5 - row) * 0.25;
+        j.spine.rotation.x = (0.5 - row) * 0.22;
 
         ['left', 'right'].forEach(s => {
-          j[`shoulder_${s}`].rotation.x = (1 - row) * -0.9 + row * 0.3;
-          j[`elbow_${s}`].rotation.x = row * 1.8;
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(
+            (1 - row) * -1.2 + row * 0.35,
+            sign * 0.1,
+            sign * 0.25
+          );
+          j[`elbow_${s}`].rotation.set(row * 1.85, 0, 0);
         });
-
-        if (eq.row_handle) {
-          eq.row_handle.position.set(0, 0.72, -0.2 + row * 0.35);
-        }
       }
 
-      // ── 8. BICEP CURL ──
+      // ── 8. BICEP CURL / BARBELL CURL ──
       else if (anim === 'bicep_curl') {
-        const curl = easeWave * 2.2;
+        const curl = easeWave * 2.15;
         ['left', 'right'].forEach(s => {
-          j[`shoulder_${s}`].rotation.x = 0.05; // locked at ribcage
-          j[`elbow_${s}`].rotation.x = curl;     // forearm flexion
-
-          const db = eq[`dumbbell_${s}`];
-          if (db) {
-            const sign = s === 'left' ? 1 : -1;
-            db.position.set(sign * 0.22, 0.72 + (easeWave * 0.30), 0.15 + (easeWave * 0.15));
-            db.rotation.set(curl * 0.8, 0, 0);
-          }
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0.08, 0, sign * 0.1); // upper arms pinned to sides
+          j[`elbow_${s}`].rotation.set(curl, 0, 0);             // forearm supinated curl
+          j[`hand_${s}`].rotation.set(0.2, 0, 0);
         });
       }
 
       // ── 9. TRICEP PUSHDOWN ──
       else if (anim === 'tricep_pushdown') {
-        j.spine.rotation.x = 0.20; // athletic hip hinge
+        j.spine.rotation.x = 0.22; // athletic hip hinge
         const push = easeWave;
 
         ['left', 'right'].forEach(s => {
-          j[`shoulder_${s}`].rotation.x = 0.25;
-          j[`elbow_${s}`].rotation.x = (1 - push) * 1.8; // extends downward
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0.28, 0, sign * 0.15); // upper arms locked at torso
+          j[`elbow_${s}`].rotation.set((1 - push) * 1.75, 0, 0); // extends downwards
+          j[`hand_${s}`].rotation.set(-0.2, 0, 0);
         });
       }
 
-      // ── 10. SHOULDER PRESS ──
+      // ── 10. SHOULDER PRESS / OVERHEAD PRESS ──
       else if (anim === 'shoulder_press') {
-        const press = easeWave;
+        const press = easeWave; // 0 = at shoulders, 1 = locked overhead
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.z = sign * (1.2 + press * 1.4);
-          j[`elbow_${s}`].rotation.x = (1 - press) * 1.6;
-
-          const db = eq[`dumbbell_${s}`];
-          if (db) {
-            db.position.set(sign * (0.28 + (1 - press) * 0.08), 1.25 + press * 0.45, 0.0);
-            db.rotation.set(0, 0, 0);
-          }
+          j[`shoulder_${s}`].rotation.set(
+            -(0.4 + press * 2.2),
+            sign * 0.2,
+            sign * (0.8 - press * 0.45)
+          );
+          j[`elbow_${s}`].rotation.set((1 - press) * 1.6, 0, 0);
+          j[`hand_${s}`].rotation.set(0.2, 0, 0);
         });
       }
 
-      // ── YOGA ASANAS ──
+      // ── 11. DEADLIFT / ROMANIAN DEADLIFT ──
+      else if (anim === 'deadlift') {
+        const hinge = easeWave;
+        j.hips.position.y = 0.95 - hinge * 0.25;
+        j.hips.position.z = -hinge * 0.35;
+        j.spine.rotation.x = hinge * 1.1; // deep neutral hip hinge
+
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.x = -hinge * 1.1;
+          j[`knee_${s}`].rotation.x = hinge * 0.6; // soft athletic knees
+          j[`shoulder_${s}`].rotation.set(-hinge * 0.65, 0, sign * 0.3); // arms hang straight down
+          j[`elbow_${s}`].rotation.set(0.05, 0, 0);
+          j[`hand_${s}`].rotation.set(0.2, 0, 0);
+        });
+      }
+
+      // ── 12. LUNGE ──
+      else if (anim === 'lunge') {
+        const drop = easeWave * 0.35;
+        j.hips.position.y = 0.95 - drop;
+        j.thigh_left.rotation.x = -easeWave * 1.45; // front knee 90°
+        j.knee_left.rotation.x = easeWave * 1.45;
+        j.thigh_right.rotation.x = easeWave * 0.6;  // rear knee dropping
+        j.knee_right.rotation.x = easeWave * 1.5;
+
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0, 0, sign * 0.25);
+        });
+      }
+
+      // ── 13. PULL-UP ──
+      else if (anim === 'pull_up') {
+        const pull = easeWave * 0.45;
+        j.hips.position.y = 1.15 + pull;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(
+            -(2.7 - easeWave * 1.6),
+            sign * 0.2,
+            sign * (0.9 - easeWave * 0.3)
+          );
+          j[`elbow_${s}`].rotation.set(easeWave * 2.1, 0, 0);
+          j[`thigh_${s}`].rotation.x = -0.3; // crossed knees
+          j[`knee_${s}`].rotation.x = 0.7;
+        });
+      }
+
+      // ── 14. PLANK ──
+      else if (anim === 'plank') {
+        j.hips.position.set(0, 0.35, 0);
+        j.hips.rotation.x = -Math.PI / 2 + 0.08;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(-1.57, sign * 0.1, sign * 0.2);
+          j[`elbow_${s}`].rotation.set(1.57, 0, 0); // 90° forearm resting on floor
+        });
+      }
+
+      // ── YOGA ASANAS (20 POSTURES) ──
       else if (anim === 'yoga_downward_dog') {
-        const sway = Math.sin(t * 2 * Math.PI) * 0.03;
-        j.hips.position.set(0, 0.85 + sway, 0.1);
+        const sway = Math.sin(t * 2 * Math.PI) * 0.02;
+        j.hips.position.set(0, 0.88 + sway, 0.05);
         j.hips.rotation.x = 1.65; // inverted V apex
         j.spine.rotation.x = 0.15;
         ['left', 'right'].forEach(s => {
-          j[`shoulder_${s}`].rotation.x = -2.8;
-          j[`thigh_${s}`].rotation.x = -1.4;
-          j[`knee_${s}`].rotation.x = 0.1;
+          j[`shoulder_${s}`].rotation.set(-2.8, 0, s === 'left' ? 0.2 : -0.2);
+          j[`thigh_${s}`].rotation.set(-1.4, 0, 0);
+          j[`knee_${s}`].rotation.set(0.05, 0, 0);
         });
       }
 
       else if (anim === 'yoga_warrior_ii') {
         j.hips.position.set(0, 0.75, 0);
-        j.thigh_left.rotation.x = -1.35; // 90 deg front knee
-        j.knee_left.rotation.x = 1.35;
-        j.thigh_right.rotation.x = 0.2;  // straight rear leg
-        j.knee_right.rotation.x = 0.05;
-
-        j.shoulder_left.rotation.z = 1.55;  // horizontal arms
-        j.shoulder_right.rotation.z = -1.55;
+        j.thigh_left.rotation.set(-1.35, 0.2, 0); // 90 deg front knee
+        j.knee_left.rotation.set(1.35, 0, 0);
+        j.thigh_right.rotation.set(0.2, -0.3, 0); // straight rear leg
+        j.knee_right.rotation.set(0.05, 0, 0);
+        j.shoulder_left.rotation.set(0, 0, 1.55);  // horizontal arms
+        j.shoulder_right.rotation.set(0, 0, -1.55);
         j.head.rotation.y = 0.6; // gaze over front hand
       }
 
       else if (anim === 'yoga_childs_pose') {
         j.hips.position.set(0, 0.25, 0.2);
-        j.thigh_left.rotation.x = -2.2;
-        j.thigh_right.rotation.x = -2.2;
-        j.knee_left.rotation.x = 2.4;
-        j.knee_right.rotation.x = 2.4;
-        j.spine.rotation.x = 1.2; // folded over thighs
-        j.shoulder_left.rotation.x = -2.6;
-        j.shoulder_right.rotation.x = -2.6;
+        j.thigh_left.rotation.set(-2.2, 0.3, 0);
+        j.thigh_right.rotation.set(-2.2, -0.3, 0);
+        j.knee_left.rotation.set(2.4, 0, 0);
+        j.knee_right.rotation.set(2.4, 0, 0);
+        j.spine.rotation.set(1.2, 0, 0); // folded over thighs
+        j.shoulder_left.rotation.set(-2.6, 0, 0.2);
+        j.shoulder_right.rotation.set(-2.6, 0, -0.2);
       }
 
       else if (anim === 'yoga_cobra') {
-        const breath = Math.sin(t * 2 * Math.PI) * 0.1;
+        const breath = Math.sin(t * 2 * Math.PI) * 0.08;
         j.hips.position.set(0, 0.15, 0);
         j.hips.rotation.x = -Math.PI / 2;
-        j.spine.rotation.x = -0.7 - breath; // spinal extension
-        j.shoulder_left.rotation.x = 0.4;
-        j.shoulder_right.rotation.x = 0.4;
+        j.spine.rotation.x = -0.7 - breath;
+        j.shoulder_left.rotation.set(0.4, 0, 0.3);
+        j.shoulder_right.rotation.set(0.4, 0, -0.3);
+        j.elbow_left.rotation.set(0.6, 0, 0);
+        j.elbow_right.rotation.set(0.6, 0, 0);
       }
 
       else if (anim === 'yoga_cat_cow') {
         j.hips.position.set(0, 0.45, 0);
-        j.thigh_left.rotation.x = -1.57;
-        j.thigh_right.rotation.x = -1.57;
-        j.knee_left.rotation.x = 1.57;
-        j.knee_right.rotation.x = 1.57;
-        j.shoulder_left.rotation.x = -1.57;
-        j.shoulder_right.rotation.x = -1.57;
-
-        // Wave between Arch (Cow) and Round (Cat)
+        j.thigh_left.rotation.set(-1.57, 0.1, 0);
+        j.thigh_right.rotation.set(-1.57, -0.1, 0);
+        j.knee_left.rotation.set(1.57, 0, 0);
+        j.knee_right.rotation.set(1.57, 0, 0);
+        j.shoulder_left.rotation.set(-1.57, 0, 0.2);
+        j.shoulder_right.rotation.set(-1.57, 0, -0.2);
         const curve = Math.sin(t * 2 * Math.PI);
         j.spine.rotation.x = curve * 0.35;
         j.head.rotation.x = -curve * 0.3;
@@ -1084,47 +1174,57 @@
       else if (anim === 'yoga_mountain') {
         const breath = Math.sin(t * 2 * Math.PI) * 0.01;
         j.hips.position.set(0, 0.95 + breath, 0);
-        j.shoulder_left.rotation.z = 0.15;
-        j.shoulder_right.rotation.z = -0.15;
+        j.shoulder_left.rotation.set(0, 0, 0.15);
+        j.shoulder_right.rotation.set(0, 0, -0.15);
       }
 
       else if (anim === 'yoga_upward_dog') {
         j.hips.position.set(0, 0.35, 0);
         j.hips.rotation.x = -Math.PI / 2 + 0.4;
         j.spine.rotation.x = -0.65;
-        j.shoulder_left.rotation.x = 0.2;
-        j.shoulder_right.rotation.x = 0.2;
+        j.shoulder_left.rotation.set(0.2, 0, 0.25);
+        j.shoulder_right.rotation.set(0.2, 0, -0.25);
         j.thigh_left.rotation.x = 0.2;
         j.thigh_right.rotation.x = 0.2;
       }
 
       else if (anim === 'yoga_warrior_i') {
         j.hips.position.set(0, 0.75, 0);
-        j.thigh_left.rotation.x = -1.35; // 90 deg front knee
-        j.knee_left.rotation.x = 1.35;
-        j.thigh_right.rotation.x = 0.4;  // rear leg extended back
-        j.shoulder_left.rotation.x = -2.9; // arms sweeping high overhead
-        j.shoulder_right.rotation.x = -2.9;
+        j.thigh_left.rotation.set(-1.35, 0.1, 0);
+        j.knee_left.rotation.set(1.35, 0, 0);
+        j.thigh_right.rotation.set(0.4, -0.2, 0);
+        j.shoulder_left.rotation.set(-2.9, 0, 0.15);
+        j.shoulder_right.rotation.set(-2.9, 0, -0.15);
       }
 
       else if (anim === 'yoga_triangle') {
         j.hips.position.set(0, 0.85, 0);
         j.thigh_left.rotation.z = 0.5;
         j.thigh_right.rotation.z = -0.5;
-        j.spine.rotation.z = 0.85; // lateral torso fold
-        j.shoulder_left.rotation.z = 1.55;  // bottom arm down to shin
-        j.shoulder_right.rotation.z = 1.55; // top arm reaching to sky
+        j.spine.rotation.z = 0.85;
+        j.shoulder_left.rotation.z = 1.55;
+        j.shoulder_right.rotation.z = 1.55;
+      }
+
+      else if (anim === 'yoga_tree') {
+        j.hips.position.set(0, 0.95, 0);
+        j.thigh_right.rotation.set(-0.9, -0.8, -0.7);
+        j.knee_right.rotation.set(2.2, 0, 0);
+        j.shoulder_left.rotation.set(-1.2, 0, 0.6);
+        j.shoulder_right.rotation.set(-1.2, 0, -0.6);
+        j.elbow_left.rotation.set(1.6, 0, 0);
+        j.elbow_right.rotation.set(1.6, 0, 0);
       }
 
       else if (anim === 'yoga_chair') {
         j.hips.position.set(0, 0.65, -0.2);
-        j.thigh_left.rotation.x = -1.1;
-        j.thigh_right.rotation.x = -1.1;
-        j.knee_left.rotation.x = 1.3;
-        j.knee_right.rotation.x = 1.3;
-        j.spine.rotation.x = 0.5;
-        j.shoulder_left.rotation.x = -2.6;
-        j.shoulder_right.rotation.x = -2.6;
+        j.thigh_left.rotation.set(-1.1, 0, 0);
+        j.thigh_right.rotation.set(-1.1, 0, 0);
+        j.knee_left.rotation.set(1.3, 0, 0);
+        j.knee_right.rotation.set(1.3, 0, 0);
+        j.spine.rotation.set(0.5, 0, 0);
+        j.shoulder_left.rotation.set(-2.6, 0, 0.2);
+        j.shoulder_right.rotation.set(-2.6, 0, -0.2);
       }
 
       else if (anim === 'yoga_bridge') {
@@ -1139,20 +1239,20 @@
 
       else if (anim === 'yoga_boat') {
         j.hips.position.set(0, 0.35, 0);
-        j.spine.rotation.x = 0.7; // torso leaned back
-        j.thigh_left.rotation.x = -1.1; // legs lifted at 45 deg
+        j.spine.rotation.x = 0.7;
+        j.thigh_left.rotation.x = -1.1;
         j.thigh_right.rotation.x = -1.1;
-        j.shoulder_left.rotation.x = -1.57; // arms reaching forward parallel
-        j.shoulder_right.rotation.x = -1.57;
+        j.shoulder_left.rotation.set(-1.57, 0, 0.2);
+        j.shoulder_right.rotation.set(-1.57, 0, -0.2);
       }
 
       else if (anim === 'yoga_seated_forward_fold') {
         j.hips.position.set(0, 0.25, 0);
         j.thigh_left.rotation.x = -1.57;
         j.thigh_right.rotation.x = -1.57;
-        j.spine.rotation.x = 1.3; // folding deep over legs
-        j.shoulder_left.rotation.x = -1.7;
-        j.shoulder_right.rotation.x = -1.7;
+        j.spine.rotation.x = 1.3;
+        j.shoulder_left.rotation.set(-1.7, 0, 0.2);
+        j.shoulder_right.rotation.set(-1.7, 0, -0.2);
       }
 
       else if (anim === 'yoga_butterfly') {
@@ -1169,26 +1269,26 @@
         j.thigh_left.rotation.x = -1.4;
         j.knee_left.rotation.x = 1.4;
         j.thigh_right.rotation.x = 0.6;
-        j.knee_right.rotation.x = 1.6; // rear knee grounded
-        j.shoulder_left.rotation.x = -2.7;
-        j.shoulder_right.rotation.x = -2.7;
+        j.knee_right.rotation.x = 1.6;
+        j.shoulder_left.rotation.set(-2.7, 0, 0.2);
+        j.shoulder_right.rotation.set(-2.7, 0, -0.2);
       }
 
       else if (anim === 'yoga_crescent_lunge') {
         j.hips.position.set(0, 0.70, 0);
         j.thigh_left.rotation.x = -1.35;
         j.knee_left.rotation.x = 1.35;
-        j.thigh_right.rotation.x = 0.3; // high back leg
+        j.thigh_right.rotation.x = 0.3;
         j.knee_right.rotation.x = 0.1;
-        j.shoulder_left.rotation.x = -2.9;
-        j.shoulder_right.rotation.x = -2.9;
+        j.shoulder_left.rotation.set(-2.9, 0, 0.2);
+        j.shoulder_right.rotation.set(-2.9, 0, -0.2);
       }
 
       else if (anim === 'yoga_side_plank') {
         j.hips.position.set(0, 0.45, 0);
-        j.hips.rotation.z = 0.5; // diagonal side plank line
-        j.shoulder_left.rotation.z = 1.4; // supporting bottom arm
-        j.shoulder_right.rotation.z = -1.57; // reaching top arm to sky
+        j.hips.rotation.z = 0.5;
+        j.shoulder_left.rotation.z = 1.4;
+        j.shoulder_right.rotation.z = -1.57;
       }
 
       else if (anim === 'yoga_corpse') {
@@ -1196,6 +1296,53 @@
         j.hips.rotation.x = -Math.PI / 2;
         j.shoulder_left.rotation.z = 0.35;
         j.shoulder_right.rotation.z = -0.35;
+      }
+
+      // ── DYNAMIC EQUIPMENT-TO-HAND LOCKING (100% Guaranteed Physical Grip) ──
+      this.mannequinRoot.updateMatrixWorld(true);
+
+      const gripL = new THREE.Vector3();
+      const gripR = new THREE.Vector3();
+      if (j.grip_left) j.grip_left.getWorldPosition(gripL);
+      if (j.grip_right) j.grip_right.getWorldPosition(gripR);
+
+      // 1. Olympic Barbell: Snapped directly between left & right hand grips!
+      if (eq.barbell && eq.barbell.visible) {
+        const midPoint = new THREE.Vector3().addVectors(gripL, gripR).multiplyScalar(0.5);
+        eq.barbell.position.copy(midPoint);
+
+        const barDir = new THREE.Vector3().subVectors(gripR, gripL).normalize();
+        if (barDir.lengthSq() > 0.001) {
+          const defaultDir = new THREE.Vector3(1, 0, 0);
+          const quat = new THREE.Quaternion().setFromUnitVectors(defaultDir, barDir);
+          eq.barbell.quaternion.copy(quat);
+        }
+      }
+
+      // 2. Hex Dumbbells: Locked directly into the left and right hand palms!
+      if (eq.dumbbell_left && eq.dumbbell_left.visible && j.grip_left) {
+        eq.dumbbell_left.position.copy(gripL);
+        const handLRot = new THREE.Quaternion();
+        j.hand_left.getWorldQuaternion(handLRot);
+        eq.dumbbell_left.quaternion.copy(handLRot);
+      }
+      if (eq.dumbbell_right && eq.dumbbell_right.visible && j.grip_right) {
+        eq.dumbbell_right.position.copy(gripR);
+        const handRRot = new THREE.Quaternion();
+        j.hand_right.getWorldQuaternion(handRRot);
+        eq.dumbbell_right.quaternion.copy(handRRot);
+      }
+
+      // 3. Lat Pulldown Wide Bar: Snapped to hand grips
+      if (eq.lat_bar && eq.lat_tower && eq.lat_tower.visible) {
+        const midPoint = new THREE.Vector3().addVectors(gripL, gripR).multiplyScalar(0.5);
+        eq.lat_bar.position.copy(midPoint);
+      }
+
+      // 4. Seated Cable Row Handle: Snapped to hand grips
+      if (eq.row_handle && eq.cable_row && eq.cable_row.visible) {
+        const midPoint = new THREE.Vector3().addVectors(gripL, gripR).multiplyScalar(0.5);
+        eq.row_handle.position.copy(midPoint);
       }
     }
 
@@ -1207,11 +1354,9 @@
 
       if (this.isPlaying) {
         const delta = this.clock ? this.clock.getDelta() : 0.016;
-        // Baseline 3.2 seconds per repetition cycle
         const cycleDuration = 3.2 / (this.playbackSpeed || 1.0);
         this.animationProgress = (this.animationProgress + (delta / cycleDuration)) % 1.0;
 
-        // Update Scrubber Position
         const scrubber = this.container.querySelector('#slider-3d-progress');
         if (scrubber) {
           scrubber.value = Math.round(this.animationProgress * 100);
@@ -1254,7 +1399,6 @@
         this.controls.dispose();
       }
 
-      // Dispose Geometries and Materials
       if (this.scene) {
         this.scene.traverse((obj) => {
           if (obj.geometry) obj.geometry.dispose();
