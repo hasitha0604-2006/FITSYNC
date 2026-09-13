@@ -827,6 +827,15 @@
     } else if (window.initExerciseMotionPlayer) {
       window.initExerciseMotionPlayer('demo-motion-viewport', ex);
     }
+
+    // Multi-stage resize trigger to guarantee WebGL canvas has full computed dimensions
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+      if (window.__active3DViewer) window.__active3DViewer.handleResize();
+    }, 50);
+    setTimeout(() => {
+      if (window.__active3DViewer) window.__active3DViewer.handleResize();
+    }, 200);
   }
 
   function closeDemoModal() {

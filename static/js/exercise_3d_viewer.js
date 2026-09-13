@@ -586,6 +586,68 @@
       yogaMat.visible = false;
       this.equipmentRoot.add(yogaMat);
       this.equipmentParts['yoga_mat'] = yogaMat;
+
+      // ── 8. PULL-UP TOWER / RIG ──
+      const pullupTower = new THREE.Group();
+      [-0.55, 0.55].forEach(x => {
+        const post = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.45, 0.08), benchMat);
+        post.position.set(x, 1.22, -0.1);
+        pullupTower.add(post);
+      });
+      const topPullBar = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 1.3, 16), chromeMat);
+      topPullBar.rotation.z = Math.PI / 2;
+      topPullBar.position.set(0, 2.35, -0.1);
+      pullupTower.add(topPullBar);
+      pullupTower.visible = false;
+      this.equipmentRoot.add(pullupTower);
+      this.equipmentParts['pullup_tower'] = pullupTower;
+
+      // ── 9. DIP PARALLEL BARS ──
+      const dipBars = new THREE.Group();
+      [-0.32, 0.32].forEach(x => {
+        const dipPost = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.2, 0.06), benchMat);
+        dipPost.position.set(x, 0.6, 0);
+        dipBars.add(dipPost);
+
+        const dipHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.65, 16), chromeMat);
+        dipHandle.rotation.x = Math.PI / 2;
+        dipHandle.position.set(x, 1.18, 0);
+        dipBars.add(dipHandle);
+      });
+      dipBars.visible = false;
+      this.equipmentRoot.add(dipBars);
+      this.equipmentParts['dip_bars'] = dipBars;
+
+      // ── 10. KETTLEBELL ──
+      const kettlebell = new THREE.Group();
+      const kbBall = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), plateMat);
+      kbBall.position.set(0, 0.12, 0);
+      kettlebell.add(kbBall);
+      const kbHandle = new THREE.Mesh(new THREE.TorusGeometry(0.065, 0.016, 8, 16, Math.PI), chromeMat);
+      kbHandle.rotation.z = Math.PI;
+      kbHandle.position.set(0, 0.22, 0);
+      kettlebell.add(kbHandle);
+      kettlebell.visible = false;
+      this.equipmentRoot.add(kettlebell);
+      this.equipmentParts['kettlebell'] = kettlebell;
+
+      // ── 11. AB ROLLER / WHEEL ──
+      const abRoller = new THREE.Group();
+      const wheelL = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 0.03, 20), plateMat);
+      wheelL.rotation.z = Math.PI / 2;
+      wheelL.position.set(-0.02, 0.10, 0);
+      abRoller.add(wheelL);
+      const wheelR = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 0.03, 20), plateMat);
+      wheelR.rotation.z = Math.PI / 2;
+      wheelR.position.set(0.02, 0.10, 0);
+      abRoller.add(wheelR);
+      const abBar = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.32, 16), chromeMat);
+      abBar.rotation.z = Math.PI / 2;
+      abBar.position.set(0, 0.10, 0);
+      abRoller.add(abBar);
+      abRoller.visible = false;
+      this.equipmentRoot.add(abRoller);
+      this.equipmentParts['ab_roller'] = abRoller;
     }
 
     /**
@@ -768,20 +830,28 @@
         if (this.equipmentParts['dumbbell_left']) this.equipmentParts['dumbbell_left'].visible = true;
         if (this.equipmentParts['dumbbell_right']) this.equipmentParts['dumbbell_right'].visible = true;
         if (this.equipmentParts['flat_bench']) this.equipmentParts['flat_bench'].visible = true;
+      } else if (eq.includes('pullup') || eq.includes('pull_up')) {
+        if (this.equipmentParts['pullup_tower']) this.equipmentParts['pullup_tower'].visible = true;
+      } else if (eq.includes('dip_bar') || eq.includes('dip')) {
+        if (this.equipmentParts['dip_bars']) this.equipmentParts['dip_bars'].visible = true;
+      } else if (eq.includes('kettlebell')) {
+        if (this.equipmentParts['kettlebell']) this.equipmentParts['kettlebell'].visible = true;
+      } else if (eq.includes('ab_roller') || eq.includes('ab_wheel')) {
+        if (this.equipmentParts['ab_roller']) this.equipmentParts['ab_roller'].visible = true;
       } else if (eq.includes('dumbbells')) {
         if (this.equipmentParts['dumbbell_left']) this.equipmentParts['dumbbell_left'].visible = true;
         if (this.equipmentParts['dumbbell_right']) this.equipmentParts['dumbbell_right'].visible = true;
       } else if (eq.includes('barbell')) {
         if (this.equipmentParts['barbell']) this.equipmentParts['barbell'].visible = true;
-      } else if (eq.includes('lat_pulldown')) {
+      } else if (eq.includes('flat_bench') || eq.includes('bench')) {
+        if (this.equipmentParts['flat_bench']) this.equipmentParts['flat_bench'].visible = true;
+      } else if (eq.includes('lat_pulldown') || eq.includes('lat_tower')) {
         if (this.equipmentParts['lat_tower']) this.equipmentParts['lat_tower'].visible = true;
       } else if (eq.includes('cable_row')) {
         if (this.equipmentParts['cable_row']) this.equipmentParts['cable_row'].visible = true;
       } else if (eq.includes('cable_station')) {
-        if (this.equipmentParts['barbell']) {
-          this.equipmentParts['barbell'].visible = true;
-          this.equipmentParts['barbell'].scale.set(0.4, 0.4, 0.4);
-        }
+        if (this.equipmentParts['dumbbell_left']) this.equipmentParts['dumbbell_left'].visible = true;
+        if (this.equipmentParts['dumbbell_right']) this.equipmentParts['dumbbell_right'].visible = true;
       } else if (eq.includes('yoga_mat') || (exercise.category || '').toLowerCase() === 'yoga') {
         if (this.equipmentParts['yoga_mat']) this.equipmentParts['yoga_mat'].visible = true;
       }
@@ -1058,7 +1128,29 @@
         });
       }
 
-      // ── 5. PUSH-UP ──
+      // ── 5. CHEST FLY / PEC DECK / CABLE CROSSOVER ──
+      else if (anim === 'chest_fly') {
+        j.hips.position.set(0, 0.48, -0.08);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0);
+
+        const fly = easeWave; // 0 = peak squeeze at top, 1 = deep stretch
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(0.70, sign * 0.35, 0);
+          j[`knee_${s}`].rotation.set(1.50, 0, 0);
+
+          // Horizontal abduction/adduction arc with soft 15° elbow bend
+          j[`shoulder_${s}`].rotation.set(
+            -1.57,
+            sign * (0.10 + fly * 0.15),
+            sign * (0.15 + fly * 1.35)
+          );
+          j[`elbow_${s}`].rotation.set(0.25, 0, 0);
+          j[`hand_${s}`].rotation.set(0, 0, sign * (0.20 - fly * 0.10));
+        });
+      }
+
+      // ── 6. PUSH-UP / INCLINE / DECLINE / DIAMOND ──
       else if (anim === 'push_up') {
         const descent = easeWave * 0.24;
         j.hips.position.set(0, 0.40 - descent, 0);
@@ -1077,7 +1169,7 @@
         });
       }
 
-      // ── 6. LAT PULLDOWN ──
+      // ── 7. LAT PULLDOWN ──
       else if (anim === 'lat_pulldown') {
         j.hips.position.set(0, 0.52, 0.10);
         j.thigh_left.rotation.set(-1.50, 0.15, 0);
@@ -1100,7 +1192,37 @@
         });
       }
 
-      // ── 7. SEATED CABLE ROW ──
+      // ── 8. PULL-UP / CHIN-UP ──
+      else if (anim === 'pull_up') {
+        const pull = easeWave * 0.45;
+        j.hips.position.set(0, 1.15 + pull, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(
+            -easeWave * 0.35,
+            sign * 0.20,
+            sign * (2.75 - easeWave * 1.80)
+          );
+          j[`elbow_${s}`].rotation.set(0.15 + easeWave * 1.95, 0, 0);
+          j[`thigh_${s}`].rotation.set(-0.35, 0, 0);
+          j[`knee_${s}`].rotation.set(0.70, 0, 0);
+        });
+      }
+
+      // ── 9. DEAD HANG ──
+      else if (anim === 'dead_hang') {
+        const sway = Math.sin(t * 2 * Math.PI) * 0.01;
+        j.hips.position.set(0, 1.25 + sway, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0, 0, sign * 2.85);
+          j[`elbow_${s}`].rotation.set(0.05, 0, 0);
+          j[`thigh_${s}`].rotation.set(-0.15, 0, 0);
+          j[`knee_${s}`].rotation.set(0.35, 0, 0);
+        });
+      }
+
+      // ── 10. SEATED CABLE ROW / INVERTED ROW ──
       else if (anim === 'seated_cable_row') {
         j.hips.position.set(0, 0.32, 0.20);
         j.thigh_left.rotation.set(-1.45, 0.12, 0);
@@ -1122,22 +1244,123 @@
         });
       }
 
-      // ── 8. BICEP CURL / BARBELL CURL ──
-      else if (anim === 'bicep_curl') {
+      // ── 11. BENT OVER ROW / DUMBBELL ROW / T-BAR ROW ──
+      else if (anim === 'bent_over_row') {
+        j.hips.position.set(0, 0.82, -0.28);
+        j.spine.rotation.set(0.80, 0, 0); // Flat back hip hinge
+        j.head.rotation.set(-0.40, 0, 0);
+
+        const row = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(-0.75, sign * 0.10, 0);
+          j[`knee_${s}`].rotation.set(0.70, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-0.80 + row * 1.25, 0, sign * (0.12 + row * 0.10));
+          j[`elbow_${s}`].rotation.set(0.10 + row * 1.85, 0, 0);
+          j[`hand_${s}`].rotation.set(0.2, 0, 0);
+        });
+      }
+
+      // ── 12. STRAIGHT ARM PULLDOWN ──
+      else if (anim === 'straight_arm_pulldown') {
+        j.spine.rotation.set(0.25, 0, 0);
+        const sweep = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(-2.45 + sweep * 2.20, 0, sign * 0.12);
+          j[`elbow_${s}`].rotation.set(0.08, 0, 0);
+        });
+      }
+
+      // ── 13. DIPS (CHEST & TRICEP DIPS) ──
+      else if (anim === 'dips') {
+        const drop = easeWave * 0.32;
+        j.hips.position.set(0, 0.90 - drop, 0);
+        j.spine.rotation.set(0.20, 0, 0); // Slight forward lean
+
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(-0.45, sign * 0.05, 0);
+          j[`knee_${s}`].rotation.set(1.45, 0, 0);
+          j[`shoulder_${s}`].rotation.set(0.25, 0, sign * 0.20);
+          j[`elbow_${s}`].rotation.set(easeWave * 1.55, 0, 0);
+          j[`hand_${s}`].rotation.set(0.2, 0, 0);
+        });
+      }
+
+      // ── 14. BICEP CURL / BARBELL / HAMMER / CONCENTRATION / PREACHER ──
+      else if (anim === 'bicep_curl' || anim === 'barbell_curl') {
         const curl = easeWave * 2.25;
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.set(0.05, 0, sign * 0.08); // Upper arms pinned to sides
-          j[`elbow_${s}`].rotation.set(curl, 0, 0);             // Full bicep flexion
+          j[`shoulder_${s}`].rotation.set(0.05, 0, sign * 0.08); // Pinned to ribs
+          j[`elbow_${s}`].rotation.set(curl, 0, 0);
           j[`hand_${s}`].rotation.set(0.25, 0, 0);
         });
       }
 
-      // ── 9. TRICEP PUSHDOWN ──
+      else if (anim === 'hammer_curl') {
+        const curl = easeWave * 2.25;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0.05, 0, sign * 0.08);
+          j[`elbow_${s}`].rotation.set(curl, 0, 0);
+          j[`hand_${s}`].rotation.set(0, sign * 1.45, 0); // Neutral palms-in
+        });
+      }
+
+      else if (anim === 'concentration_curl') {
+        j.hips.position.set(0, 0.65, 0);
+        j.spine.rotation.set(0.35, 0, 0);
+        const curl = easeWave * 2.25;
+        j.shoulder_left.rotation.set(0.40, 0.20, 0.20);
+        j.elbow_left.rotation.set(curl, 0, 0);
+        j.shoulder_right.rotation.set(0.20, 0, -0.20);
+      }
+
+      else if (anim === 'preacher_curl' || anim === 'incline_curl') {
+        const curl = easeWave * 2.10;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(-0.65, 0, sign * 0.12); // Rest on slant
+          j[`elbow_${s}`].rotation.set(0.15 + curl, 0, 0);
+          j[`hand_${s}`].rotation.set(0.2, 0, 0);
+        });
+      }
+
+      // ── 15. WRIST CURLS ──
+      else if (anim === 'wrist_curls') {
+        j.hips.position.set(0, 0.65, 0);
+        j.spine.rotation.set(0.45, 0, 0);
+        const wristMove = (easeWave - 0.5) * 1.10;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0.45, 0, sign * 0.12);
+          j[`elbow_${s}`].rotation.set(1.57, 0, 0);
+          j[`hand_${s}`].rotation.set(wristMove, 0, 0);
+        });
+      }
+
+      // ── 16. FARMERS WALK ──
+      else if (anim === 'farmers_walk') {
+        const bounce = Math.sin(t * 4 * Math.PI) * 0.02;
+        const stride = Math.sin(t * 2 * Math.PI);
+        j.hips.position.set(0, 0.95 + bounce, 0);
+        j.thigh_left.rotation.set(stride * 0.55, 0, 0);
+        j.knee_left.rotation.set(Math.max(0, -stride * 0.85), 0, 0);
+        j.thigh_right.rotation.set(-stride * 0.55, 0, 0);
+        j.knee_right.rotation.set(Math.max(0, stride * 0.85), 0, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0, 0, sign * 0.12);
+          j[`elbow_${s}`].rotation.set(0.05, 0, 0);
+        });
+      }
+
+      // ── 17. TRICEP PUSHDOWN / CABLE EXTENSION ──
       else if (anim === 'tricep_pushdown') {
         j.spine.rotation.set(0.25, 0, 0); // Athletic hip hinge
         const push = easeWave;
-
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(0.35, 0, sign * 0.12); // Pinned at ribs
@@ -1146,9 +1369,45 @@
         });
       }
 
-      // ── 10. SHOULDER PRESS / OVERHEAD PRESS ──
+      // ── 18. OVERHEAD TRICEP EXTENSION ──
+      else if (anim === 'overhead_tricep_extension') {
+        const ext = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0, 0, sign * 2.95); // High vertical arms
+          j[`elbow_${s}`].rotation.set((1 - ext) * 1.85, 0, 0); // Extend from behind head
+        });
+      }
+
+      // ── 19. SKULL CRUSHERS ──
+      else if (anim === 'skull_crushers') {
+        j.hips.position.set(0, 0.48, -0.08);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0);
+
+        const ext = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(0.70, sign * 0.35, 0);
+          j[`knee_${s}`].rotation.set(1.50, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-1.57, 0, sign * 0.12); // Vertical upper arm
+          j[`elbow_${s}`].rotation.set((1 - ext) * 1.70, 0, 0);   // Lower to forehead & extend
+        });
+      }
+
+      // ── 20. TRICEP KICKBACK ──
+      else if (anim === 'tricep_kickback') {
+        j.spine.rotation.set(0.75, 0, 0);
+        const ext = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0.75, 0, sign * 0.12);
+          j[`elbow_${s}`].rotation.set((1 - ext) * 1.55, 0, 0);
+        });
+      }
+
+      // ── 21. SHOULDER PRESS / OVERHEAD PRESS ──
       else if (anim === 'shoulder_press') {
-        const press = easeWave; // 0 = at collarbone, 1 = locked overhead
+        const press = easeWave;
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(
@@ -1161,11 +1420,88 @@
         });
       }
 
-      // ── 11. DEADLIFT / ROMANIAN DEADLIFT ──
+      // ── 22. ARNOLD PRESS ──
+      else if (anim === 'arnold_press') {
+        const press = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(
+            -0.35 * (1 - press),
+            sign * 0.45 * (1 - press),
+            sign * (0.85 + press * 2.10)
+          );
+          j[`elbow_${s}`].rotation.set(1.95 - press * 1.85, 0, 0);
+          j[`hand_${s}`].rotation.set(0, sign * (1.57 * (1 - press)), 0);
+        });
+      }
+
+      // ── 23. LATERAL RAISE (SCAPULAR ABDUCTION) ──
+      else if (anim === 'lateral_raise') {
+        const raise = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0.12, sign * 0.15, sign * (0.10 + raise * 1.50));
+          j[`elbow_${s}`].rotation.set(0.15, 0, 0); // Micro elbow flex
+          j[`hand_${s}`].rotation.set(0, 0, sign * 0.15);
+        });
+      }
+
+      // ── 24. FRONT RAISE ──
+      else if (anim === 'front_raise') {
+        const raise = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(-raise * 1.60, 0, sign * 0.10);
+          j[`elbow_${s}`].rotation.set(0.10, 0, 0);
+        });
+      }
+
+      // ── 25. REVERSE FLY (REAR DELT) ──
+      else if (anim === 'reverse_fly') {
+        j.hips.position.set(0, 0.82, -0.25);
+        j.spine.rotation.set(0.85, 0, 0);
+        j.head.rotation.set(-0.45, 0, 0);
+        const fly = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(-0.75, sign * 0.10, 0);
+          j[`knee_${s}`].rotation.set(0.70, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-0.85, sign * 0.20, sign * (0.15 + fly * 1.35));
+          j[`elbow_${s}`].rotation.set(0.35, 0, 0);
+        });
+      }
+
+      // ── 26. FACE PULL ──
+      else if (anim === 'face_pull') {
+        const pull = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(-0.25 - pull * 1.25, -sign * pull * 0.45, sign * (0.15 + pull * 0.85));
+          j[`elbow_${s}`].rotation.set(0.15 + pull * 1.65, 0, 0);
+        });
+      }
+
+      // ── 27. UPRIGHT ROW / SHRUGS ──
+      else if (anim === 'upright_row') {
+        const row = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0, 0, sign * (0.15 + row * 1.15));
+          j[`elbow_${s}`].rotation.set(row * 2.10, 0, 0);
+        });
+      }
+
+      else if (anim === 'shrugs') {
+        const shrug = easeWave * 0.08;
+        j.shoulder_left.position.y = 0.35 + shrug;
+        j.shoulder_right.position.y = 0.35 + shrug;
+      }
+
+      // ── 28. DEADLIFT / ROMANIAN DEADLIFT ──
       else if (anim === 'deadlift') {
         const hinge = easeWave;
         j.hips.position.set(0, 0.95 - hinge * 0.22, -hinge * 0.42);
-        j.spine.rotation.set(hinge * 1.15, 0, 0); // Deep flat back hip hinge
+        j.spine.rotation.set(hinge * 1.15, 0, 0);
         j.head.rotation.set(-hinge * 0.65, 0, 0);
 
         ['left', 'right'].forEach(s => {
@@ -1178,13 +1514,13 @@
         });
       }
 
-      // ── 12. LUNGE ──
+      // ── 29. LUNGE / SPLIT SQUAT ──
       else if (anim === 'lunge') {
         const drop = easeWave * 0.38;
         j.hips.position.set(0, 0.95 - drop, 0);
-        j.thigh_left.rotation.set(-easeWave * 1.45, 0.10, 0); // 90° front knee
+        j.thigh_left.rotation.set(-easeWave * 1.45, 0.10, 0);
         j.knee_left.rotation.set(easeWave * 1.45, 0, 0);
-        j.thigh_right.rotation.set(easeWave * 0.65, -0.10, 0); // Rear knee dropping
+        j.thigh_right.rotation.set(easeWave * 0.65, -0.10, 0);
         j.knee_right.rotation.set(easeWave * 1.55, 0, 0);
 
         ['left', 'right'].forEach(s => {
@@ -1193,24 +1529,55 @@
         });
       }
 
-      // ── 13. PULL-UP ──
-      else if (anim === 'pull_up') {
-        const pull = easeWave * 0.45;
-        j.hips.position.set(0, 1.15 + pull, 0);
+      // ── 30. HIP THRUST / GLUTE BRIDGE ──
+      else if (anim === 'hip_thrust') {
+        const thrust = easeWave;
+        j.hips.position.set(0, 0.40 + thrust * 0.32, 0.10);
+        j.spine.rotation.set((1 - thrust) * 0.65, 0, 0);
         ['left', 'right'].forEach(s => {
           const sign = s === 'left' ? 1 : -1;
-          j[`shoulder_${s}`].rotation.set(
-            -easeWave * 0.35,
-            sign * 0.20,
-            sign * (2.75 - easeWave * 1.80)
-          );
-          j[`elbow_${s}`].rotation.set(0.15 + easeWave * 1.95, 0, 0);
-          j[`thigh_${s}`].rotation.set(-0.35, 0, 0);
-          j[`knee_${s}`].rotation.set(0.70, 0, 0);
+          j[`thigh_${s}`].rotation.set(-1.45 + (1 - thrust) * 0.70, sign * 0.12, 0);
+          j[`knee_${s}`].rotation.set(1.57 - (1 - thrust) * 0.20, 0, 0);
+          j[`shoulder_${s}`].rotation.set(0.35, 0, sign * 0.30);
         });
       }
 
-      // ── 14. PLANK ──
+      // ── 31. LEG EXTENSION ──
+      else if (anim === 'leg_extension') {
+        j.hips.position.set(0, 0.62, 0);
+        const ext = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(-1.57, sign * 0.10, 0);
+          j[`knee_${s}`].rotation.set((1 - ext) * 1.55, 0, 0); // 90° to straight quad extension
+          j[`shoulder_${s}`].rotation.set(0.2, 0, sign * 0.15);
+        });
+      }
+
+      // ── 32. LEG CURL ──
+      else if (anim === 'leg_curl') {
+        j.hips.position.set(0, 0.48, 0);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0); // Prone on bench
+        const curl = easeWave;
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(0.10, sign * 0.05, 0);
+          j[`knee_${s}`].rotation.set(curl * 2.10, 0, 0); // Heel to glutes
+        });
+      }
+
+      // ── 33. CALF RAISES ──
+      else if (anim === 'calf_raises') {
+        const raise = easeWave;
+        j.hips.position.set(0, 0.95 + raise * 0.12, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`foot_${s}`].rotation.set(-raise * 0.65, 0, 0); // Maximal plantarflexion
+          j[`shoulder_${s}`].rotation.set(0, 0, sign * 0.12);
+        });
+      }
+
+      // ── 34. PLANK / SIDE PLANK ──
       else if (anim === 'plank') {
         j.hips.position.set(0, 0.35, 0);
         j.hips.rotation.set(-Math.PI / 2 + 0.08, 0, 0);
@@ -1218,6 +1585,148 @@
           const sign = s === 'left' ? 1 : -1;
           j[`shoulder_${s}`].rotation.set(-1.57, sign * 0.1, sign * 0.2);
           j[`elbow_${s}`].rotation.set(1.57, 0, 0);
+        });
+      }
+
+      // ── 35. CRUNCHES / SIT-UPS ──
+      else if (anim === 'crunches') {
+        j.hips.position.set(0, 0.22, 0);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0);
+        const curl = easeWave;
+        j.spine.rotation.set(curl * 0.60, 0, 0); // Thoracic curl
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(0.85, sign * 0.10, 0);
+          j[`knee_${s}`].rotation.set(1.65, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-1.85, sign * 0.20, sign * 0.85);
+          j[`elbow_${s}`].rotation.set(1.85, 0, 0);
+        });
+      }
+
+      // ── 36. LEG RAISES ──
+      else if (anim === 'leg_raises') {
+        j.hips.position.set(0, 0.22, 0);
+        j.hips.rotation.set(-Math.PI / 2, 0, 0);
+        const raise = easeWave;
+        ['left', 'right'].forEach(s => {
+          j[`thigh_${s}`].rotation.set(-raise * 1.55, 0, 0);
+          j[`knee_${s}`].rotation.set(0.05, 0, 0);
+        });
+      }
+
+      // ── 37. RUSSIAN TWISTS / BICYCLE CRUNCHES ──
+      else if (anim === 'russian_twists') {
+        j.hips.position.set(0, 0.35, 0);
+        const twist = Math.sin(t * 2 * Math.PI) * 0.75;
+        j.spine.rotation.set(0.65, twist, 0);
+        j.head.rotation.set(0, twist * 0.80, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(-1.10, sign * 0.15, 0);
+          j[`knee_${s}`].rotation.set(1.20, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-1.10, sign * 0.30, sign * 0.30);
+          j[`elbow_${s}`].rotation.set(1.45, 0, 0);
+        });
+      }
+
+      // ── 38. AB WHEEL ROLLOUT ──
+      else if (anim === 'ab_wheel_rollout') {
+        const roll = easeWave;
+        j.hips.position.set(0, 0.38 - roll * 0.16, roll * 0.25);
+        j.spine.rotation.set(0.40 - roll * 0.35, 0, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(-1.45 + roll * 0.45, sign * 0.10, 0);
+          j[`knee_${s}`].rotation.set(1.57, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-1.35 - roll * 1.45, 0, sign * 0.15);
+          j[`elbow_${s}`].rotation.set(0.10, 0, 0);
+        });
+      }
+
+      // ── 39. KETTLEBELL SWING ──
+      else if (anim === 'kettlebell_swing') {
+        const snap = easeWave;
+        j.hips.position.set(0, 0.95 - (1 - snap) * 0.18, -(1 - snap) * 0.35);
+        j.spine.rotation.set((1 - snap) * 0.85, 0, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`thigh_${s}`].rotation.set(-(1 - snap) * 0.75, sign * 0.15, 0);
+          j[`knee_${s}`].rotation.set((1 - snap) * 0.60, 0, 0);
+          j[`shoulder_${s}`].rotation.set(-0.25 - snap * 1.35, 0, sign * 0.10);
+          j[`elbow_${s}`].rotation.set(0.10, 0, 0);
+        });
+      }
+
+      // ── 40. MOUNTAIN CLIMBERS ──
+      else if (anim === 'mountain_climbers') {
+        j.hips.position.set(0, 0.42, 0);
+        j.hips.rotation.set(-Math.PI / 2 + 0.15, 0, 0);
+        const climb = Math.sin(t * 4 * Math.PI);
+        j.thigh_left.rotation.set(climb > 0 ? -1.65 : 0.1, 0, 0);
+        j.knee_left.rotation.set(climb > 0 ? 1.85 : 0.1, 0, 0);
+        j.thigh_right.rotation.set(climb < 0 ? -1.65 : 0.1, 0, 0);
+        j.knee_right.rotation.set(climb < 0 ? 1.85 : 0.1, 0, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(-1.45, 0, sign * 0.18);
+          j[`elbow_${s}`].rotation.set(0.08, 0, 0);
+        });
+      }
+
+      // ── 41. THRUSTERS (SQUAT TO OVERHEAD PRESS) ──
+      else if (anim === 'thrusters') {
+        if (t < 0.5) {
+          const d = Math.sin(t * 2 * Math.PI) * 0.40;
+          j.hips.position.set(0, 0.95 - d, -d * 0.35);
+          j.spine.rotation.set(d * 0.65, 0, 0);
+          ['left', 'right'].forEach(s => {
+            const sign = s === 'left' ? 1 : -1;
+            j[`thigh_${s}`].rotation.set(-d * 2.35, sign * 0.15, 0);
+            j[`knee_${s}`].rotation.set(d * 2.75, 0, 0);
+            j[`shoulder_${s}`].rotation.set(0.20, sign * -0.35, sign * 0.85);
+            j[`elbow_${s}`].rotation.set(1.95, 0, 0);
+          });
+        } else {
+          const p = Math.sin((t - 0.5) * 2 * Math.PI);
+          j.hips.position.set(0, 0.95, 0);
+          ['left', 'right'].forEach(s => {
+            const sign = s === 'left' ? 1 : -1;
+            j[`shoulder_${s}`].rotation.set(0, 0, sign * (0.85 + p * 2.10));
+            j[`elbow_${s}`].rotation.set(1.95 - p * 1.85, 0, 0);
+          });
+        }
+      }
+
+      // ── 42. BURPEES ──
+      else if (anim === 'burpees') {
+        if (t < 0.35) {
+          const d = (t / 0.35);
+          j.hips.position.set(0, 0.95 - d * 0.65, 0);
+          j.hips.rotation.set(-d * 1.45, 0, 0);
+        } else if (t < 0.70) {
+          const push = Math.sin((t - 0.35) / 0.35 * Math.PI);
+          j.hips.position.set(0, 0.30 - push * 0.15, 0);
+          j.hips.rotation.set(-Math.PI / 2, 0, 0);
+          j.elbow_left.rotation.set(push * 1.55, 0, 0);
+          j.elbow_right.rotation.set(push * 1.55, 0, 0);
+        } else {
+          const jump = Math.sin((t - 0.70) / 0.30 * Math.PI) * 0.25;
+          j.hips.position.set(0, 0.95 + jump, 0);
+          j.shoulder_left.rotation.set(0, 0, 2.95);
+          j.shoulder_right.rotation.set(0, 0, -2.95);
+        }
+      }
+
+      // ── 43. JUMP ROPE ──
+      else if (anim === 'jump_rope') {
+        const bounce = Math.abs(Math.sin(t * 6 * Math.PI)) * 0.08;
+        j.hips.position.set(0, 0.95 + bounce, 0);
+        ['left', 'right'].forEach(s => {
+          const sign = s === 'left' ? 1 : -1;
+          j[`shoulder_${s}`].rotation.set(0.12, 0, sign * 0.20);
+          j[`elbow_${s}`].rotation.set(1.57, 0, 0);
+          j[`hand_${s}`].rotation.set(Math.sin(t * 6 * Math.PI) * 0.4, 0, 0);
+          j[`foot_${s}`].rotation.set(bounce > 0.02 ? -0.45 : 0, 0, 0);
         });
       }
 
@@ -1445,13 +1954,25 @@
         eq.dumbbell_right.quaternion.copy(handRRot);
       }
 
-      // 3. Lat Pulldown Wide Bar: Snapped to hand grips
+      // 3. Kettlebell: Snapped between / to hand grips
+      if (eq.kettlebell && eq.kettlebell.visible) {
+        const midPoint = new THREE.Vector3().addVectors(gripL, gripR).multiplyScalar(0.5);
+        eq.kettlebell.position.set(midPoint.x, midPoint.y - 0.18, midPoint.z);
+      }
+
+      // 4. Ab Roller: Snapped directly to hands
+      if (eq.ab_roller && eq.ab_roller.visible) {
+        const midPoint = new THREE.Vector3().addVectors(gripL, gripR).multiplyScalar(0.5);
+        eq.ab_roller.position.set(midPoint.x, Math.max(0, midPoint.y - 0.10), midPoint.z);
+      }
+
+      // 5. Lat Pulldown Wide Bar: Snapped to hand grips
       if (eq.lat_bar && eq.lat_tower && eq.lat_tower.visible) {
         const midPoint = new THREE.Vector3().addVectors(gripL, gripR).multiplyScalar(0.5);
         eq.lat_bar.position.copy(midPoint);
       }
 
-      // 4. Seated Cable Row Handle: Snapped to hand grips
+      // 6. Seated Cable Row Handle: Snapped to hand grips
       if (eq.row_handle && eq.cable_row && eq.cable_row.visible) {
         const midPoint = new THREE.Vector3().addVectors(gripL, gripR).multiplyScalar(0.5);
         eq.row_handle.position.copy(midPoint);

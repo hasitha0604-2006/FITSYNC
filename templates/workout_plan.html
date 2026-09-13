@@ -704,15 +704,13 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/exercise_3d_config.js') }}"></script>
-<script src="{{ url_for('static', filename='js/exercise_3d_viewer.js') }}"></script>
-<script src="{{ url_for('static', filename='js/exercise_motion_player.js') }}"></script>
 <script>
 let currentGuideExercise = null;
 
 function openGuideModal(ex) {
+  if (!ex) return;
   currentGuideExercise = ex;
-  document.getElementById('modal-ex-name').innerText = ex.name;
+  document.getElementById('modal-ex-name').innerText = ex.name || 'Exercise Demonstration';
   document.getElementById('modal-ex-cat').innerText = `${ex.category || 'General'} · Level: ${ex.difficulty || 'Intermediate'}`;
   document.getElementById('modal-ex-start').innerText = ex.start_pos || 'Establish solid starting posture.';
   document.getElementById('modal-ex-move').innerText = ex.movement || 'Execute movement under strict control.';
@@ -727,15 +725,15 @@ function openGuideModal(ex) {
   document.getElementById('modal-ex-rest').innerText = `${restVal}s`;
   document.getElementById('modal-ex-equipment').innerText = eqVal;
 
-  const prim = ex.primary_muscles && ex.primary_muscles.length ? ex.primary_muscles.join(', ') : (ex.primary_muscle || ex.category);
-  const sec = ex.secondary_muscles && ex.secondary_muscles.length ? ex.secondary_muscles.join(', ') : 'Stabilizer musculature';
+  const prim = ex.primary_muscles && ex.primary_muscles.length ? (Array.isArray(ex.primary_muscles) ? ex.primary_muscles.join(', ') : ex.primary_muscles) : (ex.primary_muscle || ex.category || 'Target Muscle');
+  const sec = ex.secondary_muscles && ex.secondary_muscles.length ? (Array.isArray(ex.secondary_muscles) ? ex.secondary_muscles.join(', ') : ex.secondary_muscles) : 'Stabilizer musculature';
 
   document.getElementById('modal-ex-working-loc').innerText = prim;
   document.getElementById('modal-ex-joint-action').innerText = sec;
 
   // Set AI Form Check Links
   const exId = ex.exercise_id || ex.id || '';
-  const formCheckUrl = `/form-check?exercise_id=${encodeURIComponent(exId)}&exercise=${encodeURIComponent(ex.name)}`;
+  const formCheckUrl = `/form-check?exercise_id=${encodeURIComponent(exId)}&exercise=${encodeURIComponent(ex.name || '')}`;
   const formCheckLink = document.getElementById('modal-ai-form-check-link');
   const formCheckFooter = document.getElementById('modal-footer-ai-form-btn');
   if (formCheckLink) formCheckLink.href = formCheckUrl;
@@ -777,6 +775,7 @@ function openGuideModal(ex) {
     }
   }
 
+  // Unhide modal first so container has actual DOM dimensions
   document.getElementById('guide-modal').classList.remove('hidden');
   if (window.lucide) lucide.createIcons();
 
@@ -786,6 +785,15 @@ function openGuideModal(ex) {
   } else if (window.initExerciseMotionPlayer) {
     window.initExerciseMotionPlayer('workout-plan-motion-container', ex);
   }
+
+  // Multi-stage resize trigger to guarantee WebGL canvas has full computed dimensions
+  setTimeout(() => {
+    window.dispatchEvent(new Event('resize'));
+    if (window.__active3DViewer) window.__active3DViewer.handleResize();
+  }, 50);
+  setTimeout(() => {
+    if (window.__active3DViewer) window.__active3DViewer.handleResize();
+  }, 200);
 }
 
 function closeGuideModal() {
