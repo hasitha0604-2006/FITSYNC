@@ -28,13 +28,30 @@ if __name__ == "__main__":
 
 # Path Safety
 BASE_DIR = Path(__file__).resolve().parent
-INSTANCE_DIR = BASE_DIR / "instance"
-INSTANCE_DIR.mkdir(exist_ok=True)
+if os.getenv("VERCEL"):
+    INSTANCE_DIR = Path("/tmp/instance")
+else:
+    INSTANCE_DIR = BASE_DIR / "instance"
+
+try:
+    INSTANCE_DIR.mkdir(exist_ok=True)
+except Exception:
+    INSTANCE_DIR = Path("/tmp/instance")
+    INSTANCE_DIR.mkdir(exist_ok=True)
+
 DB_PATH = (INSTANCE_DIR / "fitsync.db").resolve()
 
 app = Flask(__name__, instance_path=str(INSTANCE_DIR))
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fitsync_super_secret_production_key_2026')
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH.as_posix()}"
+
+db_url = os.getenv('DATABASE_URL')
+if db_url:
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH.as_posix()}"
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
