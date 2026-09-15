@@ -648,33 +648,51 @@ def get_all_user_foods(user=None):
     return merged
 
 def run_migrations():
-    db.create_all()
+    try:
+        db.create_all()
+    except Exception as create_err:
+        db.session.rollback()
+        print(f"[MIGRATION WARNING] db.create_all error: {create_err}")
+
+    is_postgres = "postgres" in app.config.get('SQLALCHEMY_DATABASE_URI', '')
+    bool_val = "FALSE" if is_postgres else "0"
+    datetime_type = "TIMESTAMP" if is_postgres else "DATETIME"
+
     # 1. Add daily_food_budget to user_profiles
     try:
         db.session.execute(db.text("SELECT daily_food_budget FROM user_profiles LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding daily_food_budget to user_profiles...")
-        db.session.execute(db.text("ALTER TABLE user_profiles ADD COLUMN daily_food_budget INTEGER DEFAULT 150"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding daily_food_budget to user_profiles...")
+            db.session.execute(db.text("ALTER TABLE user_profiles ADD COLUMN daily_food_budget INTEGER DEFAULT 150"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 2. Add total_cost to meal_plans
     try:
         db.session.execute(db.text("SELECT total_cost FROM meal_plans LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding total_cost to meal_plans table...")
-        db.session.execute(db.text("ALTER TABLE meal_plans ADD COLUMN total_cost INTEGER DEFAULT 0"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding total_cost to meal_plans table...")
+            db.session.execute(db.text("ALTER TABLE meal_plans ADD COLUMN total_cost INTEGER DEFAULT 0"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 3. Add cost to meals
     try:
         db.session.execute(db.text("SELECT cost FROM meals LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding cost to meals table...")
-        db.session.execute(db.text("ALTER TABLE meals ADD COLUMN cost INTEGER DEFAULT 0"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding cost to meals table...")
+            db.session.execute(db.text("ALTER TABLE meals ADD COLUMN cost INTEGER DEFAULT 0"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 4. Migrate user_food_preferences table columns (is_preferred, is_available, is_avoided)
     try:
@@ -683,92 +701,119 @@ def run_migrations():
         db.session.rollback()
         print("[MIGRATION] Adding boolean preference columns to user_food_preferences...")
         try:
-            db.session.execute(db.text("ALTER TABLE user_food_preferences ADD COLUMN is_preferred BOOLEAN DEFAULT 0"))
+            db.session.execute(db.text(f"ALTER TABLE user_food_preferences ADD COLUMN is_preferred BOOLEAN DEFAULT {bool_val}"))
         except Exception:
             db.session.rollback()
         try:
-            db.session.execute(db.text("ALTER TABLE user_food_preferences ADD COLUMN is_available BOOLEAN DEFAULT 0"))
+            db.session.execute(db.text(f"ALTER TABLE user_food_preferences ADD COLUMN is_available BOOLEAN DEFAULT {bool_val}"))
         except Exception:
             db.session.rollback()
         try:
-            db.session.execute(db.text("ALTER TABLE user_food_preferences ADD COLUMN is_avoided BOOLEAN DEFAULT 0"))
+            db.session.execute(db.text(f"ALTER TABLE user_food_preferences ADD COLUMN is_avoided BOOLEAN DEFAULT {bool_val}"))
         except Exception:
             db.session.rollback()
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 5. Add workout_environment to user_profiles
     try:
         db.session.execute(db.text("SELECT workout_environment FROM user_profiles LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding workout_environment to user_profiles...")
-        db.session.execute(db.text("ALTER TABLE user_profiles ADD COLUMN workout_environment VARCHAR(50) DEFAULT 'Gym'"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding workout_environment to user_profiles...")
+            db.session.execute(db.text("ALTER TABLE user_profiles ADD COLUMN workout_environment VARCHAR(50) DEFAULT 'Gym'"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 6. Add day_number to workout_days
     try:
         db.session.execute(db.text("SELECT day_number FROM workout_days LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding day_number to workout_days...")
-        db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN day_number INTEGER DEFAULT 1"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding day_number to workout_days...")
+            db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN day_number INTEGER DEFAULT 1"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 7. Add reps_min to workout_exercises
     try:
         db.session.execute(db.text("SELECT reps_min FROM workout_exercises LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding reps_min to workout_exercises...")
-        db.session.execute(db.text("ALTER TABLE workout_exercises ADD COLUMN reps_min INTEGER DEFAULT 8"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding reps_min to workout_exercises...")
+            db.session.execute(db.text("ALTER TABLE workout_exercises ADD COLUMN reps_min INTEGER DEFAULT 8"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 8. Add reps_max to workout_exercises
     try:
         db.session.execute(db.text("SELECT reps_max FROM workout_exercises LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding reps_max to workout_exercises...")
-        db.session.execute(db.text("ALTER TABLE workout_exercises ADD COLUMN reps_max INTEGER DEFAULT 12"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding reps_max to workout_exercises...")
+            db.session.execute(db.text("ALTER TABLE workout_exercises ADD COLUMN reps_max INTEGER DEFAULT 12"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 9. Add name to users
     try:
         db.session.execute(db.text("SELECT name FROM users LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding name to users...")
-        db.session.execute(db.text("ALTER TABLE users ADD COLUMN name VARCHAR(100)"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding name to users...")
+            db.session.execute(db.text("ALTER TABLE users ADD COLUMN name VARCHAR(100)"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 10. Add updated_at to users
     try:
         db.session.execute(db.text("SELECT updated_at FROM users LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding updated_at to users...")
-        db.session.execute(db.text("ALTER TABLE users ADD COLUMN updated_at DATETIME"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding updated_at to users...")
+            db.session.execute(db.text(f"ALTER TABLE users ADD COLUMN updated_at {datetime_type}"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 11. Add status to workout_days
     try:
         db.session.execute(db.text("SELECT status FROM workout_days LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding status to workout_days...")
-        db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN status VARCHAR(20) DEFAULT 'upcoming'"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding status to workout_days...")
+            db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN status VARCHAR(20) DEFAULT 'upcoming'"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     # 12. Add duration_minutes to workout_days
     try:
         db.session.execute(db.text("SELECT duration_minutes FROM workout_days LIMIT 1"))
     except Exception:
         db.session.rollback()
-        print("[MIGRATION] Adding duration_minutes to workout_days...")
-        db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN duration_minutes INTEGER DEFAULT 0"))
-        db.session.commit()
+        try:
+            print("[MIGRATION] Adding duration_minutes to workout_days...")
+            db.session.execute(db.text("ALTER TABLE workout_days ADD COLUMN duration_minutes INTEGER DEFAULT 0"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
-    # 13. Purge any orphan records whose user_id no longer exists in users table
+    # 13. Purge orphan records
     try:
         db.session.execute(db.text("DELETE FROM user_profiles WHERE user_id NOT IN (SELECT id FROM users)"))
         db.session.execute(db.text("DELETE FROM user_equipments WHERE user_id NOT IN (SELECT id FROM users)"))
@@ -780,7 +825,7 @@ def run_migrations():
         db.session.execute(db.text("DELETE FROM custom_foods WHERE user_id NOT IN (SELECT id FROM users)"))
         db.session.execute(db.text("DELETE FROM chat_conversations WHERE user_id NOT IN (SELECT id FROM users)"))
         db.session.commit()
-    except Exception as e:
+    except Exception:
         db.session.rollback()
 
     # 14. Add demo_video, animation_type, media_status to exercises table
@@ -801,13 +846,25 @@ def run_migrations():
             db.session.execute(db.text("ALTER TABLE exercises ADD COLUMN media_status VARCHAR(50) DEFAULT 'missing'"))
         except Exception:
             db.session.rollback()
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
 # Run database setup & migrations automatically on application boot
 with app.app_context():
     try:
         run_migrations()
+        try:
+            if Exercise.query.count() == 0:
+                seed_exercises_table()
+            if Food.query.count() == 0:
+                seed_foods_table()
+        except Exception as _seed_err:
+            db.session.rollback()
+            print(f"[SEED WARNING] Auto-seed error: {_seed_err}")
     except Exception as _db_init_err:
+        db.session.rollback()
         print(f"[MIGRATION WARNING] Auto-migration error: {_db_init_err}")
 
 def validate_media_path(path_str):
