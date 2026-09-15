@@ -1234,6 +1234,31 @@ def init_app_database(app_instance):
 # Automatic safe initialization on application startup
 init_app_database(app)
 
+@app.before_request
+def ensure_tables_exist():
+    if not getattr(app, '_db_tables_ready', False):
+        try:
+            db.create_all()
+            app._db_tables_ready = True
+        except Exception as _tbl_err:
+            db.session.rollback()
+            print(f"[TABLE CHECK WARNING] {_tbl_err}")
+
+@app.errorhandler(500)
+def server_error(e):
+    original_err = getattr(e, 'original_exception', e)
+    app.logger.error(f"[SERVER ERROR 500] {original_err}", exc_info=True)
+    if request.is_json or request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return jsonify({"status": "error", "message": str(original_err)}), 500
+    return f"""
+    <div style="font-family: system-ui, sans-serif; padding: 40px; background: #0b0f19; color: #f8fafc; min-height: 100vh;">
+      <h2 style="color: #f43f5e;">FITSYNC Server Error Details</h2>
+      <p style="font-size: 15px; color: #94a3b8;">The backend encountered a runtime exception:</p>
+      <pre style="background: #1e293b; padding: 16px; border-radius: 8px; color: #e2e8f0; overflow-x: auto; white-space: pre-wrap;">{str(original_err)}</pre>
+      <p><a href="/" style="color: #38bdf8; text-decoration: none;">&larr; Back to Home</a></p>
+    </div>
+    """, 500
+
 # -----------------------------------------------------------------------------
 # FLASK ROUTE AND SESSION CONTROLLER
 # -----------------------------------------------------------------------------
