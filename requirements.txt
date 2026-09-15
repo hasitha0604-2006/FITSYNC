@@ -1,4 +1,4 @@
 Flask
 Flask-SQLAlchemy
 python-dotenv
-psycopg2-binary
+pg8000
