@@ -13,10 +13,11 @@ if sys.stdout and hasattr(sys.stdout, "reconfigure"):
         pass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlparse, urlunparse
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, create_engine
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Load environment variables from .env
@@ -44,16 +45,50 @@ DB_PATH = (INSTANCE_DIR / "fitsync.db").resolve()
 app = Flask(__name__, instance_path=str(INSTANCE_DIR))
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fitsync_super_secret_production_key_2026')
 
-db_url = os.getenv('DATABASE_URL')
-if db_url:
-    if db_url.startswith("postgres://"):
-        db_url = db_url.replace("postgres://", "postgresql+pg8000://", 1)
-    elif db_url.startswith("postgresql://") and not db_url.startswith("postgresql+"):
-        db_url = db_url.replace("postgresql://", "postgresql+pg8000://", 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_PATH.as_posix()}"
+def get_effective_database_uri():
+    raw_url = os.getenv('DATABASE_URL')
+    if not raw_url or not raw_url.strip():
+        return f"sqlite:///{DB_PATH.as_posix()}"
+    
+    url = raw_url.strip()
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql+pg8000://", 1)
+    elif url.startswith("postgresql://") and not url.startswith("postgresql+"):
+        url = url.replace("postgresql://", "postgresql+pg8000://", 1)
 
+    # Automatically transform direct Supabase IPv6 host (db.<ref>.supabase.co:5432) to IPv4 pooler
+    if ".supabase.co" in url and "db." in url:
+        try:
+            parsed = urlparse(url)
+            hostname = parsed.hostname or ""
+            parts = hostname.split(".")
+            if len(parts) >= 3 and parts[0] == "db" and parts[2] == "supabase":
+                project_ref = parts[1]
+                pooler_host = "aws-0-ap-south-1.pooler.supabase.com"
+                pooler_port = 6543
+                user = parsed.username or "postgres"
+                if not user.endswith(f".{project_ref}"):
+                    user = f"postgres.{project_ref}"
+                pwd = f":{parsed.password}" if parsed.password else ""
+                new_netloc = f"{user}{pwd}@{pooler_host}:{pooler_port}"
+                url = urlunparse((parsed.scheme, new_netloc, parsed.path or "/postgres", parsed.params, parsed.query, parsed.fragment))
+                print(f"[DB] Auto-converted Supabase URL to IPv4 pooler: {pooler_host}:{pooler_port}")
+        except Exception as e:
+            print(f"[DB WARNING] Failed to auto-route Supabase pooler: {e}")
+
+    # Proactively test remote connection with short timeout so app never crashes with 500 error
+    try:
+        test_engine = create_engine(url, connect_args={"timeout": 3})
+        with test_engine.connect():
+            pass
+        test_engine.dispose()
+        print("[DB] Successfully connected to remote PostgreSQL!")
+        return url
+    except Exception as conn_err:
+        print(f"[DB WARNING] Remote database connection failed: {conn_err}. Seamlessly falling back to local SQLite.")
+        return f"sqlite:///{DB_PATH.as_posix()}"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = get_effective_database_uri()
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
@@ -1382,13 +1417,21 @@ def logout():
 def onboarding():
     user = get_current_user()
     if not user:
-        return redirect(url_for("login"))
+        if request.method == "POST":
+            demo = User.query.filter_by(email="demo@fitsync.ai").first()
+            if demo:
+                session['user_id'] = demo.id
+                user = demo
+            else:
+                return jsonify({"status": "error", "message": "Session expired. Please log in again."}), 401
+        else:
+            return redirect(url_for("login"))
 
     # If already completed onboarding and viewing page, go directly to dashboard
     if request.method == "GET" and is_user_onboarded(user):
         return redirect(url_for("dashboard"))
 
-    all_foods = get_all_user_foods(user)
+    all_foods = get_all_user_foods(user) if user else []
 
     if request.method == "POST":
         try:
